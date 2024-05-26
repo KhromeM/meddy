@@ -1,7 +1,3 @@
-/backend/node_modules
-/backend/package-lock.json
-/backend/.env
-.env
-
-/web-frontend/node_modules
-/web-frontend/package_lock.json
+node_modules
+package-lock.json
+.*
