@@ -1,7 +1,7 @@
 import { Box, VStack } from "@chakra-ui/react";
 import Message from "./Message";
 
-const MessageList = ({ messages }) => {
+const MessageList = ({ messages, messagesEndRef }) => {
 	return (
 		<Box
 			className="message-list"
@@ -16,6 +16,7 @@ const MessageList = ({ messages }) => {
 				{messages.map((msg, index) => (
 					<Message key={index} message={msg} />
 				))}
+				<div ref={messagesEndRef}></div>
 			</VStack>
 		</Box>
 	);

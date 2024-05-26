@@ -9,12 +9,12 @@ import {
 } from "@chakra-ui/react";
 import { AttachmentIcon } from "@chakra-ui/icons";
 
-const MessageInput = ({ onSend }) => {
+const MessageInput = ({ onSend, inProgress }) => {
 	const [text, setText] = useState("");
 	const [image, setImage] = useState(null);
 
 	const handleSend = () => {
-		if (text || image) {
+		if (text || image || !inProgress) {
 			onSend({ text, image, isUser: true });
 			setText("");
 			setImage(null);
@@ -61,7 +61,7 @@ const MessageInput = ({ onSend }) => {
 					icon={<AttachmentIcon />}
 					variant="outline"
 				/>
-				<Button onClick={handleSend} colorScheme="teal">
+				<Button onClick={handleSend} colorScheme="teal" isDisabled={inProgress}>
 					Send
 				</Button>
 			</HStack>
