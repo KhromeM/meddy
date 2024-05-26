@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Box, VStack, Heading } from "@chakra-ui/react";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
@@ -7,6 +7,7 @@ const Chat = () => {
 	const [messages, setMessages] = useState([]);
 
 	const addMessage = (message) => {
+		console.log(message.text);
 		setMessages([...messages, message]);
 	};
 

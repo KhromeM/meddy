@@ -2,13 +2,16 @@ import React from "react";
 import { ChakraProvider, Box, theme } from "@chakra-ui/react";
 import Chat from "./components/Chat.jsx";
 import "./styles/chat.css";
+import { AuthProvider } from "./firebase/AuthService.jsx";
+import Navbar from "./components/Navbar.jsx";
 
 function App() {
 	return (
 		<ChakraProvider theme={theme}>
-			<Box>
+			<AuthProvider>
+				<Navbar />
 				<Chat />
-			</Box>
+			</AuthProvider>
 		</ChakraProvider>
 	);
 }
