@@ -4,12 +4,19 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
+		"start": "node --no-deprecation index.mjs",
+		"exp": "node --no-deprecation ./experiments/script.mjs",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"@google-cloud/vertexai": "^1.2.0",
+		"@google/generative-ai": "^0.11.4",
+		"dotenv": "^16.4.5",
 		"express": "^4.19.2",
-		"firebase-admin": "^12.1.1"
+		"firebase-admin": "^12.1.1",
+		"google-auth-library": "^9.10.0",
+		"robotjs": "^0.6.0"
 	}
 }
