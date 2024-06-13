@@ -1,6 +1,6 @@
 import CONFIG from "./server/config.mjs";
-import { app } from "./server/routes.mjs";
+import { server } from "./server/routes.mjs";
 
-app.listen(CONFIG.port, () => {
+server.listen(CONFIG.port, () => {
 	console.log("Server is listening to port: " + CONFIG.port);
 });

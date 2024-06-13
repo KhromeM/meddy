@@ -45,7 +45,7 @@ app.post("/chat", async (req, res) => {
 });
 
 // Create HTTP server
-const server = createServer(app);
+export const server = createServer(app);
 
 // WebSocket server
 const wss = new WebSocketServer({ server });
@@ -94,8 +94,4 @@ wss.on("connection", async (ws, req) => {
 		);
 		ws.close();
 	}
-});
-
-server.listen(3000, () => {
-	console.log("Server running on port 3000");
 });

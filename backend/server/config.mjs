@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
-const baseURL = "http://localhost:";
+const baseURL = "http://trymeddy.com";
 const port = 8000;
 
 export default {
