@@ -28,7 +28,7 @@ app.use(async (req, res, next) => {
 });
 
 // HTTP endpoint for chat
-app.post("/chat", async (req, res) => {
+app.post("chat", async (req, res) => {
 	try {
 		const text = req.body.message.text;
 		// log user text in db

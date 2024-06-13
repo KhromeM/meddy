@@ -1,4 +1,4 @@
-const serverURL = "http://trymeddy.com/api/";
+const serverURL = "http://trymeddy.com/api";
 
 export const chatLLM = async (user, message) => {
 	const idToken = await user.getIdToken(false);
@@ -13,5 +13,6 @@ export const chatLLM = async (user, message) => {
 		body: body,
 	});
 	const response = await res.json();
+	console.log(response);
 	return response.text || "";
 };
