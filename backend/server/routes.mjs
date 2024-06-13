@@ -40,7 +40,7 @@ app.get("/api", async (req, res) => {
 	res.end();
 });
 
-app.post("/chat", async (req, res) => {
+app.post("/api/chat", async (req, res) => {
 	try {
 		const text = req.body.message.text;
 		// log user text in db
