@@ -11,21 +11,21 @@ app.use(cors());
 app.use(json());
 
 // Middleware for user verification
-app.use(async (req, res, next) => {
-	try {
-		req.body._user = await verifyUser(req.body.idToken);
-		console.log("Req: " + req.body._user.uid);
+// app.use(async (req, res, next) => {
+// 	try {
+// 		req.body._user = await verifyUser(req.body.idToken);
+// 		console.log("Req: " + req.body._user.uid);
 
-		if (!req.body._user.uid) {
-			res.json({ status: "fail", message: "Invalid User. Please log in." });
-			return res.end();
-		}
-		next();
-	} catch (err) {
-		res.json({ status: "fail", message: "Authentication failed" });
-		res.end();
-	}
-});
+// 		if (!req.body._user.uid) {
+// 			res.json({ status: "fail", message: "Invalid User. Please log in." });
+// 			return res.end();
+// 		}
+// 		next();
+// 	} catch (err) {
+// 		res.json({ status: "fail", message: "Authentication failed" });
+// 		res.end();
+// 	}
+// });
 
 // HTTP endpoint for chat
 app.post("/chat", async (req, res) => {
