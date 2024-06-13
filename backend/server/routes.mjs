@@ -38,6 +38,16 @@ app.get("/", async (req, res) => {
 	}
 	res.end();
 });
+app.get("/api", async (req, res) => {
+	try {
+		console.log("Hello user!");
+		res.json({ status: "success" });
+	} catch (err) {
+		console.error(err);
+		res.json({ status: "fail", message: "Failed to reach Gemini" });
+	}
+	res.end();
+});
 
 app.post("/chat", async (req, res) => {
 	try {
