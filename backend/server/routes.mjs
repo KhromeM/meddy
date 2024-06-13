@@ -28,6 +28,17 @@ app.use(json());
 // });
 
 // HTTP endpoint for chat
+app.get("/", async (req, res) => {
+	try {
+		console.log("Hello user!");
+		res.json({ status: "success" });
+	} catch (err) {
+		console.error(err);
+		res.json({ status: "fail", message: "Failed to reach Gemini" });
+	}
+	res.end();
+});
+
 app.post("/chat", async (req, res) => {
 	try {
 		const text = req.body.message.text;
