@@ -3,7 +3,7 @@ import cors from "cors";
 import { verifyUser } from "../firebase/firebase.mjs";
 import { setUser, getUser } from "../firebase/db.mjs";
 import { textGemini } from "../ai/gemini.mjs";
-import { createServer } from "https";
+import { createServer } from "http";
 import { WebSocketServer } from "ws";
 
 const app = express();
