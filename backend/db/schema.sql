@@ -7,7 +7,7 @@ CREATE TABLE Users (
 
 CREATE TABLE Messages (
     MessageID SERIAL PRIMARY KEY,
-    UserID INT,
+    UserID VARCHAR(255),
     Source VARCHAR(255),
     Text TEXT,
     Time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -16,7 +16,7 @@ CREATE TABLE Messages (
 
 CREATE TABLE Files (
     FileID SERIAL PRIMARY KEY,
-    UserID INT,
+    UserID VARCHAR(255),
     Type VARCHAR(255),
     Name VARCHAR(255),
     ByteSize INT,
