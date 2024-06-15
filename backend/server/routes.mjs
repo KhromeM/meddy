@@ -34,9 +34,9 @@ app.use(async (req, res, next) => {
 // Get user data from db or create user in db if they dont exist. Then add it to the request.
 app.use(async (req, res, next) => {
 	try {
-		let dbUser = await db.getUserById(req.body.idToken);
+		let dbUser = await db.getUserById(req._fbUser.user_id);
 		if (!user) {
-			dbUser = await db.createUser(req.body.idToken, req._fbUser.name);
+			dbUser = await db.createUser(req._fbUser.user_id, req._fbUser.name);
 			console.log("Created user in db:", dbUser);
 		}
 		console.log("not created: ", dbUser);
