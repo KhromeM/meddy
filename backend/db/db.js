@@ -215,12 +215,12 @@ const generateRandomString = (length) =>
 		)
 	).join("");
 
-(async () => {
-	const name = "Khrome";
-	const user = await createUser(95, name);
-	console.log("Created user: ", name);
-	console.log(user);
-})();
+// (async () => {
+// 	const name = "Khrome";
+// 	const user = await createUser(95, name);
+// 	console.log("Created user: ", name);
+// 	console.log(user);
+// })();
 
 // (async () => {
 // 	const userId = 95;
