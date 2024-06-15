@@ -17,6 +17,6 @@ export const verifyUser = async (idToken) => {
 	try {
 		return await auth.verifyIdToken(idToken);
 	} catch {
-		return {};
+		return null;
 	}
 };
