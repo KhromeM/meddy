@@ -19,7 +19,6 @@ app.use(async (req, res, next) => {
 	try {
 		req._fbUser = await verifyUser(req.body.idToken);
 		console.log(req._fbUser);
-		console.log("Req: " + req._fbUser.uid);
 
 		if (!req.body._user.uid) {
 			res.json({ status: "fail", message: "Invalid User. Please log in." });
@@ -37,7 +36,7 @@ app.use(async (req, res, next) => {
 	try {
 		let dbUser = await db.getUserById(req.body.idToken);
 		if (!user) {
-			// dbUser = await db.createUser(req.body.idToken, _user.username);
+			dbUser = await db.createUser(req.body.idToken, req._fbUser.name);
 		}
 		req._dbUser = dbUser;
 		next();
