@@ -9,23 +9,24 @@ export async function textGemini(text) {
 	return data.response.text();
 }
 
-export async function chat(text) {
-	const chatModel = model.startChat({
-		history: [
-			{
-				role: "user",
-				parts: [{ text: "Hello, I have 2 dogs in my house." }],
-			},
-			{
-				role: "model",
-				parts: [{ text: "Great to meet you. What would you like to know?" }],
-			},
-		],
+export async function textGeminiWithHistory(text, chatHistory) {
+	const history = chatHistory.map((message) => ({
+		role: message.source == "user" ? "user" : "model",
+		parts: [{ text: message.text }],
+	}));
+	history.reverse();
+
+	// console.log("HISTORY: ");
+	// history.forEach((m) => console.log(m.parts[0].text));
+
+	const chat = model.startChat({
+		history,
 		generationConfig: {
 			maxOutputTokens: 100,
 		},
 	});
-	const result = await chatModel.sendMessage(text);
+	const result = await chat.sendMessage(text);
 	const response = await result.response;
-	return response.text;
+	// console.log(response.text());
+	return response.text();
 }

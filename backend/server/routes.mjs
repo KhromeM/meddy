@@ -2,7 +2,7 @@ import express, { json } from "express";
 import cors from "cors";
 import { verifyUser } from "../firebase/firebase.mjs";
 import { setUser, getUser } from "../firebase/db.mjs";
-import { textGemini } from "../ai/gemini.mjs";
+import { textGemini, textGeminiWithHistory } from "../ai/gemini.mjs";
 import { createServer } from "http";
 import { WebSocketServer } from "ws";
 
@@ -18,10 +18,9 @@ app.use(json());
 app.use(async (req, res, next) => {
 	try {
 		req._fbUser = await verifyUser(req.body.idToken);
-		console.log("USER: ", req._fbUser);
+		// console.log("USER: ", req._fbUser);
 
 		if (!req._fbUser) {
-			console.log("FAIL");
 			res.json({ status: "fail", message: "Invalid User. Please log in." });
 			return res.end();
 		}
@@ -36,11 +35,10 @@ app.use(async (req, res, next) => {
 app.use(async (req, res, next) => {
 	try {
 		let dbUser = await db.getUserById(req._fbUser.user_id);
-		if (!user) {
+		if (!dbUser) {
 			dbUser = await db.createUser(req._fbUser.user_id, req._fbUser.name);
 			console.log("Created user in db:", dbUser);
 		}
-		console.log("not created: ", dbUser);
 		req._dbUser = dbUser;
 		next();
 	} catch (err) {
@@ -51,11 +49,11 @@ app.use(async (req, res, next) => {
 
 app.get("/api/chat", async (req, res) => {
 	try {
-		const messages = await db.getRecentMessagesByUserId(
+		const chatHistory = await db.getRecentMessagesByUserId(
 			req._dbUser.userid,
 			100
 		);
-		res.json({ status: "success", messages });
+		res.json({ status: "success", chatHistory });
 	} catch (err) {
 		console.error(err);
 		res.json({ status: "fail", message: "Something went wrong. Checkpoint 3" });
@@ -66,7 +64,11 @@ app.get("/api/chat", async (req, res) => {
 app.post("/api/chat", async (req, res) => {
 	try {
 		const text = req.body.message.text;
-		const content = await textGemini(text);
+		const chatHistory = await db.getRecentMessagesByUserId(
+			req._dbUser.userid,
+			100
+		);
+		const content = await textGeminiWithHistory(text, chatHistory);
 		console.log("USER: ", text);
 		console.log("LLM: ", content);
 		db.createMessage(req._dbUser.userid, "user", text);
