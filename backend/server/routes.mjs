@@ -39,6 +39,7 @@ app.use(async (req, res, next) => {
 			dbUser = await db.createUser(req.body.idToken, req._fbUser.name);
 			console.log("Created user in db:", dbUser);
 		}
+		console.log("not created: ", dbUser);
 		req._dbUser = dbUser;
 		next();
 	} catch (err) {
