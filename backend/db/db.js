@@ -4,7 +4,7 @@ var pool = new pg.Pool({
 	user: "postgres",
 	host: "localhost",
 	database: "meddysql",
-	// password: "password",
+	password: "password",
 	port: 5432,
 });
 
@@ -215,15 +215,15 @@ const generateRandomString = (length) =>
 		)
 	).join("");
 
-// (async () => {
-// 	const name = "Khrome";
-// 	const user = await createUser(95, name);
-// 	console.log("Created user: ", name);
-// 	console.log(user);
-// })();
+(async () => {
+	const name = "Khrome";
+	const user = await createUser(95, name);
+	console.log("Created user: ", name);
+	console.log(user);
+})();
 
 // (async () => {
-// 	const userId = 1;
+// 	const userId = 95;
 // 	const user = await getUserById(userId);
 // 	console.log(user);
 // })();
