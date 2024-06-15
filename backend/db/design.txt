@@ -1,0 +1,30 @@
+
+
+user table
+    - name (string)
+
+message table (fk user)
+    - source (string)
+    - text (long string)
+    - time (timestamp)
+
+files table (fk user)
+    - type (string)
+    - name (string)
+    - byteSize (int)
+    - localPath (string)
+    - accessUrl (string)
+
+    
+// later
+medicalInfo table (fk user)
+
+
+audio table
+transcription table
+translation table 
+
+doctor table
+report table 
+
+
