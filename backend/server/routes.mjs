@@ -21,6 +21,7 @@ app.use(async (req, res, next) => {
 		console.log("USER: ", req._fbUser);
 
 		if (!req._fbUser) {
+			console.log("FAIL");
 			res.json({ status: "fail", message: "Invalid User. Please log in." });
 			return res.end();
 		}
