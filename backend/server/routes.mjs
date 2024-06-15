@@ -18,7 +18,7 @@ app.use(json());
 app.use(async (req, res, next) => {
 	try {
 		req._fbUser = await verifyUser(req.body.idToken);
-		console.log(req._fbUser);
+		console.log("USER: ", req._fbUser);
 
 		if (!req._fbUser) {
 			res.json({ status: "fail", message: "Invalid User. Please log in." });
