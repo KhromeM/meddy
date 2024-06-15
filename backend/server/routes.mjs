@@ -14,31 +14,49 @@ const app = express();
 app.use(cors());
 app.use(json());
 
-// Middleware for user verification
-// app.use(async (req, res, next) => {
-// 	try {
-// 		req.body._user = await verifyUser(req.body.idToken);
-// 		console.log("Req: " + req.body._user.uid);
+// Verifies the request. Adds the firebase user info to the request.
+app.use(async (req, res, next) => {
+	try {
+		req._fbUser = await verifyUser(req.body.idToken);
+		console.log(req._fbUser);
+		console.log("Req: " + req._fbUser.uid);
 
-// 		if (!req.body._user.uid) {
-// 			res.json({ status: "fail", message: "Invalid User. Please log in." });
-// 			return res.end();
-// 		}
-// 		next();
-// 	} catch (err) {
-// 		res.json({ status: "fail", message: "Authentication failed" });
-// 		res.end();
-// 	}
-// });
+		if (!req.body._user.uid) {
+			res.json({ status: "fail", message: "Invalid User. Please log in." });
+			return res.end();
+		}
+		next();
+	} catch (err) {
+		res.json({ status: "fail", message: "Authentication failed" });
+		res.end();
+	}
+});
+
+// Get user data from db or create user in db if they dont exist. Then add it to the request.
+app.use(async (req, res, next) => {
+	try {
+		let dbUser = await db.getUserById(req.body.idToken);
+		if (!user) {
+			// dbUser = await db.createUser(req.body.idToken, _user.username);
+		}
+		req._dbUser = dbUser;
+		next();
+	} catch (err) {
+		res.json({ status: "fail", message: "Something went wrong. Checkpoint 2" });
+		res.end();
+	}
+});
 
 app.get("/api/chat", async (req, res) => {
 	try {
-		const user = await db.getUserById(req.body.idToken);
-		const messages = await db.getRecentMessagesByUserId(user.userid, 100);
+		const messages = await db.getRecentMessagesByUserId(
+			req._dbUser.userid,
+			100
+		);
 		res.json({ status: "success", messages });
 	} catch (err) {
 		console.error(err);
-		res.json({ status: "fail", message: "Something went wrong" });
+		res.json({ status: "fail", message: "Something went wrong. Checkpoint 3" });
 	}
 	res.end();
 });
@@ -49,6 +67,8 @@ app.post("/api/chat", async (req, res) => {
 		const content = await textGemini(text);
 		console.log("USER: ", text);
 		console.log("LLM: ", content);
+		db.createMessage(req._dbUser.userid, "user", text);
+		db.createMessage(req._dbUser.userid, "llm", content);
 		res.json({ status: "success", text: content });
 	} catch (err) {
 		console.error(err);
