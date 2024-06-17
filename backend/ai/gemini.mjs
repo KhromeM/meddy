@@ -15,10 +15,6 @@ export async function textGeminiWithHistory(text, chatHistory) {
 		parts: [{ text: message.text }],
 	}));
 	history.reverse();
-
-	// console.log("HISTORY: ");
-	// history.forEach((m) => console.log(m.parts[0].text));
-
 	const chat = model.startChat({
 		history,
 		generationConfig: {
@@ -27,6 +23,5 @@ export async function textGeminiWithHistory(text, chatHistory) {
 	});
 	const result = await chat.sendMessage(text);
 	const response = await result.response;
-	// console.log(response.text());
 	return response.text();
 }
