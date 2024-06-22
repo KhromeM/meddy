@@ -4,6 +4,6 @@ import { uploadFile, getFile } from "../controllers/fileController.mjs";
 const router = Router();
 
 router.post("/", uploadFile);
-router.get("/:fileName", getFile);
+router.get("/", getFile);
 
 export default router;

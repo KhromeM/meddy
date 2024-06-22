@@ -1,10 +1,18 @@
-import path from "path";
 import fs from "fs";
 import multer from "multer";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const multerConfig = multer.diskStorage({
 	destination: function (req, file, cb) {
-		const userDir = path.join(__dirname, "../uploads", req._dbUser.userId);
+		const userDir = join(
+			__dirname,
+			"../../uploads",
+			req._dbUser.userid.toString()
+		);
 		if (!fs.existsSync(userDir)) {
 			fs.mkdirSync(userDir, { recursive: true });
 		}
@@ -14,28 +22,27 @@ const multerConfig = multer.diskStorage({
 		cb(null, file.originalname);
 	},
 });
+
 const upload = multer({ storage: multerConfig });
 
 export const uploadFile = (req, res) => {
+	console.log(req._dbUser);
 	upload.single("file")(req, res, (err) => {
 		if (err) {
 			return res.status(400).json({ message: err.message });
 		}
 		console.log(
 			"Uploaded file at: ",
-			path.join(__dirname, "uploads", req._dbUser.name, req.file.filename)
+			join(__dirname, "../../uploads", req._dbUser.name, req.file.filename)
 		);
 		res.status(200).json({ message: "File uploaded successfully" });
 	});
 };
 
 export const getFile = (req, res) => {
-	const filePath = path.join(
-		__dirname,
-		"uploads",
-		req._dbUser.name,
-		req.params.fileName
-	);
+	const filename = req.query.filename;
+	console.log(filename);
+	const filePath = join(__dirname, "../../uploads", req._dbUser.name, filename);
 	if (fs.existsSync(filePath)) {
 		res.sendFile(filePath);
 	} else {

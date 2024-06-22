@@ -5,6 +5,7 @@ import CONFIG from "./config/serverConfig.mjs";
 import chatRoutes from "./routes/chatRoutes.mjs";
 import fileRoutes from "./routes/fileRoutes.mjs";
 import authMiddleware from "./middleware/authMiddleware.mjs";
+import loggerMiddleware from "./middleware/loggerMiddleware.mjs";
 import userMiddleware from "./middleware/userMiddleware.mjs";
 import errorHandler from "./middleware/errorHandler.mjs";
 
@@ -12,6 +13,7 @@ const app = express();
 app.use(cors());
 app.use(json());
 
+app.use(loggerMiddleware);
 app.use(authMiddleware);
 app.use(userMiddleware);
 
