@@ -1,7 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import fs from "fs";
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_KEY);
+import CONFIG from "../config.mjs";
+const genAI = new GoogleGenerativeAI(CONFIG.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
 export async function textGemini(text) {

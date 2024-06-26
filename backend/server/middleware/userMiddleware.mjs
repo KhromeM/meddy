@@ -1,7 +1,4 @@
-import { createRequire } from "module";
-
-const require = createRequire(import.meta.url);
-const db = require("../../db/db.js");
+import db from "../../db/db.mjs";
 
 const userMiddleware = async (req, res, next) => {
 	try {

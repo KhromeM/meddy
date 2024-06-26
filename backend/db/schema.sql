@@ -24,3 +24,16 @@ CREATE TABLE Files (
     AccessUrl VARCHAR(255),
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
+
+CREATE TABLE Documents (
+    MessageID SERIAL PRIMARY KEY,
+    UserID VARCHAR(255),
+    Text TEXT,
+    Embedding float4[],
+    Type VARCHAR(255),
+    File VARCHAR(255),
+    "Order" INT,  
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+

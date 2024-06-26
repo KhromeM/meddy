@@ -13,7 +13,6 @@ const authMiddleware = async (req, res, next) => {
 			req._fbUser = await verifyUser(idToken);
 		}
 
-		console.log(req.headers);
 		if (!req._fbUser) {
 			return res.status(401).json({ message: "Invalid User. Please log in." });
 		}

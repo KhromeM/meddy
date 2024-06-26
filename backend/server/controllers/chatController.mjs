@@ -1,8 +1,5 @@
-import { createRequire } from "module";
 import { textGeminiWithHistory } from "../../ai/gemini.mjs";
-
-const require = createRequire(import.meta.url);
-const db = require("../../db/db.js");
+import db from "../../db/db.mjs";
 
 export const getChatHistory = async (req, res) => {
 	try {
