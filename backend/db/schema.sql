@@ -1,4 +1,7 @@
--- CREATE DATABASE meddysql;
+CREATE DATABASE meddysql;
+CREATE DATABASE meddysql_test;
+
+CREATE EXTENSION IF NOT EXISTS vector;
 
 CREATE TABLE Users (
     UserID VARCHAR(255) PRIMARY KEY,
@@ -26,14 +29,15 @@ CREATE TABLE Files (
 );
 
 CREATE TABLE Documents (
-    MessageID SERIAL PRIMARY KEY,
+    DocumentID SERIAL PRIMARY KEY,
     UserID VARCHAR(255),
     Text TEXT,
     Embedding float4[],
     Type VARCHAR(255),
-    File VARCHAR(255),
+    FileID INT,
     "Order" INT,  
-    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (FileID) REFERENCES Files(FileID)
 );
 
 

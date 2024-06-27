@@ -39,6 +39,3 @@ export const docToEmbeddings = async (filepath) => {
 	const embeddings = await generateEmbeddingsForChunks(chunks);
 	return embeddings;
 };
-
-let a = await getEmbedding("apple");
-console.log(a.length);
