@@ -1,5 +1,6 @@
 import { pool } from "./dbConfig.mjs";
-import { createQueryVector } from "pgvector";
+import pgvector from "pgvector";
+const { createQueryVector } = pgvector;
 
 /**
  * Create a new langchain document in the db (A document is a piece of a file)
