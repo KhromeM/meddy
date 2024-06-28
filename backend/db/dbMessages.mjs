@@ -21,7 +21,7 @@ export const createMessage = (userId, source, text) => {
 };
 
 /**
- * Get the most recent n messages for a specific user
+ * Get the most recent n messages for a specific user from most recent
  * @param {string} userId - The ID of the user
  * @param {number} limit - The number of recent messages to retrieve
  * @returns {Promise<Array>} - A promise that resolves to an array of messages

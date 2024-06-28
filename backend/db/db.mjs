@@ -1,4 +1,4 @@
-import { createUser, updateUser, getUserById } from "./dbuser.mjs";
+import { createUser, updateUser, getUserById } from "./dbUser.mjs";
 import { createMessage, getRecentMessagesByUserId } from "./dbMessages.mjs";
 import { createFile, getFileById, updateFile } from "./dbFiles.mjs";
 import {

@@ -12,7 +12,7 @@ const CHUNK_SIZE = 2048;
 
 const readFile = promisify(fs.readFile);
 
-const readAndChunkFile = async (filePath) => {
+export const readAndChunkFile = async (filePath) => {
 	const fileContent = await readFile(filePath, "utf-8");
 	const textSplitter = new RecursiveCharacterTextSplitter({
 		chunkSize: CHUNK_SIZE,
@@ -22,7 +22,7 @@ const readAndChunkFile = async (filePath) => {
 	return chunks;
 };
 
-const generateEmbeddingsForChunks = async (chunks) => {
+export const generateEmbeddingsForChunks = async (chunks) => {
 	const embeddings = await model.embedDocuments(chunks);
 	for (let i = 0; i < chunks.length; i++) {
 		embeddings[i] = { text: chunks[i], vector: embeddings[i] };
