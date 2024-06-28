@@ -52,12 +52,12 @@ export const getDocumentById = (documentId) => {
 };
 
 /**
- * Get documents by FileID
+ * Get ordered documents by FileID
  * @param {number} fileId - The ID of the file to retrieve documents for
  * @returns {Promise<Array>} - A promise that resolves to an array of document objects
  */
 export const getDocumentsByFileId = (fileId) => {
-	var query = "SELECT * FROM Documents WHERE FileID = $1";
+	var query = 'SELECT * FROM Documents WHERE FileID = $1 ORDER BY "Order" ASC';
 	var values = [fileId];
 	return pool
 		.query(query, values)

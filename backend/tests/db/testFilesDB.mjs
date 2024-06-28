@@ -7,6 +7,7 @@ let user1, user2;
 
 describe("DB File Functions", () => {
 	before(async () => {
+		await pool.query("DELETE FROM Messages");
 		await pool.query("DELETE FROM Files");
 		await pool.query("DELETE FROM Users");
 		user1 = await createUser("test_user1", "Test User 1");

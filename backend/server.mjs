@@ -9,7 +9,7 @@ import loggerMiddleware from "./server/middleware/loggerMiddleware.mjs";
 import userMiddleware from "./server/middleware/userMiddleware.mjs";
 import errorHandler from "./server/middleware/errorHandler.mjs";
 
-const app = express();
+export const app = express();
 app.use(cors());
 app.use(json());
 
@@ -25,7 +25,7 @@ app.use("/api/file", fileRoutes);
 
 app.use(errorHandler);
 
-const server = createServer(app);
+export const server = createServer(app);
 
 server.listen(CONFIG.port, () => {
 	console.log("Server is listening to port: " + CONFIG.port);
