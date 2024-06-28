@@ -1,16 +1,21 @@
 import { expect } from "chai";
 import supertest from "supertest";
 import { app, server } from "../../server.mjs";
-
+import { pool } from "../../db/dbConfig.mjs";
 describe("Chat Endpoint Tests", () => {
-	let request;
+	let request = supertest(app);
 
-	beforeEach(() => {
-		request = supertest(app);
+	beforeEach(async () => {
+		await pool.query("DELETE FROM Messages");
+		// request = supertest(app);
 	});
 
 	after(() => {
 		server.close();
+	});
+
+	afterEach(async () => {
+		await pool.query("DELETE FROM Messages");
 	});
 
 	it("Send chat message endpoint test", async () => {

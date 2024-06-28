@@ -23,6 +23,13 @@ export const postChatMessage = async (req, res) => {
 			req._dbUser.userid,
 			100
 		);
+		if (
+			chatHistory.length &&
+			chatHistory[chatHistory.length - 1].source == "llm"
+		) {
+			// make sure the first message is not from an llm
+			chatHistory.pop();
+		}
 		const content = await textGeminiWithHistory(text, chatHistory);
 		db.createMessage(req._dbUser.userid, "user", text);
 		db.createMessage(req._dbUser.userid, "llm", content);
