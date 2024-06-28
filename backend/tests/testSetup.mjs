@@ -12,5 +12,5 @@ describe("Test startup", () => {
 
 after(async () => {
 	await pool.end();
-	console.log(pool);
+	// console.log(pool);
 });
