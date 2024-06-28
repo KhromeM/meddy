@@ -5,7 +5,7 @@
 	"main": "server.mjs",
 	"scripts": {
 		"start": "node --no-deprecation server.mjs",
-		"test": "NODE_ENV=test mocha 'tests/*/*.mjs'"
+		"test": "NODE_ENV=test mocha 'tests/*.mjs' 'tests/*/*.mjs'"
 	},
 	"author": "",
 	"license": "ISC",
