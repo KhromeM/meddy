@@ -4,7 +4,7 @@ const port = 8000;
 const isTestEnv = process.env.NODE_ENV === "test";
 
 export default {
-	port: process.env.PORT || port,
+	port: isTestEnv ? port + 1 : port,
 	OPENAI_API_KEY: process.env.OPENAI_API_KEY,
 	GEMINI_API_KEY: process.env.GEMINI_API_KEY,
 	TEST: isTestEnv,
