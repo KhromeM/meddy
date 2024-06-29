@@ -4,9 +4,9 @@ import {
 	AIMessage,
 } from "@langchain/core/messages";
 import { StringOutputParser } from "@langchain/core/output_parsers";
-import { vertexAIModel } from "./model.mjs";
+import { vertexAIModel, groqModel } from "./model.mjs";
 
-const defaultModel = vertexAIModel;
+const defaultModel = groqModel || vertexAIModel;
 const systemPrompts = {}; // globals or imports
 const fewShotExamples = {}; // globals or imports
 

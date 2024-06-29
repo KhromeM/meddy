@@ -48,7 +48,7 @@ describe("DB Document Functions", () => {
 	});
 
 	it("createDocument", async () => {
-		const embedding = [0.1, 0.2, 0.3];
+		const embedding = [...Array(3072)].fill(0);
 		const document = await createDocument(
 			user1.userid,
 			"Sample text for document",
@@ -69,7 +69,7 @@ describe("DB Document Functions", () => {
 	});
 
 	it("getDocumentById", async () => {
-		const embedding = [0.1, 0.2, 0.3];
+		const embedding = [...Array(3072)].fill(0);
 		const createdDocument = await createDocument(
 			user1.userid,
 			"Sample text for document",
@@ -91,8 +91,8 @@ describe("DB Document Functions", () => {
 	});
 
 	it("getDocumentsByFileId", async () => {
-		const embedding1 = [0.1, 0.2, 0.3];
-		const embedding2 = [0.4, 0.5, 0.6];
+		const embedding1 = [...Array(3072)].fill(0);
+		const embedding2 = [...Array(3072)].fill(0.1);
 		await createDocument(
 			user1.userid,
 			"First document text",
@@ -116,7 +116,7 @@ describe("DB Document Functions", () => {
 	});
 
 	it("deleteDocumentsByFileId", async () => {
-		const embedding = [0.1, 0.2, 0.3];
+		const embedding = [...Array(3072)].fill(0.1);
 		await createDocument(
 			user1.userid,
 			"Sample text for document",
@@ -131,7 +131,7 @@ describe("DB Document Functions", () => {
 	});
 
 	it("queryWithVec", async () => {
-		const embedding1 = [0.1, 0.2, 0.3];
+		const embedding1 = [...Array(3072)].fill(0.1);
 		const embedding2 = embedding1.map((n) => n * 2);
 		const embedding3 = embedding1.map((n) => n * 3);
 		const embedding4 = embedding1.map((n) => n * 4);
@@ -176,7 +176,7 @@ describe("DB Document Functions", () => {
 			file1.fileid,
 			5
 		);
-		const queryVector = [0, 0, 0];
+		const queryVector = [...Array(3072)].fill(0);
 		const result = await queryWithVec(user1.userid, queryVector, 10);
 		expect(result).to.have.lengthOf(5);
 		expect(result[0]).to.have.property("text", "First document text");
