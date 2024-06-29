@@ -1,5 +1,7 @@
 # Meddy: Your Friendly Medical Assistant AI [Hippa Compliant]
 
+## HIPPA Compliant
+
 Meddy is an app designed to bridge the communication gap between patients and doctors. It primarily caters to:
 
 - Elderly patients
