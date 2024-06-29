@@ -11,4 +11,5 @@ export default {
 	ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
 	TEST: isTestEnv,
 	DB_NAME: isTestEnv ? "meddysql_test" : "meddysql",
+	GOOGLE_APPLICATION_CREDENTIALS: process.env.GOOGLE_APPLICATION_CREDENTIALS,
 };
