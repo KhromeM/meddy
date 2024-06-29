@@ -1,4 +1,4 @@
-# Meddy: Your Friendly Medical Assistant AI [Hippa Compliant]
+# Meddy: Your Friendly Medical Assistant AI
 
 ## HIPPA Compliant
 
