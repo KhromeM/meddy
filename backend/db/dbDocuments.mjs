@@ -1,6 +1,6 @@
 import { pool } from "./dbConfig.mjs";
 import pgvector from "pgvector";
-const { createQueryVector } = pgvector;
+const { toSql } = pgvector;
 
 /**
  * Create a new langchain document in the db (A document is a piece of a file)
@@ -20,11 +20,12 @@ export const createDocument = (
 	fileId,
 	order
 ) => {
+	const vector = toSql(embedding);
 	var query = `
         INSERT INTO Documents (UserID, Text, Embedding, Type, FileID, "Order")
-        VALUES ($1, $2, $3, $4, $5, $6)
+        VALUES ($1, $2, $3::vector, $4, $5, $6)
         RETURNING *`;
-	var values = [userId, text, embedding, type, fileId, order];
+	var values = [userId, text, vector, type, fileId, order];
 	return pool
 		.query(query, values)
 		.then((res) => res.rows[0])
@@ -95,10 +96,10 @@ export const deleteDocumentsByFileId = (fileId) => {
  * @returns {Promise<Array>} - A promise that resolves to an array of document objects ordered by cosine distance
  */
 export const queryWithVec = (userId, queryVector, limit) => {
-	var vectorQuery = createQueryVector(queryVector);
+	var vectorQuery = toSql(queryVector);
 	var query = `
         SELECT DocumentID, UserID, Text, Embedding, Type, FileID, "Order",
-               vector_cosine_distance(Embedding, $1) AS distance
+                (Embedding <-> $1::vector) AS distance
         FROM Documents
         WHERE UserID = $2
         ORDER BY distance

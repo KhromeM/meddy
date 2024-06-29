@@ -32,7 +32,7 @@ CREATE TABLE Documents (
     DocumentID SERIAL PRIMARY KEY,
     UserID VARCHAR(255),
     Text TEXT,
-    Embedding float4[],
+    Embedding vector(3),
     Type VARCHAR(255),
     FileID INT,
     "Order" INT,  
