@@ -21,17 +21,20 @@ export const createMessage = (userId, source, text) => {
 };
 
 /**
- * Get the most recent n messages for a specific user from most recent
+ * Get the most recent n messages for a specific user, ordered from oldest to most recent
  * @param {string} userId - The ID of the user
  * @param {number} limit - The number of recent messages to retrieve
  * @returns {Promise<Array>} - A promise that resolves to an array of messages
  */
 export const getRecentMessagesByUserId = (userId, limit) => {
 	const query = `
-        SELECT * FROM Messages
-        WHERE UserID = $1
-        ORDER BY Time DESC
-        LIMIT $2
+        SELECT * FROM (
+            SELECT * FROM Messages
+            WHERE UserID = $1
+            ORDER BY Time DESC
+            LIMIT $2
+        ) subquery
+        ORDER BY Time ASC
     `;
 	const values = [userId, limit];
 	return pool

@@ -12,7 +12,10 @@
 	"dependencies": {
 		"@google-cloud/vertexai": "^1.2.0",
 		"@google/generative-ai": "^0.11.4",
+		"@langchain/anthropic": "^0.2.3",
 		"@langchain/community": "^0.2.13",
+		"@langchain/google-vertexai": "^0.0.19",
+		"@langchain/groq": "^0.0.13",
 		"@langchain/openai": "^0.2.0",
 		"chai": "^4.4.1",
 		"cors": "^2.8.5",
