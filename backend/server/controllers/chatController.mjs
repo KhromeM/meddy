@@ -1,4 +1,5 @@
 import { textGeminiWithHistory } from "../../ai/gemini.mjs";
+import { getChatResponse } from "../../ai/langAi/chatStream.mjs";
 import db from "../../db/db.mjs";
 
 export const getChatHistory = async (req, res) => {
@@ -23,14 +24,11 @@ export const postChatMessage = async (req, res) => {
 			req._dbUser.userid,
 			100
 		);
-		if (
-			chatHistory.length &&
-			chatHistory[chatHistory.length - 1].source == "llm"
-		) {
-			// make sure the first message is not from an llm
-			chatHistory.pop();
+		chatHistory.push({ source: "user", text });
+		const content = await getChatResponse(chatHistory);
+		if (!content) {
+			throw new Error("LLM didn't respond");
 		}
-		const content = await textGeminiWithHistory(text, chatHistory);
 		db.createMessage(req._dbUser.userid, "user", text);
 		db.createMessage(req._dbUser.userid, "llm", content);
 		res.status(200).json({ text: content });

@@ -1,15 +1,18 @@
 import { expect } from "chai";
 import supertest from "supertest";
 import { app, server } from "../../server.mjs";
+import { pool } from "../../db/dbConfig.mjs";
 
 describe("Auth Middleware Tests", () => {
 	let request;
 
-	beforeEach(() => {
+	beforeEach(async () => {
+		await pool.query("DELETE FROM Messages");
 		request = supertest(app);
 	});
 
-	after(() => {
+	after(async () => {
+		await pool.query("DELETE FROM Messages");
 		server.close();
 	});
 

@@ -7,10 +7,11 @@ describe("Chat Endpoint Tests", () => {
 
 	beforeEach(async () => {
 		await pool.query("DELETE FROM Messages");
-		// request = supertest(app);
+		request = supertest(app);
 	});
 
-	after(() => {
+	after(async () => {
+		await pool.query("DELETE FROM Messages");
 		server.close();
 	});
 

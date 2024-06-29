@@ -44,8 +44,8 @@ describe("DB Message Functions", () => {
 
 		const recentMessages = await getRecentMessagesByUserId(user1.userid, 2);
 		expect(recentMessages).to.have.lengthOf(2);
-		expect(recentMessages[0]).to.have.property("text", "Message 3");
-		expect(recentMessages[1]).to.have.property("text", "Message 2");
+		expect(recentMessages[0]).to.have.property("text", "Message 2");
+		expect(recentMessages[1]).to.have.property("text", "Message 3");
 	});
 
 	it("getRecentMessagesByUserId with fewer messages than limit", async () => {
