@@ -1,6 +1,8 @@
 import express, { json } from "express";
 import cors from "cors";
 import { createServer } from "http";
+import { WebSocketServer } from "ws";
+import { setupWebSocketHandlers } from "./websocket/wsHandlers.mjs";
 import CONFIG from "./config.mjs";
 import chatRoutes from "./server/routes/chatRoutes.mjs";
 import fileRoutes from "./server/routes/fileRoutes.mjs";
@@ -26,6 +28,9 @@ app.use("/api/file", fileRoutes);
 app.use(errorHandler);
 
 export const server = createServer(app);
+
+const wss = new WebSocketServer({ server });
+setupWebSocketHandlers(wss);
 
 server.listen(CONFIG.port, () => {
 	console.log("Server is listening to port: " + CONFIG.port);

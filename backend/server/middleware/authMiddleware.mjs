@@ -14,7 +14,7 @@ const authMiddleware = async (req, res, next) => {
 		}
 
 		if (!req._fbUser) {
-			return res.status(401).json({ message: "Invalid User. Please log in." });
+			return res.status(401).json({ message: "Authentication failed" });
 		}
 		next();
 	} catch (err) {
