@@ -6,6 +6,7 @@ import db from "../db/db.mjs";
 export function setupWebSocketHandlers(wss) {
 	wss.on("connection", (ws) => {
 		console.log("New WebSocket connection");
+		const user = request._dbUser;
 
 		ws.on("message", async (message) => {
 			try {
@@ -13,7 +14,7 @@ export function setupWebSocketHandlers(wss) {
 
 				switch (type) {
 					case "chat":
-						await handleChatMessage(ws, data);
+						await handleChatMessage(ws, data, user);
 						break;
 					// Add more case handlers for other message types in the future
 					default:
@@ -31,11 +32,11 @@ export function setupWebSocketHandlers(wss) {
 	});
 }
 
-async function handleChatMessage(ws, data) {
-	const { userId, text } = data;
+async function handleChatMessage(ws, data, user) {
+	const { text } = data;
 
 	try {
-		const chatHistory = await db.getRecentMessagesByUserId(userId, 100);
+		const chatHistory = await db.getRecentMessagesByUserId(user.userid, 100);
 
 		const stream = await chatStreamProvider(
 			chatHistory,
@@ -52,8 +53,8 @@ async function handleChatMessage(ws, data) {
 
 		const llmResponse = llmResponseChunks.join("");
 
-		await db.createMessage(userId, "user", text);
-		await db.createMessage(userId, "llm", llmResponse);
+		await db.createMessage(user.userid, "user", text);
+		await db.createMessage(user.userid, "llm", llmResponse);
 
 		ws.send(JSON.stringify({ type: "chat_end" }));
 	} catch (error) {
