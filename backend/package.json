@@ -19,6 +19,7 @@
 		"@langchain/groq": "^0.0.13",
 		"@langchain/openai": "^0.2.0",
 		"chai": "^4.4.1",
+		"cookie-parser": "^1.4.6",
 		"cors": "^2.8.5",
 		"dotenv": "^16.4.5",
 		"express": "^4.19.2",
