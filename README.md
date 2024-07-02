@@ -77,7 +77,7 @@ The app's primary goal is to improve patient care by enhancing communication, pr
 
    ```javascript
    const SA = await import("./path-to-your-json-file.json", {
-   	assert: { type: "json" },
+     assert: { type: "json" },
    });
    ```
 
@@ -86,4 +86,35 @@ The app's primary goal is to improve patient care by enhancing communication, pr
 9. Start the backend server:
    ```sh
    npm run start
+   ```
+
+## Mobile Setup
+
+### Prerequisites
+
+- android studio (for emus)
+- flutter sdk
+- flutter extension on vscode
+- android/ios emu extension for vscode
+- xcode (optional for ios)
+- hardware acceleration on
+
+2. Navigate to the mobile directory
+
+   ```sh
+   cd mobile
+   ```
+
+3. Install dependencies
+
+   ```sh
+   flutter packages get
+   ```
+
+4. Open emulated device via vscode extension / android studio gui
+
+5. Run app
+
+   ```sh
+   flutter run
    ```
