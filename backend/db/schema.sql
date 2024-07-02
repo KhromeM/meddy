@@ -1,6 +1,6 @@
+-- psql to go into the postgres cli 
 CREATE DATABASE meddysql;
-CREATE DATABASE meddysql_test;
-
+-- Go into meddysql, then run
 CREATE EXTENSION IF NOT EXISTS vector;
 
 CREATE TABLE Users (
@@ -40,4 +40,5 @@ CREATE TABLE Documents (
     FOREIGN KEY (FileID) REFERENCES Files(FileID)
 );
 
-
+-- repeat for the test db 
+CREATE DATABASE meddysql_test;
