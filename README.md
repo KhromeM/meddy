@@ -40,7 +40,7 @@ The app's primary goal is to improve patient care by enhancing communication, pr
 
 # Project Setup
 
-## Frontend Setup
+## Frontend Setup (this frontend is just for testing)
 
 1. Navigate to the frontend directory:
    ```sh
@@ -57,36 +57,21 @@ The app's primary goal is to improve patient care by enhancing communication, pr
 
 ## Backend Setup (outdated)
 
-1. Navigate to the backend directory:
-   ```sh
-   cd backend
-   ```
-2. Create a `.env` file in the backend directory.
+1. Give Za (khromem) your ssh public key, so he can give you access to the VM.
 
-3. Obtain your Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
+2. SSH into the VM `ssh root@24.144.94.136` TIP: add an alias for this
 
-4. Add the Gemini API key to the `.env` file as `GEMINI_KEY`.
+3. Copy the .env file from the VM to your own `meddy/backend`
 
-5. Ensure you are added to the Firebase project.
+4. Copy the google service worker credentials json file from `meddy/backend/extra` to your own copy
 
-6. Download the Firebase service account JSON file from the [Firebase Console](https://console.firebase.google.com/u/0/project/meddyai/settings/serviceaccounts/adminsdk).
+5. Install postgres if you dont have it
 
-7. Add the JSON file to the `backend/firebase` directory.
+6. Follow the instructions and run the SQL commands in `meddy/backend/db/schema.sql`
 
-8. Update the import path in `backend/firebase/firebase.mjs`:
+7. cd so youre in `/backend` then run `npm run test`
 
-   ```javascript
-   const SA = await import("./path-to-your-json-file.json", {
-     assert: { type: "json" },
-   });
-   ```
-
-   Replace `"./path-to-your-json-file.json"` with the actual path to your JSON file.
-
-9. Start the backend server:
-   ```sh
-   npm run start
-   ```
+8. If tests are failing and you can't figure out why, contact Za (khromem)
 
 ## Mobile Setup
 
