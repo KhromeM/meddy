@@ -55,7 +55,7 @@ The app's primary goal is to improve patient care by enhancing communication, pr
    npm run dev
    ```
 
-## Backend Setup (outdated)
+## Backend Setup
 
 1. Give Za (khromem) your ssh public key, so he can give you access to the VM.
 
