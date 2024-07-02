@@ -55,7 +55,7 @@ The app's primary goal is to improve patient care by enhancing communication, pr
    npm run dev
    ```
 
-## Backend Setup
+## Backend Setup (outdated)
 
 1. Navigate to the backend directory:
    ```sh
