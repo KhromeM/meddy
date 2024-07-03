@@ -4,10 +4,16 @@ import {
 	AIMessage,
 } from "@langchain/core/messages";
 import { StringOutputParser } from "@langchain/core/output_parsers";
-import { vertexAIModel, groqModel, anthropicModel } from "./model.mjs";
+import {
+	vertexAIModel,
+	groqModel,
+	anthropicModel,
+	openAIModel,
+} from "./model.mjs";
 import { Readable } from "stream";
 
-const defaultModel = anthropicModel || vertexAIModel || groqModel;
+const defaultModel =
+	anthropicModel || openAIModel || anthropicModel || vertexAIModel || groqModel;
 const systemPrompts = {}; // globals or imports
 const fewShotExamples = {}; // globals or imports
 
