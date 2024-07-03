@@ -91,6 +91,7 @@ scp root@24.144.94.136:/home/meddy/backend/.env ~/Desktop/meddy/backend
 - android/ios emu extension for vscode
 - xcode (optional for ios)
 - hardware acceleration on
+- hot reload on (optional)
 
 2. Navigate to the mobile directory
 
@@ -106,8 +107,17 @@ scp root@24.144.94.136:/home/meddy/backend/.env ~/Desktop/meddy/backend
 
 4. Open emulated device via vscode extension / android studio gui
 
-5. Run app
+5. Navigate to lib
 
    ```sh
+   cd lib
+   ```
+
+6. Use vscode debugger gui to run app, ctrl + s in main.dart will activate hot reload
+
+7. If hot reload doesn't work for you, navigate back to mobile dir and run flutter
+
+   ```sh
+   cd ..
    flutter run
    ```
