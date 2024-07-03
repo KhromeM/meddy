@@ -55,13 +55,13 @@ The app's primary goal is to improve patient care by enhancing communication, pr
    npm run dev
    ```
 
-## Backend Setup
+## Backend Setup (outdated)
 
 1. Give Za (khromem) your ssh public key, so he can give you access to the VM.
 
 2. SSH into the VM `ssh root@24.144.94.136` TIP: add an alias for this
 
-3. Copy the .env file from the VM to your own `meddy/backend`
+3. Copy the .env file from the VM to your own `meddy/backend/`
 
 4. Copy the google service worker credentials json file from `meddy/backend/extra` to your own copy
 
@@ -69,7 +69,7 @@ The app's primary goal is to improve patient care by enhancing communication, pr
 
 6. Follow the instructions and run the SQL commands in `meddy/backend/db/schema.sql`
 
-7. cd so youre in `/backend` then run `npm run test`
+7. cd so youre in `backend/` then run `npm install && npm run test`
 
 8. If tests are failing and you can't figure out why, contact Za (khromem)
 
