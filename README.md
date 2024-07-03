@@ -55,15 +55,23 @@ The app's primary goal is to improve patient care by enhancing communication, pr
    npm run dev
    ```
 
-## Backend Setup (outdated)
+## Backend Setup
 
-1. Give Za (khromem) your ssh public key, so he can give you access to the VM.
+1. Use openssh set up your ssh credentials, get your public key.
 
-2. SSH into the VM `ssh root@24.144.94.136` TIP: add an alias for this
+2. Give Za (khromem) your ssh public key, so he can give you access to the VM.
 
-3. Copy the .env file from the VM to your own `meddy/backend/`
+3. SSH into the VM `ssh root@24.144.94.136` TIP: add an alias for this
 
-4. Copy the google service worker credentials json file from `meddy/backend/extra` to your own copy
+4. Copy credentials from the server to your local copy. Run these:
+
+```
+scp root@24.144.94.136:/home/meddy/backend/firebase/meddyai-firebase-adminsdk-sp4v9-c77c115e48.json  ~/Desktop/meddy/backend/firebase
+
+scp root@24.144.94.136:/home/meddy/backend/extra/meddyai-fedbddffaf83.json ~/Desktop/meddy/backend/extra
+
+scp root@24.144.94.136:/home/meddy/backend/.env ~/Desktop/meddy/backend
+```
 
 5. Install postgres if you dont have it
 
