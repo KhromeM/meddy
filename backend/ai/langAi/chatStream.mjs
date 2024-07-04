@@ -4,9 +4,23 @@ import {
 	AIMessage,
 } from "@langchain/core/messages";
 import { StringOutputParser } from "@langchain/core/output_parsers";
-import { vertexAIModel, groqModel } from "./model.mjs";
+import {
+	vertexAIModel,
+	groqModel,
+	anthropicModel,
+	openAIModel,
+} from "./model.mjs";
+import { Readable } from "stream";
+import CONFIG from "../../config.mjs";
 
-const defaultModel = groqModel || vertexAIModel;
+let defaultModel = CONFIG.TEST
+	? groqModel // use groq for tests, other models may timeout
+	: anthropicModel ||
+	  openAIModel ||
+	  anthropicModel ||
+	  vertexAIModel ||
+	  groqModel;
+
 const systemPrompts = {}; // globals or imports
 const fewShotExamples = {}; // globals or imports
 
@@ -32,6 +46,23 @@ export const chatStreamProvider = async (
 	messages = cleanMessages(messages);
 	const chain = model.pipe(new StringOutputParser());
 	return await chain.stream(messages);
+};
+
+export const chatStreamToReadable = (chatStreamPromise) => {
+	const stream = new Readable({
+		objectMode: true,
+		read() {},
+	});
+
+	(async () => {
+		const chatStream = await chatStreamPromise;
+		for await (const chunk of cs) {
+			stream.push(chunk);
+		}
+		stream.push(null); // EOS
+	})();
+
+	return stream;
 };
 
 export const getChatResponse = async (
@@ -62,19 +93,3 @@ function cleanMessages(messages) {
 	}
 	return clean;
 }
-
-// import {
-// 	openAIModel,
-// 	anthropicModel,
-// 	groqModel,
-// } from "./model.mjs";
-
-// const chatHistory = [
-// 	{ source: "user", text: "Hello I am za" },
-// 	{ source: "llm", text: "Hello Za!" },
-// 	{
-// 		source: "user",
-// 		text: `Whats my name? And summarize this: \n "All Runnable objects implement a method called stream. These methods are designed to stream the final output in chunks, yielding each chunk as soon as it is available. Streaming is only possible if all steps in the program know how to process an input stream; i.e., process an input chunk one at a time, and yield a corresponding output chunk. The complexity of this processing can vary, from straightforward tasks like emitting tokens produced by an LLM, to more challenging ones like streaming parts of JSON results before the entire JSON is complete. The best place to start exploring streaming is with the single most important components in LLM apps – the models themselves!`,
-// 	},
-// ];
-// getChatResponse(chatHistory, vertexAIModel).then((resp) => console.log(resp));

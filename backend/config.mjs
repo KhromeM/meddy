@@ -12,4 +12,5 @@ export default {
 	TEST: isTestEnv,
 	DB_NAME: isTestEnv ? "meddysql_test" : "meddysql",
 	GOOGLE_APPLICATION_CREDENTIALS: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+	ELEVENLABS_API_KEY: process.env.ELEVENLABS_API_KEY,
 };
