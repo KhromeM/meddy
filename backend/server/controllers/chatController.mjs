@@ -28,7 +28,7 @@ export const postChatMessage = async (req, res) => {
 			100
 		);
 		chatHistory.push({ source: "user", text });
-		const content = await getChatResponse(chatHistory);
+		const content = await getChatResponse(chatHistory, req._dbUser);
 		if (!content) {
 			throw new Error("LLM didn't respond");
 		}
@@ -61,7 +61,12 @@ export const postChatMessageStream = async (req, res) => {
 
 		chatHistory.push({ source: "user", text });
 
-		const stream = await chatStreamProvider(chatHistory, defaultModel, 0);
+		const stream = await chatStreamProvider(
+			chatHistory,
+			req._dbUser,
+			defaultModel,
+			0
+		);
 
 		let llmResponseChunks = [];
 		for await (const chunk of stream) {

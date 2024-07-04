@@ -13,7 +13,6 @@ import {
 import { Readable } from "stream";
 import CONFIG from "../../config.mjs";
 import { createDefaultSystemPrompt } from "../prompts/default.mjs";
-
 let defaultModel = CONFIG.TEST
 	? groqModel // use groq for tests, other models may timeout
 	: openAIModel || anthropicModel || vertexAIModel || openAIModel;
@@ -23,10 +22,11 @@ const fewShotExamples = {}; // globals or imports
 
 export const chatStreamProvider = async (
 	chatHistory,
+	user,
 	model = defaultModel,
 	mode = 0
 ) => {
-	const systemMessage = systemPrompts[mode]("Za") || "";
+	const systemMessage = systemPrompts[mode](user.name) || "";
 	const fewShotExamplesForMode = fewShotExamples[mode] || [];
 	let messages = [
 		new SystemMessage(systemMessage),
@@ -64,10 +64,11 @@ export const chatStreamToReadable = (chatStreamPromise) => {
 
 export const getChatResponse = async (
 	chatHistory,
+	user,
 	model = defaultModel,
 	mode = 0
 ) => {
-	const chatStream = await chatStreamProvider(chatHistory, model, mode);
+	const chatStream = await chatStreamProvider(chatHistory, user, model, mode);
 	const resp = [];
 	for await (const chunk of chatStream) {
 		resp.push(chunk);

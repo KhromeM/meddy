@@ -38,8 +38,9 @@ const filePath = "./ai/audio/genAudio/experiments/spn/exp1";
 
 /** Used for running experiments and measuring latency */
 const TTSWithChatHistory = async (chatHistory) => {
+	let user = { userid: "testUserId", name: "Devin" };
 	let i = 1;
-	const llmStream = await chatStreamProvider(chatHistory);
+	const llmStream = await chatStreamProvider(chatHistory, user);
 	const ws = new WebSocket(
 		`wss://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}/stream-input?model_id=${TTSMulti}`
 	);
@@ -105,6 +106,7 @@ const TTSWithChatHistory = async (chatHistory) => {
  * @param {Array} chatHistory - Array of message objects representing the chat history
  * @param {WebSocket} outputSocket - WebSocket connection to the client for forwarding audio
  * @param {WriteStream} fileStream - File stream to write the audio locally
+ * @param {Object} user - User object from DB
  * @param {string} reqID - Request ID to differentiate results from different requests
  * @param {string} [lang="ENG"] - Language for text-to-speech, defaults to English
  * @returns {Promise<void>}
@@ -113,10 +115,11 @@ export const TTS_WS = async (
 	chatHistory,
 	outputSocket,
 	fileStream,
+	user,
 	reqID,
 	lang = "ENG"
 ) => {
-	const llmStream = await chatStreamProvider(chatHistory);
+	const llmStream = await chatStreamProvider(chatHistory, user);
 	const ws = new WebSocket(
 		`wss://api.elevenlabs.io/v1/text-to-speech/${
 			VOICES[lang]
@@ -142,6 +145,7 @@ export const TTS_WS = async (
  * @param {Array} chatHistory - Array of message objects representing the chat history
  * @param {Object} response - Express response object for sending server-side events
  * @param {import('fs').WriteStream} fileStream - File stream to write the audio locally
+ * @param {Object} user - User object from DB
  * @param {string} reqID - Request ID to differentiate results from different requests
  * @param {string} [lang="ENG"] - Language for text-to-speech, defaults to English
  * @returns {Promise<void>}
@@ -150,10 +154,11 @@ export const TTS_SSE = async (
 	chatHistory,
 	response,
 	fileStream,
+	user,
 	reqID,
 	lang = "ENG"
 ) => {
-	const llmStream = await chatStreamProvider(chatHistory);
+	const llmStream = await chatStreamProvider(chatHistory, user);
 	const ws = new WebSocket(
 		`wss://api.elevenlabs.io/v1/text-to-speech/${
 			VOICES[lang]

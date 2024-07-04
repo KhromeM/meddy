@@ -29,7 +29,7 @@ export function setupWebSocketHandlers(wss) {
 		await runMiddleware(req, res, userMiddleware);
 
 		const user = req._dbUser;
-		console.log("New WebSocket connection", user);
+		// console.log("New WebSocket connection", user);
 
 		ws.on("error", (error) => {
 			console.error("WebSocket error:", error);
@@ -77,7 +77,7 @@ async function handleChatMessage(ws, data, user) {
 	try {
 		const chatHistory = await db.getRecentMessagesByUserId(user.userid, 100);
 		chatHistory.push({ source: "user", text });
-		const stream = await chatStreamProvider(chatHistory, defaultModel, 0);
+		const stream = await chatStreamProvider(chatHistory, user, defaultModel, 0);
 
 		let llmResponseChunks = [];
 
