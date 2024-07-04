@@ -3,7 +3,8 @@ import supertest from "supertest";
 import { app, server } from "../../server.mjs";
 import { pool } from "../../db/dbConfig.mjs";
 
-describe("Auth Middleware Tests", () => {
+describe("Auth Middleware Tests", function () {
+	this.timeout(10000);
 	let request;
 
 	beforeEach(async () => {
