@@ -36,29 +36,7 @@ const TTSEnglish = "eleven_turbo_v2";
 const TTSMulti = "eleven_multilingual_v2";
 const filePath = "./ai/audio/genAudio/experiments/spn/exp1";
 
-const TTSWithChatHistory2 = async (chatHistory) => {
-	const fileName = filePath + `${uuid()}.mp3`;
-	const fileStream = createWriteStream(fileName);
-	const llmStream = await chatStreamProvider(chatHistory);
-	const ws = new WebSocket(
-		`wss://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}/stream-input?model_id=${TTSEnglish}`
-	);
-	const first = Date.now();
-	let prev = first;
-	streamLLMToElevenLabs(ws, llmStream, (data) => {
-		const message = JSON.parse(data);
-		if (message.audio) {
-			const audioChunk = Buffer.from(message.audio, "base64");
-			fileStream.write(audioChunk);
-		}
-		if (message.isFinal) {
-			fileStream.end();
-			ws.close();
-			console.log(`Audio file generated: ${fileName}`);
-		}
-	});
-};
-
+/** Used for running experiments and measuring latency */
 const TTSWithChatHistory = async (chatHistory) => {
 	let i = 1;
 	const llmStream = await chatStreamProvider(chatHistory);
@@ -129,10 +107,9 @@ const TTSWithChatHistory = async (chatHistory) => {
  * @param {WriteStream} fileStream - File stream to write the audio locally
  * @param {string} reqID - Request ID to differentiate results from different requests
  * @param {string} [lang="ENG"] - Language for text-to-speech, defaults to English
- * @param {number} [bufferLimit=500] - Internal buffer that stores llm chunks until they are over the buffer limit
  * @returns {Promise<void>}
  */
-export const TTS = async (
+export const TTS_WS = async (
 	chatHistory,
 	outputSocket,
 	fileStream,
@@ -147,13 +124,50 @@ export const TTS = async (
 	);
 	streamLLMToElevenLabs(ws, llmStream, (data) => {
 		const message = JSON.parse(data);
-		outputSocket.send({ ...message, reqID }); // add reqID so client can differentiate results from different requests
+		outputSocket.send({ ...message, reqID });
 		if (message.audio) {
 			const audioChunk = Buffer.from(message.audio, "base64");
 			fileStream.write(audioChunk); // write the audio to some file in the server as well to save it
 		}
 		if (message.isFinal) {
 			// dont close client connection!
+			fileStream.end(); // the file were writing to
+			ws.close(); //close elevenlabs ws connection
+		}
+	});
+};
+
+/**
+ * Converts chat history to speech using ElevenLabs API and streams the audio to the client using Server-Sent Events (SSE)
+ * @param {Array} chatHistory - Array of message objects representing the chat history
+ * @param {Object} response - Express response object for sending server-side events
+ * @param {import('fs').WriteStream} fileStream - File stream to write the audio locally
+ * @param {string} reqID - Request ID to differentiate results from different requests
+ * @param {string} [lang="ENG"] - Language for text-to-speech, defaults to English
+ * @returns {Promise<void>}
+ */
+export const TTS_SSE = async (
+	chatHistory,
+	response,
+	fileStream,
+	reqID,
+	lang = "ENG"
+) => {
+	const llmStream = await chatStreamProvider(chatHistory);
+	const ws = new WebSocket(
+		`wss://api.elevenlabs.io/v1/text-to-speech/${
+			VOICES[lang]
+		}/stream-input?model_id=${lang == "ENG" ? TTSEnglish : TTSMulti}`
+	);
+	streamLLMToElevenLabs(ws, llmStream, (data) => {
+		const message = JSON.parse(data);
+		response.write(`data: ${JSON.stringify({ ...message, reqID })}\n\n`);
+		if (message.audio) {
+			const audioChunk = Buffer.from(message.audio, "base64");
+			fileStream.write(audioChunk); // write the audio to some file in the server as well to save it
+		}
+		if (message.isFinal) {
+			response.write("data: [DONE]\n\n");
 			fileStream.end(); // the file were writing to
 			ws.close(); //close elevenlabs ws connection
 		}
@@ -216,12 +230,13 @@ async function streamLLMToElevenLabs(
 	});
 }
 
-const chatHistory = [
-	{
-		source: "user",
-		// text: "Tell me a short story about tigers! In latin american spanish and 100 words. No comments about the prompt, respond only with the story.",
-		text: "Tell me a short story about birds! Under 100 words and in spanish. Dont comment on the prompt, respond only with the story.",
-	},
-];
+// Experiment stuff:
+// const chatHistory = [
+// 	{
+// 		source: "user",
+// 		// text: "Tell me a short story about tigers! In latin american spanish and 100 words. No comments about the prompt, respond only with the story.",
+// 		text: "Tell me a short story about birds! Under 100 words and in spanish. Dont comment on the prompt, respond only with the story.",
+// 	},
+// ];
 
-TTSWithChatHistory(chatHistory);
+// TTSWithChatHistory(chatHistory);
