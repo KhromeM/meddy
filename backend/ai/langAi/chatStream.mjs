@@ -12,12 +12,13 @@ import {
 } from "./model.mjs";
 import { Readable } from "stream";
 import CONFIG from "../../config.mjs";
+import { createDefaultSystemPrompt } from "../prompts/default.mjs";
 
 let defaultModel = CONFIG.TEST
 	? groqModel // use groq for tests, other models may timeout
-	: openAIModel || anthropicModel || vertexAIModel || groqModel;
+	: openAIModel || anthropicModel || vertexAIModel || openAIModel;
 
-const systemPrompts = {}; // globals or imports
+const systemPrompts = { 0: createDefaultSystemPrompt }; // globals or imports
 const fewShotExamples = {}; // globals or imports
 
 export const chatStreamProvider = async (
@@ -25,8 +26,7 @@ export const chatStreamProvider = async (
 	model = defaultModel,
 	mode = 0
 ) => {
-	const systemMessage =
-		systemPrompts[mode] || "You are an helpful AI assistant.";
+	const systemMessage = systemPrompts[mode]("Za") || "";
 	const fewShotExamplesForMode = fewShotExamples[mode] || [];
 	let messages = [
 		new SystemMessage(systemMessage),
@@ -40,6 +40,7 @@ export const chatStreamProvider = async (
 		}),
 	];
 	messages = cleanMessages(messages);
+	// model.maxTokens = 50; //experiment
 	const chain = model.pipe(new StringOutputParser());
 	return await chain.stream(messages);
 };

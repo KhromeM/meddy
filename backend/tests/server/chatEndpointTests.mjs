@@ -3,7 +3,7 @@ import supertest from "supertest";
 import { app, server } from "../../server.mjs";
 import { pool } from "../../db/dbConfig.mjs";
 describe("Chat Endpoint Tests", function () {
-	this.timeout(5000);
+	this.timeout(10000);
 	let request = supertest(app);
 
 	beforeEach(async () => {

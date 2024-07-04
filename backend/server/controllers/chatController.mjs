@@ -1,4 +1,3 @@
-import { textGeminiWithHistory } from "../../ai/gemini.mjs";
 import {
 	getChatResponse,
 	chatStreamProvider,
