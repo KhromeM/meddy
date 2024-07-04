@@ -15,11 +15,7 @@ import CONFIG from "../../config.mjs";
 
 let defaultModel = CONFIG.TEST
 	? groqModel // use groq for tests, other models may timeout
-	: anthropicModel ||
-	  openAIModel ||
-	  anthropicModel ||
-	  vertexAIModel ||
-	  groqModel;
+	: openAIModel || anthropicModel || vertexAIModel || groqModel;
 
 const systemPrompts = {}; // globals or imports
 const fewShotExamples = {}; // globals or imports
