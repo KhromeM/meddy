@@ -40,7 +40,6 @@ export const chatStreamProvider = async (
 		}),
 	];
 	messages = cleanMessages(messages);
-	// model.maxTokens = 50; //experiment
 	const chain = model.pipe(new StringOutputParser());
 	return await chain.stream(messages);
 };
