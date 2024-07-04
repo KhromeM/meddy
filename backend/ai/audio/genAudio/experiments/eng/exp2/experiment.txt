@@ -1,0 +1,41 @@
+Params used:
+lang: ENG
+model: turbo2
+voice: OYTbf65OHHFELVut7v2H
+voice_settings: {
+					stability: 0.5,
+					similarity_boost: 0.8,
+				}
+optimize_streaming_latency: 1 // CHANGE
+chunk_length_schedule: default
+Internal buffering: 500
+llmModel: anthropicModel
+
+
+Chunk 1 took 1827 ms to receive and is 1.67 seconds long.
+Chunk 2 took 21 ms to receive and is 1.72 seconds long.
+Chunk 3 took 17 ms to receive and is 1.72 seconds long.
+Chunk 4 took 1 ms to receive and is 1.72 seconds long.
+Chunk 5 took 943 ms to receive and is 1.72 seconds long.
+Chunk 6 took 2 ms to receive and is 1.72 seconds long.
+Chunk 7 took 45 ms to receive and is 1.71 seconds long.
+Chunk 8 took 6 ms to receive and is 1.72 seconds long.
+Chunk 9 took 36 ms to receive and is 1.72 seconds long.
+Chunk 10 took 2 ms to receive and is 1.72 seconds long.
+Chunk 11 took 1191 ms to receive and is 1.73 seconds long.
+Chunk 12 took 2 ms to receive and is 1.73 seconds long.
+Chunk 13 took 26 ms to receive and is 1.70 seconds long.
+Chunk 14 took 5 ms to receive and is 1.70 seconds long.
+Chunk 15 took 77 ms to receive and is 1.73 seconds long.
+Chunk 16 took 5 ms to receive and is 1.73 seconds long.
+Chunk 17 took 40 ms to receive and is 1.69 seconds long.
+Chunk 18 took 868 ms to receive and is 1.72 seconds long.
+Chunk 19 took 2 ms to receive and is 1.72 seconds long.
+Chunk 20 took 31 ms to receive and is 1.72 seconds long.
+Chunk 21 took 7 ms to receive and is 1.72 seconds long.
+Chunk 22 took 28 ms to receive and is 1.72 seconds long.
+Chunk 23 took 1 ms to receive and is 1.72 seconds long.
+Chunk 24 took 45 ms to receive and is 0.57 seconds long.
+Took 5228 ms total to generate audio
+Total audio duration: 39.45 seconds
+Average processing speed: 7.55x realtime
