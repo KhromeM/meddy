@@ -1,4 +1,0 @@
-
-install gcloud cli
-gcloud auth login
-gcloud init
