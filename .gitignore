@@ -5,6 +5,8 @@ package-lock.json
 */backend/firebase/firebase.mjs
 backend/firebase/firebase.mjs
 *meddyai-fedbddffaf83*
+backend/ai/audio/genAudio/*.mp3
+backend/ai/audio/genAudio/**/*.mp3
 
 
 # Miscellaneous
