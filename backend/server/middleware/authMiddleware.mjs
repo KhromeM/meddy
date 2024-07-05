@@ -2,7 +2,7 @@ import { verifyUser } from "../../firebase/firebase.mjs";
 
 const authMiddleware = async (req, res, next) => {
 	try {
-		const idToken = req.body?.idToken || req.headers["idtoken"];
+		const idToken = req.idToken || req.body?.idToken || req.headers["idtoken"];
 
 		if (idToken == "dev") {
 			req._fbUser = {
@@ -23,8 +23,9 @@ const authMiddleware = async (req, res, next) => {
 	} catch (err) {
 		if (req.ws) {
 			next(err);
+		} else {
+			res.status(401).json({ message: "Authentication failed" });
 		}
-		res.status(401).json({ message: "Authentication failed" });
 	}
 };
 
