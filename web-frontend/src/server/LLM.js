@@ -1,8 +1,9 @@
 const isDev = import.meta.env.MODE;
-const serverURL = isDev
+let serverURL = isDev
 	? "http://localhost:8000/api"
 	: "https://www.trymeddy.com/api";
-
+// serverURL = "https://www.trymeddy.com/api";
+serverURL = "http://localhost:8000/api";
 export const chatLLM = async (user, message) => {
 	const idToken = await user.getIdToken(false);
 	const body = JSON.stringify({ idToken, message });
