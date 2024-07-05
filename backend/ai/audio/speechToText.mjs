@@ -1,18 +1,14 @@
-import { randomInt } from "crypto";
 import fs from "fs";
 import Groq from "groq-sdk";
+import WebSocket from "ws";
 
 const model = "whisper-large-v3";
-const filePath1EN =
-  "/home/shashank/FullStackProjects/meddy/backend/ai/audio/harvard.wav";
-const filePath2ES =
-  "/home/shashank/FullStackProjects/meddy/backend/ai/audio/spanish_elephant_story.mp3";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-let audioFileStream = fs.createReadStream(filePath2ES);
+async function transcribeSpeech(audioFilePath, language = "en") {
+  let audioFileStream = fs.createReadStream(audioFilePath);
 
-async function transcribeSpeech(language = "en") {
   const transcription = await groq.audio.transcriptions.create({
     file: audioFileStream,
     model: model,
@@ -24,7 +20,9 @@ async function transcribeSpeech(language = "en") {
   console.log(transcription.text);
 }
 
-async function translateSpeech() {
+async function translateSpeech(audioFilePath) {
+  let audioFileStream = fs.createReadStream(audioFilePath);
+
   const translation = await groq.audio.translations.create({
     file: audioFileStream,
     model: model,
@@ -35,5 +33,22 @@ async function translateSpeech() {
   console.log(translation.text);
 }
 
-// translateSpeech();
-transcribeSpeech("es");
+async function speechToText() {
+  const wss = new WebSocket.Server({ port: 8080 });
+
+  wss.on("connection", (ws) => {
+    let transcription = "";
+
+    ws.on("message", async (message) => {
+      if (message instanceof Buffer) {
+        const audioChunk = Buffer.from(message, "base64");
+        const audioFileStream = fs.createReadStream(audioChunk);
+
+        const transcription = await transcribeSpeech(audioFileStream);
+        transcription += transcription;
+      } else {
+        ws.send(transcription);
+      }
+    });
+  });
+}

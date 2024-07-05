@@ -34,5 +34,5 @@ const wss = new WebSocketServer({ server: server });
 setupWebSocketHandlers(wss);
 
 server.listen(CONFIG.port, () => {
-	console.log("Server is listening to port: " + CONFIG.port);
+  console.log("Server is listening to port: " + CONFIG.port);
 });
