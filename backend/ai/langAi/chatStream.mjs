@@ -15,7 +15,7 @@ import CONFIG from "../../config.mjs";
 import { createDefaultSystemPrompt } from "../prompts/default.mjs";
 let defaultModel = CONFIG.TEST
 	? groqModel // use groq for tests, other models may timeout
-	: openAIModel || anthropicModel || vertexAIModel || openAIModel;
+	: vertexAIModel || anthropicModel || vertexAIModel || openAIModel;
 
 const systemPrompts = { 0: createDefaultSystemPrompt }; // globals or imports
 const fewShotExamples = {}; // globals or imports
