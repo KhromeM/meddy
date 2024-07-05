@@ -13,6 +13,13 @@ import {
 import { Readable } from "stream";
 import CONFIG from "../../config.mjs";
 import { createDefaultSystemPrompt } from "../prompts/default.mjs";
+import { createFunctionCallingSystemPrompt } from "../prompts/functionCalling.mjs";
+import {
+	sampleData1,
+	sampleData2,
+	sampleData3,
+} from "../prompts/sampleData.mjs";
+
 let defaultModel = CONFIG.TEST
 	? openAIModel
 	: openAIModel || anthropicModel || vertexAIModel || openAIModel;
@@ -24,9 +31,18 @@ export const chatStreamProvider = async (
 	chatHistory,
 	user,
 	model = defaultModel,
-	mode = 0
+	mode = 1, // changed to functionCalling bot
+	data = sampleData1 // dummy data
 ) => {
-	const systemMessage = systemPrompts[mode](user.name) || "";
+	let systemMessage;
+	if (mode == 0) {
+		systemMessage = createDefaultSystemPrompt(user.name);
+	} else if (mode == 1) {
+		systemMessage = createFunctionCallingSystemPrompt(data);
+		chatHistory = chatHistory.slice(-5); // for function calling just use little chat history
+	} else {
+		systemMessage = "";
+	}
 	const fewShotExamplesForMode = fewShotExamples[mode] || [];
 	let messages = [
 		new SystemMessage(systemMessage),
