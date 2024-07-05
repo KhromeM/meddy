@@ -1,7 +1,7 @@
-const isDev = import.meta.env.MODE;
-const serverURL = isDev
-	? "http://localhost:8000/api"
-	: "https://www.trymeddy.com/api";
+const isProd = import.meta.env.PROD;
+const serverURL = isProd
+	? "https://www.trymeddy.com/api"
+	: "http://localhost:8000/api";
 
 export const chatLLM = async (user, message) => {
 	const idToken = await user.getIdToken(false);
@@ -41,6 +41,7 @@ export const chatLLMStream = async (user, message, onChunk, onComplete) => {
 
 	while (true) {
 		const { value, done } = await reader.read();
+		console.log("Got chunk");
 		if (done) break;
 
 		const chunk = decoder.decode(value);
