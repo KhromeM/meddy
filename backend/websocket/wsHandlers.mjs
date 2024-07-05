@@ -22,46 +22,61 @@ const runMiddleware = (req, res, middleware) => {
 
 export function setupWebSocketHandlers(wss) {
 	wss.on("connection", async (ws, req) => {
-		const res = {};
-		req.ws = true;
-		// runMiddleware(loggerMiddleware)
-		await runMiddleware(req, res, authMiddleware);
-		await runMiddleware(req, res, userMiddleware);
+		try {
+			const res = {};
+			req.ws = true;
+			// runMiddleware(loggerMiddleware)
+			await runMiddleware(req, res, authMiddleware);
+			await runMiddleware(req, res, userMiddleware);
 
-		const user = req._dbUser;
-		// console.log("New WebSocket connection", user);
+			const user = req._dbUser;
+			// console.log("New WebSocket connection", user);
 
-		ws.on("error", (error) => {
-			console.error("WebSocket error:", error);
-		});
+			ws.on("error", (error) => {
+				console.error("WebSocket error:", error);
+			});
 
-		ws.on("close", (code, reason) => {
-			// console.log(`WebSocket closed with code ${code} and reason: ${reason}`);
-		});
+			ws.on("close", (code, reason) => {
+				// console.log(`WebSocket closed with code ${code} and reason: ${reason}`);
+			});
 
-		ws.on("message", async (message) => {
-			try {
-				const { type, data } = JSON.parse(message);
+			ws.on("authentication", async (message) => {
+				// WIP
+				const parsedMessage = JSON.parse(message);
+				const { type, idToken, data } = parsedMessage;
+				const res = {};
+				req.ws = true;
+				// runMiddleware(loggerMiddleware)
+				await runMiddleware(req, res, authMiddleware);
+				await runMiddleware(req, res, userMiddleware);
+			});
 
-				if (!type || !data) {
-					throw new Error("Invalid message format");
+			ws.on("message", async (message) => {
+				try {
+					const { type, data } = JSON.parse(message);
+
+					if (!type || !data) {
+						throw new Error("Invalid message format");
+					}
+
+					switch (type) {
+						case "chat":
+							await handleChatMessage(ws, data, user);
+							break;
+						// Add case handlers for audio
+						default:
+							ws.send(
+								JSON.stringify({ type: "error", data: "Unknown message type" })
+							);
+					}
+				} catch (error) {
+					console.error("Error processing message:", error.message);
+					ws.send(JSON.stringify({ type: "error", data: error.message }));
 				}
-
-				switch (type) {
-					case "chat":
-						await handleChatMessage(ws, data, user);
-						break;
-					// Add case handlers for audio
-					default:
-						ws.send(
-							JSON.stringify({ type: "error", data: "Unknown message type" })
-						);
-				}
-			} catch (error) {
-				console.error("Error processing message:", error.message);
-				ws.send(JSON.stringify({ type: "error", data: error.message }));
-			}
-		});
+			});
+		} catch (err) {
+			console.error("WebSocket error:", err);
+		}
 	});
 }
 
