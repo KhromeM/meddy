@@ -5,6 +5,7 @@ import usedMiddleware from "../server/middleware/authMiddleware.mjs";
 import db from "../db/db.mjs";
 import userMiddleware from "../server/middleware/userMiddleware.mjs";
 import loggerMiddleware from "../server/middleware/loggerMiddleware.mjs";
+import CONFIG from "../config.mjs";
 
 const defaultModel = vertexAIModel;
 
@@ -23,32 +24,15 @@ const runMiddleware = (req, res, middleware) => {
 export function setupWebSocketHandlers(wss) {
 	wss.on("connection", async (ws, req) => {
 		try {
-			const res = {};
-			req.ws = true;
-			// runMiddleware(loggerMiddleware)
-			await runMiddleware(req, res, authMiddleware);
-			await runMiddleware(req, res, userMiddleware);
-
-			const user = req._dbUser;
-			// console.log("New WebSocket connection", user);
-
+			let user = null;
 			ws.on("error", (error) => {
+				if (CONFIG.TEST) {
+					return;
+				}
 				console.error("WebSocket error:", error);
 			});
-
 			ws.on("close", (code, reason) => {
 				// console.log(`WebSocket closed with code ${code} and reason: ${reason}`);
-			});
-
-			ws.on("authentication", async (message) => {
-				// WIP
-				const parsedMessage = JSON.parse(message);
-				const { type, idToken, data } = parsedMessage;
-				const res = {};
-				req.ws = true;
-				// runMiddleware(loggerMiddleware)
-				await runMiddleware(req, res, authMiddleware);
-				await runMiddleware(req, res, userMiddleware);
 			});
 
 			ws.on("message", async (message) => {
@@ -58,9 +42,23 @@ export function setupWebSocketHandlers(wss) {
 					if (!type || !data) {
 						throw new Error("Invalid message format");
 					}
-
 					switch (type) {
+						case "auth":
+							const { idToken } = data;
+							const res = {};
+							req.ws = true;
+							req.idToken = idToken;
+							// runMiddleware(loggerMiddleware)
+							await runMiddleware(req, res, authMiddleware);
+							await runMiddleware(req, res, userMiddleware);
+							user = req._dbUser;
+							req.auth = true;
+							ws.send(JSON.stringify({ type: "auth" }));
+							break;
 						case "chat":
+							if (!req.auth) {
+								throw new Error("WS connection not authenticated");
+							}
 							await handleChatMessage(ws, data, user);
 							break;
 						// Add case handlers for audio
@@ -82,7 +80,6 @@ export function setupWebSocketHandlers(wss) {
 
 async function handleChatMessage(ws, data, user) {
 	const { text } = data;
-
 	if (!text) {
 		ws.send(
 			JSON.stringify({ type: "error", data: "Text message is required" })

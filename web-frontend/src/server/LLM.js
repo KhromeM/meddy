@@ -64,28 +64,66 @@ export const chatLLMStream = async (user, message, onChunk, onComplete) => {
 	}
 };
 
-export const chatLLMStreamWS = async (user, message, onChunk, onComplete) => {
-	const serverURL = isDev
-		? "ws://localhost:8000/api"
-		: "ws://www.trymeddy.com/api";
+const wsURL = isDev ? "ws://localhost:8000/api" : "ws://www.trymeddy.com/api";
+let socket = null;
+let socketAuthState = false;
 
-	const socket = new WebSocket(serverURL);
-	const requestId = uuidv4();
+export const openWebSocket = async (user) => {
+	if (socket && socket.readyState === WebSocket.OPEN) {
+		// already open socket
+		socket.close();
+		socketAuthState = false;
+	}
+	if (!user) return;
 
+	socket = new WebSocket(wsURL);
 	socket.onopen = async () => {
-		await new Promise((resolve) => setTimeout(resolve, 100)); // the server needs a bit of time to do auth even after sending "open"
 		const idToken = await user.getIdToken(false);
 		socket.send(
 			JSON.stringify({
-				type: "chat",
-				idToken,
-				data: {
-					text: message.text,
-					requestId,
-				},
+				type: "auth",
+				data: { idToken },
 			})
 		);
 	};
+
+	return await new Promise((resolve) => {
+		socket.onmessage = (event) => {
+			const response = JSON.parse(event.data);
+			if (response.type === "auth") {
+				socketAuthState = true;
+				resolve(true);
+			}
+		};
+		socket.onerror = (error) => {
+			console.error("WebSocket error:", error);
+			resolve(false);
+		};
+
+		socket.onclose = () => {
+			resolve(false);
+			socket.close();
+		};
+	});
+};
+
+export const chatLLMStreamWS = async (message, onChunk, onComplete) => {
+	if (!socket || socket.readyState !== WebSocket.OPEN || !socketAuthState) {
+		console.error("WebSocket is not open or not authenticated");
+		onComplete("WebSocket is not ready. Please try again.");
+		return;
+	}
+	const requestId = uuidv4(); // helped the server track different ws message streams
+	console.log("MESSAGE", message);
+	socket.send(
+		JSON.stringify({
+			type: "chat",
+			data: {
+				text: message.text,
+				requestId,
+			},
+		})
+	);
 
 	socket.onmessage = (event) => {
 		const response = JSON.parse(event.data);
@@ -94,21 +132,11 @@ export const chatLLMStreamWS = async (user, message, onChunk, onComplete) => {
 			onChunk(response.data);
 		} else if (response.type === "chat_end") {
 			onComplete();
-			socket.close();
 		}
 	};
 
 	socket.onerror = (error) => {
 		console.error("WebSocket error:", error);
-		onComplete();
-	};
-
-	socket.onclose = () => {
-		console.log("WebSocket connection closed");
-	};
-	return () => {
-		if (socket.readyState === WebSocket.OPEN) {
-			socket.close();
-		}
+		onComplete("Websocket Error");
 	};
 };
