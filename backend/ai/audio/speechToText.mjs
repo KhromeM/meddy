@@ -3,7 +3,6 @@ import fs from "fs";
 import Groq from "groq-sdk";
 
 const model = "whisper-large-v3";
-
 const filePath1EN =
   "/home/shashank/FullStackProjects/meddy/backend/ai/audio/harvard.wav";
 const filePath2ES =
@@ -13,13 +12,13 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 let audioFileStream = fs.createReadStream(filePath2ES);
 
-async function transcribeSpeech() {
+async function transcribeSpeech(language = "en") {
   const transcription = await groq.audio.transcriptions.create({
     file: audioFileStream,
     model: model,
     prompt: "Specify context or spelling",
     response_format: "json",
-    // language: "es", // Optional
+    language: language, // Optional
     temperature: 0.0,
   });
   console.log(transcription.text);
@@ -36,5 +35,5 @@ async function translateSpeech() {
   console.log(translation.text);
 }
 
-transcribeSpeech();
 // translateSpeech();
+transcribeSpeech("es");
