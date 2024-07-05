@@ -41,6 +41,7 @@ export const chatLLMStream = async (user, message, onChunk, onComplete) => {
 
 	while (true) {
 		const { value, done } = await reader.read();
+		console.log("Got chunk");
 		if (done) break;
 
 		const chunk = decoder.decode(value);
