@@ -3,7 +3,7 @@ import { Box, VStack, Heading } from "@chakra-ui/react";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import { useAuth } from "../firebase/AuthService.jsx";
-import { chatLLM, chatLLMStream } from "../server/LLM.js";
+import { chatLLM, chatLLMStream, chatLLMStreamWS } from "../server/LLM.js";
 
 const Chat = () => {
 	const [messages, setMessages] = useState([]);

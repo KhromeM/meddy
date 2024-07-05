@@ -1,4 +1,6 @@
 const isDev = import.meta.env.MODE;
+import { v4 as uuidv4 } from "uuid";
+
 const serverURL = isDev
 	? "http://localhost:8000/api"
 	: "https://www.trymeddy.com/api";
@@ -19,8 +21,6 @@ export const chatLLM = async (user, message) => {
 	console.log(response);
 	return response.text || "";
 };
-
-// In src/server/LLM.js
 
 export const chatLLMStream = async (user, message, onChunk, onComplete) => {
 	const idToken = await user.getIdToken(false);
@@ -62,4 +62,53 @@ export const chatLLMStream = async (user, message, onChunk, onComplete) => {
 			}
 		}
 	}
+};
+
+export const chatLLMStreamWS = async (user, message, onChunk, onComplete) => {
+	const serverURL = isDev
+		? "ws://localhost:8000/api"
+		: "ws://www.trymeddy.com/api";
+
+	const socket = new WebSocket(serverURL);
+	const requestId = uuidv4();
+
+	socket.onopen = async () => {
+		await new Promise((resolve) => setTimeout(resolve, 100)); // the server needs a bit of time to do auth even after sending "open"
+		const idToken = await user.getIdToken(false);
+		socket.send(
+			JSON.stringify({
+				type: "chat",
+				idToken,
+				data: {
+					text: message.text,
+					requestId,
+				},
+			})
+		);
+	};
+
+	socket.onmessage = (event) => {
+		const response = JSON.parse(event.data);
+
+		if (response.type === "chat_response") {
+			onChunk(response.data);
+		} else if (response.type === "chat_end") {
+			onComplete();
+			socket.close();
+		}
+	};
+
+	socket.onerror = (error) => {
+		console.error("WebSocket error:", error);
+		onComplete();
+	};
+
+	socket.onclose = () => {
+		console.log("WebSocket connection closed");
+	};
+	return () => {
+		if (socket.readyState === WebSocket.OPEN) {
+			socket.close();
+		}
+	};
 };
