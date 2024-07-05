@@ -1,7 +1,7 @@
 import { Box, VStack } from "@chakra-ui/react";
 import Message from "./Message";
 
-const MessageList = ({ messages, messagesEndRef }) => {
+const MessageList = ({ messages, messagesEndRef, inProgress }) => {
 	return (
 		<Box
 			className="message-list"
@@ -14,7 +14,13 @@ const MessageList = ({ messages, messagesEndRef }) => {
 		>
 			<VStack spacing={4} align="stretch">
 				{messages.map((msg, index) => (
-					<Message key={index} message={msg} />
+					<Message
+						key={index}
+						message={msg}
+						isStreaming={
+							index === messages.length - 1 && !msg.isUser && inProgress
+						}
+					/>
 				))}
 				<div ref={messagesEndRef}></div>
 			</VStack>
