@@ -15,7 +15,7 @@ import CONFIG from "../../config.mjs";
 import { createDefaultSystemPrompt } from "../prompts/default.mjs";
 let defaultModel = CONFIG.TEST
 	? vertexAIModel
-	: openAIModel || anthropicModel || vertexAIModel || openAIModel || groqModel;
+	: vertexAIModel || anthropicModel || groqModel || openAIModel;
 
 const systemPrompts = { 0: createDefaultSystemPrompt }; // globals or imports
 const fewShotExamples = {}; // globals or imports
