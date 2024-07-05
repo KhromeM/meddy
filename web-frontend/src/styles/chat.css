@@ -23,3 +23,15 @@
 	background-color: #edf2f7;
 	align-self: flex-start;
 }
+
+@keyframes blink {
+	0% {
+		opacity: 0.2;
+	}
+	20% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0.2;
+	}
+}

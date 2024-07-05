@@ -1,6 +1,6 @@
 import { Box, Text, Image } from "@chakra-ui/react";
 
-const Message = ({ message }) => {
+const Message = ({ message, isStreaming }) => {
 	const { text, image, isUser } = message;
 
 	return (
@@ -14,8 +14,17 @@ const Message = ({ message }) => {
 			my={2}
 			boxShadow="md"
 		>
-			{text && <Text>{text}</Text>}
+			{text && (
+				<Text transition="all 0.1s ease-out" opacity={isStreaming ? 0.7 : 1}>
+					{text}
+				</Text>
+			)}
 			{image && <Image src={image} alt="chat" mt={2} borderRadius="md" />}
+			{isStreaming && (
+				<Text as="span" animation="blink 1s infinite">
+					...
+				</Text>
+			)}
 		</Box>
 	);
 };

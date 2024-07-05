@@ -16,7 +16,7 @@ export const app = express();
 app.use(cors());
 app.use(json());
 
-// app.use(loggerMiddleware);
+app.use(loggerMiddleware);
 app.use(authMiddleware);
 app.use(userMiddleware);
 
