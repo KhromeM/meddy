@@ -1,6 +1,13 @@
 const errorHandler = (err, req, res, next) => {
-	console.error(err.stack);
-	res.status(500).json({ message: "An internal server error occurred" });
+	if (req.ws) {
+		if (req.ws.readyState === WebSocket.OPEN) {
+			req.ws.send(
+				JSON.stringify({ type: "error", message: "Internal server error" })
+			);
+		}
+	} else {
+		res.status(500).json({ message: "Internal server error" });
+	}
 };
 
 export default errorHandler;

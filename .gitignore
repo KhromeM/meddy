@@ -7,6 +7,8 @@ backend/firebase/firebase.mjs
 *meddyai-fedbddffaf83*
 backend/ai/audio/genAudio/*.mp3
 backend/ai/audio/genAudio/**/*.mp3
+web-frontend/package-lock.json
+web-frontend/dist/
 
 
 # Miscellaneous
