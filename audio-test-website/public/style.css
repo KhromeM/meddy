@@ -1,0 +1,159 @@
+body {
+	font-family: "Roboto", sans-serif;
+	background: #2c3e50;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	color: #ecf0f1;
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	max-width: 800px;
+}
+
+.mic-container {
+	margin-bottom: 2rem;
+}
+
+.object {
+	position: relative;
+	width: 150px;
+	height: 150px;
+}
+
+.outline {
+	display: none;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	border: 4px solid #ecf0f1;
+	opacity: 0;
+}
+
+.recording .outline {
+	display: block;
+	animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+	0% {
+		transform: translate(-50%, -50%) scale(0.9);
+		opacity: 0.7;
+	}
+	70% {
+		transform: translate(-50%, -50%) scale(1.1);
+		opacity: 0;
+	}
+	100% {
+		transform: translate(-50%, -50%) scale(0.9);
+		opacity: 0;
+	}
+}
+
+#delayed {
+	animation-delay: 1s;
+}
+
+.button {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 120px;
+	height: 120px;
+	border-radius: 50%;
+	background: #3498db;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.recording .button {
+	background: #e74c3c;
+}
+
+#circlein {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100px;
+	height: 100px;
+	background: #2980b9;
+}
+
+.recording #circlein {
+	background: #c0392b;
+}
+
+.mic-icon {
+	width: 50px;
+	height: 50px;
+	color: #ecf0f1;
+}
+
+.captions-container {
+	width: 100%;
+	background: rgba(236, 240, 241, 0.1);
+	border-radius: 10px;
+	padding: 1rem;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.captions {
+	height: 300px;
+	overflow-y: auto;
+	word-wrap: break-word;
+	font-size: 1rem;
+	line-height: 1.5;
+}
+
+.captions::-webkit-scrollbar {
+	width: 8px;
+}
+
+.captions::-webkit-scrollbar-track {
+	background: rgba(236, 240, 241, 0.1);
+}
+
+.captions::-webkit-scrollbar-thumb {
+	background: #7f8c8d;
+	border-radius: 4px;
+}
+
+.captions::-webkit-scrollbar-thumb:hover {
+	background: #95a5a6;
+}
+
+.message {
+	margin-bottom: 1rem;
+	padding: 0.5rem;
+	border-radius: 5px;
+}
+
+.message.llm {
+	background: rgba(52, 152, 219, 0.2);
+}
+
+.message.user {
+	background: rgba(46, 204, 113, 0.2);
+}
+
+.message p {
+	margin: 0;
+}
+
+.message .label {
+	font-weight: bold;
+	margin-bottom: 0.25rem;
+}

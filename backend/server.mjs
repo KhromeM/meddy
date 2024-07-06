@@ -10,7 +10,9 @@ import authMiddleware from "./server/middleware/authMiddleware.mjs";
 import loggerMiddleware from "./server/middleware/loggerMiddleware.mjs";
 import userMiddleware from "./server/middleware/userMiddleware.mjs";
 import errorHandler from "./server/middleware/errorHandler.mjs";
-import url from "url";
+import { setupErrorHandlers } from "./extra/errorHandlers.mjs";
+
+setupErrorHandlers();
 
 export const app = express();
 app.use(cors());

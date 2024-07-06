@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Deepgram Test</title>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap"
+			rel="stylesheet"
+		/>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<div class="container">
+			<select id="language-select">
+				<option value="en">English</option>
+				<option value="es">Spanish</option>
+			</select>
+			<div class="mic-container">
+				<div class="object" id="record">
+					<div class="outline"></div>
+					<div class="outline" id="delayed"></div>
+					<div class="button"></div>
+					<div class="button" id="circlein">
+						<svg
+							class="mic-icon"
+							viewBox="0 0 24 24"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								d="M12 14C13.66 14 15 12.66 15 11V5C15 3.34 13.66 2 12 2C10.34 2 9 3.34 9 5V11C9 12.66 10.34 14 12 14Z"
+								fill="currentColor"
+							/>
+							<path
+								d="M17 11C17 13.76 14.76 16 12 16C9.24 16 7 13.76 7 11H5C5 14.53 7.61 17.43 11 17.92V21H13V17.92C16.39 17.43 19 14.53 19 11H17Z"
+								fill="currentColor"
+							/>
+						</svg>
+					</div>
+				</div>
+			</div>
+			<div class="captions-container">
+				<div class="captions" id="captions"></div>
+			</div>
+		</div>
+		<script src="client.js"></script>
+	</body>
+</html>

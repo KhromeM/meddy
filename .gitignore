@@ -9,6 +9,7 @@ backend/ai/audio/genAudio/*.mp3
 backend/ai/audio/genAudio/**/*.mp3
 web-frontend/package-lock.json
 web-frontend/dist/
+**/genAudio/*
 
 
 # Miscellaneous
