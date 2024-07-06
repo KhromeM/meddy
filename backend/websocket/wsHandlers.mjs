@@ -133,10 +133,8 @@ async function handleChatMessage(ws, data, user) {
 
 async function handleAudioMessage(ws, req, data) {
 	const { audioChunk, reqId, isComplete, lang } = data;
-	console.log("Complete: ", isComplete);
 	let dg = req.dg;
 	if (isComplete && dg) {
-		console.log("Called dg.requestClose()");
 		clearTimeout(req.dgTimeout);
 		dg.requestClose();
 	}
@@ -154,7 +152,6 @@ async function handleAudioMessage(ws, req, data) {
 			});
 
 			dg.addListener(LiveTranscriptionEvents.Close, () => {
-				console.log("now closing");
 				req.transcript = req.partialTranscript.join(" ");
 				ws.send(
 					JSON.stringify({
@@ -199,7 +196,7 @@ async function handleAudioMessage(ws, req, data) {
 	}
 	clearTimeout(req.dgTimeout);
 	req.dgTimeout = setTimeout(() => {
-		console.log("Audio stream timeout. Closing Deepgram connection.");
+		// console.log("Audio stream timeout. Closing Deepgram connection.");
 		dg.requestClose();
 	}, 30000); // reset timeout clock
 
