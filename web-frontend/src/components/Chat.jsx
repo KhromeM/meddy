@@ -9,12 +9,14 @@ import {
 	chatLLMStreamWS,
 	openWebSocket,
 } from "../server/LLM.js";
+import AudioRecorder from "./AudioRecorder";
 
 const Chat = () => {
 	const [messages, setMessages] = useState([]);
 	const [inProgress, setInProgress] = useState(false);
 	const responseBufferRef = useRef("");
 	const updateIntervalRef = useRef(null);
+	const [ws, setWs] = useState(null);
 	const { user } = useAuth();
 
 	const messagesEndRef = useRef(null);
@@ -32,6 +34,33 @@ const Chat = () => {
 			await openWebSocket(user);
 		})();
 	}, [user]);
+
+	useEffect(() => {
+		const socket = new WebSocket("ws://localhost:8000/api");
+		setWs(socket);
+
+		socket.onopen = () => {
+			console.log("WebSocket connected");
+			socket.send(
+				JSON.stringify({
+					type: "auth",
+					data: {
+						idToken: "dev",
+					},
+				})
+			);
+		};
+
+		socket.onmessage = (event) => {
+			const message = JSON.parse(event.data);
+			// Handle different message types (chat_response, partial_transcript, etc.)
+			console.log("Received:", message);
+		};
+
+		return () => {
+			socket.close();
+		};
+	}, []);
 
 	const messageLLM = async (message) => {
 		setInProgress(true);
@@ -88,6 +117,7 @@ const Chat = () => {
 				/>
 				<MessageInput onSend={addMessageFromUser} inProgress={inProgress} />
 			</VStack>
+			{ws && <AudioRecorder ws={ws} />}
 		</Box>
 	);
 };

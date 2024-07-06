@@ -6,7 +6,8 @@ import db from "../db/db.mjs";
 import userMiddleware from "../server/middleware/userMiddleware.mjs";
 import loggerMiddleware from "../server/middleware/loggerMiddleware.mjs";
 import CONFIG from "../config.mjs";
-
+import { createDGSocket } from "../ai/audio/speechToTextDeepgram.mjs";
+import { LiveTranscriptionEvents } from "@deepgram/sdk";
 const defaultModel = vertexAIModel;
 
 const runMiddleware = (req, res, middleware) => {
@@ -25,6 +26,8 @@ export function setupWebSocketHandlers(wss) {
 	wss.on("connection", async (ws, req) => {
 		try {
 			let user = null;
+			req.partialTranscript = []; // use as state to build up partial transcriptions
+			req.transcript = ""; // save completed transcriptions here
 			ws.on("error", (error) => {
 				if (CONFIG.TEST) {
 					return;
@@ -32,7 +35,10 @@ export function setupWebSocketHandlers(wss) {
 				console.error("WebSocket error:", error);
 			});
 			ws.on("close", (code, reason) => {
-				// console.log(`WebSocket closed with code ${code} and reason: ${reason}`);
+				if (req.dg) {
+					req.dg.requestClose();
+				}
+				clearTimeout(req.dgTimeout);
 			});
 
 			ws.on("message", async (message) => {
@@ -61,6 +67,12 @@ export function setupWebSocketHandlers(wss) {
 							}
 							await handleChatMessage(ws, data, user);
 							break;
+						case "audio":
+							if (!req.auth) {
+								throw new Error("WS connection not authenticated");
+							}
+							await handleAudioMessage(ws, req, data, user);
+
 						// Add case handlers for audio
 						default:
 							ws.send(
@@ -89,7 +101,126 @@ async function handleChatMessage(ws, data, user) {
 	try {
 		const chatHistory = await db.getRecentMessagesByUserId(user.userid, 100);
 		chatHistory.push({ source: "user", text });
-		const stream = await chatStreamProvider(chatHistory, user, defaultModel, 0);
+		const stream = await chatStreamProvider(chatHistory, user);
+
+		let llmResponseChunks = [];
+
+		for await (const chunk of stream) {
+			llmResponseChunks.push(chunk);
+			ws.send(JSON.stringify({ type: "chat_response", data: chunk }));
+		}
+
+		const llmResponse = llmResponseChunks.join("");
+
+		await db.createMessage(user.userid, "user", text);
+		await db.createMessage(user.userid, "llm", llmResponse);
+
+		ws.send(JSON.stringify({ type: "chat_end" }));
+	} catch (error) {
+		console.error("Error in chat stream:", error.message);
+		ws.send(
+			JSON.stringify({ type: "error", data: "Error processing chat message" })
+		);
+	}
+}
+
+async function handleAudioMessage(ws, req, data) {
+	const { audioChunk, reqId, isComplete } = data;
+	console.log(audioChunk);
+	if (!audioChunk) return;
+	let dg = req.dg;
+	if (!dg || dg.getReadyState() !== 1) {
+		try {
+			req.dg = await createDGSocket();
+			dg = req.dg;
+			req.partialTranscript = [];
+
+			dg.addListener(LiveTranscriptionEvents.Transcript, (data) => {
+				const text = data.channel.alternatives[0].transcript;
+				req.partialTranscript.push(text);
+				// Optionally send partial transcription to client
+				ws.send(JSON.stringify({ type: "partial_transcript", data: text }));
+			});
+
+			dg.addListener(LiveTranscriptionEvents.Close, () => {
+				req.transcript = req.partialTranscript.join(" ");
+				ws.send(
+					JSON.stringify({
+						type: "transcription_complete",
+						data: req.transcript,
+					})
+				);
+				req.partialTranscript = [];
+				req.dg = null;
+				useTranscription(ws, req);
+			});
+
+			dg.addListener(LiveTranscriptionEvents.Error, (err) => {
+				console.error("Deepgram error: ", err);
+				ws.send(
+					JSON.stringify({
+						type: "error",
+						data: "Transcription error occurred",
+					})
+				);
+			});
+			req.dgTimeout = setTimeout(() => {
+				console.log("Audio stream timeout. Closing Deepgram connection.");
+				dg.requestClose();
+			}, 30000);
+		} catch (error) {
+			console.error("Error creating Deepgram socket:", error);
+			ws.send(
+				JSON.stringify({
+					type: "error",
+					data: "Failed to initialize transcription service",
+				})
+			);
+			return;
+		}
+	}
+	if (dg.getReadyState() !== 1) {
+		ws.send(
+			JSON.stringify({ type: "error", data: "Transcription service not ready" })
+		);
+		return;
+	}
+	clearTimeout(req.dgTimeout);
+	req.dgTimeout = setTimeout(() => {
+		console.log("Audio stream timeout. Closing Deepgram connection.");
+		dg.requestClose();
+	}, 30000); // reset timeout clock
+
+	try {
+		let audioBuffer;
+		if (audioChunk instanceof ArrayBuffer) {
+			audioBuffer = audioChunk;
+		} else if (audioChunk instanceof Blob) {
+			audioBuffer = await audioChunk.arrayBuffer();
+		} else if (typeof audioChunk === "string") {
+			audioBuffer = Buffer.from(audioChunk, "base64");
+		} else {
+			throw new Error("Unsupported audio format");
+		}
+		dg.send(audioBuffer);
+		if (isComplete) {
+			clearTimeout(req.dgTimeout);
+			dg.requestClose();
+		}
+	} catch (error) {
+		console.error("Error sending audio to Deepgram:", error);
+		ws.send(JSON.stringify({ type: "error", data: "Error processing audio" }));
+	}
+}
+
+async function useTranscription(ws, req) {
+	const text = req.transcript;
+	const user = req._dbUser;
+	try {
+		const chatHistory = await db.getRecentMessagesByUserId(user.userid, 100);
+		chatHistory.push({ source: "user", text });
+		req.transcript = "";
+		const stream = await chatStreamProvider(chatHistory, user);
 
 		let llmResponseChunks = [];
 
