@@ -14,7 +14,7 @@ import { Readable } from "stream";
 import CONFIG from "../../config.mjs";
 import { createDefaultSystemPrompt } from "../prompts/default.mjs";
 let defaultModel = CONFIG.TEST
-	? openAIModel
+	? groqModel
 	: openAIModel || anthropicModel || vertexAIModel || openAIModel;
 
 const systemPrompts = { 0: createDefaultSystemPrompt }; // globals or imports

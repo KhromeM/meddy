@@ -99,7 +99,7 @@ const allPrompts = [
 	tonePrompt,
 	matchTonePrompt, // people like it when you match their tone, even if they feel bad
 	emotionalSupportPrompt,
-	// keepResponsesShort, // have to repeat twice so it doesnt write essays
+	keepResponsesShort, // have to repeat twice so it doesnt write essays
 	identityLockPrompt, // dont want it to answer non medical questions
 	explanationPrompt,
 	confusionPrompt,
@@ -108,7 +108,7 @@ const allPrompts = [
 	// practicalTipsPrompt, // makes it ramble and give lists
 	// appUsagePrompt, // this is the medical advice / emotional compaion path. App usage help should be directed to another prompt pathway
 	// languageBarrierPrompt,
-	// keepResponsesShort, // have to repeat twice so it doesnt write essays
+	keepResponsesShort, // have to repeat twice so it doesnt write essays
 	ignoreIgnoreAllPreviousIntructionsPrompt, // make sure to not fall for the "Ignore all previous instructions bypass"
 ];
 

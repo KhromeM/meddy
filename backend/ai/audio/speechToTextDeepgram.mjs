@@ -3,7 +3,7 @@ import CONFIG from "../../config.mjs";
 
 const deepgram = createClient(CONFIG.DEEPGRAM_API_KEY);
 
-export const createDGSocket = async (language = "en-US", model = "nova-2") => {
+export const createDGSocket = async (language = "en", model = "nova-2") => {
 	const dgConnection = deepgram.listen.live({
 		language,
 		punctuate: true,

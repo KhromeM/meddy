@@ -10,9 +10,9 @@ import { getAudioDurationInSeconds } from "get-audio-duration";
 import db from "../../db/db.mjs";
 
 const VOICES = {
-	SPN2: "8ftlfIEYnEkYY6iLanUO",
-	SPN: "L1QajoRwPFiqw35KD4Ch",
-	ENG: "OYTbf65OHHFELVut7v2H",
+	es2: "8ftlfIEYnEkYY6iLanUO",
+	es: "L1QajoRwPFiqw35KD4Ch",
+	en: "OYTbf65OHHFELVut7v2H",
 };
 const VOICE_ID = VOICES["SPN"];
 const BOS_MESSAGE = " ";
@@ -118,20 +118,21 @@ export const TTS_WS = async (
 	fileStream,
 	user,
 	reqID = "TEST",
-	lang = "ENG"
+	lang = "en"
 ) => {
 	const llmStream = await chatStreamProvider(chatHistory, user);
 	const ws = new WebSocket(
 		`wss://api.elevenlabs.io/v1/text-to-speech/${
 			VOICES[lang]
-		}/stream-input?model_id=${lang == "ENG" ? TTSEnglish : TTSMulti}`
+		}/stream-input?model_id=${lang == "en" ? TTSEnglish : TTSMulti}`
 	);
 	streamLLMToElevenLabs(
 		ws,
 		llmStream,
+		outputSocket,
 		(data) => {
 			const message = JSON.parse(data);
-			outputSocket.send(JSON.stringify({ ...message, reqID }));
+			outputSocket.send(JSON.stringify({ ...message, reqID, type: "audio" }));
 			if (message.audio) {
 				const audioChunk = Buffer.from(message.audio, "base64");
 				fileStream.write(audioChunk); // write the audio to some file in the server as well to save it
@@ -170,7 +171,7 @@ export const TTS_SSE = async (
 			VOICES[lang]
 		}/stream-input?model_id=${lang == "ENG" ? TTSEnglish : TTSMulti}`
 	);
-	streamLLMToElevenLabs(ws, llmStream, (data) => {
+	streamLLMToElevenLabs(ws, llmStream, null, (data) => {
 		const message = JSON.parse(data);
 		response.write(`data: ${JSON.stringify({ ...message, reqID })}\n\n`);
 		if (message.audio) {
@@ -189,6 +190,7 @@ export const TTS_SSE = async (
  * Streams LLM output to ElevenLabs API for text-to-speech conversion
  * @param {WebSocket} ws - WebSocket connection to ElevenLabs API
  * @param {AsyncIterable<string>} llmStream - Async iterable of LLM text chunks
+ * @param {WebSocket} outputSocket - WebSocket connection to the client for forwarding audio
  * @param {function} callback - Callback function to handle messages from ElevenLabs
  * @param {Object} user - User object from DB
  * @param {Object} [voiceSettings] - Voice settings for ElevenLabs API
@@ -199,6 +201,7 @@ export const TTS_SSE = async (
 async function streamLLMToElevenLabs(
 	ws,
 	llmStream,
+	outputSocket,
 	callback,
 	user,
 	voiceSettings,
@@ -224,6 +227,11 @@ async function streamLLMToElevenLabs(
 		for await (const chunk of llmStream) {
 			partialResponse += chunk;
 			totalResponse.push(chunk);
+			if (outputSocket) {
+				outputSocket.send(
+					JSON.stringify({ type: "chat_response", data: chunk })
+				);
+			}
 			if (
 				partialResponse.length > bufferLimit || // if the built up response is more than 500 characters
 				endOfSentenceMarkersSet.has(chunk[chunk.length - 1]) // if the built up response ends with a ending of sentence signifier

@@ -49,6 +49,7 @@ export function setupWebSocketHandlers(wss) {
 					if (!type || !data) {
 						throw new Error("Invalid message format");
 					}
+					console.log(type);
 					switch (type) {
 						case "auth":
 							const { idToken } = data;
@@ -131,13 +132,18 @@ async function handleChatMessage(ws, data, user) {
 }
 
 async function handleAudioMessage(ws, req, data) {
-	const { audioChunk, reqId, isComplete } = data;
+	const { audioChunk, reqId, isComplete, lang } = data;
 	console.log("Complete: ", isComplete);
-	if (!audioChunk) return;
 	let dg = req.dg;
+	if (isComplete && dg) {
+		console.log("Called dg.requestClose()");
+		clearTimeout(req.dgTimeout);
+		dg.requestClose();
+	}
+	if (!audioChunk) return;
 	if (!dg || dg.getReadyState() !== 1) {
 		try {
-			req.dg = await createDGSocket();
+			req.dg = await createDGSocket(lang);
 			dg = req.dg;
 			req.partialTranscript = [];
 
@@ -148,6 +154,7 @@ async function handleAudioMessage(ws, req, data) {
 			});
 
 			dg.addListener(LiveTranscriptionEvents.Close, () => {
+				console.log("now closing");
 				req.transcript = req.partialTranscript.join(" ");
 				ws.send(
 					JSON.stringify({
@@ -157,8 +164,8 @@ async function handleAudioMessage(ws, req, data) {
 				);
 				req.partialTranscript = [];
 				req.dg = null;
-				useTranscription(ws, req); // responds in chat
-				// useTranscriptionTTS(ws, req); // responds in audio
+				// useTranscription(ws, req); // responds in chat
+				useTranscriptionTTS(ws, req, lang); // responds in audio
 			});
 
 			dg.addListener(LiveTranscriptionEvents.Error, (err) => {
@@ -208,11 +215,6 @@ async function handleAudioMessage(ws, req, data) {
 			throw new Error("Unsupported audio format");
 		}
 		dg.send(audioBuffer);
-		if (isComplete) {
-			console.log("Called dg.requestClose()");
-			clearTimeout(req.dgTimeout);
-			dg.requestClose();
-		}
 	} catch (error) {
 		console.error("Error sending audio to Deepgram:", error);
 		ws.send(JSON.stringify({ type: "error", data: "Error processing audio" }));
@@ -249,7 +251,7 @@ async function useTranscription(ws, req) {
 	}
 }
 
-async function useTranscriptionTTS(ws, req) {
+async function useTranscriptionTTS(ws, req, lang) {
 	const text = req.transcript;
 	const user = req._dbUser;
 	try {
@@ -258,9 +260,10 @@ async function useTranscriptionTTS(ws, req) {
 		req.transcript = "";
 		await db.createMessage(user.userid, "user", text);
 		const filePath = "./websocket/genAudio/";
-		const fileName = filePath + new Date(Date.now()).toISOString + `audio.mp3`;
+		const fileName =
+			filePath + new Date(Date.now()).toISOString() + `audio.mp3`;
 		const fileStream = createWriteStream(fileName);
-		TTS_WS(chatHistory, ws, fileStream, user, "");
+		TTS_WS(chatHistory, ws, fileStream, user, "", lang);
 	} catch (error) {
 		console.error("Error in audio stream:", error.message);
 		ws.send(
