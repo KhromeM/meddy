@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'my_home_page.dart';
+import '../pages/my_home_page.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -9,7 +9,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.deepOrange),
         textTheme: const TextTheme(
           headlineSmall: TextStyle(
             color: Colors.white,

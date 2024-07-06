@@ -36,7 +36,8 @@ class _MyHomePageState extends State<MyHomePage> {
         page = ChatPage();
         break;
       default:
-        throw UnimplementedError('no widget for $selectedIndex');
+        throw UnimplementedError(
+            'no widget for $selectedIndex');
     }
 
     return Scaffold(
@@ -55,10 +56,12 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
+                color:
+                    Theme.of(context).colorScheme.primary,
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
                 children: [
                   Text(
                     'User Profile',
@@ -140,7 +143,8 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Icon(Icons.mic_none),
             )
           : null,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.centerDocked,
     );
   }
 }
