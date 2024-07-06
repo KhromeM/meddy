@@ -8,7 +8,7 @@ backend/firebase/firebase.mjs
 backend/ai/audio/genAudio/*.mp3
 backend/ai/audio/genAudio/**/*.mp3
 web-frontend/package-lock.json
-dist/*
+**dist/*
 
 
 # Miscellaneous
