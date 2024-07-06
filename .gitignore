@@ -11,6 +11,7 @@ web-frontend/package-lock.json
 web-frontend/dist/
 **/genAudio/*
 
+
 # Miscellaneous
 *.class
 *.log
