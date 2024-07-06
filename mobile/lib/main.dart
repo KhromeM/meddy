@@ -7,7 +7,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+  MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
             useMaterial3: true,
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+            colorScheme: ColorScheme.fromSeed(
+                seedColor: Colors.deepOrange),
             textTheme: const TextTheme(
                 headlineSmall: TextStyle(
               color: Colors.white,
@@ -58,7 +59,10 @@ class MyAppState extends ChangeNotifier {
   ];
 
   // Placeholder for user profile
-  var userProfile = {"name": "John Doe", "email": "john.doe@example.com"};
+  var userProfile = {
+    "name": "John Doe",
+    "email": "john.doe@example.com"
+  };
 }
 
 class MyHomePage extends StatefulWidget {
@@ -76,15 +80,13 @@ class _MyHomePageState extends State<MyHomePage> {
     switch (selectedIndex) {
       case 0:
         page = GeneratorPage();
-        break;
       case 1:
         page = FavoritesPage();
-        break;
       case 2:
         page = ChatPage();
-        break;
       default:
-        throw UnimplementedError('no widget for $selectedIndex');
+        throw UnimplementedError(
+            'no widget for $selectedIndex');
     }
 
     return Scaffold(
@@ -105,10 +107,12 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
+                color:
+                    Theme.of(context).colorScheme.primary,
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
                 children: [
                   Text(
                     'User Profile',
@@ -188,7 +192,8 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Next Word',
         child: const Icon(Icons.mic_none),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.centerDocked,
     );
   }
 }
