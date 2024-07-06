@@ -128,16 +128,18 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          var appState = context.read<MyAppState>();
-          if (selectedIndex == 0) {
-            appState.getNext();
-          }
-        },
-        tooltip: 'Next Word',
-        child: const Icon(Icons.mic_none),
-      ),
+      floatingActionButton: selectedIndex == 0
+          ? FloatingActionButton(
+              onPressed: () {
+                var appState = context.read<MyAppState>();
+                if (selectedIndex == 0) {
+                  appState.getNext();
+                }
+              },
+              tooltip: 'Next Word',
+              child: const Icon(Icons.mic_none),
+            )
+          : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
