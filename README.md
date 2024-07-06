@@ -73,13 +73,15 @@ scp root@24.144.94.136:/home/meddy/backend/extra/meddyai-fedbddffaf83.json ~/Des
 scp root@24.144.94.136:/home/meddy/backend/.env ~/Desktop/meddy/backend
 ```
 
-5. Install postgres if you dont have it
+5. Install postgres if you dont have it.
 
-6. Follow the instructions and run the SQL commands in `meddy/backend/db/schema.sql`
+6. Install the vector extension on postgres.
 
-7. cd so youre in `backend/` then run `npm install && npm run test`
+7. Follow the instructions and run the SQL commands in `meddy/backend/db/schema.sql`
 
-8. If tests are failing and you can't figure out why, contact Za (khromem)
+8. cd so youre in `backend/` then run `npm install && npm run test`
+
+9. If tests are failing and you can't figure out why, contact Za (khromem)
 
 ## Mobile Setup
 
