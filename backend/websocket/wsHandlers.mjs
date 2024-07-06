@@ -8,6 +8,8 @@ import loggerMiddleware from "../server/middleware/loggerMiddleware.mjs";
 import CONFIG from "../config.mjs";
 import { createDGSocket } from "../ai/audio/speechToTextDeepgram.mjs";
 import { LiveTranscriptionEvents } from "@deepgram/sdk";
+import { TTS_WS } from "../ai/audio/textToSpeechElevenLab.mjs";
+import { createWriteStream } from "fs";
 const defaultModel = vertexAIModel;
 
 const runMiddleware = (req, res, middleware) => {
@@ -44,7 +46,6 @@ export function setupWebSocketHandlers(wss) {
 			ws.on("message", async (message) => {
 				try {
 					const { type, data } = JSON.parse(message);
-
 					if (!type || !data) {
 						throw new Error("Invalid message format");
 					}
@@ -71,8 +72,13 @@ export function setupWebSocketHandlers(wss) {
 							if (!req.auth) {
 								throw new Error("WS connection not authenticated");
 							}
+							console.log(
+								req.partialTranscript,
+								req.transcript,
+								req.dg?.getReadyState()
+							);
 							await handleAudioMessage(ws, req, data, user);
-
+							break;
 						// Add case handlers for audio
 						default:
 							ws.send(
@@ -126,7 +132,7 @@ async function handleChatMessage(ws, data, user) {
 
 async function handleAudioMessage(ws, req, data) {
 	const { audioChunk, reqId, isComplete } = data;
-	console.log(audioChunk);
+	console.log("Complete: ", isComplete);
 	if (!audioChunk) return;
 	let dg = req.dg;
 	if (!dg || dg.getReadyState() !== 1) {
@@ -138,7 +144,6 @@ async function handleAudioMessage(ws, req, data) {
 			dg.addListener(LiveTranscriptionEvents.Transcript, (data) => {
 				const text = data.channel.alternatives[0].transcript;
 				req.partialTranscript.push(text);
-				// Optionally send partial transcription to client
 				ws.send(JSON.stringify({ type: "partial_transcript", data: text }));
 			});
 
@@ -152,7 +157,8 @@ async function handleAudioMessage(ws, req, data) {
 				);
 				req.partialTranscript = [];
 				req.dg = null;
-				useTranscription(ws, req);
+				useTranscription(ws, req); // responds in chat
+				// useTranscriptionTTS(ws, req); // responds in audio
 			});
 
 			dg.addListener(LiveTranscriptionEvents.Error, (err) => {
@@ -165,7 +171,6 @@ async function handleAudioMessage(ws, req, data) {
 				);
 			});
 			req.dgTimeout = setTimeout(() => {
-				console.log("Audio stream timeout. Closing Deepgram connection.");
 				dg.requestClose();
 			}, 30000);
 		} catch (error) {
@@ -204,6 +209,7 @@ async function handleAudioMessage(ws, req, data) {
 		}
 		dg.send(audioBuffer);
 		if (isComplete) {
+			console.log("Called dg.requestClose()");
 			clearTimeout(req.dgTimeout);
 			dg.requestClose();
 		}
@@ -239,6 +245,26 @@ async function useTranscription(ws, req) {
 		console.error("Error in chat stream:", error.message);
 		ws.send(
 			JSON.stringify({ type: "error", data: "Error processing chat message" })
+		);
+	}
+}
+
+async function useTranscriptionTTS(ws, req) {
+	const text = req.transcript;
+	const user = req._dbUser;
+	try {
+		const chatHistory = await db.getRecentMessagesByUserId(user.userid, 100);
+		chatHistory.push({ source: "user", text });
+		req.transcript = "";
+		await db.createMessage(user.userid, "user", text);
+		const filePath = "./websocket/genAudio/";
+		const fileName = filePath + new Date(Date.now()).toISOString + `audio.mp3`;
+		const fileStream = createWriteStream(fileName);
+		TTS_WS(chatHistory, ws, fileStream, user, "");
+	} catch (error) {
+		console.error("Error in audio stream:", error.message);
+		ws.send(
+			JSON.stringify({ type: "error", data: "Error processing audio message" })
 		);
 	}
 }

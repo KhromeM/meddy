@@ -7,6 +7,7 @@ import { createWriteStream } from "fs";
 import { v4 as uuid } from "uuid";
 import CONFIG from "../../config.mjs";
 import { getAudioDurationInSeconds } from "get-audio-duration";
+import db from "../../db/db.mjs";
 
 const VOICES = {
 	SPN2: "8ftlfIEYnEkYY6iLanUO",
@@ -116,7 +117,7 @@ export const TTS_WS = async (
 	outputSocket,
 	fileStream,
 	user,
-	reqID,
+	reqID = "TEST",
 	lang = "ENG"
 ) => {
 	const llmStream = await chatStreamProvider(chatHistory, user);
@@ -125,19 +126,24 @@ export const TTS_WS = async (
 			VOICES[lang]
 		}/stream-input?model_id=${lang == "ENG" ? TTSEnglish : TTSMulti}`
 	);
-	streamLLMToElevenLabs(ws, llmStream, (data) => {
-		const message = JSON.parse(data);
-		outputSocket.send({ ...message, reqID });
-		if (message.audio) {
-			const audioChunk = Buffer.from(message.audio, "base64");
-			fileStream.write(audioChunk); // write the audio to some file in the server as well to save it
-		}
-		if (message.isFinal) {
-			// dont close client connection!
-			fileStream.end(); // the file were writing to
-			ws.close(); //close elevenlabs ws connection
-		}
-	});
+	streamLLMToElevenLabs(
+		ws,
+		llmStream,
+		(data) => {
+			const message = JSON.parse(data);
+			outputSocket.send(JSON.stringify({ ...message, reqID }));
+			if (message.audio) {
+				const audioChunk = Buffer.from(message.audio, "base64");
+				fileStream.write(audioChunk); // write the audio to some file in the server as well to save it
+			}
+			if (message.isFinal) {
+				// dont close client connection!
+				fileStream.end(); // the file were writing to
+				ws.close(); //close elevenlabs ws connection
+			}
+		},
+		user
+	);
 };
 
 /**
@@ -184,6 +190,7 @@ export const TTS_SSE = async (
  * @param {WebSocket} ws - WebSocket connection to ElevenLabs API
  * @param {AsyncIterable<string>} llmStream - Async iterable of LLM text chunks
  * @param {function} callback - Callback function to handle messages from ElevenLabs
+ * @param {Object} user - User object from DB
  * @param {Object} [voiceSettings] - Voice settings for ElevenLabs API
  * @param {number} [optimize_streaming_latency=0] - Latency optimization level
  * @param {number[]} [chunk_length_schedule=[120,160,250,290]] - Chunk length schedule for streaming
@@ -193,6 +200,7 @@ async function streamLLMToElevenLabs(
 	ws,
 	llmStream,
 	callback,
+	user,
 	voiceSettings,
 	optimize_streaming_latency,
 	chunk_length_schedule,
@@ -211,10 +219,11 @@ async function streamLLMToElevenLabs(
 				chunk_length_schedule: chunk_length_schedule || [120, 160, 250, 290],
 			})
 		);
-
+		const totalResponse = [];
 		let partialResponse = "";
 		for await (const chunk of llmStream) {
 			partialResponse += chunk;
+			totalResponse.push(chunk);
 			if (
 				partialResponse.length > bufferLimit || // if the built up response is more than 500 characters
 				endOfSentenceMarkersSet.has(chunk[chunk.length - 1]) // if the built up response ends with a ending of sentence signifier
@@ -227,6 +236,8 @@ async function streamLLMToElevenLabs(
 				partialResponse = "";
 			}
 		}
+		await db.createMessage(user.userid, "llm", totalResponse.join(""));
+
 		ws.send(JSON.stringify({ text: EOS_MESSAGE }));
 	});
 	ws.on("message", callback);

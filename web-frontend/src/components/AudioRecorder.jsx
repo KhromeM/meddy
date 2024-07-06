@@ -11,16 +11,25 @@ const AudioRecorder = ({ ws }) => {
 
 			mediaRecorder.current.ondataavailable = async (event) => {
 				if (event.data.size > 0 && ws.readyState === WebSocket.OPEN) {
-					const arrayBuffer = await event.data.arrayBuffer();
-					ws.send(
-						JSON.stringify({
-							type: "audio",
-							data: {
-								audioChunk: arrayBuffer,
-								isComplete: false,
-							},
-						})
-					);
+					try {
+						const arrayBuffer = await event.data.arrayBuffer();
+						const base64Audio = btoa(
+							String.fromCharCode.apply(null, new Uint8Array(arrayBuffer))
+						);
+
+						ws.send(
+							JSON.stringify({
+								type: "audio",
+								data: {
+									audioChunk: base64Audio,
+									mimeType: event.data.type,
+									isComplete: false,
+								},
+							})
+						);
+					} catch (error) {
+						console.error("Error processing audio data:", error);
+					}
 				}
 			};
 
