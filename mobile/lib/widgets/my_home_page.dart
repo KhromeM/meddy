@@ -6,6 +6,8 @@ import 'chat_page.dart';
 import '../utils/my_app_state.dart';
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -28,13 +30,10 @@ class _MyHomePageState extends State<MyHomePage> {
     switch (selectedIndex) {
       case 0:
         page = GeneratorPage();
-        break;
       case 1:
         page = FavoritesPage();
-        break;
       case 2:
         page = ChatPage();
-        break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }

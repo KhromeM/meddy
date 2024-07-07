@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'my_home_page.dart';
+import 'package:meddymobile/main.dart';
+import 'package:meddymobile/pages/signin_page.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -10,15 +12,19 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
-        textTheme: const TextTheme(
-          headlineSmall: TextStyle(
-            color: Colors.white,
-            fontSize: 46,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
+        fontFamily: 'Nunito',
       ),
-      home: MyHomePage(),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator(); // Show a loading indicator while waiting for auth state
+          } else if (snapshot.hasData) {
+            return MyHomePage();
+          }
+          return const SignInPage();
+        },
+      ),
     );
   }
 }

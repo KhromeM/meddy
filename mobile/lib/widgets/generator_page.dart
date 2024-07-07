@@ -4,6 +4,8 @@ import '../utils/my_app_state.dart';
 import 'big_card.dart';
 
 class GeneratorPage extends StatelessWidget {
+  const GeneratorPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
