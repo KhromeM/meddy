@@ -26,8 +26,6 @@ if (flutterVersionName == null) {
     flutterVersionName = "1.0"
 }
 
-
-
 android {
     namespace = "com.trymeddy.app"
     compileSdk = flutter.compileSdkVersion
@@ -60,4 +58,8 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.0"
 }
