@@ -46,8 +46,9 @@ migrate_working_dir/
 /build
 build
 # Firebase
-android/app/google-services.json
-ios/Runner/GoogleService-Info.plist
+mobile/ios/Runner/GoogleService-Info.plist
+mobile/android/app/google-services.json
+mobile/lib/firebase_options.dart
 
 # Symbolication related
 app.*.symbols
