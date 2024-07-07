@@ -1,4 +1,4 @@
-package com.example.meddymobile;
+package com.trymeddy.app;
 
 import io.flutter.embedding.android.FlutterActivity;
 
