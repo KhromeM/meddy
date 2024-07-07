@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
 class ChatPage extends StatefulWidget {
+  const ChatPage({super.key});
+
   @override
   _ChatPageState createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
-  TextEditingController _textEditingController = TextEditingController();
+  TextEditingController _textEditingController =
+      TextEditingController();
   bool _isTyping = false;
 
   @override
@@ -22,11 +25,12 @@ class _ChatPageState extends State<ChatPage> {
   void _sendMessage() {
     if (_textEditingController.text.isNotEmpty) {
       // Logic to send message to LLM (Left as placeholder)
-      print('Sending message: ${_textEditingController.text}');
+      print(
+          'Sending message: ${_textEditingController.text}');
       // Clear text field after sending message
       _textEditingController.clear();
       // Assuming receiving a response from LLM after sending
-      // You can implement response handling here
+      // You can implement response handling hereß
     }
   }
 
@@ -62,7 +66,9 @@ class _ChatPageState extends State<ChatPage> {
                     child: TextField(
                       controller: _textEditingController,
                       decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                        contentPadding:
+                            EdgeInsets.symmetric(
+                                horizontal: 16),
                         hintText: 'Type your message...',
                         border: InputBorder.none,
                       ),
@@ -70,14 +76,18 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                   ),
                   InkWell(
-                    onTap: _isTyping ? _sendMessage : _startListening,
+                    onTap: _isTyping
+                        ? _sendMessage
+                        : _startListening,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Icon(
                         _isTyping
-                            ? Icons.arrow_forward_ios_rounded
+                            ? Icons
+                                .arrow_forward_ios_rounded
                             : Icons.mic_rounded,
-                        color: Theme.of(context).primaryColor,
+                        color:
+                            Theme.of(context).primaryColor,
                       ),
                     ),
                   ),
