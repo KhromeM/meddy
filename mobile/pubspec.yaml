@@ -33,6 +33,10 @@ dependencies:
   provider: ^6.0.0
 
   sidebarx: ^0.17.1
+  flutter_riverpod: ^2.5.1
+  firebase_auth: ^5.1.1
+  firebase_core: ^3.1.1
+  google_sign_in: ^6.2.1
 
 dev_dependencies:
   flutter_test:
@@ -47,3 +51,18 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/
+  fonts:
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/nunito/Nunito-Light.ttf
+          weight: 300
+        - asset: assets/fonts/nunito/Nunito-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/nunito/Nunito-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/nunito/Nunito-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/nunito/Nunito-Bold.ttf
+          weight: 700
