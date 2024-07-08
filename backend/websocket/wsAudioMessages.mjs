@@ -7,8 +7,16 @@ import db from "../db/db.mjs";
 
 export async function handleAudioMessage(ws, req, data) {
 	const { audioChunk, reqId, isComplete, lang } = data;
+	// Logging
+	if (req.partialTranscript.length === 0) {
+		req.logging.firstAudioChunkFromClient = Date.now();
+		req.logging.lang = lang;
+		req.logging.reqId = reqId;
+	}
 	let dg = req.dg;
 	if (isComplete && dg) {
+		// Logging
+		req.logging.lastAudioChunkFromClient = Date.now();
 		clearTimeout(req.dgTimeout);
 		dg.requestClose();
 	}
@@ -26,6 +34,7 @@ export async function handleAudioMessage(ws, req, data) {
 			});
 
 			dg.addListener(LiveTranscriptionEvents.Close, () => {
+				req.logging.endTranscription = Date.now(); // logging
 				req.transcript = req.partialTranscript.join(" ");
 				ws.send(
 					JSON.stringify({
@@ -33,8 +42,6 @@ export async function handleAudioMessage(ws, req, data) {
 						data: req.transcript,
 					})
 				);
-				req.partialTranscript = [];
-				req.dg = null;
 				// useTranscription(ws, req); // responds in chat
 				useTranscriptionTTS(ws, req, lang); // responds in audio
 			});
@@ -92,14 +99,13 @@ export async function handleAudioMessage(ws, req, data) {
 	}
 }
 
+// respond to audio message with text only
 export async function useTranscription(ws, req) {
-	// respond to audio message with text only
 	const text = req.transcript;
 	const user = req._dbUser;
 	try {
 		const chatHistory = await db.getRecentMessagesByUserId(user.userid, 100);
 		chatHistory.push({ source: "user", text });
-		req.transcript = "";
 		const stream = await chatStreamProvider(chatHistory, user);
 
 		let llmResponseChunks = [];
@@ -123,20 +129,19 @@ export async function useTranscription(ws, req) {
 	}
 }
 
+// respond to audio message with text and audio
 export async function useTranscriptionTTS(ws, req, lang) {
-	// respond to audio message with text and audio
 	const text = req.transcript;
 	const user = req._dbUser;
 	try {
 		const chatHistory = await db.getRecentMessagesByUserId(user.userid, 100);
 		chatHistory.push({ source: "user", text });
-		req.transcript = "";
 		await db.createMessage(user.userid, "user", text);
 		const filePath = "./websocket/genAudio/";
 		const fileName =
 			filePath + new Date(Date.now()).toISOString() + `audio.mp3`;
 		const fileStream = createWriteStream(fileName);
-		TTS_WS(chatHistory, ws, fileStream, user, "", lang);
+		TTS_WS(chatHistory, ws, fileStream, user, req, "", lang);
 	} catch (error) {
 		console.error("Error in audio stream:", error.message);
 		ws.send(

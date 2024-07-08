@@ -23,6 +23,7 @@ export function setupWebSocketHandlers(wss) {
 			let user = null;
 			req.partialTranscript = []; // use as state to build up partial transcriptions
 			req.transcript = ""; // save completed transcriptions here
+			req.logging = {}; // for logging
 			ws.on("error", (error) => {
 				if (CONFIG.TEST) {
 					return;
