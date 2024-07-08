@@ -83,6 +83,14 @@ scp root@24.144.94.136:/home/meddy/backend/.env ~/Desktop/meddy/backend
 
 9. If tests are failing and you can't figure out why, contact Za (khromem)
 
+## Backend audio test site
+
+1. Have local dev server running
+
+2. Open index.html in /audio-test-website (DO NOT use live server for this)
+
+3. To visualize logs run `node ./extra/logging/visualizeLogs.mjs`, then open `backend/extra/log_visualization/index.html`
+
 ## Mobile Setup
 
 ### Prerequisites
