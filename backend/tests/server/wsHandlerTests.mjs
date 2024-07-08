@@ -35,49 +35,43 @@ describe("WebSocket Handlers Tests", function () {
 		done();
 	});
 
-	it("should establish and maintain a WebSocket connection", (done) => {
-		ws = new WebSocket(`ws://localhost:${port}/ws`, {
-			headers: { idToken: "dev" },
-			perMessageDeflate: false,
+	const authenticateWebSocket = (ws) => {
+		return new Promise((resolve, reject) => {
+			ws.on("open", () => {
+				ws.send(
+					JSON.stringify({
+						type: "auth",
+						data: { idToken: "dev" },
+					})
+				);
+			});
+			ws.on("message", (data) => {
+				const message = JSON.parse(data);
+				if (message.type === "auth") {
+					resolve();
+				}
+			});
+			ws.on("error", reject);
+			ws.on("close", reject);
 		});
+	};
 
-		ws.on("open", () => {
-			setTimeout(() => {
-				expect(ws.readyState).to.equal(WebSocket.OPEN);
-
-				ws.ping((err) => {
-					if (err) {
-						done(new Error("Failed to receive pong: " + err));
-					} else {
-						done();
-					}
-				});
-			}, 100);
-		});
-
-		ws.on("error", (error) => {
-			done(error);
-		});
+	it("should establish and maintain a WebSocket connection", async () => {
+		ws = new WebSocket(`ws://localhost:${port}/ws`);
+		await authenticateWebSocket(ws);
+		expect(ws.readyState).to.equal(WebSocket.OPEN);
 	});
 
 	it("should handle chat messages and respond with chat_response", async () => {
-		ws = new WebSocket(`ws://localhost:${port}/ws`, {
-			headers: { idtoken: "dev" },
-		});
+		ws = new WebSocket(`ws://localhost:${port}/ws`);
+		await authenticateWebSocket(ws);
+
 		const message = {
 			type: "chat",
 			data: {
 				text: "whats 2+1?",
 			},
 		};
-		const wait = new Promise((resolve, reject) => {
-			ws.on("open", () => {
-				setTimeout(() => resolve(), 200); // takes time for the server to verify auth after the connection
-			});
-			ws.on("error", reject);
-			ws.on("close", reject);
-		});
-		await wait;
 		ws.send(JSON.stringify(message));
 
 		let receivedChunks = [];
@@ -91,31 +85,18 @@ describe("WebSocket Handlers Tests", function () {
 					resolve();
 				}
 			});
-			ws.on("error", (error) => {
-				reject(error);
-			});
+			ws.on("error", reject);
 		});
 	});
 
 	it("should send an error for unknown message types", async () => {
-		ws = new WebSocket(`ws://localhost:${port}/ws`, {
-			headers: { idtoken: "dev" },
-		});
+		ws = new WebSocket(`ws://localhost:${port}/ws`);
+		await authenticateWebSocket(ws);
 
 		const message = {
 			type: "unknown",
 			data: {},
 		};
-
-		const wait = new Promise((resolve, reject) => {
-			ws.on("open", () => {
-				setTimeout(() => resolve(), 200);
-			});
-			ws.on("error", reject);
-			ws.on("close", reject);
-		});
-		await wait;
-
 		ws.send(JSON.stringify(message));
 
 		await new Promise((resolve, reject) => {
@@ -130,18 +111,8 @@ describe("WebSocket Handlers Tests", function () {
 	});
 
 	it("should send an error for invalid message format", async () => {
-		ws = new WebSocket(`ws://localhost:${port}/ws`, {
-			headers: { idtoken: "dev" },
-		});
-
-		const wait = new Promise((resolve, reject) => {
-			ws.on("open", () => {
-				setTimeout(() => resolve(), 200);
-			});
-			ws.on("error", reject);
-			ws.on("close", reject);
-		});
-		await wait;
+		ws = new WebSocket(`ws://localhost:${port}/ws`);
+		await authenticateWebSocket(ws);
 
 		ws.send("invalid message format");
 
@@ -157,24 +128,13 @@ describe("WebSocket Handlers Tests", function () {
 	});
 
 	it("should save chat messages to the database", async () => {
-		ws = new WebSocket(`ws://localhost:${port}/ws`, {
-			headers: { idtoken: "dev" },
-		});
+		ws = new WebSocket(`ws://localhost:${port}/ws`);
+		await authenticateWebSocket(ws);
 
 		const message = {
 			type: "chat",
 			data: { text: "Store this message" },
 		};
-
-		const wait = new Promise((resolve, reject) => {
-			ws.on("open", () => {
-				setTimeout(() => resolve(), 200);
-			});
-			ws.on("error", reject);
-			ws.on("close", reject);
-		});
-		await wait;
-
 		ws.send(JSON.stringify(message));
 
 		await new Promise((resolve, reject) => {
