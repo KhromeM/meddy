@@ -1,0 +1,16 @@
+User query: Why don't you run
+User query length: 17
+User query language: en
+LLM model: gpt-4o
+LLM response: I’m here to assist you with your health and medical care questions. How can I help you today? 😊
+LLM response length: 96
+Time between last audio chunk and end of transcription: 1403
+Time between end of transcription and first llm chunk: 1062
+Time between end of first llm chunk and first audio chunk from TTS: 1617
+Total time to get first audio chunk from TTS after getting last audio chunk from client: 4082
+
+
+
+JSON:
+
+{"firstAudioChunkFromClient":1720454027181,"lang":"en","lastAudioChunkFromClient":1720454027181,"endTranscription":1720454028584,"firstLLMChunk":1720454029646,"model":"gpt-4o","llmResponse":"I’m here to assist you with your health and medical care questions. How can I help you today? 😊","firstAudioChunkFromTTS":1720454031263,"lastAudioChunkFromTTS":1720454031293,"transcript":"Why don't you run"}

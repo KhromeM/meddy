@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Log Visualization</title>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				margin: 0;
+				padding: 20px;
+				box-sizing: border-box;
+			}
+			.charts-container {
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: space-between;
+			}
+			.chart-container {
+				width: calc(50% - 10px);
+				margin-bottom: 20px;
+			}
+			@media (max-width: 1200px) {
+				.chart-container {
+					width: 100%;
+				}
+			}
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				margin-top: 20px;
+			}
+			th,
+			td {
+				border: 1px solid #ddd;
+				padding: 8px;
+				text-align: left;
+			}
+			th {
+				background-color: #f2f2f2;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Log Visualization</h1>
+		<div class="charts-container">
+			<div class="chart-container">
+				<canvas id="timeLastAudioToEndTranscriptionChart"></canvas>
+			</div>
+			<div class="chart-container">
+				<canvas id="timeEndTranscriptionToFirstLLMChart"></canvas>
+			</div>
+			<div class="chart-container">
+				<canvas id="timeFirstLLMToFirstAudioTTSChart"></canvas>
+			</div>
+			<div class="chart-container">
+				<canvas id="totalTimeToFirstAudioTTSChart"></canvas>
+			</div>
+			<div class="chart-container">
+				<canvas id="queryLengthChart"></canvas>
+			</div>
+			<div class="chart-container">
+				<canvas id="responseLengthChart"></canvas>
+			</div>
+			<div class="chart-container">
+				<canvas id="languageChart"></canvas>
+			</div>
+		</div>
+		<h2>Log Data</h2>
+		<table id="logTable"></table>
+		<script src="visualization.js"></script>
+	</body>
+</html>
