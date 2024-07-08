@@ -1,0 +1,16 @@
+User query: ¿Cómo te llamas? 
+User query length: 17
+User query language: es
+LLM model: gpt-4o
+LLM response: Me llamo Meddy. ¿En qué puedo ayudarte con respecto a tu salud hoy? 😊
+LLM response length: 70
+Time between last audio chunk and end of transcription: 1059
+Time between end of transcription and first llm chunk: 770
+Time between end of first llm chunk and first audio chunk from TTS: 997
+Total time to get first audio chunk from TTS after getting last audio chunk from client: 2826
+
+
+
+JSON:
+
+{"firstAudioChunkFromClient":1720454086816,"lang":"es","lastAudioChunkFromClient":1720454086815,"endTranscription":1720454087874,"firstLLMChunk":1720454088644,"model":"gpt-4o","llmResponse":"Me llamo Meddy. ¿En qué puedo ayudarte con respecto a tu salud hoy? 😊","firstAudioChunkFromTTS":1720454089641,"lastAudioChunkFromTTS":1720454089688,"transcript":"¿Cómo te llamas? "}

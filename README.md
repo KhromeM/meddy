@@ -73,13 +73,23 @@ scp root@24.144.94.136:/home/meddy/backend/extra/meddyai-fedbddffaf83.json ~/Des
 scp root@24.144.94.136:/home/meddy/backend/.env ~/Desktop/meddy/backend
 ```
 
-5. Install postgres if you dont have it
+5. Install postgres if you dont have it.
 
-6. Follow the instructions and run the SQL commands in `meddy/backend/db/schema.sql`
+6. Install the vector extension on postgres.
 
-7. cd so youre in `backend/` then run `npm install && npm run test`
+7. Follow the instructions and run the SQL commands in `meddy/backend/db/schema.sql`
 
-8. If tests are failing and you can't figure out why, contact Za (khromem)
+8. cd so youre in `backend/` then run `npm install && npm run test`
+
+9. If tests are failing and you can't figure out why, contact Za (khromem)
+
+## Backend audio test site
+
+1. Have local dev server running
+
+2. Open index.html in /audio-test-website (DO NOT use live server for this)
+
+3. To visualize logs run `node ./extra/logging/visualizeLogs.mjs`, then open `backend/extra/log_visualization/index.html`
 
 ## Mobile Setup
 

@@ -9,6 +9,7 @@ backend/ai/audio/genAudio/*.mp3
 backend/ai/audio/genAudio/**/*.mp3
 web-frontend/package-lock.json
 web-frontend/dist/
+**/genAudio/*
 
 
 # Miscellaneous
@@ -45,10 +46,12 @@ migrate_working_dir/
 /build/
 /build
 build
+
 # Firebase
 mobile/ios/Runner/GoogleService-Info.plist
 mobile/android/app/google-services.json
 mobile/lib/firebase_options.dart
+
 
 # Symbolication related
 app.*.symbols
