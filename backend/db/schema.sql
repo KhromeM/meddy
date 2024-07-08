@@ -42,7 +42,7 @@ CREATE TABLE Documents (
 
 CREATE TABLE Appointments (
     AppointmentID SERIAL PRIMARY KEY,
-    Date TIMESTAMP,
+    Date TIMESTAMP WITHOUT TIME ZONE,
     Transcript TEXT,
     UserID VARCHAR(255),
     DoctorID VARCHAR(255),
@@ -55,5 +55,5 @@ CREATE TABLE Doctors (
     Name VARCHAR(255)
 );
 
--- repeat for the test db 
+-- repeat for the test db   
 CREATE DATABASE meddysql_test;

@@ -16,6 +16,8 @@ import { setupErrorHandlers } from "./extra/errorHandlers.mjs";
 
 setupErrorHandlers();
 
+process.env["TZ"] = "UTC";
+
 export const app = express();
 app.use(cors());
 app.use(json());
