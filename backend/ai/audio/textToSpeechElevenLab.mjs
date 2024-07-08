@@ -8,6 +8,7 @@ import { v4 as uuid } from "uuid";
 import CONFIG from "../../config.mjs";
 import { getAudioDurationInSeconds } from "get-audio-duration";
 import db from "../../db/db.mjs";
+import { writeLog } from "../../extra/logging.mjs";
 
 const VOICES = {
 	es2: "8ftlfIEYnEkYY6iLanUO",
@@ -108,6 +109,7 @@ const TTSWithChatHistory = async (chatHistory) => {
  * @param {WebSocket} outputSocket - WebSocket connection to the client for forwarding audio
  * @param {WriteStream} fileStream - File stream to write the audio locally
  * @param {Object} user - User object from DB
+ * @param {Object} req -- Request object from express, used for logging
  * @param {string} reqID - Request ID to differentiate results from different requests
  * @param {string} [lang="ENG"] - Language for text-to-speech, defaults to English
  * @returns {Promise<void>}
@@ -117,6 +119,7 @@ export const TTS_WS = async (
 	outputSocket,
 	fileStream,
 	user,
+	req,
 	reqID = "TEST",
 	lang = "en"
 ) => {
@@ -134,16 +137,23 @@ export const TTS_WS = async (
 			const message = JSON.parse(data);
 			outputSocket.send(JSON.stringify({ ...message, reqID, type: "audio" }));
 			if (message.audio) {
+				// logging
+				if (!req.logging.firstAudioChunkFromTTS) {
+					req.logging.firstAudioChunkFromTTS = Date.now();
+				}
 				const audioChunk = Buffer.from(message.audio, "base64");
 				fileStream.write(audioChunk); // write the audio to some file in the server as well to save it
 			}
 			if (message.isFinal) {
 				// dont close client connection!
+				req.logging.lastAudioChunkFromTTS = Date.now(); // Logging
+				writeLog(req, true); // write the log and clean the state stored in req
 				fileStream.end(); // the file were writing to
 				ws.close(); //close elevenlabs ws connection
 			}
 		},
-		user
+		user,
+		req
 	);
 };
 
@@ -193,6 +203,7 @@ export const TTS_SSE = async (
  * @param {WebSocket} outputSocket - WebSocket connection to the client for forwarding audio
  * @param {function} callback - Callback function to handle messages from ElevenLabs
  * @param {Object} user - User object from DB
+ * @param {Object} req -- Request object from express, used for logging
  * @param {Object} [voiceSettings] - Voice settings for ElevenLabs API
  * @param {number} [optimize_streaming_latency=0] - Latency optimization level
  * @param {number[]} [chunk_length_schedule=[120,160,250,290]] - Chunk length schedule for streaming
@@ -204,6 +215,7 @@ async function streamLLMToElevenLabs(
 	outputSocket,
 	callback,
 	user,
+	req,
 	voiceSettings,
 	optimize_streaming_latency,
 	chunk_length_schedule,
@@ -225,6 +237,10 @@ async function streamLLMToElevenLabs(
 		const totalResponse = [];
 		let partialResponse = "";
 		for await (const chunk of llmStream) {
+			// logging
+			if (req && !req.logging.firstLLMChunk) {
+				req.logging.firstLLMChunk = Date.now();
+			}
 			partialResponse += chunk;
 			totalResponse.push(chunk);
 			if (outputSocket) {
@@ -244,6 +260,7 @@ async function streamLLMToElevenLabs(
 				partialResponse = "";
 			}
 		}
+		req.logging.llmResponse = totalResponse.join(""); // logging
 		await db.createMessage(user.userid, "llm", totalResponse.join(""));
 
 		ws.send(JSON.stringify({ text: EOS_MESSAGE }));
