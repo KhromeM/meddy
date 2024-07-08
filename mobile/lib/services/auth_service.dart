@@ -8,8 +8,7 @@ class AuthService {
   Future<User?> signInWithGoogle() async {
     try {
       // Trigger the authentication flow
-      final GoogleSignInAccount? googleUser =
-          await _googleSignIn.signIn();
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
         // Google sign-in canceled by user
@@ -20,8 +19,7 @@ class AuthService {
           await googleUser.authentication;
 
       // Create a new credential
-      final AuthCredential credential =
-          GoogleAuthProvider.credential(
+      final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
@@ -33,6 +31,26 @@ class AuthService {
     } catch (e) {
       print(e.toString());
       return null;
+    }
+  }
+
+  Future<UserCredential> signUpWithGoogle() async {
+    try {
+      // Configure Google Sign In
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      // Sign in (or up) with the credential
+      return await FirebaseAuth.instance.signInWithCredential(credential);
+    } catch (e) {
+      throw 'Failed to sign up with Google: ${e.toString()}';
     }
   }
 

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:meddymobile/pages/signin_page.dart';
+import 'package:meddymobile/pages/signup_page.dart';
 import 'package:provider/provider.dart';
+import '../services/auth_service.dart';
 import 'generator_page.dart';
 import 'favorites_page.dart';
 import 'chat_page.dart';
@@ -15,6 +18,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   var selectedIndex = 0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final AuthService _authService = AuthService();
 
   void _toggleDrawer() {
     if (_scaffoldKey.currentState?.isDrawerOpen ?? false) {
@@ -35,8 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 2:
         page = ChatPage();
       default:
-        throw UnimplementedError(
-            'no widget for $selectedIndex');
+        throw UnimplementedError('no widget for $selectedIndex');
     }
 
     return Scaffold(
@@ -55,12 +58,10 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             DrawerHeader(
               decoration: BoxDecoration(
-                color:
-                    Theme.of(context).colorScheme.primary,
+                color: Theme.of(context).colorScheme.primary,
               ),
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'User Profile',
@@ -102,6 +103,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.pop(context);
               },
             ),
+            ListTile(
+              title: Text('Sign Out'),
+              onTap: () {
+                _authService.signOut();
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => SignInPage()),
+                );
+              },
+            )
           ],
         ),
       ),
@@ -142,8 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Icon(Icons.mic_none),
             )
           : null,
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
