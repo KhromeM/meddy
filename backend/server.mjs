@@ -6,6 +6,8 @@ import { setupWebSocketHandlers } from "./websocket/wsHandlers.mjs";
 import CONFIG from "./config.mjs";
 import chatRoutes from "./server/routes/chatRoutes.mjs";
 import fileRoutes from "./server/routes/fileRoutes.mjs";
+import appointmentRoutes from "./server/routes/appointmentRoutes.mjs";
+import doctorRoutes from "./server/routes/doctorRoutes.mjs";
 import authMiddleware from "./server/middleware/authMiddleware.mjs";
 import loggerMiddleware from "./server/middleware/loggerMiddleware.mjs";
 import userMiddleware from "./server/middleware/userMiddleware.mjs";
@@ -25,6 +27,8 @@ app.use(userMiddleware);
 // API Routes:
 app.use("/api/chat", chatRoutes);
 app.use("/api/file", fileRoutes);
+app.use("/api/appointment", appointmentRoutes);
+app.use("/api/doctor", doctorRoutes);
 // app.use("/api/user", userRoutes);
 // app.use("/api/report", reportRoutes)
 

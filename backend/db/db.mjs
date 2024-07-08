@@ -7,6 +7,15 @@ import {
 	getDocumentsByFileId,
 	deleteDocumentsByFileId,
 } from "./dbDocuments.mjs";
+import {
+	createAppointment,
+	getAllAppointments,
+	getAppointmentById,
+	insertTranscript,
+	updateAppointment,
+	deleteAppointment,
+} from "./dbAppointments.mjs";
+import { createDoctor, getDoctorById, updateDoctor } from "./dbDoctor.mjs";
 
 export default {
 	createUser,
@@ -21,4 +30,13 @@ export default {
 	getDocumentById,
 	getDocumentsByFileId,
 	deleteDocumentsByFileId,
+	createAppointment,
+	getAllAppointments,
+	getAppointmentById,
+	insertTranscript,
+	updateAppointment,
+	deleteAppointment,
+	createDoctor,
+	getDoctorById,
+	updateDoctor,
 };
