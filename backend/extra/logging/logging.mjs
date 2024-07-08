@@ -19,6 +19,7 @@ export const writeLog = (req, clean = true) => {
 		writeLineToStream(`User query: ${log.transcript}`);
 		writeLineToStream(`User query length: ${log.transcript?.length}`);
 		writeLineToStream(`User query language: ${log.lang}`);
+		writeLineToStream(`LLM model: ${log.model}`);
 		writeLineToStream(`LLM response: ${log.llmResponse}`);
 		writeLineToStream(`LLM response length: ${log.llmResponse?.length}`);
 		writeLineToStream(

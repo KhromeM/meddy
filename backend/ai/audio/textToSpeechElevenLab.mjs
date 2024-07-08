@@ -8,8 +8,17 @@ import { v4 as uuid } from "uuid";
 import CONFIG from "../../config.mjs";
 import { getAudioDurationInSeconds } from "get-audio-duration";
 import db from "../../db/db.mjs";
-import { writeLog } from "../../extra/logging.mjs";
+import { writeLog } from "../../extra/logging/logging.mjs";
+import {
+	groqModel,
+	anthropicModel,
+	vertexAIModel,
+	openAIModel,
+} from "../langAi/model.mjs";
 
+let defaultModel = CONFIG.TEST
+	? openAIModel
+	: openAIModel || anthropicModel || vertexAIModel || openAIModel;
 const VOICES = {
 	es2: "8ftlfIEYnEkYY6iLanUO",
 	es: "L1QajoRwPFiqw35KD4Ch",
@@ -42,7 +51,7 @@ const filePath = "./ai/audio/genAudio/experiments/spn/exp1";
 const TTSWithChatHistory = async (chatHistory) => {
 	let user = { userid: "testUserId", name: "Devin" };
 	let i = 1;
-	const llmStream = await chatStreamProvider(chatHistory, user);
+	const llmStream = await chatStreamProvider(chatHistory, user, defaultModel);
 	const ws = new WebSocket(
 		`wss://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}/stream-input?model_id=${TTSMulti}`
 	);
@@ -123,7 +132,7 @@ export const TTS_WS = async (
 	reqID = "TEST",
 	lang = "en"
 ) => {
-	const llmStream = await chatStreamProvider(chatHistory, user);
+	const llmStream = await chatStreamProvider(chatHistory, user, defaultModel);
 	const ws = new WebSocket(
 		`wss://api.elevenlabs.io/v1/text-to-speech/${
 			VOICES[lang]
@@ -175,7 +184,7 @@ export const TTS_SSE = async (
 	reqID,
 	lang = "ENG"
 ) => {
-	const llmStream = await chatStreamProvider(chatHistory, user);
+	const llmStream = await chatStreamProvider(chatHistory, user, defaultModel);
 	const ws = new WebSocket(
 		`wss://api.elevenlabs.io/v1/text-to-speech/${
 			VOICES[lang]
@@ -240,6 +249,7 @@ async function streamLLMToElevenLabs(
 			// logging
 			if (req && !req.logging.firstLLMChunk) {
 				req.logging.firstLLMChunk = Date.now();
+				req.logging.model = defaultModel.model;
 			}
 			partialResponse += chunk;
 			totalResponse.push(chunk);
