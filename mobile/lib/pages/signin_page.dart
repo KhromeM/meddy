@@ -49,22 +49,17 @@ class _SignInState extends ConsumerState<SignInPage> {
                       onTap: () async {
                         // Handle Google sign-in
                         setState(() {
-                          _isLoading =
-                              true; // Set loading state to true
+                          _isLoading = true; // Set loading state to true
                         });
                         try {
-                          await _authService
-                              .signInWithGoogle();
+                          await _authService.signInWithGoogle();
                         } catch (e) {
                           if (!mounted) return;
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(
-                                  content:
-                                      Text(e.toString())));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(e.toString())));
                         } finally {
                           setState(() {
-                            _isLoading =
-                                false; // Set loading state to false
+                            _isLoading = false; // Set loading state to false
                           });
                         }
                       },
@@ -73,8 +68,7 @@ class _SignInState extends ConsumerState<SignInPage> {
                         height: 56,
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius:
-                              BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(30),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black12,
@@ -84,8 +78,7 @@ class _SignInState extends ConsumerState<SignInPage> {
                           ],
                         ),
                         child: Row(
-                          mainAxisAlignment:
-                              MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Image.asset(
                               'assets/images/google_signin_button.png', // Replace with the path to your Google logo asset
@@ -96,8 +89,7 @@ class _SignInState extends ConsumerState<SignInPage> {
                             Text(
                               "Continue with Google",
                               style: TextStyle(
-                                color: Color.fromRGBO(
-                                    75, 87, 104, 1.0),
+                                color: Color.fromRGBO(75, 87, 104, 1.0),
                                 fontSize: 16,
                               ),
                             ),

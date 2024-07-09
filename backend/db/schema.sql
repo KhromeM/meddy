@@ -40,5 +40,20 @@ CREATE TABLE Documents (
     FOREIGN KEY (FileID) REFERENCES Files(FileID)
 );
 
--- repeat for the test db 
+CREATE TABLE Appointments (
+    AppointmentID SERIAL PRIMARY KEY,
+    Date TIMESTAMP WITHOUT TIME ZONE,
+    Transcript TEXT,
+    UserID VARCHAR(255),
+    DoctorID VARCHAR(255),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (DoctorID) REFERENCES Doctors(DoctorID)
+);
+
+CREATE TABLE Doctors (
+    DoctorID VARCHAR(255) PRIMARY KEY,
+    Name VARCHAR(255)
+);
+
+-- repeat for the test db   
 CREATE DATABASE meddysql_test;

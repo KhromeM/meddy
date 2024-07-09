@@ -1,4 +1,3 @@
-
 import { v4 as uuidv4 } from "uuid";
 const isProd = import.meta.env.PROD;
 const serverURL = isProd
@@ -65,7 +64,7 @@ export const chatLLMStream = async (user, message, onChunk, onComplete) => {
 	}
 };
 
-const wsURL = isDev ? "ws://localhost:8000/api" : "ws://www.trymeddy.com/api";
+const wsURL = isProd ? "ws://www.trymeddy.com/api" : "ws://localhost:8000/api";
 let socket = null;
 let socketAuthState = false;
 

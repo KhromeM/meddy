@@ -1,0 +1,16 @@
+User query: Hello. What's your name? 
+User query length: 25
+User query language: en
+LLM model: llama3-70b-8192
+LLM response: Hello! My name is Meddy. How can I assist you with your health or medical care today? 😊
+LLM response length: 88
+Time between last audio chunk and end of transcription: 719
+Time between end of transcription and first llm chunk: 531
+Time between end of first llm chunk and first audio chunk from TTS: 4515
+Total time to get first audio chunk from TTS after getting last audio chunk from client: 5765
+
+
+
+JSON:
+
+{"firstAudioChunkFromClient":1720452512520,"lang":"en","lastAudioChunkFromClient":1720452513167,"endTranscription":1720452513886,"firstLLMChunk":1720452514417,"model":"llama3-70b-8192","llmResponse":"Hello! My name is Meddy. How can I assist you with your health or medical care today? 😊","firstAudioChunkFromTTS":1720452518932,"lastAudioChunkFromTTS":1720452518961,"transcript":"Hello. What's your name? "}
