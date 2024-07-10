@@ -5,12 +5,13 @@ import {
   postChatMessageStream,
 } from "../controllers/chatController.mjs";
 
+import { postAudioTrans } from "../controllers/speechToTextController.mjs";
+
 const router = Router();
 
 router.get("/", getChatHistory);
 router.post("/", postChatMessage);
 router.post("/stream", postChatMessageStream);
-router.get("/transcribe");
-router.get("/translate");
+router.post("/speech-to-text", postAudioTrans);
 
 export default router;

@@ -13,6 +13,9 @@ import errorHandler from "./server/middleware/errorHandler.mjs";
 import url from "url";
 
 export const app = express();
+
+app.use(express.json({ limit: "100mb" }));
+
 app.use(cors());
 app.use(json());
 
