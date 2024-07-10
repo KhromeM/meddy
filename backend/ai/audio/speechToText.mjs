@@ -6,7 +6,7 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 // Speech to text with optional language parameter (default is English)
 // Optional language parameter might result in faster transcription
 // Language codes: https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes
-async function transcribeSpeech(stream, tscLanguage = "en") {
+export async function transcribeSpeech(stream, tscLanguage = "en") {
   try {
     const transcription = await groq.audio.transcriptions.create({
       file: stream,
@@ -25,7 +25,7 @@ async function transcribeSpeech(stream, tscLanguage = "en") {
 }
 
 // Always translates to only English by default
-async function translateSpeech(stream) {
+export async function translateSpeech(stream) {
   try {
     const translation = await groq.audio.translations.create({
       file: stream,
