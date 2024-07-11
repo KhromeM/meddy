@@ -13,12 +13,11 @@ import {
 import { Readable } from "stream";
 import CONFIG from "../../config.mjs";
 import { createDefaultSystemPrompt } from "../prompts/default.mjs";
+import { createStallResponsePrompt } from "../prompts/stallResponse.mjs";
+
 let defaultModel = CONFIG.TEST
 	? openAIModel
 	: groqModel || anthropicModel || vertexAIModel || openAIModel;
-
-const systemPrompts = { 0: createDefaultSystemPrompt }; // globals or imports
-const fewShotExamples = {}; // globals or imports
 
 export const chatStreamProvider = async (
 	chatHistory,
@@ -26,11 +25,9 @@ export const chatStreamProvider = async (
 	model = defaultModel,
 	mode = 0
 ) => {
-	const systemMessage = systemPrompts[mode](user.name) || "";
-	const fewShotExamplesForMode = fewShotExamples[mode] || [];
+	const systemMessage = getSystemMessage(user, mode);
 	let messages = [
 		new SystemMessage(systemMessage),
-		...fewShotExamplesForMode, // end examples with a system message
 		...chatHistory.map((message) => {
 			if (message.source == "user") {
 				return new HumanMessage(message.text);
@@ -89,4 +86,15 @@ function cleanMessages(messages) {
 		clean.push(message);
 	}
 	return clean;
+}
+
+function getSystemMessage(user, mode) {
+	switch (mode) {
+		case 0:
+			return createDefaultSystemPrompt(user.name);
+		case 2:
+			return createStallResponsePrompt();
+		default:
+			return "";
+	}
 }

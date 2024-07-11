@@ -18,7 +18,8 @@ export async function handleAudioMessage(state, data) {
 			transcribing: true,
 			partialTranscript: [],
 			transcript: "",
-			partialResponse: "",
+			stallResponse: "",
+			stalling: false,
 			response: "",
 			lang: "en",
 			type: "audio",
@@ -27,9 +28,10 @@ export async function handleAudioMessage(state, data) {
 			logs: {},
 		};
 	}
-	// handlePartialResponse(ws, req, reqId, isComplete); // send audio response based on partial transcription to reduce latency
 	const req = state.requests[reqId];
 	console.log("partial transcript: ", req.partialTranscript);
+	handlePartialResponse(state.clientSocket, req); // send audio response based on partial transcription to reduce latency
+
 	if (req.partialTranscript.length === 0) {
 		req.logs.firstAudioChunkFromClient = Date.now();
 		req.logs.lang = lang;
@@ -61,6 +63,7 @@ export async function handleAudioMessage(state, data) {
 			state.STTSocket.addListener(LiveTranscriptionEvents.Close, () => {
 				req.logs.endTranscription = Date.now(); // logging
 				req.transcript = req.partialTranscript.join(" ");
+				req.transcribing = false;
 				state.clientSocket.send(
 					JSON.stringify({
 						type: "transcription_complete",
@@ -189,10 +192,26 @@ export async function useTranscriptionTTS(state, req) {
 	}
 }
 
-// async function handlePartialResponse(ws, req, reqId, isComplete);{
-// 	const request = req.requests[reqId]
-// 	if (isComplete || request.isComplete) return
-// 	const llmResponse = await getChatResponse([{ source: "user", request.partialResponse.join("") }],req._dbUser, groqModel,2)
-// 	if (request.isComplete) return
+async function handlePartialResponse(clientSocket, req) {
+	if (req.transcribing == false) return; // transcription already done, might as well as return the real response
+	if (req.stalling == true) return; // in the process of generating a stall response, or have done so already
+	let partialTranscript = req.partialTranscript.join(" ");
+	if (partialTranscript.length < 45) return; // not enough has been transcribed to give a meaning ful response
+	req.stalling = true;
+	partialTranscript += "...";
+	console.log("GENERATING STALL USING: ", partialTranscript);
+	const chatHistory = [{ source: "user", text: partialTranscript }]; // just sending the partial transcription, no history
+	const llmResponse = await getChatResponse(
+		chatHistory,
+		req.user,
+		groqModel,
+		2 // use mode 2
+	);
+}
 
-// }
+const req = {
+	transcribing: true,
+	stalling: false,
+	partialTranscript: ["I've", "been", "experiencing headaches", "almost every"],
+};
+handlePartialResponse(null, req);
