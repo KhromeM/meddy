@@ -1,10 +1,11 @@
 import db from "../db/db.mjs";
 import { chatStreamProvider } from "../ai/langAi/chatStream.mjs";
 
-export async function handleChatMessage(ws, data, user) {
+export async function handleChatMessage(state, data) {
+	const { clientSocket, user } = state;
 	const { text } = data;
 	if (!text) {
-		ws.send(
+		clientSocket.send(
 			JSON.stringify({ type: "error", data: "Text message is required" })
 		);
 		return;
@@ -18,7 +19,7 @@ export async function handleChatMessage(ws, data, user) {
 
 		for await (const chunk of stream) {
 			llmResponseChunks.push(chunk);
-			ws.send(JSON.stringify({ type: "chat_response", data: chunk }));
+			clientSocket.send(JSON.stringify({ type: "chat_response", data: chunk }));
 		}
 
 		const llmResponse = llmResponseChunks.join("");
@@ -26,10 +27,10 @@ export async function handleChatMessage(ws, data, user) {
 		await db.createMessage(user.userid, "user", text);
 		await db.createMessage(user.userid, "llm", llmResponse);
 
-		ws.send(JSON.stringify({ type: "chat_end" }));
+		clientSocket.send(JSON.stringify({ type: "chat_end" }));
 	} catch (error) {
 		console.error("Error in chat stream:", error.message);
-		ws.send(
+		clientSocket.send(
 			JSON.stringify({ type: "error", data: "Error processing chat message" })
 		);
 	}

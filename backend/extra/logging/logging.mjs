@@ -2,9 +2,9 @@ import { createWriteStream } from "fs";
 import { mkdir } from "fs";
 import path from "path";
 
-export const writeLog = (req, clean = true) => {
-	req.logging.transcript = req.transcript; // copy transcript to the logging object
-	const log = JSON.parse(JSON.stringify(req.logging)); // make a deep copy of the logging object
+export const writeLog = (req) => {
+	req.logs.transcript = req.transcript; // copy transcript to the logging object
+	const log = JSON.parse(JSON.stringify(req.logs)); // make a deep copy of the logging object
 
 	const logDir = "./extra/logs";
 	const fileName = `LOG_${new Date().toISOString().replace(/:/g, "-")}.txt`;
@@ -50,10 +50,4 @@ export const writeLog = (req, clean = true) => {
 
 		stream.end();
 	});
-	if (clean) {
-		// clean the state stored in the req object
-		req.partialTranscript = [];
-		req.dg = null;
-		req.logging = {};
-	}
 };
