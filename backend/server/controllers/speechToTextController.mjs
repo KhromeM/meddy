@@ -2,68 +2,66 @@ import {
   transcribeSpeech,
   translateSpeech,
 } from "../../ai/audio/speechToText.mjs";
+import fs from "fs";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 
-const MAX_CHUNK_SIZE = 24 * 1024 * 1024; // 24MB to be safe
+import multer from "multer";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-function base64ToBuffer(base64) {
-  return Buffer.from(base64, "base64");
-}
-
-function chunkBuffer(buffer, maxChunkSize) {
-  const chunks = [];
-  for (let i = 0; i < buffer.length; i += maxChunkSize) {
-    chunks.push(buffer.slice(i, i + maxChunkSize));
-  }
-  return chunks;
-}
-
-async function processAudioChunk(
-  audioBuffer,
-  tscLanguage,
-  isTranslation = false
-) {
-  const stream = Readable.from(audioBuffer);
-  const result = "";
-
-  if (isTranslation) {
-    result = await translateSpeech(stream);
-  } else {
-    result = await transcribeSpeech(stream, tscLanguage);
-  }
-
-  return result.text;
-}
-
-async function processLargeAudio(audioBuffer, language, translate = false) {
-  const chunks = chunkBuffer(audioBuffer, MAX_CHUNK_SIZE);
-  let results = [];
-
-  for (const chunk of chunks) {
-    const result = await processAudioChunk(chunk, language, translate);
-    results.push(result);
-  }
-
-  return results.join(" ");
-}
-
-export const postAudioTrans = async (req, res) => {
-  try {
-    const { audioData, language = "en", translate = false } = req.body;
-
-    if (!audioData) {
-      return res.status(400).json({ error: "No audio data provided" });
+const multerConfig = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const userDir = join(
+      __dirname,
+      "../../uploads",
+      req._dbUser.userid.toString()
+    );
+    if (!fs.existsSync(userDir)) {
+      fs.mkdirSync(userDir, { recursive: true });
     }
+    cb(null, userDir);
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
 
-    const audioBuffer = base64ToBuffer(audioData);
-    const result = await processLargeAudio(audioBuffer, language, translate);
+const upload = multer({ storage: multerConfig });
 
-    res.json({ result });
-  } catch (error) {
-    console.error("Error processing audio:", error);
-    res
-      .status(500)
-      .json({ error: "Error processing audio", details: error.message });
-  } finally {
-    res.end();
-  }
-};
+export const postAudioTrans = [
+  upload.single("audio"),
+  async (req, res) => {
+    try {
+      const { language = "en", translate = "false" } = req.body;
+      const audioFile = req.file;
+
+      if (!audioFile) {
+        return res.status(400).json({ error: "No audio file provided" });
+      }
+
+      const fileStream = fs.createReadStream(audioFile.path);
+
+      let result;
+      if (translate === "true") {
+        result = await translateSpeech(fileStream);
+      } else {
+        result = await transcribeSpeech(fileStream, language);
+      }
+
+      // Clean up the temporary file
+      fs.unlink(audioFile.path, (err) => {
+        if (err) console.error("Error deleting temporary file:", err);
+      });
+
+      res.json({ result });
+    } catch (error) {
+      console.error("Error processing audio:", error);
+      res
+        .status(500)
+        .json({ error: "Error processing audio", details: error.message });
+    } finally {
+      res.end();
+    }
+  },
+];
