@@ -117,51 +117,45 @@ const TTSWithChatHistory = async (chatHistory) => {
  * @param {Array} chatHistory - Array of message objects representing the chat history
  * @param {WebSocket} outputSocket - WebSocket connection to the client for forwarding audio
  * @param {WriteStream} fileStream - File stream to write the audio locally
- * @param {Object} user - User object from DB
- * @param {Object} req -- Request object from express, used for logging
- * @param {string} reqID - Request ID to differentiate results from different requests
- * @param {string} [lang="ENG"] - Language for text-to-speech, defaults to English
+ * @param {Object} req -- Request object containing a lot of information
  * @returns {Promise<void>}
  */
-export const TTS_WS = async (
-	chatHistory,
-	outputSocket,
-	fileStream,
-	user,
-	req,
-	reqID = "TEST",
-	lang = "en"
-) => {
-	const llmStream = await chatStreamProvider(chatHistory, user, defaultModel);
-	const ws = new WebSocket(
+export const TTS_WS = async (chatHistory, clientSocket, fileStream, req) => {
+	const llmStream = await chatStreamProvider(
+		chatHistory,
+		req.user,
+		defaultModel
+	);
+	const TTS_Socket = new WebSocket(
 		`wss://api.elevenlabs.io/v1/text-to-speech/${
-			VOICES[lang]
-		}/stream-input?model_id=${lang == "en" ? TTSEnglish : TTSMulti}`
+			VOICES[req.lang]
+		}/stream-input?model_id=${req.lang == "en" ? TTSEnglish : TTSMulti}`
 	);
 	streamLLMToElevenLabs(
-		ws,
+		TTS_Socket,
 		llmStream,
-		outputSocket,
+		clientSocket,
 		(data) => {
 			const message = JSON.parse(data);
-			outputSocket.send(JSON.stringify({ ...message, reqID, type: "audio" }));
+			clientSocket.send(
+				JSON.stringify({ ...message, reqId: req.reqId, type: "audio" })
+			);
 			if (message.audio) {
 				// logging
-				if (!req.logging.firstAudioChunkFromTTS) {
-					req.logging.firstAudioChunkFromTTS = Date.now();
+				if (!req.logs.firstAudioChunkFromTTS) {
+					req.logs.firstAudioChunkFromTTS = Date.now();
 				}
 				const audioChunk = Buffer.from(message.audio, "base64");
 				fileStream.write(audioChunk); // write the audio to some file in the server as well to save it
 			}
 			if (message.isFinal) {
 				// dont close client connection!
-				req.logging.lastAudioChunkFromTTS = Date.now(); // Logging
-				writeLog(req, true); // write the log and clean the state stored in req
+				req.logs.lastAudioChunkFromTTS = Date.now(); // Logging
+				writeLog(req); // write the logs
 				fileStream.end(); // the file were writing to
-				ws.close(); //close elevenlabs ws connection
+				TTS_Socket.close(); //close elevenlabs ws connection
 			}
 		},
-		user,
 		req
 	);
 };
@@ -207,11 +201,10 @@ export const TTS_SSE = async (
 
 /**
  * Streams LLM output to ElevenLabs API for text-to-speech conversion
- * @param {WebSocket} ws - WebSocket connection to ElevenLabs API
+ * @param {WebSocket} TTS_Socket - WebSocket connection to ElevenLabs API
  * @param {AsyncIterable<string>} llmStream - Async iterable of LLM text chunks
  * @param {WebSocket} outputSocket - WebSocket connection to the client for forwarding audio
  * @param {function} callback - Callback function to handle messages from ElevenLabs
- * @param {Object} user - User object from DB
  * @param {Object} req -- Request object from express, used for logging
  * @param {Object} [voiceSettings] - Voice settings for ElevenLabs API
  * @param {number} [optimize_streaming_latency=0] - Latency optimization level
@@ -219,19 +212,18 @@ export const TTS_SSE = async (
  * @returns {Promise<void>}
  */
 async function streamLLMToElevenLabs(
-	ws,
+	TTS_Socket,
 	llmStream,
 	outputSocket,
 	callback,
-	user,
 	req,
 	voiceSettings,
 	optimize_streaming_latency,
 	chunk_length_schedule,
 	bufferLimit
 ) {
-	ws.on("open", async () => {
-		ws.send(
+	TTS_Socket.on("open", async () => {
+		TTS_Socket.send(
 			JSON.stringify({
 				text: BOS_MESSAGE,
 				voice_settings: voiceSettings || {
@@ -247,22 +239,26 @@ async function streamLLMToElevenLabs(
 		let partialResponse = "";
 		for await (const chunk of llmStream) {
 			// logging
-			if (req && !req.logging.firstLLMChunk) {
-				req.logging.firstLLMChunk = Date.now();
-				req.logging.model = defaultModel.model;
+			if (req && !req.logs.firstLLMChunk) {
+				req.logs.firstLLMChunk = Date.now();
+				req.logs.model = defaultModel.model;
 			}
 			partialResponse += chunk;
 			totalResponse.push(chunk);
 			if (outputSocket) {
 				outputSocket.send(
-					JSON.stringify({ type: "chat_response", data: chunk })
+					JSON.stringify({
+						type: "chat_response",
+						data: chunk,
+						reqId: req.reqId,
+					})
 				);
 			}
 			if (
 				partialResponse.length > bufferLimit || // if the built up response is more than 500 characters
 				endOfSentenceMarkersSet.has(chunk[chunk.length - 1]) // if the built up response ends with a ending of sentence signifier
 			) {
-				ws.send(
+				TTS_Socket.send(
 					JSON.stringify({
 						text: partialResponse + CHUNK_SEPERATOR,
 					})
@@ -270,13 +266,14 @@ async function streamLLMToElevenLabs(
 				partialResponse = "";
 			}
 		}
-		req.logging.llmResponse = totalResponse.join(""); // logging
-		await db.createMessage(user.userid, "llm", totalResponse.join(""));
+		req.logs.llmResponse = totalResponse.join(""); // logging
+		req.response = req.logs.llmResponse;
+		await db.createMessage(req.user.userid, "llm", totalResponse.join(""));
 
-		ws.send(JSON.stringify({ text: EOS_MESSAGE }));
+		TTS_Socket.send(JSON.stringify({ text: EOS_MESSAGE }));
 	});
-	ws.on("message", callback);
-	ws.on("error", (error) => {
+	TTS_Socket.on("message", callback);
+	TTS_Socket.on("error", (error) => {
 		console.error("WebSocket error:", error);
 	});
 }

@@ -20,10 +20,30 @@ const runMiddleware = (req, res, middleware) => {
 export function setupWebSocketHandlers(wss) {
 	wss.on("connection", async (ws, req) => {
 		try {
-			let user = null;
-			req.partialTranscript = []; // use as state to build up partial transcriptions
-			req.transcript = ""; // save completed transcriptions here
-			req.logging = {}; // for logging
+			// holds the state for all the state for a ws connection
+			const state = {
+				requests: {
+					// holds all the requests, using reqID as key
+					EXAMPLE: {
+						reqId: "EXAMPLE",
+						transcribing: true,
+						partialTranscript: [],
+						transcript: "",
+						partialResponse: "",
+						response: "",
+						lang: "en",
+						type: "audio",
+						isComplete: false,
+						user: null,
+						logs: {},
+					},
+				},
+				authenticated: false,
+				clientSocket: ws,
+				STTSocket: null,
+				STTTimeout: null,
+				user: null,
+			};
 			ws.on("error", (error) => {
 				if (CONFIG.TEST) {
 					return;
@@ -31,10 +51,10 @@ export function setupWebSocketHandlers(wss) {
 				console.error("WebSocket error:", error);
 			});
 			ws.on("close", (code, reason) => {
-				if (req.dg) {
-					req.dg.requestClose();
+				if (state.STTSocket) {
+					state.STTSocket.requestClose();
 				}
-				clearTimeout(req.dgTimeout);
+				clearTimeout(state.STTimeout);
 			});
 
 			ws.on("message", async (message) => {
@@ -53,26 +73,21 @@ export function setupWebSocketHandlers(wss) {
 							// runMiddleware(loggerMiddleware)
 							await runMiddleware(req, res, authMiddleware);
 							await runMiddleware(req, res, userMiddleware);
-							user = req._dbUser;
-							req.auth = true;
+							state.user = req._dbUser;
+							state.authenticated = true;
 							ws.send(JSON.stringify({ type: "auth" }));
 							break;
 						case "chat":
-							if (!req.auth) {
+							if (!state.authenticated) {
 								throw new Error("WS connection not authenticated");
 							}
-							await handleChatMessage(ws, data, user);
+							await handleChatMessage(state, data);
 							break;
 						case "audio":
-							if (!req.auth) {
+							if (!state.authenticated) {
 								throw new Error("WS connection not authenticated");
 							}
-							console.log(
-								req.partialTranscript,
-								req.transcript,
-								req.dg?.getReadyState()
-							);
-							await handleAudioMessage(ws, req, data, user);
+							await handleAudioMessage(state, data);
 							break;
 						default:
 							ws.send(

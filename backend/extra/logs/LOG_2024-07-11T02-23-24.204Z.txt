@@ -1,0 +1,16 @@
+User query:  
+User query length: 1
+User query language: en
+LLM model: gpt-4o
+LLM response: It seems like your message didn't come through. If you have any questions or need assistance with anything related to your health or medical care, please try typing them again. I'm here to help you! 😊
+LLM response length: 201
+Time between last audio chunk and end of transcription: 5921
+Time between end of transcription and first llm chunk: 984
+Time between end of first llm chunk and first audio chunk from TTS: 949
+Total time to get first audio chunk from TTS after getting last audio chunk from client: 7854
+
+
+
+JSON:
+
+{"firstAudioChunkFromClient":1720664595664,"lang":"en","lastAudioChunkFromClient":1720664595663,"endTranscription":1720664601584,"firstLLMChunk":1720664602568,"model":"gpt-4o","llmResponse":"It seems like your message didn't come through. If you have any questions or need assistance with anything related to your health or medical care, please try typing them again. I'm here to help you! 😊","firstAudioChunkFromTTS":1720664603517,"lastAudioChunkFromTTS":1720664604204,"transcript":" "}
