@@ -34,8 +34,8 @@ dependencies:
 
   sidebarx: ^0.17.1
   flutter_riverpod: ^2.5.1
-  firebase_auth: ^5.1.1
-  firebase_core: ^3.1.1
+  firebase_auth: ^4.15.3
+  firebase_core: ^2.24.2
   google_sign_in: ^6.2.1
 
 dev_dependencies:
