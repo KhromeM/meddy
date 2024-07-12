@@ -1,0 +1,16 @@
+User query: 
+User query length: 0
+User query language: undefined
+LLM model: gpt-4o
+LLM response: "Camping and fishing, sounds fun."
+LLM response length: 34
+Time between last audio chunk and end of transcription: NaN
+Time between end of transcription and first llm chunk: NaN
+Time between end of first llm chunk and first audio chunk from TTS: 585
+Total time to get first audio chunk from TTS after getting last audio chunk from client: NaN
+
+
+
+JSON:
+
+{"firstLLMChunk":1720750328416,"model":"gpt-4o","llmResponse":"\"Camping and fishing, sounds fun.\"","firstAudioChunkFromTTS":1720750329001,"lastAudioChunkFromTTS":1720750329006,"transcript":""}
