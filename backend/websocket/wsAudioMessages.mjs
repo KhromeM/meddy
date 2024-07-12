@@ -71,7 +71,7 @@ export async function handleAudioMessage(state, data) {
 						reqId,
 					})
 				);
-				useTranscriptionTTS(state, req); // responds in audio
+				useTranscriptionTTS(state.clientSocket, req); // responds in audio
 			});
 
 			state.STTSocket.addListener(LiveTranscriptionEvents.Error, (err) => {
@@ -166,7 +166,7 @@ export async function useTranscription(ws, req) {
 }
 
 // respond to audio message with text and audio
-export async function useTranscriptionTTS(state, req) {
+export async function useTranscriptionTTS(clientSocket, req) {
 	const text = req.transcript;
 	try {
 		const chatHistory = await db.getRecentMessagesByUserId(
@@ -179,10 +179,10 @@ export async function useTranscriptionTTS(state, req) {
 		const fileName =
 			filePath + new Date(Date.now()).toISOString() + `audio.mp3`;
 		const fileStream = createWriteStream(fileName);
-		TTS_WS(chatHistory, state.clientSocket, fileStream, req);
+		TTS_WS(chatHistory, clientSocket, fileStream, req);
 	} catch (error) {
 		console.error("Error in audio stream:", error.message);
-		state.clientSocket.send(
+		clientSocket.send(
 			JSON.stringify({
 				type: "error",
 				data: "Error processing audio message",
@@ -192,26 +192,30 @@ export async function useTranscriptionTTS(state, req) {
 	}
 }
 
-async function handlePartialResponse(clientSocket, req) {
+export async function handlePartialResponse(clientSocket, req) {
 	if (req.transcribing == false) return; // transcription already done, might as well as return the real response
 	if (req.stalling == true) return; // in the process of generating a stall response, or have done so already
 	let partialTranscript = req.partialTranscript.join(" ");
-	if (partialTranscript.length < 45) return; // not enough has been transcribed to give a meaning ful response
+	if (partialTranscript.length < 50) return; // not enough has been transcribed to give a meaning ful response
 	req.stalling = true;
 	partialTranscript += "...";
-	console.log("GENERATING STALL USING: ", partialTranscript);
+	console.log("GENERATING STALL USING: ");
 	const chatHistory = [{ source: "user", text: partialTranscript }]; // just sending the partial transcription, no history
-	const llmResponse = await getChatResponse(
-		chatHistory,
-		req.user,
-		groqModel,
-		2 // use mode 2
-	);
+	console.log(chatHistory);
+	const stallReq = {
+		reqId: "stall" + req.reqId,
+		transcribing: false,
+		partialTranscript: req.partialTranscript,
+		transcript: req.transcript,
+		response: "",
+		lang: req.lang,
+		isComplete: false,
+		user: req.user,
+		logs: {},
+		isStall: true,
+	};
+	const filePath = "./websocket/genAudio/stall/";
+	const fileName = filePath + new Date(Date.now()).toISOString() + `audio.mp3`;
+	const fileStream = createWriteStream(fileName);
+	TTS_WS(chatHistory, clientSocket, fileStream, stallReq, 1);
 }
-
-const req = {
-	transcribing: true,
-	stalling: false,
-	partialTranscript: ["I've", "been", "experiencing headaches", "almost every"],
-};
-handlePartialResponse(null, req);

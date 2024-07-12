@@ -1,0 +1,16 @@
+User query: 
+User query length: 0
+User query language: undefined
+LLM model: gpt-4o
+LLM response: "Hypertension can be a serious concern. That must be worrying for you."
+LLM response length: 71
+Time between last audio chunk and end of transcription: NaN
+Time between end of transcription and first llm chunk: NaN
+Time between end of first llm chunk and first audio chunk from TTS: 707
+Total time to get first audio chunk from TTS after getting last audio chunk from client: NaN
+
+
+
+JSON:
+
+{"firstLLMChunk":1720750925597,"model":"gpt-4o","llmResponse":"\"Hypertension can be a serious concern. That must be worrying for you.\"","firstAudioChunkFromTTS":1720750926304,"lastAudioChunkFromTTS":1720750926331,"transcript":""}

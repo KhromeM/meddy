@@ -1,0 +1,16 @@
+User query:  Hello.  
+User query length: 9
+User query language: en
+LLM model: gpt-4o
+LLM response: Hi there! How can I assist you with your health or medical care today? 😊
+LLM response length: 73
+Time between last audio chunk and end of transcription: 534
+Time between end of transcription and first llm chunk: -12735
+Time between end of first llm chunk and first audio chunk from TTS: 687
+Total time to get first audio chunk from TTS after getting last audio chunk from client: -11514
+
+
+
+JSON:
+
+{"firstAudioChunkFromClient":1720748831023,"lang":"en","lastAudioChunkFromClient":1720748833273,"endTranscription":1720748833807,"firstLLMChunk":1720748821072,"model":"gpt-4o","llmResponse":"Hi there! How can I assist you with your health or medical care today? 😊","firstAudioChunkFromTTS":1720748821759,"lastAudioChunkFromTTS":1720748835396,"transcript":" Hello.  "}

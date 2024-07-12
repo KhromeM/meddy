@@ -1,0 +1,16 @@
+User query: 
+User query length: 0
+User query language: undefined
+LLM model: gpt-4o
+LLM response: That sounds like a lovely time! Did you enjoy the fishing? How can I assist you with your health today?
+LLM response length: 103
+Time between last audio chunk and end of transcription: NaN
+Time between end of transcription and first llm chunk: NaN
+Time between end of first llm chunk and first audio chunk from TTS: 715
+Total time to get first audio chunk from TTS after getting last audio chunk from client: NaN
+
+
+
+JSON:
+
+{"firstLLMChunk":1720750264091,"model":"gpt-4o","llmResponse":"That sounds like a lovely time! Did you enjoy the fishing? How can I assist you with your health today?","firstAudioChunkFromTTS":1720750264806,"lastAudioChunkFromTTS":1720750264839,"transcript":""}

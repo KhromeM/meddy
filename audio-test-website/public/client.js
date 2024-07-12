@@ -190,13 +190,13 @@ window.addEventListener("load", () => {
 
 	socket.addEventListener("message", async (event) => {
 		const data = JSON.parse(event.data);
-		console.log(data);
+		console.log(data.type, data);
 
 		if (data.type === "chat_response") {
 			chatResponse += data.data;
 		} else if (data.type === "partial_transcript") {
 			userText += data.data + " ";
-		} else if (data.type === "audio") {
+		} else if (data.type.slice(0, 5) === "audio") {
 			queueAudioChunk(data.audio);
 		}
 		captions.innerHTML = getInner();
