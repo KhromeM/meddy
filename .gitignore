@@ -9,7 +9,7 @@ web-frontend/dist/
 **/genAudio/*
 **/.env
 **/.DS**
-
+**/*.lock
 # Miscellaneous
 *.class
 *.log
