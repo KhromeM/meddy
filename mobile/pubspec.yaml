@@ -44,6 +44,8 @@ dependencies:
 =======
 >>>>>>> 0cc2d4e (feat: basic chat with rest api)
 
+  web_socket_channel: ^2.4.0 # Use the latest version available
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
