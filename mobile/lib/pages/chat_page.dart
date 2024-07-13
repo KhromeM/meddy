@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meddymobile/models/message.dart';
 import 'package:meddymobile/services/chat_service.dart';
+import 'package:meddymobile/utils/ws_connection.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -10,6 +11,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  WSConnection ws = WSConnection();
   TextEditingController _textEditingController = TextEditingController();
   final ChatService _chatService = ChatService();
   bool _isTyping = false;

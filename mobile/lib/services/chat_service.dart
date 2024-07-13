@@ -20,11 +20,17 @@ class ChatService {
 
   Future<String> postChatMessage(String text) async {
     try {
-      final bodyReq = jsonEncode({"message": { "text": text,}});
-      final response = await http.post(Uri.parse('$baseUrl/chat'), headers: {
-        "Content-Type": "application/json",
-        "idToken": "dev",
-      }, body: bodyReq);
+      final bodyReq = jsonEncode({
+        "message": {
+          "text": text,
+        }
+      });
+      final response = await http.post(Uri.parse('$baseUrl/chat'),
+          headers: {
+            "Content-Type": "application/json",
+            "idToken": "dev",
+          },
+          body: bodyReq);
       return jsonDecode(response.body)['text'];
     } catch (e) {
       print(e.toString());

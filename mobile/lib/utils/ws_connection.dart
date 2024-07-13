@@ -3,33 +3,34 @@ import 'package:web_socket_channel/status.dart' as status;
 import 'dart:async';
 import 'dart:convert';
 
+typedef Handler = void Function(Map<String, dynamic>);
+
 class WSConnection {
   WebSocketChannel? _channel;
   bool _isConnected = false;
   final String _serverUrl = 'ws://localhost:8000/api';
-
+  final Map<String, Handler> _handlers = {};
   Completer<bool>? _authCompleter;
+
+  WSConnection() {
+    _handlers['auth'] = _defaultAuthHandler;
+  }
+
+  void setHandler(String type, Handler handler) {
+    _handlers[type] = handler;
+  }
 
   Future<void> connect() async {
     try {
       _channel = WebSocketChannel.connect(Uri.parse(_serverUrl));
-      await _channel!.ready;
+      await _channel?.ready;
       _isConnected = true;
       print('WebSocket connected');
 
-      _channel!.stream.listen(
-        (message) {
-          print('Received: $message');
-          _handleMessage(message);
-        },
-        onDone: () {
-          print('WebSocket connection closed');
-          _isConnected = false;
-        },
-        onError: (error) {
-          print('WebSocket error: $error');
-          _isConnected = false;
-        },
+      _channel?.stream.listen(
+        _handleIncomingMessage,
+        onDone: _handleDisconnect,
+        onError: _handleError,
       );
       await authenticate();
       print("Authenticated!");
@@ -37,6 +38,32 @@ class WSConnection {
       print('WebSocket connection failed: $e');
       _isConnected = false;
     }
+  }
+
+  void _handleIncomingMessage(dynamic message) {
+    try {
+      Map<String, dynamic> parsedMessage = json.decode(message);
+      print('Received: $parsedMessage');
+      String type = parsedMessage['type'] as String? ?? 'UNKNOWN_MESSAGE_TYPE';
+      Handler handler = _handlers[type] ?? _handleUnknownMessage;
+      handler(parsedMessage);
+    } catch (e) {
+      print('Error handling message: $e');
+    }
+  }
+
+  void _handleUnknownMessage(Map<String, dynamic> message) {
+    print('Received unknown message type: ${message['type']}');
+  }
+
+  void _handleDisconnect() {
+    print('WebSocket connection closed');
+    _isConnected = false;
+  }
+
+  void _handleError(error) {
+    print('WebSocket error: $error');
+    _isConnected = false;
   }
 
   Future<bool> authenticate() async {
@@ -54,18 +81,14 @@ class WSConnection {
     return _authCompleter!.future;
   }
 
-  void _handleMessage(dynamic message) {
-    Map<String, dynamic> parsedMessage = json.decode(message);
-
-    if (parsedMessage['type'] == 'auth') {
-      _authCompleter?.complete(true);
-      _authCompleter = null;
-    }
+  void _defaultAuthHandler(Map<String, dynamic> _) {
+    _authCompleter?.complete(true);
+    _authCompleter = null;
   }
 
   void sendMessage(Object message) {
     if (_isConnected) {
-      _channel!.sink.add(json.encode(message));
+      _channel?.sink.add(json.encode(message));
       print('Sent: $message');
     } else {
       print('WebSocket is not connected');
@@ -74,7 +97,7 @@ class WSConnection {
 
   void disconnect() {
     if (_isConnected) {
-      _channel!.sink.close(status.goingAway);
+      _channel?.sink.close(status.goingAway);
       _isConnected = false;
       print('WebSocket disconnected');
     }
