@@ -53,7 +53,8 @@ const Chat = () => {
 			setInProgress(false);
 		};
 
-		chatLLMStreamWS(message, onChunk, onComplete);
+		// chatLLMStreamWS(message, onChunk, onComplete);
+		chatLLMStream(message, onChunk, onComplete);
 	};
 
 	const addMessageFromUser = (message) => {
