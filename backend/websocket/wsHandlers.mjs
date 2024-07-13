@@ -6,10 +6,14 @@ import db from "../db/db.mjs";
 import userMiddleware from "../server/middleware/userMiddleware.mjs";
 import loggerMiddleware from "../server/middleware/loggerMiddleware.mjs";
 import CONFIG from "../config.mjs";
+<<<<<<< HEAD
 import { createDGSocket } from "../ai/audio/speechToTextDeepgram.mjs";
 import { LiveTranscriptionEvents } from "@deepgram/sdk";
 import { TTS_WS } from "../ai/audio/textToSpeechElevenLab.mjs";
 import { createWriteStream } from "fs";
+=======
+
+>>>>>>> de8a06edf0292480030e11bb391fea988de65fa3
 const defaultModel = vertexAIModel;
 
 const runMiddleware = (req, res, middleware) => {
@@ -28,8 +32,11 @@ export function setupWebSocketHandlers(wss) {
 	wss.on("connection", async (ws, req) => {
 		try {
 			let user = null;
+<<<<<<< HEAD
 			req.partialTranscript = []; // use as state to build up partial transcriptions
 			req.transcript = ""; // save completed transcriptions here
+=======
+>>>>>>> de8a06edf0292480030e11bb391fea988de65fa3
 			ws.on("error", (error) => {
 				if (CONFIG.TEST) {
 					return;
@@ -37,19 +44,30 @@ export function setupWebSocketHandlers(wss) {
 				console.error("WebSocket error:", error);
 			});
 			ws.on("close", (code, reason) => {
+<<<<<<< HEAD
 				if (req.dg) {
 					req.dg.requestClose();
 				}
 				clearTimeout(req.dgTimeout);
+=======
+				// console.log(`WebSocket closed with code ${code} and reason: ${reason}`);
+>>>>>>> de8a06edf0292480030e11bb391fea988de65fa3
 			});
 
 			ws.on("message", async (message) => {
 				try {
 					const { type, data } = JSON.parse(message);
+<<<<<<< HEAD
 					if (!type || !data) {
 						throw new Error("Invalid message format");
 					}
 					console.log(type);
+=======
+
+					if (!type || !data) {
+						throw new Error("Invalid message format");
+					}
+>>>>>>> de8a06edf0292480030e11bb391fea988de65fa3
 					switch (type) {
 						case "auth":
 							const { idToken } = data;
@@ -69,6 +87,7 @@ export function setupWebSocketHandlers(wss) {
 							}
 							await handleChatMessage(ws, data, user);
 							break;
+<<<<<<< HEAD
 						case "audio":
 							if (!req.auth) {
 								throw new Error("WS connection not authenticated");
@@ -80,6 +99,8 @@ export function setupWebSocketHandlers(wss) {
 							);
 							await handleAudioMessage(ws, req, data, user);
 							break;
+=======
+>>>>>>> de8a06edf0292480030e11bb391fea988de65fa3
 						// Add case handlers for audio
 						default:
 							ws.send(
@@ -108,7 +129,11 @@ async function handleChatMessage(ws, data, user) {
 	try {
 		const chatHistory = await db.getRecentMessagesByUserId(user.userid, 100);
 		chatHistory.push({ source: "user", text });
+<<<<<<< HEAD
 		const stream = await chatStreamProvider(chatHistory, user);
+=======
+		const stream = await chatStreamProvider(chatHistory, user, defaultModel, 0);
+>>>>>>> de8a06edf0292480030e11bb391fea988de65fa3
 
 		let llmResponseChunks = [];
 
@@ -130,6 +155,7 @@ async function handleChatMessage(ws, data, user) {
 		);
 	}
 }
+<<<<<<< HEAD
 
 async function handleAudioMessage(ws, req, data) {
 	const { audioChunk, reqId, isComplete, lang } = data;
@@ -268,3 +294,5 @@ async function useTranscriptionTTS(ws, req, lang) {
 		);
 	}
 }
+=======
+>>>>>>> de8a06edf0292480030e11bb391fea988de65fa3

@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:meddymobile/main.dart';
 import 'package:meddymobile/pages/signin_page.dart';
+import '../pages/my_home_page.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return CircularProgressIndicator(); // Show a loading indicator while waiting for auth state
           } else if (snapshot.hasData) {
-            return MyHomePage();
+            return const MyHomePage();
           }
           return const SignInPage();
         },

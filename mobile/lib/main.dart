@@ -3,18 +3,27 @@ import 'package:provider/provider.dart';
 import 'utils/my_app_state.dart';
 import 'widgets/my_app.dart';
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 import 'package:firebase_core/firebase_core.dart';
 >>>>>>> 38247b1 (Fixed wrong google-services.json file.)
 
 void main() {
 <<<<<<< HEAD
+=======
+import 'package:firebase_core/firebase_core.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+>>>>>>> de8a06edf0292480030e11bb391fea988de65fa3
   runApp(
     ChangeNotifierProvider(
       create: (context) => MyAppState(),
       child: MyApp(),
     ),
   );
+<<<<<<< HEAD
 =======
   runApp(MyApp());
 }
@@ -361,4 +370,6 @@ class ChatPage extends StatelessWidget {
     );
   }
 >>>>>>> d8e2b61 (Updated gitignore to prvent firebase credentials get uploaded. Added dependencies for firebase auth and firebase core)
+=======
+>>>>>>> de8a06edf0292480030e11bb391fea988de65fa3
 }

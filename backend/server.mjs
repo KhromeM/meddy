@@ -10,9 +10,7 @@ import authMiddleware from "./server/middleware/authMiddleware.mjs";
 import loggerMiddleware from "./server/middleware/loggerMiddleware.mjs";
 import userMiddleware from "./server/middleware/userMiddleware.mjs";
 import errorHandler from "./server/middleware/errorHandler.mjs";
-import { setupErrorHandlers } from "./extra/errorHandlers.mjs";
-
-setupErrorHandlers();
+import url from "url";
 
 export const app = express();
 app.use(cors());
@@ -36,5 +34,5 @@ const wss = new WebSocketServer({ server: server });
 setupWebSocketHandlers(wss);
 
 server.listen(CONFIG.port, () => {
-	console.log("Server is listening to port: " + CONFIG.port);
+  console.log("Server is listening to port: " + CONFIG.port);
 });
