@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:meddymobile/models/message.dart';
 import 'package:meddymobile/services/chat_service.dart';
 import 'package:meddymobile/utils/ws_connection.dart';
+import 'package:meddymobile/services/audio_service.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -11,11 +12,13 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  WSConnection ws = WSConnection();
+  WSConnection ws = WSConnection(); // add handler for chat and audio
   TextEditingController _textEditingController = TextEditingController();
   final ChatService _chatService = ChatService();
-  bool _isTyping = false;
   List<Message> _chatHistory = [];
+  late AudioService _audioService;
+  bool _isTyping = false;
+  bool _isRecording = false;
   bool _isLoading = true;
 
   ScrollController _scrollController = ScrollController();
@@ -23,6 +26,12 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
+    ws.connect();
+    _audioService = AudioService(ws);
+    ws.setHandler("audio", (message) {
+      print('Got audio! ${message.length}');
+    });
+
     _textEditingController.addListener(() {
       setState(() {
         _isTyping = _textEditingController.text.isNotEmpty;
@@ -85,9 +94,12 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void _startListening() {
+  void _toggleAudio() async {
     // Logic to start listening to user's voice input (Left as placeholder)
-    print('Start listening...');
+    _isRecording = await _audioService.toggleRecording();
+    setState(() {
+      print('Audio Mode: $_isRecording');
+    });
     // Example of functionality: Implement speech-to-text or voice recognition
   }
 
@@ -129,13 +141,17 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                   ),
                   InkWell(
-                    onTap: _isTyping ? _sendMessage : _startListening,
+                    onTap: (_isTyping && !_isRecording)
+                        ? _sendMessage
+                        : _toggleAudio,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Icon(
-                        _isTyping
-                            ? Icons.arrow_forward_ios_rounded
-                            : Icons.mic_rounded,
+                        _isRecording
+                            ? Icons.stop
+                            : (_isTyping
+                                ? Icons.arrow_forward_ios_rounded
+                                : Icons.mic_rounded),
                         color: Theme.of(context).primaryColor,
                       ),
                     ),

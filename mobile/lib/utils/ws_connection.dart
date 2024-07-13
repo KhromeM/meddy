@@ -44,7 +44,7 @@ class WSConnection {
     try {
       Map<String, dynamic> parsedMessage = json.decode(message);
       print('Received: $parsedMessage');
-      String type = parsedMessage['type'] as String? ?? 'UNKNOWN_MESSAGE_TYPE';
+      String type = parsedMessage['type'] as String? ?? 'UNKNOWN';
       Handler handler = _handlers[type] ?? _handleUnknownMessage;
       handler(parsedMessage);
     } catch (e) {

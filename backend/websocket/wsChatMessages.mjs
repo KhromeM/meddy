@@ -19,7 +19,13 @@ export async function handleChatMessage(state, data) {
 
 		for await (const chunk of stream) {
 			llmResponseChunks.push(chunk);
-			clientSocket.send(JSON.stringify({ type: "chat_response", data: chunk }));
+			clientSocket.send(
+				JSON.stringify({
+					type: "chat_response",
+					data: chunk,
+					isComplete: false,
+				})
+			);
 		}
 
 		const llmResponse = llmResponseChunks.join("");
@@ -27,7 +33,9 @@ export async function handleChatMessage(state, data) {
 		await db.createMessage(user.userid, "user", text);
 		await db.createMessage(user.userid, "llm", llmResponse);
 
-		clientSocket.send(JSON.stringify({ type: "chat_end" }));
+		clientSocket.send(
+			JSON.stringify({ type: "chat_response", isComplete: true })
+		);
 	} catch (error) {
 		console.error("Error in chat stream:", error.message);
 		clientSocket.send(
