@@ -64,7 +64,7 @@ export const chatLLMStream = async (user, message, onChunk, onComplete) => {
 	}
 };
 
-const wsURL = isProd ? "ws://www.trymeddy.com/api" : "ws://localhost:8000/api";
+const wsURL = isProd ? "wss://www.trymeddy.com/api" : "ws://localhost:8000/api";
 let socket = null;
 let socketAuthState = false;
 
