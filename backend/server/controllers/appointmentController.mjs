@@ -1,17 +1,23 @@
 import db from "../../db/db.mjs";
 
 export const createAppointment = async (req, res) => {
-	const { date, transcript, userId, doctorId } = req.body;
-
+	const { date, transcript, transcriptSummary, description, userId, doctorId } = req.body;
 	if (!date || !userId || !doctorId) {
 		return res.status(400).json({
 			status: "fail",
-			message: "date, userId, and doctorId are required, transcript is optional.",
+			message:
+				"date, userId, and doctorId are required. transcript, transcriptSummary, and description are optional.",
 		});
 	}
-
 	try {
-		const appointment = await db.createAppointment(date, transcript, userId, doctorId);
+		const appointment = await db.createAppointment(
+			date,
+			transcript,
+			transcriptSummary,
+			description,
+			userId,
+			doctorId
+		);
 		res.status(201).json({ appointment });
 	} catch (err) {
 		console.error(err);
@@ -31,11 +37,9 @@ export const getAllAppointments = async (req, res) => {
 
 export const getAppointmentById = async (req, res) => {
 	const { appointmentId } = req.params;
-
 	if (!appointmentId) {
 		return res.status(400).json({ status: "fail", message: "appointmentId is required" });
 	}
-
 	try {
 		const appointment = await db.getAppointmentById(appointmentId);
 		res.status(200).json({ appointment });
@@ -47,18 +51,15 @@ export const getAppointmentById = async (req, res) => {
 
 export const insertTranscript = async (req, res) => {
 	const { appointmentId } = req.params;
-	const { transcript } = req.body;
-
+	const { transcript, transcriptSummary } = req.body;
 	if (!appointmentId) {
 		return res.status(400).json({ status: "fail", message: "appointmentId is required" });
 	}
-
 	if (!transcript) {
 		return res.status(400).json({ status: "fail", message: "transcript is required" });
 	}
-
 	try {
-		const appointment = await db.insertTranscript(appointmentId, transcript);
+		const appointment = await db.insertTranscript(appointmentId, transcript, transcriptSummary);
 		res.status(200).json({ appointment });
 	} catch (err) {
 		console.error(err);
@@ -68,21 +69,27 @@ export const insertTranscript = async (req, res) => {
 
 export const updateAppointment = async (req, res) => {
 	const { appointmentId } = req.params;
-	const { date, transcript, userId, doctorId } = req.body;
-
+	const { date, transcript, transcriptSummary, description, userId, doctorId } = req.body;
 	if (!appointmentId) {
 		return res.status(400).json({ status: "fail", message: "appointmentId is required" });
 	}
-
 	if (!date || !userId || !doctorId) {
 		return res.status(400).json({
 			status: "fail",
-			message: "date, userId, and doctorId are required, transcript is optional.",
+			message:
+				"date, userId, and doctorId are required. transcript, transcriptSummary, and description are optional.",
 		});
 	}
-
 	try {
-		const appointment = await db.updateAppointment(appointmentId, date, transcript, userId, doctorId);
+		const appointment = await db.updateAppointment(
+			appointmentId,
+			date,
+			transcript,
+			transcriptSummary,
+			description,
+			userId,
+			doctorId
+		);
 		res.status(200).json({ appointment });
 	} catch (err) {
 		console.error(err);
@@ -92,11 +99,9 @@ export const updateAppointment = async (req, res) => {
 
 export const deleteAppointment = async (req, res) => {
 	const { appointmentId } = req.params;
-
 	if (!appointmentId) {
 		return res.status(400).json({ status: "fail", message: "appointmentId is required" });
 	}
-
 	try {
 		await db.deleteAppointment(appointmentId);
 		res.status(200).json({ message: "Deleted appointment successfully" });
