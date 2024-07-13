@@ -37,6 +37,12 @@ dependencies:
   firebase_auth: ^4.15.3
   firebase_core: ^2.24.2
   google_sign_in: ^6.2.1
+  http: ^1.1.0
+<<<<<<< HEAD
+
+  web_socket_channel: ^2.4.0 # Use the latest version available
+=======
+>>>>>>> 0cc2d4e (feat: basic chat with rest api)
 
   web_socket_channel: ^2.4.0 # Use the latest version available
 

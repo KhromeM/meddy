@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:meddymobile/models/message.dart';
+import 'package:meddymobile/services/chat_service.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -9,7 +11,12 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   TextEditingController _textEditingController = TextEditingController();
+  final ChatService _chatService = ChatService();
   bool _isTyping = false;
+  List<Message> _chatHistory = [];
+  bool _isLoading = true;
+
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -19,16 +26,60 @@ class _ChatPageState extends State<ChatPage> {
         _isTyping = _textEditingController.text.isNotEmpty;
       });
     });
+    _loadChatHistory();
+    _scrollToBottom();
   }
 
-  void _sendMessage() {
+  Future<void> _loadChatHistory() async {
+    try {
+      List<Message> chatHistory = await _chatService.getChatHistory();
+      setState(() {
+        _chatHistory = chatHistory;
+        _isLoading = false;
+      });
+      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+    } catch (e) {
+      print('Failed to load chat history: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _addMessageToChatHistory(String source, String text) {
+    setState(() {
+      _chatHistory.add(Message(
+        messageId: _chatHistory.length + 1,
+        userId: "DEVELOPER",
+        source: source,
+        text: text,
+        time: DateTime.now(),
+      ));
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+  }
+
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
+  void _sendMessage() async {
     if (_textEditingController.text.isNotEmpty) {
-      // Logic to send message to LLM (Left as placeholder)
-      print('Sending message: ${_textEditingController.text}');
-      // Clear text field after sending message
-      _textEditingController.clear();
-      // Assuming receiving a response from LLM after sending
-      // You can implement response handling hereß
+      try {
+        String text = _textEditingController.text;
+        _addMessageToChatHistory("user", _textEditingController.text);
+        _textEditingController.clear();
+        String response = await _chatService.postChatMessage(text);
+        _addMessageToChatHistory("llm", response);
+      } catch (e) {
+        print('Failed to send message: $e');
+      }
     }
   }
 
@@ -44,10 +95,19 @@ class _ChatPageState extends State<ChatPage> {
       body: Column(
         children: [
           Expanded(
-            child: Center(
-              child: Text('Chat with LLM here...'),
-            ),
-          ),
+              child: _isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : ListView.builder(
+                      controller: _scrollController,
+                      itemCount: _chatHistory.length,
+                      itemBuilder: (context, index) {
+                        final message = _chatHistory[index];
+                        return ListTile(
+                          title: Text(message.source),
+                          subtitle: Text(message.text),
+                        );
+                      },
+                    )),
           Padding(
             padding: const EdgeInsets.all(8.0),
           ),
