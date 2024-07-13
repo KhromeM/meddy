@@ -40,7 +40,9 @@ class _ChatPageState extends State<ChatPage> {
       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
     } catch (e) {
       print('Failed to load chat history: $e');
-      _isLoading = false;
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -73,8 +75,7 @@ class _ChatPageState extends State<ChatPage> {
         String text = _textEditingController.text;
         _addMessageToChatHistory("user", _textEditingController.text);
         _textEditingController.clear();
-        String response =
-            await _chatService.postChatMessage(text);        
+        String response = await _chatService.postChatMessage(text);
         _addMessageToChatHistory("llm", response);
       } catch (e) {
         print('Failed to send message: $e');
