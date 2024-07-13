@@ -50,6 +50,10 @@ packages:
     source: hosted
     version: "1.18.0"
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 15999b6 (feat: basic chat with rest api)
   crypto:
     dependency: transitive
     description:
@@ -58,8 +62,12 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.3"
+<<<<<<< HEAD
 =======
 >>>>>>> 0cc2d4e (feat: basic chat with rest api)
+=======
+>>>>>>> a01fef4 (feat: basic chat with rest api)
+>>>>>>> 15999b6 (feat: basic chat with rest api)
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -129,16 +137,28 @@ packages:
     description:
       name: firebase_core_web
 <<<<<<< HEAD
+<<<<<<< HEAD
       sha256: "23509cb3cddfb3c910c143279ac3f07f06d3120f7d835e4a5d4b42558e978712"
       url: "https://pub.dev"
     source: hosted
     version: "2.17.3"
 =======
+=======
+>>>>>>> 15999b6 (feat: basic chat with rest api)
       sha256: "6643fe3dbd021e6ccfb751f7882b39df355708afbdeb4130fc50f9305a9d1a3d"
       url: "https://pub.dev"
     source: hosted
     version: "2.17.2"
+<<<<<<< HEAD
 >>>>>>> 0cc2d4e (feat: basic chat with rest api)
+=======
+=======
+      sha256: "23509cb3cddfb3c910c143279ac3f07f06d3120f7d835e4a5d4b42558e978712"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.17.3"
+>>>>>>> a01fef4 (feat: basic chat with rest api)
+>>>>>>> 15999b6 (feat: basic chat with rest api)
   flutter:
     dependency: "direct main"
     description: flutter
@@ -191,16 +211,28 @@ packages:
     description:
       name: google_sign_in_android
 <<<<<<< HEAD
+<<<<<<< HEAD
       sha256: d30fb34b659679ea74397e9748b4ab5d720720d57dcc79538f1b3c4a68654cb3
       url: "https://pub.dev"
     source: hosted
     version: "6.1.27"
 =======
+=======
+>>>>>>> 15999b6 (feat: basic chat with rest api)
       sha256: d3d38e0aefb518087e020a4d6d5c30fa29bdaf74f32b83dbdc64c997c3593e1d
       url: "https://pub.dev"
     source: hosted
     version: "6.1.26"
+<<<<<<< HEAD
 >>>>>>> 0cc2d4e (feat: basic chat with rest api)
+=======
+=======
+      sha256: d30fb34b659679ea74397e9748b4ab5d720720d57dcc79538f1b3c4a68654cb3
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.1.27"
+>>>>>>> a01fef4 (feat: basic chat with rest api)
+>>>>>>> 15999b6 (feat: basic chat with rest api)
   google_sign_in_ios:
     dependency: transitive
     description:
@@ -227,10 +259,17 @@ packages:
     version: "0.12.4+1"
   http:
 <<<<<<< HEAD
+<<<<<<< HEAD
     dependency: "direct main"
 =======
     dependency: transitive
 >>>>>>> 0cc2d4e (feat: basic chat with rest api)
+=======
+    dependency: transitive
+=======
+    dependency: "direct main"
+>>>>>>> a01fef4 (feat: basic chat with rest api)
+>>>>>>> 15999b6 (feat: basic chat with rest api)
     description:
       name: http
       sha256: "761a297c042deedc1ffbb156d6e2af13886bb305c2a343a4d972504cd67dd938"
@@ -443,6 +482,10 @@ packages:
     source: hosted
     version: "0.5.1"
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 15999b6 (feat: basic chat with rest api)
   web_socket_channel:
     dependency: "direct main"
     description:
@@ -451,8 +494,12 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.5"
+<<<<<<< HEAD
 =======
 >>>>>>> 0cc2d4e (feat: basic chat with rest api)
+=======
+>>>>>>> a01fef4 (feat: basic chat with rest api)
+>>>>>>> 15999b6 (feat: basic chat with rest api)
 sdks:
   dart: ">=3.4.3 <4.0.0"
   flutter: ">=3.22.0"
