@@ -33,7 +33,6 @@ class _ChatPageState extends State<ChatPage> {
   Future<void> _loadChatHistory() async {
     try {
       List<Message> chatHistory = await _chatService.getChatHistory();
-      print('CHAT HISTORY: $chatHistory');
       setState(() {
         _chatHistory = chatHistory;
         _isLoading = false;
@@ -74,7 +73,6 @@ class _ChatPageState extends State<ChatPage> {
         String text = _textEditingController.text;
         _addMessageToChatHistory("user", _textEditingController.text);
         _textEditingController.clear();
-        print('INPUT TEXT $text');
         String response =
             await _chatService.postChatMessage(text);        
         _addMessageToChatHistory("llm", response);
