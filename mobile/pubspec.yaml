@@ -39,6 +39,8 @@ dependencies:
   google_sign_in: ^6.2.1
   http: ^1.1.0
 
+  web_socket_channel: ^2.4.0 # Use the latest version available
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
