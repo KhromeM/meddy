@@ -17,7 +17,7 @@ import { createStallResponsePrompt } from "../prompts/stallResponse.mjs";
 
 let defaultModel = CONFIG.TEST
 	? openAIModel
-	: groqModel || anthropicModel || vertexAIModel || openAIModel;
+	: openAIModel || anthropicModel || vertexAIModel || openAIModel;
 
 export const chatStreamProvider = async (
 	chatHistory,
