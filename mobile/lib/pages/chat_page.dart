@@ -93,9 +93,6 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Chat with LLM'),
-      // ),
       body: Column(
         children: [
           Expanded(
@@ -114,11 +111,9 @@ class _ChatPageState extends State<ChatPage> {
                     )),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: Colors.grey[200],
-              ),
+          ),
+          Container(
+              margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
               child: Row(
                 children: [
                   Expanded(
@@ -145,9 +140,7 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                   ),
                 ],
-              ),
-            ),
-          ),
+              ))
         ],
       ),
     );
