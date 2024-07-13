@@ -38,6 +38,8 @@ dependencies:
   firebase_core: ^2.24.2
   google_sign_in: ^6.2.1
 
+  web_socket_channel: ^2.4.0 # Use the latest version available
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
