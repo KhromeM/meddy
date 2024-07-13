@@ -5,7 +5,16 @@ CREATE EXTENSION IF NOT EXISTS vector;
 
 CREATE TABLE Users (
     UserID VARCHAR(255) PRIMARY KEY,
-    Name VARCHAR(255) NOT NULL
+    Name VARCHAR(255) NOT NULL,
+    Address VARCHAR(255),
+    Email VARCHAR(255),
+    Language VARCHAR(255),
+    Phone VARCHAR(255)
+);
+
+CREATE TABLE Doctors (
+    DoctorID VARCHAR(255) PRIMARY KEY,
+    Name VARCHAR(255)
 );
 
 CREATE TABLE Messages (
@@ -44,15 +53,43 @@ CREATE TABLE Appointments (
     AppointmentID SERIAL PRIMARY KEY,
     Date TIMESTAMP WITHOUT TIME ZONE,
     Transcript TEXT,
+    TranscriptSummary TEXT,
+    Description TEXT,
     UserID VARCHAR(255),
     DoctorID VARCHAR(255),
     FOREIGN KEY (UserID) REFERENCES Users(UserID),
     FOREIGN KEY (DoctorID) REFERENCES Doctors(DoctorID)
 );
 
-CREATE TABLE Doctors (
-    DoctorID VARCHAR(255) PRIMARY KEY,
-    Name VARCHAR(255)
+CREATE TABLE Medications (
+    MedicationID SERIAL PRIMARY KEY,
+    UserID VARCHAR(255),
+    Name VARCHAR(255) NOT NULL,
+    Dosage VARCHAR(255) NOT NULL,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+CREATE TABLE Reminders (
+    ReminderID SERIAL PRIMARY KEY,
+    UserID VARCHAR(255),
+    MedicationName VARCHAR(255),
+    HoursUntilRepeat INT,
+    Time TIME,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+CREATE TABLE Allergies (
+    AllergyID SERIAL PRIMARY KEY,
+    UserID VARCHAR(255),
+    Name VARCHAR(255) NOT NULL,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+CREATE TABLE Conditions (
+    ConditionID SERIAL PRIMARY KEY,
+    UserID VARCHAR(255),
+    Name VARCHAR(255) NOT NULL,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
 -- repeat for the test db   
