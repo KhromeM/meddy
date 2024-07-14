@@ -1,0 +1,16 @@
+User query: How is it going? 
+User query length: 17
+User query language: en
+LLM model: gpt-4o
+LLM response: It's going well, thank you! How can I assist you with your health or medical care today? 😊
+LLM response length: 91
+Time between last audio chunk and end of transcription: 125
+Time between end of transcription and first llm chunk: 1450
+Time between end of first llm chunk and first audio chunk from TTS: 897
+Total time to get first audio chunk from TTS after getting last audio chunk from client: 2472
+
+
+
+JSON:
+
+{"firstAudioChunkFromClient":1720991842048,"lang":"en","lastAudioChunkFromClient":1720991845755,"endTranscription":1720991845880,"firstLLMChunk":1720991847330,"model":"gpt-4o","llmResponse":"It's going well, thank you! How can I assist you with your health or medical care today? 😊","firstAudioChunkFromTTS":1720991848227,"lastAudioChunkFromTTS":1720991848254,"transcript":"How is it going? "}
