@@ -21,6 +21,9 @@ class _ChatPageState extends State<ChatPage> {
   bool _isRecording = false;
   bool _isLoading = true;
 
+  String _currentMessageChunk = "";
+  int? _currentMessageId;
+
   ScrollController _scrollController = ScrollController();
 
   @override
@@ -30,6 +33,9 @@ class _ChatPageState extends State<ChatPage> {
     _audioService = AudioService(ws);
     ws.setHandler("audio", (message) {
       print('Got audio! ${message.length}');
+    });
+    ws.setHandler("chat_response", (message) {
+      _handleChatResponse(message);
     });
 
     _textEditingController.addListener(() {
@@ -57,8 +63,9 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void _addMessageToChatHistory(String source, String text) {
+  void _addMessageToChatHistory(String source, String text, {bool temporary = false}) {
     setState(() {
+      int messageId = _chatHistory.length + 1;
       _chatHistory.add(Message(
         messageId: _chatHistory.length + 1,
         userId: "DEVELOPER",
@@ -66,6 +73,9 @@ class _ChatPageState extends State<ChatPage> {
         text: text,
         time: DateTime.now(),
       ));
+      if (temporary) {
+        _currentMessageId = messageId;
+      }
     });
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
   }
@@ -86,11 +96,48 @@ class _ChatPageState extends State<ChatPage> {
         String text = _textEditingController.text;
         _addMessageToChatHistory("user", _textEditingController.text);
         _textEditingController.clear();
-        String response = await _chatService.postChatMessage(text);
-        _addMessageToChatHistory("llm", response);
+        ws.sendMessage({
+          'type': 'chat',
+          'data': {'text': text},
+        });
       } catch (e) {
         print('Failed to send message: $e');
       }
+    }
+  }
+
+  void _updateCurrentMessageChunk(String chunk) {
+    setState(() {
+      if (_currentMessageId != null) {
+        int index = _chatHistory.indexWhere((msg) => msg.messageId == _currentMessageId);
+        if (index != -1) {
+          _chatHistory[index] = Message(
+            messageId: _currentMessageId!,
+            userId: "DEVELOPER",
+            source: "llm",
+            text: chunk,
+            time: DateTime.now(),
+          );
+        }
+      }
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+  }
+
+  void _handleChatResponse(dynamic message) {
+    if (message['type'] == 'chat_response') {
+      setState(() {
+        _currentMessageChunk += message['data'];
+        if (_currentMessageChunk.isNotEmpty && _currentMessageId == null) {
+          _addMessageToChatHistory("llm", _currentMessageChunk, temporary: true);
+        } else {
+          _updateCurrentMessageChunk(_currentMessageChunk);
+        }
+        if (message['isComplete']) {
+          _currentMessageId = null;
+          _currentMessageChunk = "";
+        }
+      });
     }
   }
 
