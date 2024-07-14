@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 const isProd = import.meta.env.PROD;
 const serverURL = isProd
-	? "http://www.trymeddy.com/api"
+	? "https://www.trymeddy.com/api"
 	: "http://localhost:8000/api";
 
 export const chatLLM = async (user, message) => {
@@ -64,7 +64,9 @@ export const chatLLMStream = async (user, message, onChunk, onComplete) => {
 	}
 };
 
-const wsURL = isProd ? "ws://www.trymeddy.com/api" : "ws://localhost:8000/api";
+const wsURL = isProd
+	? "wss://www.trymeddy.com/api/"
+	: "ws://localhost:8000/api/";
 let socket = null;
 let socketAuthState = false;
 
@@ -128,9 +130,9 @@ export const chatLLMStreamWS = async (message, onChunk, onComplete) => {
 	socket.onmessage = (event) => {
 		const response = JSON.parse(event.data);
 
-		if (response.type === "chat_response") {
+		if (response.type === "chat_response" && !response?.isComplete) {
 			onChunk(response.data);
-		} else if (response.type === "chat_end") {
+		} else if (response.type === "chat_response" && response?.isComplete) {
 			onComplete();
 		}
 	};

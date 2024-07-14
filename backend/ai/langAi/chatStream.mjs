@@ -41,23 +41,6 @@ export const chatStreamProvider = async (
 	return await chain.stream(messages);
 };
 
-export const chatStreamToReadable = (chatStreamPromise) => {
-	const stream = new Readable({
-		objectMode: true,
-		read() {},
-	});
-
-	(async () => {
-		const chatStream = await chatStreamPromise;
-		for await (const chunk of cs) {
-			stream.push(chunk);
-		}
-		stream.push(null); // EOS
-	})();
-
-	return stream;
-};
-
 export const getChatResponse = async (
 	chatHistory,
 	user,
