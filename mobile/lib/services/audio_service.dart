@@ -8,7 +8,6 @@ import 'package:meddymobile/utils/ws_connection.dart';
 class AudioService {
   final WSConnection _wsConnection;
   FlutterSoundRecorder? _recorder;
-  StreamSubscription? _recorderSubscription;
   bool _isRecording = false;
 
   AudioService(this._wsConnection);
@@ -43,9 +42,6 @@ class AudioService {
   //       toStream: (Uint8List data) {
   //         _sendAudioChunk(data);
   //       },
-  //       codec: Codec.pcm16,
-  //       numChannels: 1,
-  //       sampleRate: 16000,
   //     );
   //   } catch (e) {
   //     print('Error starting recorder: $e');
@@ -89,7 +85,6 @@ class AudioService {
 
   void dispose() {
     _recorder?.closeRecorder();
-    _recorderSubscription?.cancel();
   }
 
   bool get isRecording => _isRecording;
