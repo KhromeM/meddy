@@ -3,12 +3,7 @@ import { Box, VStack, Heading } from "@chakra-ui/react";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import { useAuth } from "../firebase/AuthService.jsx";
-import {
-	chatLLM,
-	chatLLMStream,
-	chatLLMStreamWS,
-	openWebSocket,
-} from "../server/LLM.js";
+import { chatLLM, chatLLMStreamWS, openWebSocket } from "../server/LLM.js";
 
 const Chat = () => {
 	const [messages, setMessages] = useState([]);
@@ -53,8 +48,7 @@ const Chat = () => {
 			setInProgress(false);
 		};
 
-		// chatLLMStreamWS(message, onChunk, onComplete);
-		chatLLMStream(message, onChunk, onComplete);
+		chatLLMStreamWS(message, onChunk, onComplete);
 	};
 
 	const addMessageFromUser = (message) => {
