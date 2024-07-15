@@ -43,8 +43,8 @@ class WSConnection {
   void _handleIncomingMessage(dynamic message) {
     try {
       Map<String, dynamic> parsedMessage = json.decode(message);
-      print('Received: $parsedMessage');
       String type = parsedMessage['type'] as String? ?? 'UNKNOWN';
+      print('Received: $type');
       Handler handler = _handlers[type] ?? _handleUnknownMessage;
       handler(parsedMessage);
     } catch (e) {
@@ -75,7 +75,7 @@ class WSConnection {
 
     sendMessage({
       'type': 'auth',
-      'data': {'idToken': 'dev'}
+      'data': {'idToken': 'dev', 'source': 'mobile'}
     });
 
     return _authCompleter!.future;

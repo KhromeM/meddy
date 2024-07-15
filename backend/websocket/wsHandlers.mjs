@@ -36,6 +36,7 @@ export function setupWebSocketHandlers(wss) {
 						type: "audio",
 						isComplete: false,
 						user: null,
+						source: "mobile",
 						logs: {},
 					},
 				},
@@ -67,7 +68,7 @@ export function setupWebSocketHandlers(wss) {
 					console.log(type);
 					switch (type) {
 						case "auth":
-							const { idToken } = data;
+							const { idToken, source } = data;
 							const res = {};
 							req.ws = true;
 							req.idToken = idToken;
@@ -76,6 +77,7 @@ export function setupWebSocketHandlers(wss) {
 							await runMiddleware(req, res, userMiddleware);
 							state.user = req._dbUser;
 							state.authenticated = true;
+							state.source = source;
 							ws.send(JSON.stringify({ type: "auth" }));
 							break;
 						case "chat":
