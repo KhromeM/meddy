@@ -11,7 +11,6 @@ import { groqModel } from "../ai/langAi/model.mjs";
 
 export async function handleAudioMessage(state, data) {
 	const { audioChunk, reqId, isComplete, lang } = data;
-	const { STTSocket } = state;
 	if (!state.requests[reqId]) {
 		state.requests[reqId] = {
 			reqId,
@@ -33,6 +32,7 @@ export async function handleAudioMessage(state, data) {
 	handlePartialResponse(state.clientSocket, req); // send audio response based on partial transcription to reduce latency
 
 	if (req.partialTranscript.length === 0) {
+		// Logging
 		req.logs.firstAudioChunkFromClient = Date.now();
 		req.logs.lang = lang;
 		req.logs.reqId = reqId;
@@ -46,7 +46,7 @@ export async function handleAudioMessage(state, data) {
 	if (!audioChunk) return;
 	if (!state.STTSocket || state.STTSocket.getReadyState() !== 1) {
 		try {
-			state.STTSocket = await createDGSocket(lang);
+			state.STTSocket = await createDGSocket(lang, state.source == "mobile");
 			req.partialTranscript = [];
 
 			state.STTSocket.addListener(
@@ -116,16 +116,7 @@ export async function handleAudioMessage(state, data) {
 	}, 30000); // reset timeout clock
 
 	try {
-		let audioBuffer;
-		if (audioChunk instanceof ArrayBuffer) {
-			audioBuffer = audioChunk;
-		} else if (audioChunk instanceof Blob) {
-			audioBuffer = await audioChunk.arrayBuffer();
-		} else if (typeof audioChunk === "string") {
-			audioBuffer = Buffer.from(audioChunk, "base64");
-		} else {
-			throw new Error("Unsupported audio format");
-		}
+		let audioBuffer = Buffer.from(audioChunk, "base64");
 		state.STTSocket.send(audioBuffer);
 	} catch (error) {
 		console.error("Error sending audio to Deepgram:", error);

@@ -63,7 +63,8 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void _addMessageToChatHistory(String source, String text, {bool temporary = false}) {
+  void _addMessageToChatHistory(String source, String text,
+      {bool temporary = false}) {
     setState(() {
       int messageId = _chatHistory.length + 1;
       _chatHistory.add(Message(
@@ -109,7 +110,8 @@ class _ChatPageState extends State<ChatPage> {
   void _updateCurrentMessageChunk(String chunk) {
     setState(() {
       if (_currentMessageId != null) {
-        int index = _chatHistory.indexWhere((msg) => msg.messageId == _currentMessageId);
+        int index = _chatHistory
+            .indexWhere((msg) => msg.messageId == _currentMessageId);
         if (index != -1) {
           _chatHistory[index] = Message(
             messageId: _currentMessageId!,
@@ -129,7 +131,8 @@ class _ChatPageState extends State<ChatPage> {
       setState(() {
         _currentMessageChunk += message['data'];
         if (_currentMessageChunk.isNotEmpty && _currentMessageId == null) {
-          _addMessageToChatHistory("llm", _currentMessageChunk, temporary: true);
+          _addMessageToChatHistory("llm", _currentMessageChunk,
+              temporary: true);
         } else {
           _updateCurrentMessageChunk(_currentMessageChunk);
         }

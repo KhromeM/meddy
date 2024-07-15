@@ -1,95 +1,100 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:flutter_sound/flutter_sound.dart';
+import 'package:record/record.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:meddymobile/utils/ws_connection.dart';
 
 class AudioService {
   final WSConnection _wsConnection;
-  FlutterSoundRecorder? _recorder;
-  StreamSubscription? _recorderSubscription;
+  final AudioRecorder _recorder = AudioRecorder();
+  StreamSubscription? _audioStreamSubscription;
   bool _isRecording = false;
 
   AudioService(this._wsConnection);
 
   Future<void> initialize() async {
-    _recorder = FlutterSoundRecorder();
-    await _recorder!.openRecorder();
+    // No initialization needed for this package
   }
 
   Future<bool> toggleRecording() async {
-    var status = await Permission.microphone.status;
-    print(status);
     if (!_isRecording) {
-      var status = await Permission.microphone.request();
-      if (status != PermissionStatus.granted) {
-        print('Microphone permission not granted');
-        return false;
-      }
-
-      // await _startRecording();
+      return await _startRecording();
     } else {
-      // await _stopRecording();
+      return await _stopRecording();
     }
-
-    _isRecording = !_isRecording;
-    return _isRecording;
   }
 
-  // Future<void> _startRecording() async {
-  //   try {
-  //     await _recorder!.startRecorder(
-  //       toStream: (Uint8List data) {
-  //         _sendAudioChunk(data);
-  //       },
-  //       codec: Codec.pcm16,
-  //       numChannels: 1,
-  //       sampleRate: 16000,
-  //     );
-  //   } catch (e) {
-  //     print('Error starting recorder: $e');
-  //   }
-  // }
+  Future<bool> _startRecording() async {
+    if (!await _recorder.hasPermission()) {
+      print('Audio recording permission not granted');
+      return false;
+    }
 
-  // Future<void> _stopRecording() async {
-  //   try {
-  //     await _recorder!.stopRecorder();
-  //     _sendAudioComplete();
-  //   } catch (e) {
-  //     print('Error stopping recorder: $e');
-  //   }
-  // }
+    try {
+      final stream = await _recorder.startStream(const RecordConfig(
+        encoder: AudioEncoder.pcm16bits,
+        numChannels: 1,
+        sampleRate: 16000,
+      ));
 
-  // void _sendAudioChunk(Uint8List data) {
-  //   if (_wsConnection.isConnected) {
-  //     final base64Audio = base64Encode(data);
-  //     _wsConnection.sendMessage({
-  //       'type': 'audio',
-  //       'data': {
-  //         'audioChunk': base64Audio,
-  //         'mimeType': 'audio/pcm',
-  //         'isComplete': false,
-  //         'lang': 'en', // TODO: Make this dynamic based on user's language
-  //       },
-  //     });
-  //   }
-  // }
+      _audioStreamSubscription = stream.listen((data) {
+        _sendAudioChunk(data);
+      });
 
-  // void _sendAudioComplete() {
-  //   if (_wsConnection.isConnected) {
-  //     _wsConnection.sendMessage({
-  //       'type': 'audio',
-  //       'data': {
-  //         'isComplete': true,
-  //       },
-  //     });
-  //   }
-  // }
+      _isRecording = true;
+      return true;
+    } catch (e) {
+      print('Error starting recorder: $e');
+      return false;
+    }
+  }
 
-  void dispose() {
-    _recorder?.closeRecorder();
-    _recorderSubscription?.cancel();
+  Future<bool> _stopRecording() async {
+    try {
+      await _recorder.stop();
+      await _audioStreamSubscription?.cancel();
+      _sendAudioComplete();
+      _isRecording = false;
+      return true;
+    } catch (e) {
+      print('Error stopping recorder: $e');
+      return false;
+    }
+  }
+
+  void _sendAudioChunk(Uint8List data) {
+    print(data);
+    if (_wsConnection.isConnected) {
+      final base64Audio = base64Encode(data);
+      final message = {
+        'type': 'audio',
+        'data': {
+          'audioChunk': base64Audio,
+          'mimeType': 'audio/pcm',
+          'isComplete': false,
+          'lang': 'en', // TODO: Make this dynamic based on user's language
+        },
+      };
+      print("SENDING AUDIO TO SERVER: ${base64Audio.length}");
+      _wsConnection.sendMessage(message);
+    }
+  }
+
+  void _sendAudioComplete() {
+    if (_wsConnection.isConnected) {
+      _wsConnection.sendMessage({
+        'type': 'audio',
+        'data': {
+          'isComplete': true,
+        },
+      });
+    }
+  }
+
+  Future<void> dispose() async {
+    await _stopRecording();
+    _recorder.dispose();
   }
 
   bool get isRecording => _isRecording;
