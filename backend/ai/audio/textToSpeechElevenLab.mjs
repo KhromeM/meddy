@@ -134,6 +134,7 @@ async function streamLLMToElevenLabs(
 	chunk_length_schedule,
 	bufferLimit
 ) {
+	console.log("11 LABS CALL");
 	TTS_Socket.on("open", async () => {
 		TTS_Socket.send(
 			JSON.stringify({

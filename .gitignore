@@ -10,6 +10,7 @@ web-frontend/dist/
 **/.env
 **/.DS**
 **/*.lock
+**/*LOG_*.txt
 # Miscellaneous
 *.class
 *.log

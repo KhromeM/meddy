@@ -2,20 +2,21 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:record/record.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:meddymobile/utils/ws_connection.dart';
+import 'package:uuid/uuid.dart';
 
-class AudioService {
+class RecorderService {
   final WSConnection _wsConnection;
   final AudioRecorder _recorder = AudioRecorder();
   StreamSubscription? _audioStreamSubscription;
   bool _isRecording = false;
+  final _uuid = Uuid();
+  String? _reqId;
 
-  AudioService(this._wsConnection);
+  RecorderService(this._wsConnection);
 
-  Future<void> initialize() async {
-    // No initialization needed for this package
-  }
+  // Future<void> initialize() async {
+  // }
 
   Future<bool> toggleRecording() async {
     if (!_isRecording) {
@@ -30,6 +31,7 @@ class AudioService {
       print('Audio recording permission not granted');
       return false;
     }
+    _reqId = _uuid.v4();
 
     try {
       final stream = await _recorder.startStream(const RecordConfig(
@@ -71,6 +73,7 @@ class AudioService {
         'type': 'audio',
         'data': {
           'audioChunk': base64Audio,
+          'reqId': _reqId!.toString(),
           'mimeType': 'audio/pcm',
           'isComplete': false,
           'lang': 'en', // TODO: Make this dynamic based on user's language
@@ -87,6 +90,7 @@ class AudioService {
         'type': 'audio',
         'data': {
           'isComplete': true,
+          'reqId': _reqId!.toString(),
         },
       });
     }
