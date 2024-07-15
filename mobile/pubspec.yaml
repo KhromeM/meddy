@@ -41,6 +41,7 @@ dependencies:
   flutter_sound: ^9.7.2
   permission_handler: ^11.3.1
   record: ^5.1.2
+  just_audio: ^0.9.39
 
 dev_dependencies:
   flutter_test:

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:meddymobile/models/message.dart';
 import 'package:meddymobile/services/chat_service.dart';
 import 'package:meddymobile/utils/ws_connection.dart';
-import 'package:meddymobile/services/audio_service.dart';
+import 'package:meddymobile/services/recorder_service.dart';
+import 'package:meddymobile/services/player_service.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -16,7 +17,9 @@ class _ChatPageState extends State<ChatPage> {
   TextEditingController _textEditingController = TextEditingController();
   final ChatService _chatService = ChatService();
   List<Message> _chatHistory = [];
-  late AudioService _audioService;
+  late RecorderService _recorderService;
+  late PlayerService _playerService;
+
   bool _isTyping = false;
   bool _isRecording = false;
   bool _isLoading = true;
@@ -30,10 +33,9 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
     ws.connect();
-    _audioService = AudioService(ws);
-    ws.setHandler("audio", (message) {
-      print('Got audio! ${message.length}');
-    });
+    _recorderService = RecorderService(ws);
+    _playerService = PlayerService(ws);
+
     ws.setHandler("chat_response", (message) {
       _handleChatResponse(message);
     });
@@ -145,12 +147,25 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _toggleAudio() async {
-    // Logic to start listening to user's voice input (Left as placeholder)
-    _isRecording = await _audioService.toggleRecording();
+    _isRecording = await _recorderService.toggleRecording();
+    if (_isRecording) {
+      // recording about to end
+      _playerService.playQueuedAudio();
+    } else {
+      // about to start recording
+      _playerService.stopPlayback();
+    }
+
     setState(() {
       print('Audio Mode: $_isRecording');
     });
-    // Example of functionality: Implement speech-to-text or voice recognition
+  }
+
+  @override
+  void dispose() {
+    _recorderService.dispose();
+    _playerService.dispose();
+    super.dispose();
   }
 
   @override

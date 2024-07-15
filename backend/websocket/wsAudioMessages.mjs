@@ -29,7 +29,7 @@ export async function handleAudioMessage(state, data) {
 	}
 	const req = state.requests[reqId];
 	console.log("partial transcript: ", req.partialTranscript);
-	handlePartialResponse(state.clientSocket, req); // send audio response based on partial transcription to reduce latency
+	// handlePartialResponse(state.clientSocket, req); // send audio response based on partial transcription to reduce latency
 
 	if (req.partialTranscript.length === 0) {
 		// Logging
@@ -66,12 +66,13 @@ export async function handleAudioMessage(state, data) {
 				req.transcribing = false;
 				state.clientSocket.send(
 					JSON.stringify({
-						type: "transcription_complete",
+						type: "partial_transcript",
 						data: req.transcript,
 						reqId,
+						isComplete: true,
 					})
 				);
-				useTranscriptionTTS(state.clientSocket, req); // responds in audio
+				// useTranscriptionTTS(state.clientSocket, req); // responds in audio
 			});
 
 			state.STTSocket.addListener(LiveTranscriptionEvents.Error, (err) => {

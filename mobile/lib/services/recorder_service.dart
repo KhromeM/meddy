@@ -5,13 +5,13 @@ import 'package:record/record.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:meddymobile/utils/ws_connection.dart';
 
-class AudioService {
+class RecorderService {
   final WSConnection _wsConnection;
   final AudioRecorder _recorder = AudioRecorder();
   StreamSubscription? _audioStreamSubscription;
   bool _isRecording = false;
 
-  AudioService(this._wsConnection);
+  RecorderService(this._wsConnection);
 
   Future<void> initialize() async {
     // No initialization needed for this package
