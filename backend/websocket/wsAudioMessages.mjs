@@ -12,6 +12,7 @@ import { groqModel } from "../ai/langAi/model.mjs";
 export async function handleAudioMessage(state, data) {
 	const { audioChunk, reqId, isComplete, lang } = data;
 	if (!state.requests[reqId]) {
+		console.log("NEW REQUEST");
 		state.requests[reqId] = {
 			reqId,
 			transcribing: true,
@@ -28,7 +29,7 @@ export async function handleAudioMessage(state, data) {
 		};
 	}
 	const req = state.requests[reqId];
-	console.log("partial transcript: ", req.partialTranscript);
+	console.log("partial transcript: ", req.partialTranscript, reqId);
 	// handlePartialResponse(state.clientSocket, req); // send audio response based on partial transcription to reduce latency
 
 	if (req.partialTranscript.length === 0) {
@@ -47,7 +48,7 @@ export async function handleAudioMessage(state, data) {
 	if (!state.STTSocket || state.STTSocket.getReadyState() !== 1) {
 		try {
 			state.STTSocket = await createDGSocket(lang, state.source == "mobile");
-			req.partialTranscript = [];
+			// req.partialTranscript = [];
 
 			state.STTSocket.addListener(
 				LiveTranscriptionEvents.Transcript,
@@ -61,6 +62,9 @@ export async function handleAudioMessage(state, data) {
 			);
 
 			state.STTSocket.addListener(LiveTranscriptionEvents.Close, () => {
+				console.log("DG CLOSING", reqId);
+				if (req.isComplete) return; // helps stop dev mode bs from flutter and react
+				req.isComplete = true;
 				req.logs.endTranscription = Date.now(); // logging
 				req.transcript = req.partialTranscript.join(" ");
 				req.transcribing = false;
@@ -72,7 +76,7 @@ export async function handleAudioMessage(state, data) {
 						isComplete: true,
 					})
 				);
-				// useTranscriptionTTS(state.clientSocket, req); // responds in audio
+				useTranscriptionTTS(state.clientSocket, req); // responds in audio
 			});
 
 			state.STTSocket.addListener(LiveTranscriptionEvents.Error, (err) => {

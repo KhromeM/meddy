@@ -10,6 +10,10 @@ class PlayerService {
   final AudioPlayer _audioPlayer = AudioPlayer();
   final List<String> _audioQueue = [];
   bool _isPlaying = false;
+  Timer? _playbackTimer;
+  static const int _maxWaitTime = 10000;
+  static const int _checkInterval = 250;
+  DateTime _prevEndTime = DateTime.now();
 
   PlayerService(this._wsConnection) {
     _setupAudioMessageHandler();
@@ -28,7 +32,28 @@ class PlayerService {
   void playQueuedAudio() {
     if (!_isPlaying) {
       _playNextAudio();
+      _startPlaybackTimer();
     }
+  }
+
+  void _startPlaybackTimer() {
+    int totalTimeElapsed = 0;
+    _playbackTimer =
+        Timer.periodic(Duration(milliseconds: _checkInterval), (timer) {
+      if (_isPlaying) {
+        timer.cancel();
+        return;
+      }
+      if (_audioQueue.isNotEmpty) {
+        _playNextAudio();
+        timer.cancel();
+        return;
+      }
+      totalTimeElapsed += _checkInterval;
+      if (totalTimeElapsed > _maxWaitTime) {
+        timer.cancel();
+      }
+    });
   }
 
   Future<void> _playNextAudio() async {
@@ -45,10 +70,15 @@ class PlayerService {
         MyCustomSource(audioData),
         preload: false,
       );
+      // await _audioPlayer.setSpeed(0.75); //adjust speed
+      print(
+          "MS since the last audio played: ${DateTime.now().difference(_prevEndTime).inMilliseconds}");
       await _audioPlayer.play();
       await _audioPlayer.playerStateStream.firstWhere(
         (state) => state.processingState == ProcessingState.completed,
       );
+      _prevEndTime = DateTime.now();
+
       await _playNextAudio();
     } catch (e) {
       print('Error playing audio: $e');
