@@ -138,7 +138,7 @@ class _ChatPageState extends State<ChatPage> {
         } else {
           _updateCurrentMessageChunk(_currentMessageChunk);
         }
-        if (message['isComplete']) {
+        if (message?['isComplete'] == true) {
           _currentMessageId = null;
           _currentMessageChunk = "";
         }
