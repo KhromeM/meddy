@@ -10,10 +10,12 @@ const userMiddleware = async (req, res, next) => {
 	} catch (err) {
 		if (req.ws) {
 			next(err);
+		} else {
+			res.status(500).json({
+				status: "fail",
+				message: "Something went wrong. Checkpoint 2",
+			});
 		}
-		res
-			.status(500)
-			.json({ status: "fail", message: "Something went wrong. Checkpoint 2" });
 	}
 };
 

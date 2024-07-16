@@ -29,10 +29,20 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
 
-  english_words: ^4.0.0
   provider: ^6.0.0
 
   sidebarx: ^0.17.1
+  flutter_riverpod: ^2.5.1
+  firebase_auth: ^4.15.3
+  firebase_core: ^2.24.2
+  google_sign_in: ^6.2.1
+  http: ^1.1.0
+  web_socket_channel: ^2.4.0
+  flutter_sound: ^9.7.2
+  permission_handler: ^11.3.1
+  record: ^5.1.2
+  just_audio: ^0.9.39
+  uuid: ^4.4.2
 
 dev_dependencies:
   flutter_test:
@@ -47,3 +57,18 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/
+  fonts:
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/nunito/Nunito-Light.ttf
+          weight: 300
+        - asset: assets/fonts/nunito/Nunito-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/nunito/Nunito-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/nunito/Nunito-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/nunito/Nunito-Bold.ttf
+          weight: 700

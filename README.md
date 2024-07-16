@@ -73,13 +73,23 @@ scp root@24.144.94.136:/home/meddy/backend/extra/meddyai-fedbddffaf83.json ~/Des
 scp root@24.144.94.136:/home/meddy/backend/.env ~/Desktop/meddy/backend
 ```
 
-5. Install postgres if you dont have it
+5. Install postgres if you dont have it.
 
-6. Follow the instructions and run the SQL commands in `meddy/backend/db/schema.sql`
+6. Install the vector extension on postgres.
 
-7. cd so youre in `backend/` then run `npm install && npm run test`
+7. Follow the instructions and run the SQL commands in `meddy/backend/db/schema.sql`
 
-8. If tests are failing and you can't figure out why, contact Za (khromem)
+8. cd so youre in `backend/` then run `npm install && npm run test`
+
+9. If tests are failing and you can't figure out why, contact Za (khromem)
+
+## Backend audio test site
+
+1. Have local dev server running
+
+2. Open index.html in /audio-test-website (DO NOT use live server for this)
+
+3. To visualize logs run `node ./extra/logging/visualizeLogs.mjs`, then open `backend/extra/log_visualization/index.html`
 
 ## Mobile Setup
 
@@ -92,32 +102,39 @@ scp root@24.144.94.136:/home/meddy/backend/.env ~/Desktop/meddy/backend
 - xcode (optional for ios)
 - hardware acceleration on
 - hot reload on (optional)
+- sha1 key for firebase auth tests
 
-2. Navigate to the mobile directory
+1. to debug w/ google auth for flutter, need to add sha1 key to firebase meddymobile console
+
+2. do this by: cd mobile, cd android, ./gradlew signingReport (gives sha1 key u can use to debug)
+
+3. add to firebase console, then download google-services.json and add to ~/mobile/android/app/
+
+4. Navigate to the mobile directory
 
    ```sh
    cd mobile
    ```
 
-3. Install dependencies
+5. Install dependencies
 
    ```sh
    flutter packages get
    ```
 
-4. Open emulated device via vscode extension / android studio gui
+6. Open emulated device via vscode extension / android studio gui
 
-5. Navigate to lib
+7. Navigate to lib
 
    ```sh
    cd lib
    ```
 
-6. Use vscode debugger gui to run app, ctrl + s in main.dart will activate hot reload
+8. Use vscode debugger gui to run app, ctrl + s in main.dart will activate hot reload
 
-7. If hot reload doesn't work for you, navigate back to mobile dir and run flutter
+9. If hot reload doesn't work for you, navigate back to mobile dir and run flutter
 
-   ```sh
-   cd ..
-   flutter run
-   ```
+```sh
+cd ..
+flutter run
+```

@@ -1,0 +1,15 @@
+
+state consist of:
+ user object - gotten from firebase
+ chat history - get using /api/chat from the server or init with empty []
+ audioResponses - init as {}
+ 
+ textInput - init as ""
+ waitingForChatResponse - init as false
+ isListening - init as false. 
+    if going from false to true, start sending the server audio chunks
+    if going from true to false send the server end of audio message and play response audio
+
+
+pretty simple so we dont need a state management library
+

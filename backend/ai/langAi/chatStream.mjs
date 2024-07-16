@@ -4,14 +4,13 @@ import { vertexAIModel, groqModel, anthropicModel, openAIModel } from "./model.m
 import { Readable } from "stream";
 import CONFIG from "../../config.mjs";
 import { createDefaultSystemPrompt } from "../prompts/default.mjs";
+import { createStallResponsePrompt } from "../prompts/stallResponse.mjs";
+
 import { createFunctionCallingSystemPrompt } from "../prompts/functionCalling.mjs";
 import { sampleData1, sampleData2, sampleData3 } from "../prompts/sampleData.mjs";
 import { executeLLMFunction } from "../functions/functionController.mjs";
 
 let defaultModel = CONFIG.TEST ? openAIModel : openAIModel || anthropicModel || vertexAIModel || openAIModel;
-
-const systemPrompts = { 0: createDefaultSystemPrompt }; // globals or imports
-const fewShotExamples = {}; // globals or imports
 
 export const chatStreamProvider = async (
 	chatHistory,
@@ -29,7 +28,6 @@ export const chatStreamProvider = async (
 	} else {
 		systemMessage = "";
 	}
-	const fewShotExamplesForMode = fewShotExamples[mode] || [];
 	let messages = [
 		new SystemMessage(systemMessage),
 		...fewShotExamplesForMode, // end examples with a system message
@@ -91,4 +89,15 @@ function cleanMessages(messages) {
 		clean.push(message);
 	}
 	return clean;
+}
+
+function getSystemMessage(user, mode) {
+	switch (mode) {
+		case 0:
+			return createDefaultSystemPrompt(user.name);
+		case 2:
+			return createStallResponsePrompt();
+		default:
+			return "";
+	}
 }
