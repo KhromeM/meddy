@@ -9,10 +9,16 @@ ${JSON.stringify(data, null, 2)}
 Output JSON format:
 {
   "thoughts": "string",
-  "action": "string"
+  "function": "string",
+  "params": {
+    "param1": "value1",
+    "param2": "value2"
+  }
 }
 
-Your "thoughts" should briefly explain your understanding of the user's most recent request (derived from the chat history), relevant context from the provided data, and your planned action. The "action" must be a valid JavaScript function call using one of the available functions with correct inputs derived from the provided data.
+Return the JSON in only 1 line without tabbing, spacing, or newlines while keeping it valid.
+
+Your "thoughts" should briefly explain your understanding of the user's most recent request (derived from the chat history), relevant context from the provided data, and your planned action. The "function" must be a valid JavaScript function name using one of the available functions. The "params" object should contain the correct inputs derived from the provided data.
 
 **Remember, you are not to engage in conversation or small talk. Your sole purpose is to analyze the chat history, extract the most recent relevant request or information, and respond with the appropriate action in the specified JSON format.**`;
 
@@ -34,11 +40,16 @@ Chat history:
 Output: 
 {
   "thoughts": "The user wants to update their email address to newemail@example.com. I can use LLMUpdateUserEmail for this change, using the userid from the user data.",
-  "action": "LLMUpdateUserEmail(\"42dff2rf\", \"newemail@example.com\")"
+  "function": "LLMUpdateUserEmail",
+  "params": {
+    "userId": "42dff2rf",
+    "newEmail": "newemail@example.com"
+  }
 }`;
 
 const medicationPrompt = `
 Available functions for Medical Management:
+- LLMGetMedicationList(userId: string)
 - LLMUpdateCurrentMedications(userId: string, medications: string[])
 - LLMSetMedicationReminder(userId: string, medicationName: string, hoursUntilRepeat: number, time: string) // hoursUntilRepeat: 6, 12, 24, or 48
 - LLMDeleteMedicationReminder(userId: string, reminderId: string)
@@ -53,7 +64,10 @@ Chat history:
 Output:
 {
   "thoughts": "The user is asking about their current medications and dosage schedule. I'll use LLMDisplayInformation to show this information from the user data.",
-  "action": "LLMDisplayInformation(\"Your current medications are: Lisinopril 10mg, Metformin 500mg. For specific dosage instructions, please consult your prescription or healthcare provider.\")"
+  "function": "LLMGetMedicationList",
+  "params": {
+    "userId": "42dff2rf"
+  }
 }`;
 
 const appointmentManagementPrompt = `
@@ -72,7 +86,12 @@ Chat history:
 Output:
 {
   "thoughts": "The user wants to schedule an appointment with Dr. Johnson for next Tuesday at 2 PM. I'll use LLMScheduleAppointment for this, using the userid from the user data.",
-  "action": "LLMScheduleAppointment(\"42dff2rf\", \"drJohnson\", \"2023-07-11T14:00:00Z\")"
+  "function": "LLMScheduleAppointment",
+  "params": {
+    "userId": "42dff2rf",
+    "doctorId": "drJohnson",
+    "dateTime": "2023-07-11T14:00:00Z"
+  }
 }`;
 
 const reportGenerationPrompt = `
@@ -91,7 +110,12 @@ Chat history:
 Output:
 {
   "thoughts": "The user is requesting a report for their doctor covering the last month. I'll use LLMGenerateReportForDoc to create this report, using the userid from the user data.",
-  "action": "LLMGenerateReportForDoc(\"42dff2rf\", \"2023-06-01\", \"2023-06-30\")"
+  "function": "LLMGenerateReportForDoc",
+  "params": {
+    "userId": "42dff2rf",
+    "startDate": "2023-06-01",
+    "endDate": "2023-06-30"
+  }
 }`;
 
 const informationDisplayPrompt = `
@@ -115,12 +139,15 @@ Chat history:
 Output:
 {
   "thoughts": "The user's request is unclear. I need to ask for clarification.",
-  "action": "LLMDidNotUnderstand(\"I'm sorry, but I didn't understand what you meant by 'do the thing with the stuff'. Could you please be more specific about what you'd like me to do?\")"
+  "function": "LLMDidNotUnderstand",
+  "params": {
+    "response": "I'm sorry, but I didn't understand what you meant by 'do the thing with the stuff'. Could you please be more specific about what you'd like me to do?"
+  }
 }`;
 
 const generalGuidelinesPrompt = `
 General Guidelines:
-Always ensure your response is a valid JSON object with "thoughts" and "action" keys. Use all relevant information from the provided user data to determine the appropriate action. If no action is needed or possible, explain why in the "thoughts" and use LLMCannotDo or LLMDidNotUnderstand as appropriate.
+Always ensure your response is a valid JSON object with "thoughts", "function", and "params" keys. Use all relevant information from the provided user data to determine the appropriate action. If no action is needed or possible, explain why in the "thoughts" and use LLMCannotDo or LLMDidNotUnderstand as appropriate.
 
 When using any function, make sure you have all the necessary information before calling it. If you're missing crucial information, use LLMDidNotUnderstand to ask the user for more details.
 
