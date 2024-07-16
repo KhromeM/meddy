@@ -157,6 +157,8 @@ If the chat history doesn't contain a clear recent query or request from the use
 
 If the user asks to update some information, ensure that new data is actually given. Otherwise use LLMDidNotUnderstand to prompt the user for more information or clarification. For example, "I want to update my name" would require a follow-up message from the user with the new name.
 
+If the user asks a follow-up question, or responds to the LLMDidNotUnderstand, always reply in the JSON format.
+
 Now, based on the provided user data and chat history, please respond to the user's most recent request or question.`;
 
 export const createFunctionCallingSystemPrompt = (data) => {
