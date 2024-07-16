@@ -1,5 +1,3 @@
-// lib/services/audio_player_service.dart
-
 import 'dart:async';
 import 'dart:convert';
 import 'package:just_audio/just_audio.dart';
@@ -8,87 +6,38 @@ import 'package:meddymobile/utils/ws_connection.dart';
 class PlayerService {
   final WSConnection _wsConnection;
   final AudioPlayer _audioPlayer = AudioPlayer();
-  final List<String> _audioQueue = [];
+  ConcatenatingAudioSource _audioChunkPlaylist =
+      ConcatenatingAudioSource(children: []);
   bool _isPlaying = false;
-  Timer? _playbackTimer;
-  static const int _maxWaitTime = 10000;
-  static const int _checkInterval = 250;
-  DateTime _prevEndTime = DateTime.now();
 
   PlayerService(this._wsConnection) {
-    _setupAudioMessageHandler();
-  }
-
-  void _setupAudioMessageHandler() {
     _wsConnection.setHandler('audio_3', _handleAudioMessage);
+    _audioPlayer.setAudioSource(_audioChunkPlaylist,
+        initialIndex: 0, initialPosition: Duration.zero);
   }
 
   void _handleAudioMessage(Map<String, dynamic> message) {
     if (message['audio'] != null) {
-      _audioQueue.add(message['audio']);
+      final audioData = base64Decode(message['audio']);
+      _audioChunkPlaylist.add(MyAudioSource(audioData));
     }
   }
 
   void playQueuedAudio() {
-    if (!_isPlaying) {
-      _playNextAudio();
-      _startPlaybackTimer();
-    }
-  }
-
-  void _startPlaybackTimer() {
-    int totalTimeElapsed = 0;
-    _playbackTimer =
-        Timer.periodic(Duration(milliseconds: _checkInterval), (timer) {
-      if (_isPlaying) {
-        timer.cancel();
-        return;
+    Timer.periodic(Duration(milliseconds: 100), (Timer timer) async {
+      if (_isPlaying) return;
+      while (_audioChunkPlaylist.length > 0) {
+        _isPlaying = true;
+        await _audioPlayer.play();
+        _audioChunkPlaylist.removeAt(0);
       }
-      if (_audioQueue.isNotEmpty) {
-        _playNextAudio();
-        timer.cancel();
-        return;
-      }
-      totalTimeElapsed += _checkInterval;
-      if (totalTimeElapsed > _maxWaitTime) {
-        timer.cancel();
-      }
-    });
-  }
-
-  Future<void> _playNextAudio() async {
-    if (_audioQueue.isEmpty) {
       _isPlaying = false;
-      return;
-    }
-
-    _isPlaying = true;
-    final audioData = base64Decode(_audioQueue.removeAt(0));
-
-    try {
-      await _audioPlayer.setAudioSource(
-        MyCustomSource(audioData),
-        preload: false,
-      );
-      // await _audioPlayer.setSpeed(0.75); //adjust speed
-      print(
-          "MS since the last audio played: ${DateTime.now().difference(_prevEndTime).inMilliseconds}");
-      await _audioPlayer.play();
-      await _audioPlayer.playerStateStream.firstWhere(
-        (state) => state.processingState == ProcessingState.completed,
-      );
-      _prevEndTime = DateTime.now();
-
-      await _playNextAudio();
-    } catch (e) {
-      print('Error playing audio: $e');
-      await _playNextAudio();
-    }
+    });
   }
 
   Future<void> stopPlayback() async {
     await _audioPlayer.stop();
-    _audioQueue.clear();
+    await _audioChunkPlaylist.clear();
     _isPlaying = false;
   }
 
@@ -97,10 +46,10 @@ class PlayerService {
   }
 }
 
-class MyCustomSource extends StreamAudioSource {
+class MyAudioSource extends StreamAudioSource {
   final List<int> _buffer;
 
-  MyCustomSource(this._buffer);
+  MyAudioSource(this._buffer);
 
   @override
   Future<StreamAudioResponse> request([int? start, int? end]) async {

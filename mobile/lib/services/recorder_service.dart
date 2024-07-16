@@ -15,9 +15,6 @@ class RecorderService {
 
   RecorderService(this._wsConnection);
 
-  // Future<void> initialize() async {
-  // }
-
   Future<bool> toggleRecording() async {
     if (!_isRecording) {
       return await _startRecording();
@@ -29,7 +26,7 @@ class RecorderService {
   Future<bool> _startRecording() async {
     if (!await _recorder.hasPermission()) {
       print('Audio recording permission not granted');
-      return false;
+      return _isRecording;
     }
     _reqId = _uuid.v4();
 
@@ -45,10 +42,10 @@ class RecorderService {
       });
 
       _isRecording = true;
-      return true;
+      return _isRecording;
     } catch (e) {
       print('Error starting recorder: $e');
-      return false;
+      return _isRecording;
     }
   }
 
@@ -58,10 +55,10 @@ class RecorderService {
       await _audioStreamSubscription?.cancel();
       _sendAudioComplete();
       _isRecording = false;
-      return true;
+      return _isRecording;
     } catch (e) {
       print('Error stopping recorder: $e');
-      return false;
+      return _isRecording;
     }
   }
 

@@ -148,11 +148,10 @@ class _ChatPageState extends State<ChatPage> {
 
   void _toggleAudio() async {
     _isRecording = await _recorderService.toggleRecording();
-    if (_isRecording) {
-      // recording about to end
+
+    if (!_isRecording) {
       _playerService.playQueuedAudio();
     } else {
-      // about to start recording
       _playerService.stopPlayback();
     }
 
@@ -206,13 +205,14 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                   ),
                   InkWell(
-                    onTap: (_isTyping && !_isRecording)
+                    onTap: (_isTyping &&
+                            !_isRecording) // only show send button if not recording and typing
                         ? _sendMessage
                         : _toggleAudio,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Icon(
-                        _isRecording
+                        _isRecording // show stop icon if recording, else show send arrow if
                             ? Icons.stop
                             : (_isTyping
                                 ? Icons.arrow_forward_ios_rounded
