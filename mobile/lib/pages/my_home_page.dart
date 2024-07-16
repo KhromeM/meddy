@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'chat_page.dart';
-import '../utils/my_app_state.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -42,6 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
           icon:
               Icon(Icons.star), // change from drawer to the star thing from Pi
           onPressed: _toggleStar,
+          // will add sliver anim / card stack interface
         ),
       ),
       body: page,
