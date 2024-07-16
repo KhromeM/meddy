@@ -1,19 +1,30 @@
+import { parse } from "dotenv";
+import { getUserById, updateUser } from "../../db/dbUser.mjs";
+
 export const executeLLMFunction = async (text) => {
 	// Parse input
 	text = text.replace(/\\n/g, "").replace(/\\/g, "").replace(/\t/g, "");
-	let parsedText = JSON.parse(text);
-	let functionName = parsedText.function;
-	let params = parsedText.params;
+	const parsedText = JSON.parse(text);
+	const functionName = parsedText.function;
+	const params = parsedText.params;
 
-	// Call function with parameters
+	// Execute function with given parameters
 	try {
-		if (functionName === "LLMDidNotUnderstand" || functionName === "LLMCannotDo") {
-			return params.response;
-		} else {
-			throw new Error(`Function ${functionName} not found`);
+		switch (functionName) {
+			case "LLMDidNotUnderstand":
+				return params.response;
+			case "LLMCannotDo":
+				return params.response;
+			case "LLMUpdateUserName":
+				const user = await getUserById(params.userId);
+				user.name = params.newName;
+				await updateUser(user);
+				return `Your name has been sucessfully updated to ${params.newName}!`;
+			default:
+				throw new Error(`Function ${functionName} not found`);
 		}
 	} catch (err) {
 		console.error(err);
-		return `Error processing LLM output: ${err.message}`;
+		return `Error in LLM function calling: ${err.message}`;
 	}
 };

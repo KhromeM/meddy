@@ -19,18 +19,9 @@ export const chatStreamProvider = async (
 	mode,
 	data = sampleData1 // dummy data
 ) => {
-	let systemMessage;
-	if (mode == 0) {
-		systemMessage = createDefaultSystemPrompt(user.name);
-	} else if (mode == 1) {
-		systemMessage = createFunctionCallingSystemPrompt(data);
-		chatHistory = chatHistory.slice(-5); // for function calling just use little chat history
-	} else {
-		systemMessage = "";
-	}
+	const systemMessage = getSystemMessage(user, data, mode);
 	let messages = [
 		new SystemMessage(systemMessage),
-		...fewShotExamplesForMode, // end examples with a system message
 		...chatHistory.map((message) => {
 			if (message.source == "user") {
 				return new HumanMessage(message.text);
@@ -91,10 +82,12 @@ function cleanMessages(messages) {
 	return clean;
 }
 
-function getSystemMessage(user, mode) {
+function getSystemMessage(user, data, mode) {
 	switch (mode) {
 		case 0:
 			return createDefaultSystemPrompt(user.name);
+		case 1:
+			return createFunctionCallingSystemPrompt(data);
 		case 2:
 			return createStallResponsePrompt();
 		default:

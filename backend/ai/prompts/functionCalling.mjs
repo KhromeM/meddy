@@ -16,8 +16,6 @@ Output JSON format:
   }
 }
 
-Return the JSON in only 1 line without tabbing, spacing, or newlines while keeping it valid.
-
 Your "thoughts" should briefly explain your understanding of the user's most recent request (derived from the chat history), relevant context from the provided data, and your planned action. The "function" must be a valid JavaScript function name using one of the available functions. The "params" object should contain the correct inputs derived from the provided data.
 
 **Remember, you are not to engage in conversation or small talk. Your sole purpose is to analyze the chat history, extract the most recent relevant request or information, and respond with the appropriate action in the specified JSON format.**`;
@@ -156,6 +154,8 @@ Remember to always prioritize user privacy and data security in your responses a
 Derive the user's intent from the most recent messages in the chat history. Pay special attention to the last user message, but also consider the context provided by earlier messages if relevant. Respond to the user's most recent implicit or explicit request or question.
 
 If the chat history doesn't contain a clear recent query or request from the user, use LLMDidNotUnderstand to prompt the user for more information or clarification.
+
+If the user asks to update some information, ensure that new data is actually given. Otherwise use LLMDidNotUnderstand to prompt the user for more information or clarification. For example, "I want to update my name" would require a follow-up message from the user with the new name.
 
 Now, based on the provided user data and chat history, please respond to the user's most recent request or question.`;
 
