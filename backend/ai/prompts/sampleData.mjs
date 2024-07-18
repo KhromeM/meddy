@@ -12,11 +12,13 @@ export const sampleData1 = {
 		{ role: "user", content: "What are my current medications?" },
 		{
 			role: "assistant",
-			content:
-				"Your current medications are: Lisinopril 10mg and Metformin 500mg.",
+			content: "Your current medications are: Lisinopril 10mg and Metformin 500mg.",
 		},
 	],
-	medications: ["Lisinopril 10mg", "Metformin 500mg"],
+	medications: [
+		{ id: "3", name: "Lisinopril", dosage: "10mg" },
+		{ id: "4", name: "Metformin", dosage: "500mg" },
+	],
 	appointments: [
 		{
 			id: "apt1",
@@ -49,8 +51,7 @@ export const sampleData2 = {
 		{ role: "user", content: "Cuándo es mi próxima cita?" },
 		{
 			role: "assistant",
-			content:
-				"Su próxima cita es el 20 de julio a las 2:00 PM con el Dr. Johnson.",
+			content: "Su próxima cita es el 20 de julio a las 2:00 PM con el Dr. Johnson.",
 		},
 	],
 	medications: ["Atorvastatin 20mg", "Levothyroxine 50mcg", "Aspirin 81mg"],
@@ -123,11 +124,7 @@ export const sampleData4 = {
 			content: "Vos allergies enregistrées sont : pénicilline et arachides.",
 		},
 	],
-	medications: [
-		"Insulin Glargine 100 units/mL",
-		"Metoprolol 25mg",
-		"Fluoxetine 20mg",
-	],
+	medications: ["Insulin Glargine 100 units/mL", "Metoprolol 25mg", "Fluoxetine 20mg"],
 	appointments: [
 		{
 			id: "apt4",

@@ -48,7 +48,8 @@ Output:
 const medicationPrompt = `
 Available functions for Medical Management:
 - LLMGetMedicationList(userId: string)
-- LLMUpdateCurrentMedications(userId: string, medications: string[])
+- LLMAddMedication(userId: string, medicationName: string, dosage: string)
+- LLMDeleteMedication(medicationId: string)
 - LLMSetMedicationReminder(userId: string, medicationName: string, hoursUntilRepeat: number, time: string) // hoursUntilRepeat: 6, 12, 24, or 48
 - LLMDeleteMedicationReminder(userId: string, reminderId: string)
 
@@ -70,7 +71,8 @@ Output:
 
 const appointmentManagementPrompt = `
 Available functions for Appointment Management:
-- LLMScheduleAppointment(userId: string, doctorId: string, dateTime: string)
+- LLMGetAppointmentList(userId: string)
+- LLMScheduleAppointment(dateTime: string, description: string, userId: string, doctorId: string) // Example dateTime: "2023-07-11T14:00:00Z"
 - LLMCancelAppointment(userId: string, appointmentId: string)
 - LLMRescheduleAppointment(userId: string, appointmentId: string, newDateTime: string)
 
@@ -124,7 +126,7 @@ For LLMDisplayInformation, format the information clearly and readably. Use this
 
 const errorHandlingPrompt = `
 Available functions for Error Handling:
-- LLMCannotDo(response: string) // Use when unable to perform the request
+- LLMCannotDo(response: string) // Use when unable to perform the request or a function does not exist
 - LLMDidNotUnderstand(response: string) // Use when the request is unclear
 
 For LLMCannotDo, explain why the action can't be performed. For LLMDidNotUnderstand, ask the user to clarify their request.
@@ -164,7 +166,7 @@ Now, based on the provided user data and chat history, please respond to the use
 export const createFunctionCallingSystemPrompt = (data) => {
 	const sysPrompt = [
 		corePrompt(data),
-		informationDisplayPrompt,
+		// informationDisplayPrompt,
 		userProfilePrompt,
 		medicationPrompt,
 		appointmentManagementPrompt,

@@ -9,6 +9,7 @@ import { createStallResponsePrompt } from "../prompts/stallResponse.mjs";
 import { createFunctionCallingSystemPrompt } from "../prompts/functionCalling.mjs";
 import { sampleData1, sampleData2, sampleData3 } from "../prompts/sampleData.mjs";
 import { executeLLMFunction } from "../functions/functionController.mjs";
+import { getUserInfo } from "../../db/dbInfo.mjs";
 
 let defaultModel = CONFIG.TEST ? openAIModel : openAIModel || anthropicModel || vertexAIModel || openAIModel;
 
@@ -53,7 +54,12 @@ export const chatStreamToReadable = (chatStreamPromise) => {
 };
 
 export const getChatResponse = async (chatHistory, user, model = defaultModel, mode = 1) => {
-	const chatStream = await chatStreamProvider(chatHistory, user, model, mode);
+	let data = sampleData1;
+	if (mode == 1) {
+		data = await getUserInfo(user.userid);
+	}
+
+	const chatStream = await chatStreamProvider(chatHistory, user, model, mode, data);
 	const resp = [];
 	for await (const chunk of chatStream) {
 		resp.push(chunk);
