@@ -18,8 +18,8 @@ class WSConnection {
 
   WebSocketChannel? _channel;
   bool _isConnected = false;
-  final String _serverUrl =
-      'ws://localhost:8000/api'; //'wss://www.trymeddy.com/api/';
+  final String _serverUrl = 'ws://localhost:8000/api';
+  // 'wss://www.trymeddy.com/api/';
   final Map<String, Handler> _handlers = {};
   Completer<bool>? _authCompleter;
 
@@ -33,7 +33,8 @@ class WSConnection {
       return;
     }
     try {
-      _channel = WebSocketChannel.connect(Uri.parse(_serverUrl));
+      _channel =
+          WebSocketChannel.connect(Uri.parse(_serverUrl));
       await _channel?.ready;
       _isConnected = true;
       print('WebSocket connected');
@@ -53,10 +54,14 @@ class WSConnection {
 
   void _handleIncomingMessage(dynamic message) {
     try {
-      Map<String, dynamic> parsedMessage = json.decode(message);
-      String type = parsedMessage['type'] as String? ?? 'UNKNOWN';
+      Map<String, dynamic> parsedMessage =
+          json.decode(message);
+      String type =
+          parsedMessage['type'] as String? ?? 'UNKNOWN';
       print('Received: $type');
-      Handler handler = _handlers[type] ?? _handleUnknownMessage;
+      print(parsedMessage['data']);
+      Handler handler =
+          _handlers[type] ?? _handleUnknownMessage;
       handler(parsedMessage);
     } catch (e) {
       print('Error handling message: $e');
@@ -64,7 +69,8 @@ class WSConnection {
   }
 
   void _handleUnknownMessage(Map<String, dynamic> message) {
-    print('Received unknown message type: ${message['type']}');
+    print(
+        'Received unknown message type: ${message['type']}');
   }
 
   void _handleDisconnect() {

@@ -1,4 +1,7 @@
 import { pool } from "./dbConfig.mjs";
+import { getUserById } from "./dbUser.mjs";
+import { getUserAppointments } from "./dbAppointments.mjs";
+import { getRecentMessagesByUserId } from "./dbMessages.mjs";
 
 // Medications Methods
 export const createMedication = (userId, name, dosage) => {
@@ -20,6 +23,18 @@ export const getAllMedications = () => {
 		.then((res) => res.rows)
 		.catch((err) => {
 			console.error("Error getting all medications:", err);
+			throw err;
+		});
+};
+
+export const getUserMedications = (userId) => {
+	const query = "SELECT * FROM Medications WHERE UserID = $1";
+	const values = [userId];
+	return pool
+		.query(query, values)
+		.then((res) => res.rows)
+		.catch((err) => {
+			console.error("Error getting user medications:", err);
 			throw err;
 		});
 };
@@ -86,6 +101,18 @@ export const getAllReminders = () => {
 		});
 };
 
+export const getUserReminders = (userId) => {
+	const query = "SELECT * FROM Reminders WHERE UserID = $1";
+	const values = [userId];
+	return pool
+		.query(query, values)
+		.then((res) => res.rows)
+		.catch((err) => {
+			console.error("Error getting user reminders:", err);
+			throw err;
+		});
+};
+
 export const getReminderById = (reminderId) => {
 	const query = "SELECT * FROM Reminders WHERE ReminderID = $1";
 	const values = [reminderId];
@@ -143,6 +170,18 @@ export const getAllAllergies = () => {
 		.then((res) => res.rows)
 		.catch((err) => {
 			console.error("Error getting all allergies:", err);
+			throw err;
+		});
+};
+
+export const getUserAllergies = (userId) => {
+	const query = "SELECT * FROM Allergies WHERE UserID = $1";
+	const values = [userId];
+	return pool
+		.query(query, values)
+		.then((res) => res.rows)
+		.catch((err) => {
+			console.error("Error getting user allergies:", err);
 			throw err;
 		});
 };
@@ -207,6 +246,18 @@ export const getAllConditions = () => {
 		});
 };
 
+export const getUserConditions = (userId) => {
+	const query = "SELECT * FROM Conditions WHERE UserID = $1";
+	const values = [userId];
+	return pool
+		.query(query, values)
+		.then((res) => res.rows)
+		.catch((err) => {
+			console.error("Error getting user conditions:", err);
+			throw err;
+		});
+};
+
 export const getConditionById = (conditionId) => {
 	const query = "SELECT * FROM Conditions WHERE ConditionID = $1";
 	const values = [conditionId];
@@ -241,4 +292,51 @@ export const deleteCondition = (conditionId) => {
 			console.error("Error deleting condition:", err);
 			throw err;
 		});
+};
+
+export const getUserInfo = async (userId) => {
+	try {
+		const user = await getUserById(userId);
+		const medications = await getUserMedications(userId);
+		const reminders = await getUserReminders(userId);
+		const appointments = await getUserAppointments(userId);
+		const chatHistory = await getRecentMessagesByUserId(userId, 5);
+
+		return {
+			user: {
+				userid: user.userid,
+				name: user.name,
+				address: user.address,
+				email: user.email,
+				language: user.language,
+				phone: user.phone,
+			},
+			chathistory: chatHistory.map((message) => ({
+				role: message.source.toLowerCase(),
+				content: message.text,
+			})),
+			medications: medications.map((med) => ({
+				id: med.medicationid,
+				name: med.name,
+				dosage: med.dosage,
+			})),
+			appointments: appointments.map((apt) => ({
+				id: apt.appointmentid,
+				doctorid: apt.doctorid,
+				date: apt.date,
+				description: apt.description,
+				transcript: apt.transcript,
+				transcriptsummary: apt.transcriptsummary,
+			})),
+			reminders: reminders.map((rem) => ({
+				id: rem.reminderid,
+				medicationname: rem.medicationname,
+				hoursuntilrepeat: rem.hoursuntilrepeat,
+				time: rem.time,
+			})),
+		};
+	} catch (error) {
+		console.error("Error getting user info:", error);
+		throw error;
+	}
 };

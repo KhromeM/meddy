@@ -34,7 +34,7 @@ export async function handleChatMessage(state, data) {
 		await db.createMessage(user.userid, "llm", llmResponse);
 
 		clientSocket.send(
-			JSON.stringify({ type: "chat_response", isComplete: true })
+			JSON.stringify({ type: "chat_response", data: "", isComplete: true })
 		);
 	} catch (error) {
 		console.error("Error in chat stream:", error.message);
