@@ -1,31 +1,20 @@
-import {
-	getChatResponse,
-	chatStreamProvider,
-} from "../../ai/langAi/chatStream.mjs";
+import { getChatResponse, chatStreamProvider } from "../../ai/langAi/chatStream.mjs";
 import db from "../../db/db.mjs";
 
 export const getChatHistory = async (req, res) => {
 	try {
-		const chatHistory = await db.getRecentMessagesByUserId(
-			req._dbUser.userid,
-			100
-		);
+		const chatHistory = await db.getRecentMessagesByUserId(req._dbUser.userid, 100);
 		res.status(200).json({ chatHistory });
 	} catch (err) {
 		console.error(err);
-		res
-			.status(500)
-			.json({ status: "fail", message: "Something went wrong. Checkpoint 3" });
+		res.status(500).json({ status: "fail", message: "Something went wrong. Checkpoint 3" });
 	}
 };
 
 export const postChatMessage = async (req, res) => {
 	try {
 		const text = req.body.message.text;
-		const chatHistory = await db.getRecentMessagesByUserId(
-			req._dbUser.userid,
-			100
-		);
+		const chatHistory = await db.getRecentMessagesByUserId(req._dbUser.userid, 100);
 		chatHistory.push({ source: "user", text });
 		const content = await getChatResponse(chatHistory, req._dbUser);
 		if (!content) {
@@ -45,10 +34,7 @@ export const postChatMessageStream = async (req, res) => {
 	let headersSent = false;
 	try {
 		const text = req.body.message.text;
-		const chatHistory = await db.getRecentMessagesByUserId(
-			req._dbUser.userid,
-			100
-		);
+		const chatHistory = await db.getRecentMessagesByUserId(req._dbUser.userid, 100);
 
 		res.writeHead(200, {
 			"Content-Type": "text/event-stream",
@@ -82,9 +68,7 @@ export const postChatMessageStream = async (req, res) => {
 			);
 			res.write("data: [DONE]\n\n");
 		} else {
-			res
-				.status(500)
-				.json({ status: "fail", message: "Failed to process streaming chat" });
+			res.status(500).json({ status: "fail", message: "Failed to process streaming chat" });
 		}
 	} finally {
 		if (headersSent) {

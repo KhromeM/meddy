@@ -38,6 +38,21 @@ export const getAllAppointments = () => {
 };
 
 /**
+ * Get all appointments for a specific user
+ */
+export const getUserAppointments = (userId) => {
+	const query = "SELECT * FROM Appointments WHERE UserID = $1";
+	const values = [userId];
+	return pool
+		.query(query, values)
+		.then((res) => res.rows)
+		.catch((err) => {
+			console.error("Error getting user appointments:", err);
+			throw err;
+		});
+};
+
+/**
  * Get an appointment by ID
  * @param {string} appointmentId - The ID of the appointment
  * @returns {Promise<Object>} - A promise that resolves to the appointment object
