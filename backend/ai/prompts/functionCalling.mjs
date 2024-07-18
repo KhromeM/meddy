@@ -50,6 +50,7 @@ Available functions for Medical Management:
 - LLMGetMedicationList(userId: string)
 - LLMAddMedication(userId: string, medicationName: string, dosage: string)
 - LLMDeleteMedication(medicationId: string)
+- LLMShowMedicationReminderList(userId: string)
 - LLMSetMedicationReminder(userId: string, medicationName: string, hoursUntilRepeat: number, time: string) // hoursUntilRepeat: 6, 12, 24, or 48
 - LLMDeleteMedicationReminder(userId: string, reminderId: string)
 

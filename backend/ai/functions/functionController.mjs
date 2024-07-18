@@ -5,6 +5,7 @@ import {
 	deleteReminder,
 	getUserMedications,
 	deleteMedication,
+	getUserReminders,
 } from "../../db/dbInfo.mjs";
 import {
 	createAppointment,
@@ -57,6 +58,11 @@ export const executeLLMFunction = async (text) => {
 				return `Your language preference has been sucessfully updated to ${params.language}!`;
 			case "LLMGetMedicationList":
 				const medications = await getUserMedications(params.userId);
+
+				if (medications.length === 0) {
+					return `You have no medications.`;
+				}
+
 				const medicationList = medications.map((med) => `${med.name} (${med.dosage})`).join(", ");
 				return `Here are your current medications: ${medicationList}.`;
 			case "LLMAddMedication":
@@ -65,6 +71,12 @@ export const executeLLMFunction = async (text) => {
 			case "LLMDeleteMedication":
 				await deleteMedication(params.medicationId);
 				return `The medication has been deleted successfully.`;
+			case "LLMShowMedicationReminderList":
+				const reminders = await getUserReminders(params.userId);
+				const reminderList = reminders
+					.map((rem) => `${rem.medicationname} at ${rem.time}`)
+					.join(", ");
+				return `Here are your medication reminders: ${reminderList}.`;
 			case "LLMSetMedicationReminder":
 				await createReminder(
 					params.userId,
@@ -78,6 +90,11 @@ export const executeLLMFunction = async (text) => {
 				return `The reminder has been deleted successfully!`;
 			case "LLMGetAppointmentList":
 				const appointments = await getUserAppointments(params.userId);
+
+				if (appointments.length === 0) {
+					return `You have no upcoming appointments.`;
+				}
+
 				const appointmentList = appointments
 					.map((apt) => {
 						const date = new Date(apt.date);
