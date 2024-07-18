@@ -20,6 +20,7 @@ setupErrorHandlers();
 process.env["TZ"] = "UTC";
 
 export const app = express();
+
 app.use(cors());
 app.use(json());
 
@@ -42,5 +43,5 @@ const wss = new WebSocketServer({ server: server });
 setupWebSocketHandlers(wss);
 
 server.listen(CONFIG.port, () => {
-	console.log("Server is listening to port: " + CONFIG.port);
+  console.log("Server is listening to port: " + CONFIG.port);
 });
