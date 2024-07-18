@@ -20,9 +20,9 @@ class MyApp extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return CircularProgressIndicator(); // Show a loading indicator while waiting for auth state
           } else if (snapshot.hasData) {
-            return const MyHomePage();
+            return MyHomePage();
           }
-          return const SignInPage();
+          return SignInPage();
         },
       ),
     );
