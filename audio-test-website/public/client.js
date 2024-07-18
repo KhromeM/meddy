@@ -164,9 +164,9 @@ async function start(socket) {
 	});
 }
 const dev = "ws://localhost:8000/api";
-const server = "ws://trymeddy.com/api";
+const server = "wss://trymeddy.com/api/";
 window.addEventListener("load", () => {
-	const socket = new WebSocket(dev);
+	const socket = new WebSocket(server || dev);
 	langSelect.addEventListener("change", (event) => {
 		event.preventDefault();
 
