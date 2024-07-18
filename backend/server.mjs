@@ -6,11 +6,18 @@ import { setupWebSocketHandlers } from "./websocket/wsHandlers.mjs";
 import CONFIG from "./config.mjs";
 import chatRoutes from "./server/routes/chatRoutes.mjs";
 import fileRoutes from "./server/routes/fileRoutes.mjs";
+import appointmentRoutes from "./server/routes/appointmentRoutes.mjs";
+import infoRoutes from "./server/routes/infoRoutes.mjs";
+import doctorRoutes from "./server/routes/doctorRoutes.mjs";
 import authMiddleware from "./server/middleware/authMiddleware.mjs";
 import loggerMiddleware from "./server/middleware/loggerMiddleware.mjs";
 import userMiddleware from "./server/middleware/userMiddleware.mjs";
 import errorHandler from "./server/middleware/errorHandler.mjs";
-import url from "url";
+import { setupErrorHandlers } from "./extra/errorHandlers.mjs";
+
+setupErrorHandlers();
+
+process.env["TZ"] = "UTC";
 
 export const app = express();
 
@@ -24,8 +31,9 @@ app.use(userMiddleware);
 // API Routes:
 app.use("/api/chat", chatRoutes);
 app.use("/api/file", fileRoutes);
-// app.use("/api/user", userRoutes);
-// app.use("/api/report", reportRoutes)
+app.use("/api/appointment", appointmentRoutes);
+app.use("/api/doctor", doctorRoutes);
+app.use("/api/info", infoRoutes);
 
 app.use(errorHandler);
 

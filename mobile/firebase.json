@@ -1,0 +1,30 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "meddyai",
+          "appId": "1:136111862564:android:dac71c41cd12e331b739b1",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "meddyai",
+          "appId": "1:136111862564:ios:66d659bf22534b21b739b1",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "meddyai",
+          "configurations": {
+            "android": "1:136111862564:android:dac71c41cd12e331b739b1",
+            "ios": "1:136111862564:ios:66d659bf22534b21b739b1"
+          }
+        }
+      }
+    }
+  }
+}

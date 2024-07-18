@@ -1,35 +1,22 @@
-import { textGeminiWithHistory } from "../../ai/gemini.mjs";
-import {
-	getChatResponse,
-	chatStreamProvider,
-} from "../../ai/langAi/chatStream.mjs";
-import { vertexAIModel } from "../../ai/langAi/model.mjs";
+import { getChatResponse, chatStreamProvider } from "../../ai/langAi/chatStream.mjs";
 import db from "../../db/db.mjs";
 
 export const getChatHistory = async (req, res) => {
 	try {
-		const chatHistory = await db.getRecentMessagesByUserId(
-			req._dbUser.userid,
-			100
-		);
+		const chatHistory = await db.getRecentMessagesByUserId(req._dbUser.userid, 100);
 		res.status(200).json({ chatHistory });
 	} catch (err) {
 		console.error(err);
-		res
-			.status(500)
-			.json({ status: "fail", message: "Something went wrong. Checkpoint 3" });
+		res.status(500).json({ status: "fail", message: "Something went wrong. Checkpoint 3" });
 	}
 };
 
 export const postChatMessage = async (req, res) => {
 	try {
 		const text = req.body.message.text;
-		const chatHistory = await db.getRecentMessagesByUserId(
-			req._dbUser.userid,
-			100
-		);
+		const chatHistory = await db.getRecentMessagesByUserId(req._dbUser.userid, 100);
 		chatHistory.push({ source: "user", text });
-		const content = await getChatResponse(chatHistory);
+		const content = await getChatResponse(chatHistory, req._dbUser);
 		if (!content) {
 			throw new Error("LLM didn't respond");
 		}
@@ -42,27 +29,23 @@ export const postChatMessage = async (req, res) => {
 	}
 };
 
-const defaultModel = vertexAIModel;
-
 // Uses SSE
 export const postChatMessageStream = async (req, res) => {
+	let headersSent = false;
 	try {
 		const text = req.body.message.text;
-		const chatHistory = await db.getRecentMessagesByUserId(
-			req._dbUser.userid,
-			100
-		);
+		const chatHistory = await db.getRecentMessagesByUserId(req._dbUser.userid, 100);
 
-		// Set headers for SSE
 		res.writeHead(200, {
 			"Content-Type": "text/event-stream",
 			"Cache-Control": "no-cache",
 			Connection: "keep-alive",
 		});
+		headersSent = true;
 
 		chatHistory.push({ source: "user", text });
 
-		const stream = await chatStreamProvider(chatHistory, defaultModel, 0);
+		const stream = await chatStreamProvider(chatHistory, req._dbUser);
 
 		let llmResponseChunks = [];
 		for await (const chunk of stream) {
@@ -77,11 +60,19 @@ export const postChatMessageStream = async (req, res) => {
 		await db.createMessage(req._dbUser.userid, "user", text);
 		await db.createMessage(req._dbUser.userid, "llm", llmResponse);
 	} catch (err) {
-		console.error(err);
-		res
-			.status(500)
-			.json({ status: "fail", message: "Failed to process streaming chat" });
+		if (headersSent) {
+			res.write(
+				`data: ${JSON.stringify({
+					text: "An error occurred while processing your request.",
+				})}\n\n`
+			);
+			res.write("data: [DONE]\n\n");
+		} else {
+			res.status(500).json({ status: "fail", message: "Failed to process streaming chat" });
+		}
 	} finally {
-		res.end();
+		if (headersSent) {
+			res.end();
+		}
 	}
 };
