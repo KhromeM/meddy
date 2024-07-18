@@ -53,7 +53,7 @@ export const chatStreamToReadable = (chatStreamPromise) => {
 	return stream;
 };
 
-export const getChatResponse = async (chatHistory, user, model = defaultModel, mode = 1) => {
+export const getChatResponse = async (chatHistory, user, model = defaultModel, mode = 0) => {
 	let data = sampleData1;
 	if (mode == 1) {
 		data = await getUserInfo(user.userid);
