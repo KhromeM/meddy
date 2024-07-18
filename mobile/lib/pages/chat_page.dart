@@ -4,6 +4,7 @@ import 'package:meddymobile/services/chat_service.dart';
 import 'package:meddymobile/utils/ws_connection.dart';
 import 'package:meddymobile/services/recorder_service.dart';
 import 'package:meddymobile/services/player_service.dart';
+import 'dart:async';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -46,7 +47,6 @@ class _ChatPageState extends State<ChatPage> {
       });
     });
     _loadChatHistory();
-    _scrollToBottom();
   }
 
   Future<void> _loadChatHistory() async {
@@ -56,7 +56,10 @@ class _ChatPageState extends State<ChatPage> {
         _chatHistory = chatHistory;
         _isLoading = false;
       });
-      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToBottom();
+      });
     } catch (e) {
       print('Failed to load chat history: $e');
       setState(() {
@@ -80,7 +83,9 @@ class _ChatPageState extends State<ChatPage> {
         _currentMessageId = messageId;
       }
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToBottom();
+    });
   }
 
   void _scrollToBottom() {
@@ -88,7 +93,7 @@ class _ChatPageState extends State<ChatPage> {
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
         duration: Duration(milliseconds: 300),
-        curve: Curves.easeOut,
+        curve: Curves.elasticInOut,
       );
     }
   }
@@ -96,13 +101,14 @@ class _ChatPageState extends State<ChatPage> {
   void _sendMessage() async {
     if (_textEditingController.text.isNotEmpty) {
       try {
-        String text = _textEditingController.text;
+        // String text = 
         _addMessageToChatHistory("user", _textEditingController.text);
-        _textEditingController.clear();
+        print(_textEditingController.text);
         ws.sendMessage({
           'type': 'chat',
-          'data': {'text': text},
+          'data': {'text': _textEditingController.text},
         });
+        _textEditingController.clear();
       } catch (e) {
         print('Failed to send message: $e');
       }
@@ -125,23 +131,30 @@ class _ChatPageState extends State<ChatPage> {
         }
       }
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToBottom();
+    });
   }
 
   void _handleChatResponse(dynamic message) {
     if (message['type'] == 'chat_response') {
       setState(() {
-        _currentMessageChunk += message['data'];
+        if (message['isComplete']) {
+          _currentMessageId = null;
+          _currentMessageChunk = "";
+        } else {
+          _currentMessageChunk += message['data'];
+        }
         if (_currentMessageChunk.isNotEmpty && _currentMessageId == null) {
           _addMessageToChatHistory("llm", _currentMessageChunk,
               temporary: true);
         } else {
           _updateCurrentMessageChunk(_currentMessageChunk);
         }
-        if (message['isComplete']) {
-          _currentMessageId = null;
-          _currentMessageChunk = "";
-        }
+      });
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToBottom();
       });
     }
   }
@@ -165,6 +178,7 @@ class _ChatPageState extends State<ChatPage> {
   void dispose() {
     _recorderService.dispose();
     _playerService.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -174,19 +188,20 @@ class _ChatPageState extends State<ChatPage> {
       body: Column(
         children: [
           Expanded(
-              child: _isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : ListView.builder(
-                      controller: _scrollController,
-                      itemCount: _chatHistory.length,
-                      itemBuilder: (context, index) {
-                        final message = _chatHistory[index];
+            child: _isLoading
+                ? Center(child: CircularProgressIndicator())
+                : SingleChildScrollView(
+                    controller: _scrollController,
+                    child: Column(
+                      children: _chatHistory.map((message) {
                         return ListTile(
                           title: Text(message.source),
                           subtitle: Text(message.text),
                         );
-                      },
-                    )),
+                      }).toList(),
+                    ),
+                  ),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
           ),
