@@ -11,11 +11,10 @@
 // 2. and use a smallish system prompt so it answers back fast
 // 3. also dont pass in the conversation history the way we do now. pass it as a part of the system prompt. otherwise its gonna see the conversational nature of the chat history and respond back in the same way.
 
-import { openAIModel } from "../ai/langAi/model.mjs";
+import { openAIModel } from "../langAi/model.mjs";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
-import { chatStreamProvider } from "../ai/langAi/chatStream.mjs";
+import { chatStreamProvider } from "../langAi/chatStream.mjs";
 import { StringOutputParser } from "@langchain/core/output_parsers";
-import CONFIG from "../config.mjs";
 
 const classifyPartialPrompt = async (
   partialTranscript,
@@ -32,7 +31,7 @@ You are a classification assistant for Meddy AI. Categorize the user's partial i
 Recent chat context:
 ${recentMessages
   .slice(-5)
-  .map((msg) => `${msg.source}: ${msg.text}`)
+  .map((msg) => `${msg.role}: ${msg.content}`)
   .join("\n")}
 
 Respond with ONLY the number corresponding to the classification.`;
@@ -68,20 +67,20 @@ const handleClassifiedPrompt = async (
     case 3: // Translation Mode Toggle
       return toggleTranslationMode(user);
     default: // Normal Question
-      return null; // Let the main chat flow handle this
+      return "Normal Question"; // Let the main chat flow handle this
   }
 };
 
 async function handleProfileInfoRequest(user) {
-  return "info";
+  return "Profile Info Request";
 }
 
 async function handleProfileInfoUpdate(partialTranscript, user) {
-  return "update";
+  return "Profile Info Update";
 }
 
 function toggleTranslationMode(user) {
-  return "translation";
+  return "Translation Mode Toggle";
 }
 
 export const useClassification = async (
@@ -96,3 +95,27 @@ export const useClassification = async (
   );
   return await handleClassifiedPrompt(classification, partialTranscript, user);
 };
+
+useClassification(
+  "Can you translate this conversation?",
+  [
+    { role: "user", content: "What are my current medications?" },
+    {
+      role: "assistant",
+      content:
+        "Your current medications are: Lisinopril 10mg and Metformin 500mg.",
+    },
+    { role: "user", content: "Do I have any upcoming appointments?" },
+    {
+      role: "assistant",
+      content: "You currently don't have any scheduled appointments.",
+    },
+    { role: "user", content: "I need to update my contact information" },
+    {
+      role: "assistant",
+      content: "Certainly! What specific information would you like to update?",
+    },
+    { role: "user", content: "My email address to newemail@example.com" },
+  ],
+  { id: "123" }
+).then(console.log);

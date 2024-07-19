@@ -5,13 +5,13 @@ import {
   postChatMessageStream,
 } from "../controllers/chatController.mjs";
 
-import { postAudioTrans } from "../controllers/speechToTextController.mjs";
+import { postAudioTrans } from "../controllers/groqSpeechToTextController.mjs";
 
 const router = Router();
 
 router.get("/", getChatHistory);
 router.post("/", postChatMessage);
 router.post("/stream", postChatMessageStream);
-router.post("/speech-to-text", postAudioTrans);
+router.post("/groq-stt", postAudioTrans);
 
 export default router;
