@@ -1,6 +1,7 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:meddymobile/widgets/boxes.dart';
+import 'package:meddymobile/widgets/main_background.dart';
+import 'package:meddymobile/widgets/mic_page.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -58,78 +59,90 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Meddy'),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        forceMaterialTransparency: true,
-      ),
-      body: Column(
-        children: [
-          SizedBox(height: 20),
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Container(
-                width: 100.0,
-                height: 100.0,
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  shape: BoxShape.circle,
-                ),
+    return Stack(
+      children: [
+        MainBackground(),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            title: const Text('Meddy'),
+            centerTitle: true,
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            forceMaterialTransparency: true,
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Stack(
+                children: [
+                  //put sth here
+                  Icon(
+                    Icons.circle,
+                    size: 60,
+                  )
+                ],
               ),
-              Icon(
-                Icons.mic,
-                size: 50,
+            ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: Stack(
+                  children: [
+                    //put sth here
+                    Icon(Icons.circle, size: 60)
+                  ],
+                ),
               ),
             ],
           ),
-          SizedBox(height: 20),
-          Expanded(
-            child: MasonryGridView.count(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.all(10.0),
-              crossAxisCount:
-                  2, // Number of rows in the horizontal scroll direction
-              mainAxisSpacing: 10.0,
-              crossAxisSpacing: 10.0,
-              itemCount:
-                  texts.length, // Ensure this matches the length of your lists
-              itemBuilder: (context, index) {
-                return Container(
-                  color: Colors.blue,
-                  width: index.isEven ? 200 : 170,
-                  height: Random().nextInt(100) + 50,
-                  padding: index.isOdd ? EdgeInsets.all(30) : null,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        images[index],
-                        fit: BoxFit.cover,
+          body: Column(
+            children: [
+              SizedBox(height: 20),
+              InkWell(
+                onTap: () {
+                  _showMic();
+                },
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      width: 100.0,
+                      height: 100.0,
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
                       ),
-                      SizedBox(height: 10),
-                      Text(
-                        texts[index],
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+                    ),
+                    Icon(
+                      Icons.mic,
+                      size: 50,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              Boxes(texts: texts, images: images), // Use the custom container
+              SizedBox(height: 100),
+            ],
           ),
-          SizedBox(height: 100),
-        ],
-      ),
+        ),
+      ],
+    );
+  }
+
+  void _showMic() {
+    showDialog(
+      context: context,
+      barrierDismissible: true, // prevent closing the dialog
+      builder: (context) {
+        return Material(
+          color: Theme.of(context).colorScheme.surface,
+          child: MicPage(),
+        );
+      },
     );
   }
 }
+
 
 
 
