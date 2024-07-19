@@ -70,26 +70,36 @@ class _MyHomePageState extends State<MyHomePage> {
             elevation: 0,
             backgroundColor: Colors.transparent,
             forceMaterialTransparency: true,
-            leading: Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Stack(
-                children: [
-                  //put sth here
-                  Icon(
-                    Icons.circle,
-                    size: 60,
-                  )
-                ],
-              ),
-            ),
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
+            leading: InkWell(
+              onTap: () {
+                //put api call
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10),
                 child: Stack(
                   children: [
                     //put sth here
-                    Icon(Icons.circle, size: 60)
+                    Icon(
+                      Icons.circle,
+                      size: 60,
+                    )
                   ],
+                ),
+              ),
+            ),
+            actions: [
+              InkWell(
+                onTap: () {
+                  //put api call
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: Stack(
+                    children: [
+                      //put sth here
+                      Icon(Icons.circle, size: 60)
+                    ],
+                  ),
                 ),
               ),
             ],
