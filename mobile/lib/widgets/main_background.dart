@@ -4,8 +4,8 @@ class MainBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 393,
-      height: 852,
+      width: MediaQuery.sizeOf(context).width,
+      height: MediaQuery.sizeOf(context).height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
         color: Color.fromRGBO(254, 249, 239, 1),
