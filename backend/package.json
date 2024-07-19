@@ -19,6 +19,7 @@
 		"@langchain/google-vertexai": "^0.0.19",
 		"@langchain/groq": "^0.0.13",
 		"@langchain/openai": "^0.2.0",
+		"@medplum/core": "^3.2.2",
 		"chai": "^4.4.1",
 		"cookie-parser": "^1.4.6",
 		"cors": "^2.8.5",
