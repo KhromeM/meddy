@@ -22,7 +22,7 @@ class MainBackground extends StatelessWidget {
                 color: Color.fromRGBO(255, 255, 255, 1),
               ),
               child: Stack(
-                children: <Widget>[
+                children: [
                   // Add child widgets here
                 ],
               ),
@@ -60,7 +60,6 @@ class MainBackground extends StatelessWidget {
               ),
             ),
           ),
-          // Removed the semi-transparent overlay
           Positioned(
             top: 491,
             left: 31,
@@ -69,9 +68,7 @@ class MainBackground extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  // Add child widgets here
-                ],
+                children: [],
               ),
             ),
           ),
@@ -83,9 +80,7 @@ class MainBackground extends StatelessWidget {
               height: 28,
               decoration: BoxDecoration(),
               child: Stack(
-                children: <Widget>[
-                  // Add child widgets here
-                ],
+                children: [],
               ),
             ),
           ),
@@ -113,9 +108,7 @@ class MainBackground extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  // Add child widgets here
-                ],
+                children: [],
               ),
             ),
           ),
@@ -139,11 +132,11 @@ class MainBackground extends StatelessWidget {
           Positioned(
             top: 21.78,
             left: 55,
-            child: Container(
+            child: SizedBox(
               width: 302.33,
               height: 12.38,
               child: Stack(
-                children: <Widget>[
+                children: [
                   Positioned(
                     top: 0.56,
                     left: 276,
