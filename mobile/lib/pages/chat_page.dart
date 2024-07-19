@@ -27,7 +27,7 @@ class _ChatPageState extends State<ChatPage> {
 
   String _currentMessageChunk = "";
   int? _currentMessageId;
-
+  Timer? _debounceTimer;
   ScrollController _scrollController = ScrollController();
 
   @override
@@ -52,8 +52,9 @@ class _ChatPageState extends State<ChatPage> {
   Future<void> _loadChatHistory() async {
     try {
       List<Message> chatHistory = await _chatService.getChatHistory();
+      print(chatHistory);
       setState(() {
-        _chatHistory = chatHistory;
+        _chatHistory = List.from(chatHistory);
         _isLoading = false;
       });
 
@@ -101,7 +102,7 @@ class _ChatPageState extends State<ChatPage> {
   void _sendMessage() async {
     if (_textEditingController.text.isNotEmpty) {
       try {
-        // String text = 
+        // String text =
         _addMessageToChatHistory("user", _textEditingController.text);
         print(_textEditingController.text);
         ws.sendMessage({
@@ -116,6 +117,10 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _updateCurrentMessageChunk(String chunk) {
+    if (_debounceTimer?.isActive ?? false) {
+      _debounceTimer?.cancel();
+    }
+  
     setState(() {
       if (_currentMessageId != null) {
         int index = _chatHistory
@@ -139,17 +144,17 @@ class _ChatPageState extends State<ChatPage> {
   void _handleChatResponse(dynamic message) {
     if (message['type'] == 'chat_response') {
       setState(() {
-        if (message['isComplete']) {
-          _currentMessageId = null;
-          _currentMessageChunk = "";
-        } else {
-          _currentMessageChunk += message['data'];
-        }
+        _currentMessageChunk += message['data'];
         if (_currentMessageChunk.isNotEmpty && _currentMessageId == null) {
           _addMessageToChatHistory("llm", _currentMessageChunk,
               temporary: true);
         } else {
           _updateCurrentMessageChunk(_currentMessageChunk);
+        }
+
+        if (message['isComplete']) {
+          _currentMessageId = null;
+          _currentMessageChunk = "";
         }
       });
 
@@ -179,6 +184,7 @@ class _ChatPageState extends State<ChatPage> {
     _recorderService.dispose();
     _playerService.dispose();
     _scrollController.dispose();
+    _debounceTimer?.cancel();
     super.dispose();
   }
 

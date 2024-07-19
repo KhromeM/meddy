@@ -19,7 +19,8 @@ class WSConnection {
   WebSocketChannel? _channel;
   bool _isConnected = false;
   final String _serverUrl =
-      'wss://www.trymeddy.com/api/'; //'ws://localhost:8000/api';
+      'wss://www.trymeddy.com/api/';
+      // 'ws://localhost:8000/api';
   final Map<String, Handler> _handlers = {};
   Completer<bool>? _authCompleter;
 
@@ -55,8 +56,11 @@ class WSConnection {
     try {
       Map<String, dynamic> parsedMessage = json.decode(message);
       String type = parsedMessage['type'] as String? ?? 'UNKNOWN';
-      print('Received: $type');
-      print(parsedMessage['data']);
+      if (parsedMessage['data'] == null) {
+        parsedMessage['data'] = "";
+      }
+      print('Received: $parsedMessage');
+      // print(parsedMessage['data']);
       Handler handler = _handlers[type] ?? _handleUnknownMessage;
       handler(parsedMessage);
     } catch (e) {
@@ -101,7 +105,7 @@ class WSConnection {
   void sendMessage(Object message) {
     if (_isConnected) {
       _channel?.sink.add(json.encode(message));
-      print('Sent: $message');
+      // print('Sent: $message');
     } else {
       print('WebSocket is not connected');
     }
