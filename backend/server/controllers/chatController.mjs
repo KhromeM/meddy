@@ -14,6 +14,10 @@ export const getChatHistory = async (req, res) => {
 export const postChatMessage = async (req, res) => {
 	try {
 		const text = req.body.message.text;
+		if (!text) {
+			res.status(400).json({ status: "fail", message: "An empty message was provided" });
+			return;
+		}
 		const chatHistory = await db.getRecentMessagesByUserId(req._dbUser.userid, 100);
 		chatHistory.push({ source: "user", text });
 		const content = await getChatResponse(chatHistory, req._dbUser);

@@ -1,4 +1,3 @@
-
 import { HumanMessage, SystemMessage, AIMessage } from "@langchain/core/messages";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { vertexAIModel, groqModel, anthropicModel, openAIModel } from "./model.mjs";
@@ -6,7 +5,6 @@ import { Readable } from "stream";
 import CONFIG from "../../config.mjs";
 import { createDefaultSystemPrompt } from "../prompts/default.mjs";
 import { createStallResponsePrompt } from "../prompts/stallResponse.mjs";
-
 
 import { createFunctionCallingSystemPrompt } from "../prompts/functionCalling.mjs";
 import { sampleData1, sampleData2, sampleData3 } from "../prompts/sampleData.mjs";
@@ -39,22 +37,21 @@ export const chatStreamProvider = async (
 };
 
 export const chatStreamToReadable = (chatStreamPromise) => {
-  const stream = new Readable({
-    objectMode: true,
-    read() {},
-  });
+	const stream = new Readable({
+		objectMode: true,
+		read() {},
+	});
 
-  (async () => {
-    const chatStream = await chatStreamPromise;
-    for await (const chunk of cs) {
-      stream.push(chunk);
-    }
-    stream.push(null); // EOS
-  })();
+	(async () => {
+		const chatStream = await chatStreamPromise;
+		for await (const chunk of cs) {
+			stream.push(chunk);
+		}
+		stream.push(null); // EOS
+	})();
 
-  return stream;
+	return stream;
 };
-
 
 export const getChatResponse = async (chatHistory, user, model = defaultModel, mode = 0) => {
 	let data = sampleData1;
@@ -79,16 +76,16 @@ export const getChatResponse = async (chatHistory, user, model = defaultModel, m
 // Makes sure the same source is not sending a message twice in a row
 // Doing that causes an error with most llm providers
 function cleanMessages(messages) {
-  let prev = messages[0].constructor;
-  const clean = [messages[0]];
-  for (const message of messages) {
-    if (message instanceof prev) {
-      clean.pop();
-    }
-    prev = message.constructor;
-    clean.push(message);
-  }
-  return clean;
+	let prev = messages[0].constructor;
+	const clean = [messages[0]];
+	for (const message of messages) {
+		if (message instanceof prev) {
+			clean.pop();
+		}
+		prev = message.constructor;
+		clean.push(message);
+	}
+	return clean;
 }
 
 function getSystemMessage(user, data, mode) {
