@@ -27,13 +27,13 @@ class Boxes extends StatelessWidget {
           return Container(
             width: index.isEven ? 200 : 170,
             height: Random().nextInt(100) + 50,
-            padding: index.isOdd ? EdgeInsets.all(30) : null,
             decoration: BoxDecoration(
               color: Colors.blue,
               borderRadius: BorderRadius.circular(20), // Rounded borders
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Stack(
+              alignment: Alignment.center,
+              //mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
                   images[index],

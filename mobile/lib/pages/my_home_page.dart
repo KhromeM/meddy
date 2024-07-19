@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meddymobile/pages/chat_page.dart';
 import 'package:meddymobile/widgets/boxes.dart';
 import 'package:meddymobile/widgets/main_background.dart';
 import 'package:meddymobile/widgets/mic_page.dart';
@@ -20,18 +21,6 @@ class _MyHomePageState extends State<MyHomePage> {
     'Text 6',
     'Text 7',
     'Text 8',
-    'Text 9',
-    'Text 10',
-    'Text 11',
-    'Text 12',
-    'Text 13',
-    'Text 14',
-    'Text 15',
-    'Text 16',
-    'Text 17',
-    'Text 18',
-    'Text 19',
-    'Text 20'
   ];
 
   final List<String> images = [
@@ -91,6 +80,10 @@ class _MyHomePageState extends State<MyHomePage> {
               InkWell(
                 onTap: () {
                   //put api call
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ChatPage()),
+                  );
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(right: 10),
@@ -130,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               SizedBox(height: 20),
-              Boxes(texts: texts, images: images), // Use the custom container
+              Boxes(texts: texts, images: images),
               SizedBox(height: 100),
             ],
           ),
