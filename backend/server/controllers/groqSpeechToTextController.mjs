@@ -1,7 +1,7 @@
 import {
   transcribeSpeech,
   translateSpeech,
-} from "../../ai/audio/speechToText.mjs";
+} from "../../ai/audio/speechToTextGroq.mjs";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
