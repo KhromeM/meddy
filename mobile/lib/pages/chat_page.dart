@@ -4,6 +4,7 @@ import 'package:meddymobile/services/chat_service.dart';
 import 'package:meddymobile/utils/ws_connection.dart';
 import 'package:meddymobile/services/recorder_service.dart';
 import 'package:meddymobile/services/player_service.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'dart:async';
 
 class ChatPage extends StatefulWidget {
@@ -199,7 +200,9 @@ class _ChatPageState extends State<ChatPage> {
                       children: _chatHistory.map((message) {
                         return ListTile(
                           title: Text(message.source),
-                          subtitle: Text(message.text),
+                          subtitle: MarkdownBody(
+                            data: message.text,
+                          ),
                         );
                       }).toList(),
                     ),
