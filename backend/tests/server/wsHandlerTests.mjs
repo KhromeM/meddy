@@ -110,7 +110,8 @@ describe("WebSocket Handlers Tests", function () {
 				}
 				if (message.isComplete) {
 					expect(receivedChunks).to.be.an("array").that.is.not.empty;
-					console.log(receivedChunks.join(""));
+					expect(receivedChunks.join("")).to.include("cookie");
+					// console.log(receivedChunks.join(""));
 					resolve();
 				}
 			});

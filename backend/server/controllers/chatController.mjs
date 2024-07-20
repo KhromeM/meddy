@@ -73,10 +73,20 @@ export const postChatMessage = async (req, res) => {
 	}
 };
 
+/// TEST CODE:
 // const chatHistory = await db.getRecentMessagesByUserId("DEVELOPER", 100);
 // chatHistory.push({
 // 	source: "user",
-// 	text: "whats the image?",
+// 	text: "heres an image. can you see it?",
+// 	image: "cookies.jpeg",
+// });
+// chatHistory.push({
+// 	source: "llm",
+// 	text: "Yes I can see it!",
+// });
+// chatHistory.push({
+// 	source: "user",
+// 	text: "what is this image?",
 // 	image: "cookies.jpeg",
 // });
 // const s = Date.now();
