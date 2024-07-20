@@ -73,6 +73,19 @@ export const postChatMessage = async (req, res) => {
 	}
 };
 
+// const chatHistory = await db.getRecentMessagesByUserId("DEVELOPER", 100);
+// chatHistory.push({
+// 	source: "user",
+// 	text: "whats the image?",
+// 	image: "cookies.jpeg",
+// });
+// const s = Date.now();
+// const content = await getChatResponse(chatHistory, {
+// 	userid: "DEVELOPER",
+// 	name: "DEV",
+// });
+// console.log(content, Date.now() - s);
+
 // Uses SSE
 export const postChatMessageStream = async (req, res) => {
 	let headersSent = false;

@@ -19,7 +19,7 @@ export const postAudioStreamSSE = async (req, res) => {
 			Connection: "keep-alive",
 		});
 
-		chatHistory.push({ source: "user", text });
+		chatHistory.push({ source: "user", text, image });
 
 		TTS_SSE(chatHistory, res, fileStream, 1, "ENG");
 	} catch (err) {

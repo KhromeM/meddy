@@ -89,6 +89,35 @@ describe("WebSocket Handlers Tests", function () {
 		});
 	});
 
+	it("should handle chats with images", async () => {
+		ws = new WebSocket(`ws://localhost:${port}/ws`);
+		await authenticateWebSocket(ws);
+
+		const message = {
+			type: "chat",
+			data: {
+				text: "whats in the image?",
+				image: "cookies.jpeg",
+			},
+		};
+		ws.send(JSON.stringify(message));
+		let receivedChunks = [];
+		await new Promise((resolve, reject) => {
+			ws.on("message", (data) => {
+				const message = JSON.parse(data);
+				if (message.type === "chat_response") {
+					receivedChunks.push(message.data);
+				}
+				if (message.isComplete) {
+					expect(receivedChunks).to.be.an("array").that.is.not.empty;
+					console.log(receivedChunks.join(""));
+					resolve();
+				}
+			});
+			ws.on("error", reject);
+		});
+	});
+
 	it("should send an error for unknown message types", async () => {
 		ws = new WebSocket(`ws://localhost:${port}/ws`);
 		await authenticateWebSocket(ws);

@@ -5,13 +5,21 @@ import { pool } from "./dbConfig.mjs";
  * @param {string} userId - The ID of the user
  * @param {string} source - The source of the message
  * @param {string} text - The text content of the message
- * @param {string} imageUrl - Image
+ * @param {string} imageId  - Image ID (optional)
  * @returns {Promise<Object>} - A promise that resolves to the created message object
  */
-export const createMessage = (userId, source, text) => {
-	const query =
-		"INSERT INTO Messages (UserID, Source, Text) VALUES ($1, $2, $3) RETURNING *";
-	const values = [userId, source, text];
+export const createMessage = (userId, source, text, imageId) => {
+	let query;
+	let values;
+	if (imageId) {
+		query =
+			"INSERT INTO Messages (UserID, Source, Text, ImageID) VALUES ($1, $2, $3, $4) RETURNING *";
+		values = [userId, source, text, imageId];
+	} else {
+		query =
+			"INSERT INTO Messages (UserID, Source, Text) VALUES ($1, $2, $3) RETURNING *";
+		values = [userId, source, text];
+	}
 	return pool
 		.query(query, values)
 		.then((res) => res.rows[0])

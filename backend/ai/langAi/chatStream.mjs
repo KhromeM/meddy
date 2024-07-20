@@ -18,10 +18,11 @@ import { createFunctionCallingSystemPrompt } from "../prompts/functionCalling.mj
 import { sampleData1 } from "../prompts/sampleData.mjs";
 import { executeLLMFunction } from "../functions/functionController.mjs";
 import { getUserInfo } from "../../db/dbInfo.mjs";
+import fs from "fs";
 
 let defaultModel = CONFIG.TEST
-	? openAIModel
-	: openAIModel || anthropicModel || vertexAIModel || openAIModel;
+	? vertexAIModel
+	: vertexAIModel || anthropicModel || vertexAIModel || openAIModel;
 
 export const chatStreamProvider = async (
 	chatHistory,
@@ -42,6 +43,8 @@ export const chatStreamProvider = async (
 		}),
 	];
 	messages = cleanMessages(messages);
+	// console.log(JSON.stringify(messages, null, 2));
+
 	const chain = model.pipe(new StringOutputParser());
 	return await chain.stream(messages);
 };
@@ -99,13 +102,12 @@ function processMessage(user, message) {
 	}
 	if (message.image) {
 		try {
-			const base64Image = fs.readFileSync(
-				`uploads/${user.userid}/${message.image}`,
-				"utf8"
-			); // very unfortunate :(
+			const img = fs.readFileSync(`uploads/${user.userid}/${message.image}`); // very unfortunate :(
+			const type = message.image.split(".")[1];
+			const base64Img = img.toString("base64");
 			content.push({
 				type: "image_url",
-				image_url: { url: `data:image/jpeg;base64,${base64Image}` },
+				image_url: { url: `data:image/${type};base64,${base64Img}` },
 			});
 		} catch (error) {
 			console.error(`Error reading image file: ${error}`);
