@@ -52,7 +52,6 @@ class _ChatPageState extends State<ChatPage> {
   Future<void> _loadChatHistory() async {
     try {
       List<Message> chatHistory = await _chatService.getChatHistory();
-      print(chatHistory);
       setState(() {
         _chatHistory = List.from(chatHistory);
         _isLoading = false;
@@ -102,7 +101,6 @@ class _ChatPageState extends State<ChatPage> {
   void _sendMessage() async {
     if (_textEditingController.text.isNotEmpty) {
       try {
-        // String text =
         _addMessageToChatHistory("user", _textEditingController.text);
         print(_textEditingController.text);
         ws.sendMessage({
@@ -120,7 +118,7 @@ class _ChatPageState extends State<ChatPage> {
     if (_debounceTimer?.isActive ?? false) {
       _debounceTimer?.cancel();
     }
-  
+
     setState(() {
       if (_currentMessageId != null) {
         int index = _chatHistory
@@ -136,30 +134,29 @@ class _ChatPageState extends State<ChatPage> {
         }
       }
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollToBottom();
+    _debounceTimer = Timer(Duration(milliseconds: 80), () {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToBottom();
+      });
     });
   }
 
   void _handleChatResponse(dynamic message) {
     if (message['type'] == 'chat_response') {
       setState(() {
-        _currentMessageChunk += message['data'];
-        if (_currentMessageChunk.isNotEmpty && _currentMessageId == null) {
+        if (_currentMessageId == null) {
+          _currentMessageChunk += message['data'];
           _addMessageToChatHistory("llm", _currentMessageChunk,
               temporary: true);
-        } else {
-          _updateCurrentMessageChunk(_currentMessageChunk);
         }
 
         if (message['isComplete']) {
           _currentMessageId = null;
           _currentMessageChunk = "";
+        } else {
+          _currentMessageChunk += message['data'];
+          _updateCurrentMessageChunk(_currentMessageChunk);
         }
-      });
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollToBottom();
       });
     }
   }
