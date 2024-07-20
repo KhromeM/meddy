@@ -1,17 +1,34 @@
-import { HumanMessage, SystemMessage, AIMessage } from "@langchain/core/messages";
+import {
+	HumanMessage,
+	SystemMessage,
+	AIMessage,
+} from "@langchain/core/messages";
 import { StringOutputParser } from "@langchain/core/output_parsers";
-import { vertexAIModel, groqModel, anthropicModel, openAIModel } from "./model.mjs";
-import { Readable } from "stream";
+import {
+	vertexAIModel,
+	groqModel,
+	anthropicModel,
+	openAIModel,
+} from "./model.mjs";
 import CONFIG from "../../config.mjs";
 import { createDefaultSystemPrompt } from "../prompts/default.mjs";
 import { createStallResponsePrompt } from "../prompts/stallResponse.mjs";
 
 import { createFunctionCallingSystemPrompt } from "../prompts/functionCalling.mjs";
-import { sampleData1, sampleData2, sampleData3 } from "../prompts/sampleData.mjs";
+import { sampleData1 } from "../prompts/sampleData.mjs";
 import { executeLLMFunction } from "../functions/functionController.mjs";
 import { getUserInfo } from "../../db/dbInfo.mjs";
+import fs from "fs";
+import path from "path";
+import { getContentType } from "../../utils/contentType.mjs";
+import { fileURLToPath } from "url";
 
-let defaultModel = CONFIG.TEST ? openAIModel : openAIModel || anthropicModel || vertexAIModel || openAIModel;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+let defaultModel = CONFIG.TEST
+	? vertexAIModel
+	: vertexAIModel || anthropicModel || vertexAIModel || openAIModel;
 
 export const chatStreamProvider = async (
 	chatHistory,
@@ -22,44 +39,42 @@ export const chatStreamProvider = async (
 ) => {
 	const systemMessage = getSystemMessage(user, data, mode);
 	let messages = [
-		new SystemMessage(systemMessage),
-		...chatHistory.map((message) => {
+		// new SystemMessage(systemMessage),
+		...chatHistory.slice(0, -1).map((message) => {
 			if (message.source == "user") {
 				return new HumanMessage(message.text);
 			} else {
 				return new AIMessage(message.text);
 			}
 		}),
+		new HumanMessage(processMessage(user, chatHistory[chatHistory.length - 1])),
 	];
 	messages = cleanMessages(messages);
+	// console.log(messages.length);
+	// console.log(messages);
+
 	const chain = model.pipe(new StringOutputParser());
 	return await chain.stream(messages);
 };
 
-export const chatStreamToReadable = (chatStreamPromise) => {
-	const stream = new Readable({
-		objectMode: true,
-		read() {},
-	});
-
-	(async () => {
-		const chatStream = await chatStreamPromise;
-		for await (const chunk of cs) {
-			stream.push(chunk);
-		}
-		stream.push(null); // EOS
-	})();
-
-	return stream;
-};
-
-export const getChatResponse = async (chatHistory, user, model = defaultModel, mode = 0) => {
+export const getChatResponse = async (
+	chatHistory,
+	user,
+	model = defaultModel,
+	mode = 0
+) => {
 	let data = sampleData1;
 	if (mode == 1) {
 		data = await getUserInfo(user.userid);
 	}
 
-	const chatStream = await chatStreamProvider(chatHistory, user, model, mode, data);
+	const chatStream = await chatStreamProvider(
+		chatHistory,
+		user,
+		model,
+		mode,
+		data
+	);
 	const resp = [];
 	for await (const chunk of chatStream) {
 		resp.push(chunk);
@@ -86,6 +101,39 @@ function cleanMessages(messages) {
 		clean.push(message);
 	}
 	return clean;
+}
+
+function processMessage(user, message) {
+	const content = [];
+
+	if (message.text) {
+		content.push({ type: "text", text: message.text });
+	}
+
+	if (message.image) {
+		try {
+			const imagePath = path.resolve(
+				__dirname,
+				`../../uploads/${user.userid}/${message.image}`
+			);
+
+			const img = fs.readFileSync(imagePath);
+			const type = getContentType(message.image);
+			const base64Img = img.toString("base64");
+			content.push({
+				type: "image_url",
+				image_url: { url: `data:${type};base64,${base64Img}` },
+			});
+		} catch (error) {
+			console.error(`Error processing image: ${message.image}`, error);
+			content.push({
+				type: "text",
+				text: "Error: Unable to process attached image.",
+			});
+		}
+	}
+
+	return { content };
 }
 
 function getSystemMessage(user, data, mode) {

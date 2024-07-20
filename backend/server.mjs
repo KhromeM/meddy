@@ -6,6 +6,7 @@ import { setupWebSocketHandlers } from "./websocket/wsHandlers.mjs";
 import CONFIG from "./config.mjs";
 import chatRoutes from "./server/routes/chatRoutes.mjs";
 import fileRoutes from "./server/routes/fileRoutes.mjs";
+import imageRoutes from "./server/routes/imageRoutes.mjs";
 import appointmentRoutes from "./server/routes/appointmentRoutes.mjs";
 import infoRoutes from "./server/routes/infoRoutes.mjs";
 import doctorRoutes from "./server/routes/doctorRoutes.mjs";
@@ -34,6 +35,7 @@ app.use("/api/file", fileRoutes);
 app.use("/api/appointment", appointmentRoutes);
 app.use("/api/doctor", doctorRoutes);
 app.use("/api/info", infoRoutes);
+app.use("/api/image", imageRoutes);
 
 app.use(errorHandler);
 
@@ -43,5 +45,5 @@ const wss = new WebSocketServer({ server: server });
 setupWebSocketHandlers(wss);
 
 server.listen(CONFIG.port, () => {
-  console.log("Server is listening to port: " + CONFIG.port);
+	console.log("Server is listening to port: " + CONFIG.port);
 });

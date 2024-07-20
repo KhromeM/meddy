@@ -3,7 +3,7 @@ import { chatStreamProvider } from "../ai/langAi/chatStream.mjs";
 
 export async function handleChatMessage(state, data) {
 	const { clientSocket, user } = state;
-	const { text } = data;
+	const { text, image } = data;
 	if (!text) {
 		clientSocket.send(
 			JSON.stringify({ type: "error", data: "Text message is required" })
@@ -12,7 +12,7 @@ export async function handleChatMessage(state, data) {
 	}
 	try {
 		const chatHistory = await db.getRecentMessagesByUserId(user.userid, 100);
-		chatHistory.push({ source: "user", text });
+		chatHistory.push({ source: "user", text, image });
 		const stream = await chatStreamProvider(chatHistory, user);
 
 		let llmResponseChunks = [];

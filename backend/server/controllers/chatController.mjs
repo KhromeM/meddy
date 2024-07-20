@@ -1,25 +1,65 @@
-import { getChatResponse, chatStreamProvider } from "../../ai/langAi/chatStream.mjs";
+import {
+	getChatResponse,
+	chatStreamProvider,
+} from "../../ai/langAi/chatStream.mjs";
 import db from "../../db/db.mjs";
 
 export const getChatHistory = async (req, res) => {
 	try {
-		const chatHistory = await db.getRecentMessagesByUserId(req._dbUser.userid, 100);
+		const chatHistory = await db.getRecentMessagesByUserId(
+			req._dbUser.userid,
+			100
+		);
 		res.status(200).json({ chatHistory });
 	} catch (err) {
 		console.error(err);
-		res.status(500).json({ status: "fail", message: "Something went wrong. Checkpoint 3" });
+		res
+			.status(500)
+			.json({ status: "fail", message: "Something went wrong. Checkpoint 3" });
 	}
 };
 
+// export const postChatMessage = async (req, res) => {
+// 	try {
+// 		const text = req.body.message.text;
+// 		if (!text) {
+// 			res
+// 				.status(400)
+// 				.json({ status: "fail", message: "An empty message was provided" });
+// 			return;
+// 		}
+// 		const chatHistory = await db.getRecentMessagesByUserId(
+// 			req._dbUser.userid,
+// 			100
+// 		);
+// 		chatHistory.push({ source: "user", text });
+// 		const content = await getChatResponse(chatHistory, req._dbUser);
+// 		if (!content) {
+// 			throw new Error("LLM didn't respond");
+// 		}
+// 		db.createMessage(req._dbUser.userid, "user", text);
+// 		db.createMessage(req._dbUser.userid, "llm", content);
+// 		res.status(200).json({ text: content });
+// 	} catch (err) {
+// 		console.error(err);
+// 		res.status(500).json({ status: "fail", message: "Failed to reach Gemini" });
+// 	}
+// };
+
 export const postChatMessage = async (req, res) => {
 	try {
-		const text = req.body.message.text;
+		const { image, text } = req.body.message;
 		if (!text) {
-			res.status(400).json({ status: "fail", message: "An empty message was provided" });
+			res
+				.status(400)
+				.json({ status: "fail", message: "An empty message was provided" });
 			return;
 		}
-		const chatHistory = await db.getRecentMessagesByUserId(req._dbUser.userid, 100);
-		chatHistory.push({ source: "user", text });
+		const chatHistory = await db.getRecentMessagesByUserId(
+			req._dbUser.userid,
+			100
+		);
+		chatHistory.push({ source: "user", text, image });
 		const content = await getChatResponse(chatHistory, req._dbUser);
 		if (!content) {
 			throw new Error("LLM didn't respond");
@@ -33,12 +73,38 @@ export const postChatMessage = async (req, res) => {
 	}
 };
 
+/// TEST CODE:
+// const chatHistory = await db.getRecentMessagesByUserId("DEVELOPER", 100);
+// chatHistory.push({
+// 	source: "user",
+// 	text: "heres an image. can you see it?",
+// 	image: "cookies.jpeg",
+// });
+// chatHistory.push({
+// 	source: "llm",
+// 	text: "Yes I can see it!",
+// });
+// chatHistory.push({
+// 	source: "user",
+// 	text: "what is this image?",
+// 	image: "cookies.jpeg",
+// });
+// const s = Date.now();
+// const content = await getChatResponse(chatHistory, {
+// 	userid: "DEVELOPER",
+// 	name: "DEV",
+// });
+// console.log(content, Date.now() - s);
+
 // Uses SSE
 export const postChatMessageStream = async (req, res) => {
 	let headersSent = false;
 	try {
 		const text = req.body.message.text;
-		const chatHistory = await db.getRecentMessagesByUserId(req._dbUser.userid, 100);
+		const chatHistory = await db.getRecentMessagesByUserId(
+			req._dbUser.userid,
+			100
+		);
 
 		res.writeHead(200, {
 			"Content-Type": "text/event-stream",
@@ -72,7 +138,9 @@ export const postChatMessageStream = async (req, res) => {
 			);
 			res.write("data: [DONE]\n\n");
 		} else {
-			res.status(500).json({ status: "fail", message: "Failed to process streaming chat" });
+			res
+				.status(500)
+				.json({ status: "fail", message: "Failed to process streaming chat" });
 		}
 	} finally {
 		if (headersSent) {
