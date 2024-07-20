@@ -1,10 +1,14 @@
 import fs from "fs/promises";
 import path from "path";
 import { getContentType } from "../../utils/contentType.mjs";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export const getImage = async (req, res) => {
 	const user = req._dbUser;
-	const { image } = req.body.data;
+	const { image } = req.body;
 	const imagePath = path.resolve(
 		__dirname,
 		`../../uploads/${user.userid}/${image}`
@@ -28,20 +32,24 @@ export const getImage = async (req, res) => {
 
 export const setImage = async (req, res) => {
 	const user = req._dbUser;
-	if (!req.data?.image) {
+	const image = req.body?.image;
+
+	if (!image || !image.name) {
 		return res.status(400).send("No image was uploaded.");
 	}
-	const image = req.data?.image;
 
 	const uploadPath = path.resolve(
 		__dirname,
 		`../../uploads/${user.userid}/${image.name}`
 	);
-
+	const buffer = Buffer.from(image.data, "base64");
 	try {
 		await fs.mkdir(path.dirname(uploadPath), { recursive: true });
-		await fs.writeFile(uploadPath, image.data);
-		res.send("File uploaded successfully");
+		await fs.writeFile(uploadPath, buffer);
+		res.status(200).json({
+			message: "File uploaded successfully",
+			success: true,
+		});
 	} catch (error) {
 		console.error("Error saving image:", error);
 		res.status(500).send("Error uploading file");
