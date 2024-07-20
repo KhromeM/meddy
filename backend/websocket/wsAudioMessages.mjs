@@ -152,7 +152,9 @@ export async function useTranscription(ws, req) {
 		await db.createMessage(user.userid, "user", text);
 		await db.createMessage(user.userid, "llm", llmResponse);
 
-		ws.send(JSON.stringify({ type: "chat_end" }));
+		ws.send(
+			JSON.stringify({ type: "chat_response", data: "", isComplete: true })
+		);
 	} catch (error) {
 		console.error("Error in chat stream:", error.message);
 		ws.send(

@@ -5,6 +5,7 @@ import { pool } from "./dbConfig.mjs";
  * @param {string} userId - The ID of the user
  * @param {string} source - The source of the message
  * @param {string} text - The text content of the message
+ * @param {string} imageUrl - Image
  * @returns {Promise<Object>} - A promise that resolves to the created message object
  */
 export const createMessage = (userId, source, text) => {
