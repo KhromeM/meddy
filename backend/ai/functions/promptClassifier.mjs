@@ -96,26 +96,26 @@ export const useClassification = async (
   return await handleClassifiedPrompt(classification, partialTranscript, user);
 };
 
-useClassification(
-  "Can you translate this conversation?",
-  [
-    { role: "user", content: "What are my current medications?" },
-    {
-      role: "assistant",
-      content:
-        "Your current medications are: Lisinopril 10mg and Metformin 500mg.",
-    },
-    { role: "user", content: "Do I have any upcoming appointments?" },
-    {
-      role: "assistant",
-      content: "You currently don't have any scheduled appointments.",
-    },
-    { role: "user", content: "I need to update my contact information" },
-    {
-      role: "assistant",
-      content: "Certainly! What specific information would you like to update?",
-    },
-    { role: "user", content: "My email address to newemail@example.com" },
-  ],
-  { id: "123" }
-).then(console.log);
+// useClassification(
+//   "Can you translate this conversation?",
+//   [
+//     { role: "user", content: "What are my current medications?" },
+//     {
+//       role: "assistant",
+//       content:
+//         "Your current medications are: Lisinopril 10mg and Metformin 500mg.",
+//     },
+//     { role: "user", content: "Do I have any upcoming appointments?" },
+//     {
+//       role: "assistant",
+//       content: "You currently don't have any scheduled appointments.",
+//     },
+//     { role: "user", content: "I need to update my contact information" },
+//     {
+//       role: "assistant",
+//       content: "Certainly! What specific information would you like to update?",
+//     },
+//     { role: "user", content: "My email address to newemail@example.com" },
+//   ],
+//   { id: "123" }
+// ).then(console.log);
