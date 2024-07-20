@@ -30,7 +30,7 @@ export async function handleChatMessage(state, data) {
 
 		const llmResponse = llmResponseChunks.join("");
 
-		await db.createMessage(user.userid, "user", text);
+		await db.createMessage(user.userid, "user", text, image);
 		await db.createMessage(user.userid, "llm", llmResponse);
 
 		clientSocket.send(

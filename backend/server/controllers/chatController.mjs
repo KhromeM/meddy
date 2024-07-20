@@ -64,7 +64,7 @@ export const postChatMessage = async (req, res) => {
 		if (!content) {
 			throw new Error("LLM didn't respond");
 		}
-		db.createMessage(req._dbUser.userid, "user", text);
+		db.createMessage(req._dbUser.userid, "user", text, image);
 		db.createMessage(req._dbUser.userid, "llm", content);
 		res.status(200).json({ text: content });
 	} catch (err) {
