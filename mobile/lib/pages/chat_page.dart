@@ -4,6 +4,7 @@ import 'package:meddymobile/services/chat_service.dart';
 import 'package:meddymobile/utils/ws_connection.dart';
 import 'package:meddymobile/services/recorder_service.dart';
 import 'package:meddymobile/services/player_service.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'dart:async';
 
 class ChatPage extends StatefulWidget {
@@ -27,7 +28,7 @@ class _ChatPageState extends State<ChatPage> {
 
   String _currentMessageChunk = "";
   int? _currentMessageId;
-
+  Timer? _debounceTimer;
   ScrollController _scrollController = ScrollController();
 
   @override
@@ -53,7 +54,7 @@ class _ChatPageState extends State<ChatPage> {
     try {
       List<Message> chatHistory = await _chatService.getChatHistory();
       setState(() {
-        _chatHistory = chatHistory;
+        _chatHistory = List.from(chatHistory);
         _isLoading = false;
       });
 
@@ -101,7 +102,6 @@ class _ChatPageState extends State<ChatPage> {
   void _sendMessage() async {
     if (_textEditingController.text.isNotEmpty) {
       try {
-        // String text = 
         _addMessageToChatHistory("user", _textEditingController.text);
         print(_textEditingController.text);
         ws.sendMessage({
@@ -116,6 +116,10 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _updateCurrentMessageChunk(String chunk) {
+    if (_debounceTimer?.isActive ?? false) {
+      _debounceTimer?.cancel();
+    }
+
     setState(() {
       if (_currentMessageId != null) {
         int index = _chatHistory
@@ -131,30 +135,29 @@ class _ChatPageState extends State<ChatPage> {
         }
       }
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollToBottom();
+    _debounceTimer = Timer(Duration(milliseconds: 80), () {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToBottom();
+      });
     });
   }
 
   void _handleChatResponse(dynamic message) {
     if (message['type'] == 'chat_response') {
       setState(() {
+        if (_currentMessageId == null) {
+          _currentMessageChunk += message['data'];
+          _addMessageToChatHistory("llm", _currentMessageChunk,
+              temporary: true);
+        }
+
         if (message['isComplete']) {
           _currentMessageId = null;
           _currentMessageChunk = "";
         } else {
           _currentMessageChunk += message['data'];
-        }
-        if (_currentMessageChunk.isNotEmpty && _currentMessageId == null) {
-          _addMessageToChatHistory("llm", _currentMessageChunk,
-              temporary: true);
-        } else {
           _updateCurrentMessageChunk(_currentMessageChunk);
         }
-      });
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollToBottom();
       });
     }
   }
@@ -179,6 +182,7 @@ class _ChatPageState extends State<ChatPage> {
     _recorderService.dispose();
     _playerService.dispose();
     _scrollController.dispose();
+    _debounceTimer?.cancel();
     super.dispose();
   }
 
@@ -196,7 +200,9 @@ class _ChatPageState extends State<ChatPage> {
                       children: _chatHistory.map((message) {
                         return ListTile(
                           title: Text(message.source),
-                          subtitle: Text(message.text),
+                          subtitle: MarkdownBody(
+                            data: message.text,
+                          ),
                         );
                       }).toList(),
                     ),
