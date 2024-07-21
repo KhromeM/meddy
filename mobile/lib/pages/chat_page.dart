@@ -201,66 +201,134 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      appBar: AppBar(
+        forceMaterialTransparency: true,
+      ),
+      body: Stack(
+        alignment: Alignment.bottomCenter,
         children: [
-          Expanded(
-            child: _isLoading
-                ? Center(child: CircularProgressIndicator())
-                : ListView.builder(
-                    controller: _scrollController,
-                    itemCount: _chatHistory.length,
-                    itemBuilder: (context, index) {
-                      final message = _chatHistory[index];
-                      return ListTile(
-                        title: Text(message.source),
-                        subtitle: MarkdownBody(
-                          data: message.text,
+          Column(
+            children: [
+              Expanded(
+                child: _isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                        controller: _scrollController,
+                        itemCount: _chatHistory.length,
+                        itemBuilder: (context, index) {
+                          final message = _chatHistory[index];
+                          final isUser = message.source == "user";
+                          return Align(
+                            alignment: isUser
+                                ? Alignment.centerRight
+                                : Alignment.centerLeft,
+                            child: Padding(
+                              padding: /*  isUser
+                                  ? EdgeInsets.only(right: 10)
+                                  : EdgeInsets.only(left: 10), */
+                                  EdgeInsets.symmetric(horizontal: 10),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: isUser
+                                      ? Color.fromRGBO(255, 254, 251, 1)
+                                      : Color.fromRGBO(255, 242, 228, 1),
+                                  borderRadius: BorderRadius.circular(20),
+                                  /* border: Border.all(
+                                      width: 1,
+                                      color: Color.fromRGBO(255, 184, 76, 1),
+                                    ) */
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 10.0, horizontal: 15.0),
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 5.0, horizontal: 10.0),
+                                child: MarkdownBody(data: message.text),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              ),
+              /* if (_isGenerating)
+                AnimatedStopButton(
+                  onPressed: _stopGenerationVisually,
+                ), */
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+              ),
+              Container(
+                margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 16),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Colors.black)),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: _textEditingController,
+                                  decoration: InputDecoration(
+                                    hintText: 'Type your message...',
+                                    border: InputBorder.none,
+                                  ),
+                                  keyboardType: TextInputType.text,
+                                  //added on submit
+                                  onSubmitted: (text) {
+                                    if (text.isNotEmpty) {
+                                      _sendMessage();
+                                    }
+                                  },
+                                ),
+                              ),
+                              InkWell(
+                                onTap: (_isTyping && !_isRecording)
+                                    ? _sendMessage
+                                    : _toggleAudio,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Icon(
+                                    _isRecording
+                                        ? Icons.stop
+                                        : (_isTyping
+                                            ? Icons.arrow_forward_ios_rounded
+                                            : Icons.mic_rounded),
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.image),
+                      color: Theme.of(context).primaryColor,
+                      onPressed: () {
+                        // Handle image button press
+                      },
+                    ),
+                  ],
+                ),
+              )
+            ],
           ),
           if (_isGenerating)
-            AnimatedStopButton(
-              onPressed: _stopGenerationVisually,
+            Positioned(
+              bottom: 100,
+              left: 80,
+              child: AnimatedStopButton(
+                onPressed: _stopGenerationVisually,
+              ),
             ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-          ),
-          Container(
-            margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _textEditingController,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                      hintText: 'Type your message...',
-                      border: InputBorder.none,
-                    ),
-                    keyboardType: TextInputType.text,
-                  ),
-                ),
-                InkWell(
-                  onTap: (_isTyping && !_isRecording)
-                      ? _sendMessage
-                      : _toggleAudio,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Icon(
-                      _isRecording
-                          ? Icons.stop
-                          : (_isTyping
-                              ? Icons.arrow_forward_ios_rounded
-                              : Icons.mic_rounded),
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          )
         ],
       ),
     );
