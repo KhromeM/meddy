@@ -23,6 +23,7 @@ export async function handleAudioMessage(state, data) {
 			response: "",
 			lang: "en",
 			type: "audio",
+			source: state.source,
 			isComplete: false,
 			user: state.user,
 			logs: {},
@@ -47,7 +48,7 @@ export async function handleAudioMessage(state, data) {
 	if (!audioChunk) return;
 	if (!state.STTSocket || state.STTSocket.getReadyState() !== 1) {
 		try {
-			state.STTSocket = await createDGSocket(lang, state.source == "mobile");
+			state.STTSocket = await createDGSocket(lang, req.source == "mobile");
 			// req.partialTranscript = [];
 
 			state.STTSocket.addListener(
