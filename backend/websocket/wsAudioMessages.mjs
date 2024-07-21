@@ -176,7 +176,9 @@ export async function useTranscriptionTTS(clientSocket, req) {
 		await db.createMessage(req.user.userid, "user", text);
 		const filePath = "./websocket/genAudio/";
 		const fileName =
-			filePath + new Date(Date.now()).toISOString() + `audio.mp3`;
+			filePath + new Date(Date.now()).toISOString() + req.source == "mobile"
+				? ".pcm"
+				: `.mp3`;
 		const fileStream = createWriteStream(fileName);
 		TTS_WS(chatHistory, clientSocket, fileStream, req);
 	} catch (error) {
