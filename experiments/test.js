@@ -1,4 +1,3 @@
-const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 
@@ -15,22 +14,23 @@ async function uploadImage(imagePath) {
 	};
 
 	try {
-		const response = await axios.post(
-			// "https://trymeddy.com/api/image",
-			"http://localhost:8000/api/image/",
-			requestBody,
-			{
-				headers: {},
-			}
-		);
+		const response = await fetch("https://trymeddy.com/api/image", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(requestBody),
+		});
 
-		console.log("Upload successful:", response.data);
-		return response.data;
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		const data = await response.json();
+		console.log("Upload successful:", data);
+		return data;
 	} catch (error) {
-		console.error(
-			"Upload failed:",
-			error.response ? error.response.data : error.message
-		);
+		console.error("Upload failed:", error.message);
 		throw error;
 	}
 }
