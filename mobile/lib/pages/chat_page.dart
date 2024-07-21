@@ -5,6 +5,7 @@ import 'package:meddymobile/utils/ws_connection.dart';
 import 'package:meddymobile/services/recorder_service.dart';
 import 'package:meddymobile/services/player_service.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:meddymobile/widgets/animated_stop_button.dart'; // Import the AnimatedStopButton
 import 'dart:async';
 
 class ChatPage extends StatefulWidget {
@@ -15,7 +16,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  WSConnection ws = WSConnection(); // add handler for chat and audio
+  WSConnection ws = WSConnection();
   TextEditingController _textEditingController = TextEditingController();
   final ChatService _chatService = ChatService();
   List<Message> _chatHistory = [];
@@ -25,10 +26,12 @@ class _ChatPageState extends State<ChatPage> {
   bool _isTyping = false;
   bool _isRecording = false;
   bool _isLoading = true;
+  bool _isGenerating = false;
 
   String _currentMessageChunk = "";
   int? _currentMessageId;
   Timer? _debounceTimer;
+  Timer? _completionTimer;
   ScrollController _scrollController = ScrollController();
 
   @override
@@ -57,10 +60,6 @@ class _ChatPageState extends State<ChatPage> {
         _chatHistory = List.from(chatHistory);
         _isLoading = false;
       });
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollToBottom();
-      });
     } catch (e) {
       print('Failed to load chat history: $e');
       setState(() {
@@ -74,7 +73,7 @@ class _ChatPageState extends State<ChatPage> {
     setState(() {
       int messageId = _chatHistory.length + 1;
       _chatHistory.add(Message(
-        messageId: _chatHistory.length + 1,
+        messageId: messageId,
         userId: "DEVELOPER",
         source: source,
         text: text,
@@ -84,9 +83,7 @@ class _ChatPageState extends State<ChatPage> {
         _currentMessageId = messageId;
       }
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollToBottom();
-    });
+    _scrollToBottom();
   }
 
   void _scrollToBottom() {
@@ -94,7 +91,7 @@ class _ChatPageState extends State<ChatPage> {
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
         duration: Duration(milliseconds: 300),
-        curve: Curves.elasticInOut,
+        curve: Curves.easeOut,
       );
     }
   }
@@ -109,6 +106,9 @@ class _ChatPageState extends State<ChatPage> {
           'data': {'text': _textEditingController.text},
         });
         _textEditingController.clear();
+        setState(() {
+          _isGenerating = true;
+        });
       } catch (e) {
         print('Failed to send message: $e');
       }
@@ -136,9 +136,11 @@ class _ChatPageState extends State<ChatPage> {
       }
     });
     _debounceTimer = Timer(Duration(milliseconds: 80), () {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollToBottom();
-      });
+      _scrollToBottom();
+    });
+    _completionTimer?.cancel();
+    _completionTimer = Timer(Duration(seconds: 1), () {
+      _finishMessageGeneration();
     });
   }
 
@@ -146,15 +148,11 @@ class _ChatPageState extends State<ChatPage> {
     if (message['type'] == 'chat_response') {
       setState(() {
         if (_currentMessageId == null) {
-          _currentMessageChunk += message['data'];
+          _currentMessageChunk = message['data'];
           _addMessageToChatHistory("llm", _currentMessageChunk,
               temporary: true);
-        }
-
-        if (message['isComplete']) {
-          _currentMessageId = null;
-          _currentMessageChunk = "";
-        } else {
+          _isGenerating = true;
+        } else if (_isGenerating) {
           _currentMessageChunk += message['data'];
           _updateCurrentMessageChunk(_currentMessageChunk);
         }
@@ -162,13 +160,26 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
+  void _finishMessageGeneration() {
+    setState(() {
+      _currentMessageId = null;
+      _currentMessageChunk = "";
+      _isGenerating = false;
+    });
+  }
+
+  void _stopGenerationVisually() {
+    _completionTimer?.cancel();
+    setState(() {
+      _isGenerating = false;
+    });
+  }
+
   void _toggleAudio() async {
     _isRecording = await _recorderService.toggleRecording();
     if (_isRecording) {
-      // recording about to end
       _playerService.playQueuedAudio();
     } else {
-      // about to start recording
       _playerService.stopPlayback();
     }
 
@@ -183,6 +194,7 @@ class _ChatPageState extends State<ChatPage> {
     _playerService.dispose();
     _scrollController.dispose();
     _debounceTimer?.cancel();
+    _completionTimer?.cancel();
     super.dispose();
   }
 
@@ -194,56 +206,61 @@ class _ChatPageState extends State<ChatPage> {
           Expanded(
             child: _isLoading
                 ? Center(child: CircularProgressIndicator())
-                : SingleChildScrollView(
+                : ListView.builder(
                     controller: _scrollController,
-                    child: Column(
-                      children: _chatHistory.map((message) {
-                        return ListTile(
-                          title: Text(message.source),
-                          subtitle: MarkdownBody(
-                            data: message.text,
-                          ),
-                        );
-                      }).toList(),
-                    ),
+                    itemCount: _chatHistory.length,
+                    itemBuilder: (context, index) {
+                      final message = _chatHistory[index];
+                      return ListTile(
+                        title: Text(message.source),
+                        subtitle: MarkdownBody(
+                          data: message.text,
+                        ),
+                      );
+                    },
                   ),
           ),
+          if (_isGenerating)
+            AnimatedStopButton(
+              onPressed: _stopGenerationVisually,
+            ),
           Padding(
             padding: const EdgeInsets.all(8.0),
           ),
           Container(
-              margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _textEditingController,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                        hintText: 'Type your message...',
-                        border: InputBorder.none,
-                      ),
-                      keyboardType: TextInputType.text,
+            margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _textEditingController,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                      hintText: 'Type your message...',
+                      border: InputBorder.none,
+                    ),
+                    keyboardType: TextInputType.text,
+                  ),
+                ),
+                InkWell(
+                  onTap: (_isTyping && !_isRecording)
+                      ? _sendMessage
+                      : _toggleAudio,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(
+                      _isRecording
+                          ? Icons.stop
+                          : (_isTyping
+                              ? Icons.arrow_forward_ios_rounded
+                              : Icons.mic_rounded),
+                      color: Theme.of(context).primaryColor,
                     ),
                   ),
-                  InkWell(
-                    onTap: (_isTyping && !_isRecording)
-                        ? _sendMessage
-                        : _toggleAudio,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(
-                        _isRecording
-                            ? Icons.stop
-                            : (_isTyping
-                                ? Icons.arrow_forward_ios_rounded
-                                : Icons.mic_rounded),
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                  ),
-                ],
-              ))
+                ),
+              ],
+            ),
+          )
         ],
       ),
     );
