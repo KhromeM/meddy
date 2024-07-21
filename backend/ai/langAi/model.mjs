@@ -10,25 +10,45 @@ const googleAuthCreds = JSON.parse(
 );
 export const vertexAIModel = new ChatVertexAI({
 	model: "gemini-1.5-pro",
-	temperature: 0,
+	temperature: 0.5,
 	authOptions: {
 		credentials: googleAuthCreds,
 	},
+	safetySettings: [
+		{
+			category: "HARM_CATEGORY_HARASSMENT",
+			threshold: "BLOCK_LOW_AND_ABOVE",
+		},
+		{
+			category: "HARM_CATEGORY_HATE_SPEECH",
+			threshold: "BLOCK_LOW_AND_ABOVE",
+		},
+		{
+			category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+			threshold: "BLOCK_LOW_AND_ABOVE",
+		},
+		{
+			category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+			threshold: "BLOCK_LOW_AND_ABOVE",
+		},
+	],
+	maxOutputTokens: 8192,
 });
+
 export const groqModel = new ChatGroq({
 	model: "llama3-70b-8192",
-	temperature: 0,
+	temperature: 0.7,
 	apiKey: CONFIG.GROQ_API_KEY,
 });
 
 export const openAIModel = new ChatOpenAI({
 	model: "gpt-4o",
-	temperature: 0,
+	temperature: 0.7,
 	apiKey: CONFIG.OPENAI_API_KEY,
 });
 
 export const anthropicModel = new ChatAnthropic({
 	model: "claude-3-5-sonnet-20240620",
-	temperature: 0,
+	temperature: 0.7,
 	apiKey: CONFIG.ANTHROPIC_API_KEY,
 });

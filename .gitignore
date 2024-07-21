@@ -11,6 +11,8 @@ web-frontend/dist/
 **/.DS**
 **/*.lock
 **/*LOG_*.txt
+patient1.json
+patient2.json
 # Miscellaneous
 *.class
 *.log

@@ -144,6 +144,8 @@ function getSystemMessage(user, data, mode) {
 			return createFunctionCallingSystemPrompt(data);
 		case 2:
 			return createStallResponsePrompt();
+		case 5:
+			return "You are a top tier researcher. Do your best work. This is an extremly important research task. Finding the truth is of paramount importance, a person's life may be on the line.";
 		default:
 			return "";
 	}
