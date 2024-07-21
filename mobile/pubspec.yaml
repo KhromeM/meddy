@@ -38,11 +38,13 @@ dependencies:
   google_sign_in: ^6.2.1
   http: ^1.1.0
   web_socket_channel: ^2.4.0
-  flutter_sound: ^9.7.2
   permission_handler: ^11.3.1
   record: ^5.1.2
   audioplayers: ^6.0.0
   uuid: ^4.4.2
+  mp_audio_stream: ^0.1.5
+  sound_stream: ^0.4.1
+  ffmpeg_kit_flutter: ^6.0.3
 
 dev_dependencies:
   flutter_test:

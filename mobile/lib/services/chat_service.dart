@@ -4,7 +4,7 @@ import 'package:meddymobile/models/message.dart';
 
 class ChatService {
   //https://trymeddy.com/api
-  static const String baseUrl = "http://localhost:8000/api";
+  static const String baseUrl = "https://trymeddy.com/api";
 
   Future<List<Message>> getChatHistory() async {
     try {

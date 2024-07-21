@@ -166,9 +166,7 @@ class _ChatPageState extends State<ChatPage> {
   void _toggleAudio() async {
     _isRecording = await _recorderService.toggleRecording();
 
-    if (!_isRecording) {
-      await _playerService.playAudio();
-    } else {
+    if (_isRecording) {
       await _playerService.stopPlayback();
     }
 
