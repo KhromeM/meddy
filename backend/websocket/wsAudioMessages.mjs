@@ -180,7 +180,7 @@ export async function useTranscriptionTTS(clientSocket, req) {
 			new Date(Date.now()).toISOString() +
 			(req.source == "mobile" ? ".pcm" : `.mp3`);
 		const fileStream = createWriteStream(fileName);
-		console.log(fileName);
+		console.log("audio file name: ", fileName);
 		TTS_WS(chatHistory, clientSocket, fileStream, req);
 	} catch (error) {
 		console.error("Error in audio stream:", error.message);

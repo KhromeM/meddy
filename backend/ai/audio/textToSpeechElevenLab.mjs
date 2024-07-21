@@ -69,10 +69,11 @@ export const TTS_WS = async (
 		defaultModel,
 		mode
 	);
+	const output_format = req.source == "mobile" ? "pcm_16000" : "mp3_44100_64";
 	const TTS_Socket = new WebSocket(
 		`wss://api.elevenlabs.io/v1/text-to-speech/${
 			VOICES[req.lang]
-		}/stream-input?model_id=${turbo}`
+		}/stream-input?model_id=${turbo}&output_format=${output_format}`
 	);
 	streamLLMToElevenLabs(
 		TTS_Socket,
@@ -80,6 +81,7 @@ export const TTS_WS = async (
 		clientSocket,
 		(data) => {
 			const message = JSON.parse(data);
+			// console.log(message);
 			clientSocket.send(
 				JSON.stringify({
 					...message,
@@ -145,7 +147,7 @@ async function streamLLMToElevenLabs(
 				xi_api_key: CONFIG.ELEVENLABS_API_KEY,
 				optimize_streaming_latency: 0, // 4 || optimize_streaming_latency || 0, // MAX OPTIMIZATION
 				chunk_length_schedule: chunk_length_schedule || [120, 160, 250, 290],
-				output_format: req.source == "mobile" ? "pcm_16000" : "mp3_44100_64", // if mobile them pcm16000 else mp3
+				// output_format: "pcm_16000", // req.source == "mobile" ? "pcm_16000" : "mp3_44100_64", // if mobile them pcm16000 else mp3
 			})
 		);
 		console.log(
