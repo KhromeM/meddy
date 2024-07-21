@@ -8,16 +8,15 @@ async function uploadImage(imagePath) {
 
 	const requestBody = {
 		idToken: "dev",
-		image: {
-			name: "cat.png",
-			data: base64Image,
+		message: {
+			text: "hello",
 		},
 	};
 
 	try {
 		const response = await axios.post(
 			// "https://trymeddy.com/api/image",
-			"http://localhost:8000/api/image/",
+			"http://localhost:8000/api/chat",
 			requestBody,
 			{
 				headers: {},
@@ -36,7 +35,7 @@ async function uploadImage(imagePath) {
 }
 
 // Usage
-const imagePath = "./cat.png";
+const imagePath = "./bridge.jpeg";
 
 uploadImage(imagePath)
 	.then((result) => console.log(result))
