@@ -8,7 +8,12 @@ const __dirname = path.dirname(__filename);
 
 export const getImage = async (req, res) => {
 	const user = req._dbUser;
-	const { image } = req.body;
+	const image = req.query.image;
+
+  if (!image) {
+    return res.status(400).send("Image parameter is required");
+  }
+  
 	const imagePath = path.resolve(
 		__dirname,
 		`../../uploads/${user.userid}/${image}`
