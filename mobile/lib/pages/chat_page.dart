@@ -167,12 +167,12 @@ class _ChatPageState extends State<ChatPage> {
       }
       _messageBuffer[reqId]!.add(text);
 
-      String fullMessage = _messageBuffer[reqId]!.join(" ");
-      _updateCurrentMessageChunk(fullMessage, reqId);
-
       if (message['isComplete'] ?? false) {
         _messageBuffer.remove(reqId);
+        return;
       }
+      String fullMessage = _messageBuffer[reqId]!.join(" ");
+      _updateCurrentMessageChunk(fullMessage, reqId);
     });
 
     _scrollToBottom();
