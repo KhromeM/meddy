@@ -4,6 +4,7 @@ package-lock.json
 *meddyai-fedbddffaf83*
 backend/ai/audio/genAudio/*.mp3
 backend/ai/audio/genAudio/**/*.mp3
+backend/uploads/patient*
 web-frontend/package-lock.json
 web-frontend/dist/
 **/genAudio/*
