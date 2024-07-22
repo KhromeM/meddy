@@ -1,10 +1,15 @@
 import fs from "fs";
 import { MedplumClient } from "@medplum/core";
+import { getEpicPatient } from "./epicController.mjs";
 const medplum = new MedplumClient();
 await medplum.startClientLogin(process.env.MEDPLUM_CLIENT_ID, process.env.MEDPLUM_CLIENT_SECRET);
 
 export const getPatientDetails = async (req, res) => {
 	try {
+		// Get Epic info
+		const epicPatient = await getEpicPatient(medplum, "erXuFYUfucBZaryVksYEcMg3");
+		console.log(epicPatient);
+
 		// Retrieve and parse patient details from Medplum
 		const patientId = req.params.patientId;
 		const patientInfo = await medplum.readPatientEverything(patientId);
