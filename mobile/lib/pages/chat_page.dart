@@ -27,7 +27,7 @@ class _ChatPageState extends State<ChatPage> {
   bool _isLoading = true;
 
   String _currentMessageChunk = "";
-  int? _currentMessageId;
+  bool _buildingMessage = false;
   Timer? _debounceTimer;
   ScrollController _scrollController = ScrollController();
 
@@ -38,9 +38,8 @@ class _ChatPageState extends State<ChatPage> {
     _recorderService = RecorderService(ws);
     _playerService = PlayerService(ws);
 
-    ws.setHandler("chat_response", (message) {
-      _handleChatResponse(message);
-    });
+    ws.setHandler("chat_response", _handleChatResponse);
+    ws.setHandler("partial_transcript", _handleTranscription);
 
     _textEditingController.addListener(() {
       setState(() {
@@ -69,23 +68,43 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void _addMessageToChatHistory(String source, String text,
-      {bool temporary = false}) {
+  // adds new message to chat history, only called once per message
+  void _addMessageToChatHistory(String source, String text) {
     setState(() {
-      int messageId = _chatHistory.length + 1;
+      _buildingMessage = true;
       _chatHistory.add(Message(
-        messageId: _chatHistory.length + 1,
+        messageId: _chatHistory.length + 1, // change to uuid
         userId: "DEVELOPER",
         source: source,
         text: text,
         time: DateTime.now(),
       ));
-      if (temporary) {
-        _currentMessageId = messageId;
-      }
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToBottom();
+    });
+  }
+
+// updates the current message thats being formed
+  void _updateCurrentMessageChunk(String text, String source) {
+    if (_debounceTimer?.isActive ?? false) {
+      _debounceTimer?.cancel();
+    }
+    setState(() {
+      _chatHistory.removeLast();
+      _chatHistory.add(Message(
+        messageId: _chatHistory.length + 1, // change to uuid
+        userId: "DEVELOPER",
+        source: source,
+        text: text,
+        time: DateTime.now(),
+      ));
+      // }
+    });
+    _debounceTimer = Timer(Duration(milliseconds: 80), () {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToBottom();
+      });
     });
   }
 
@@ -115,48 +134,42 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void _updateCurrentMessageChunk(String chunk) {
-    if (_debounceTimer?.isActive ?? false) {
-      _debounceTimer?.cancel();
-    }
-
-    setState(() {
-      if (_currentMessageId != null) {
-        int index = _chatHistory
-            .indexWhere((msg) => msg.messageId == _currentMessageId);
-        if (index != -1) {
-          _chatHistory[index] = Message(
-            messageId: _currentMessageId!,
-            userId: "DEVELOPER",
-            source: "llm",
-            text: chunk,
-            time: DateTime.now(),
-          );
-        }
-      }
-    });
-    _debounceTimer = Timer(Duration(milliseconds: 80), () {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollToBottom();
-      });
-    });
-  }
-
   void _handleChatResponse(dynamic message) {
     if (message['type'] == 'chat_response') {
+      print(_buildingMessage);
+      print(message["data"]);
       setState(() {
-        if (_currentMessageId == null) {
+        if (!_buildingMessage || _chatHistory.last.source != "llm") {
           _currentMessageChunk += message['data'];
-          _addMessageToChatHistory("llm", _currentMessageChunk,
-              temporary: true);
+          _addMessageToChatHistory("llm", _currentMessageChunk);
         }
 
-        if (message['isComplete']) {
-          _currentMessageId = null;
+        if (message['isComplete'] ?? false) {
+          _buildingMessage = false;
           _currentMessageChunk = "";
         } else {
           _currentMessageChunk += message['data'];
-          _updateCurrentMessageChunk(_currentMessageChunk);
+          _updateCurrentMessageChunk(_currentMessageChunk, "llm");
+        }
+      });
+    }
+  }
+
+  void _handleTranscription(dynamic message) {
+    if (message['type'] == 'partial_transcript') {
+      print(_buildingMessage);
+      print(message["data"]);
+      setState(() {
+        if (!_buildingMessage || _chatHistory.last.source != "user") {
+          _currentMessageChunk = "";
+          _addMessageToChatHistory("user", _currentMessageChunk);
+        }
+        if (message['isComplete'] ?? false) {
+          _buildingMessage = false;
+          _currentMessageChunk = "";
+        } else {
+          _currentMessageChunk += " " + message['data'];
+          _updateCurrentMessageChunk(_currentMessageChunk, "user");
         }
       });
     }

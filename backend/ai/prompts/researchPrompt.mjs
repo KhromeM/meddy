@@ -207,6 +207,25 @@ CRITICAL: ONLY OUTPUT VALID JSON.
 YOUR WHOLE OUTPUT SHOULD BE ABLED TO BE PARSED AS VALID JSON.
 `;
 
+const stage7Prompt = (finalOutput, condition) =>
+	`Your task is to take the input and format it into a structured JSON object. The content should remain unchanged, but organized into the specified JSON format.
+
+Input:
+${stage5Output}
+
+Please format the above input into the following JSON structure:
+
+{
+  "detailedReport": "Comprehensive markdown report on the user's health in relation to ${condition}",
+  "recommendations": ["List of gentle, actionable health recommendations for managing or preventing ${condition}"],
+  "limitations": "Any limitations or caveats in the analysis specific to ${condition}",
+  "riskAssessment": "Overall risk evaluation (0-10) for ${condition} with context to avoid alarm",
+  "userMessage": "1-2 sentances for the user about their health in relation to ${condition}",
+  "confidence": "Overall confidence in the assessment of ${condition} (low/medium/high)"
+}
+CRITICAL: ONLY OUTPUT VALID JSON.  YOU FAILED AT THIS BEFORE, THIS TIME THIS MUST BE PERFECT JSON!
+YOUR WHOLE OUTPUT SHOULD BE ABLED TO BE PARSED AS VALID JSON.`;
+
 async function runPipeline(data, condition) {
 	const stage1Result = await runStage(stage1Prompt(data, condition));
 	console.log("Stage 1 done", stage1Result.length);
@@ -241,11 +260,19 @@ async function runPipeline(data, condition) {
 	// Write stage 5 result to file
 	fs.writeFileSync("./stage5.txt", stage5Result);
 
-	const finalReport = await runStage(stage6Prompt(stage5Result, condition));
+	let finalReport = await runStage(stage6Prompt(stage5Result, condition));
 	try {
 		return JSON.parse(finalReport);
 	} catch (err) {
-		console.error(err);
+		console.log("Final report1: ", finalReport);
+		console.log("Failed Once");
+		try {
+			finalReport = await runStage(stage7Prompt(finalReport, condition));
+			console.log("Final report2: ", finalReport);
+			return JSON.parse(finalReport);
+		} catch {
+			console.log("Failed twice");
+		}
 	}
 }
 
