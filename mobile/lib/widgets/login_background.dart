@@ -13,17 +13,6 @@ class LoginBackground extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           Positioned(
-            top: 151,
-            left: 265,
-            child: Container(
-              width: 25,
-              height: 25,
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(255, 255, 255, 1),
-              ),
-            ),
-          ),
-          Positioned(
             top: -28,
             left: 262,
             child: Container(
@@ -95,18 +84,7 @@ class LoginBackground extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            top: 838,
-            left: 130,
-            child: Container(
-              width: 134,
-              height: 5,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100),
-                color: Color.fromRGBO(0, 0, 0, 1),
-              ),
-            ),
-          ),
+
           // Removed Positioned(top: 0, left: 0, child: null),
           Positioned(
             top: 21.776519775390625,
