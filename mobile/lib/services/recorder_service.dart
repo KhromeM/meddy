@@ -73,7 +73,7 @@ class RecorderService {
         'type': 'audio',
         'data': {
           'audioChunk': base64Audio,
-          'reqId': _reqId!.toString(),
+          'reqId': _reqId,
           'mimeType': 'audio/pcm',
           'isComplete': false,
           'lang': 'en', // TODO: Make this dynamic based on user's language
@@ -90,7 +90,7 @@ class RecorderService {
         'type': 'audio',
         'data': {
           'isComplete': true,
-          'reqId': _reqId!.toString(),
+          'reqId': _reqId,
         },
       });
     }
