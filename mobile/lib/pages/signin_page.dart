@@ -26,10 +26,19 @@ class _SignInState extends ConsumerState<SignInPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Spacer(flex: 1),
-                  // Display your logo
+                  SizedBox(height: 200),
+                  // Logo
+                  Text(
+                    "Meddy",
+                    style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromRGBO(75, 87, 104, 1.0),
+                    ),
+                  ),
+                  SizedBox(height: 200),
                   _isLoading
-                      ? CircularProgressIndicator() // Show a loading indicator
+                      ? CircularProgressIndicator() // TODO: animate our logo as loading
                       : GestureDetector(
                           onTap: () async {
                             // Handle Google sign-in
@@ -50,22 +59,26 @@ class _SignInState extends ConsumerState<SignInPage> {
                             }
                           },
                           child: Container(
-                            width: 300,
+                            width: 350,
                             height: 56,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Colors.transparent,
                               borderRadius: BorderRadius.circular(30),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 5,
-                                  offset: Offset(0, 3),
-                                ),
-                              ],
+                              border: Border.all(
+                                color: Color.fromRGBO(255, 184, 76, 1),
+                                width: 4,
+                              ),
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+                                // Future implementation of logo image
+                                // Image.asset(
+                                //   'path_to_logo_asset',
+                                //   height: 24,
+                                //   width: 24,
+                                // ),
+                                // SizedBox(width: 12),
                                 Image.asset(
                                   'assets/images/google_signin_button.png', // Replace with the path to your Google logo asset
                                   height: 24,
@@ -76,7 +89,7 @@ class _SignInState extends ConsumerState<SignInPage> {
                                   "Continue with Google",
                                   style: TextStyle(
                                     color: Color.fromRGBO(75, 87, 104, 1.0),
-                                    fontSize: 16,
+                                    fontSize: 20,
                                   ),
                                 ),
                               ],

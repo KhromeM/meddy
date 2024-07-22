@@ -12,6 +12,7 @@ class LoginBackground extends StatelessWidget {
       ),
       child: Stack(
         children: <Widget>[
+          // red top right circle
           Positioned(
             top: -28,
             left: 262,
@@ -24,34 +25,7 @@ class LoginBackground extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            top: 651,
-            left: 183,
-            child: Container(
-              width: 225,
-              height: 225,
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(255, 184, 76, 1),
-                borderRadius: BorderRadius.all(Radius.elliptical(225, 225)),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 743,
-            left: -64,
-            child: Container(
-              width: 184,
-              height: 189,
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(254, 249, 239, 1),
-                border: Border.all(
-                  color: Color.fromRGBO(191, 161, 255, 1),
-                  width: 20,
-                ),
-                borderRadius: BorderRadius.all(Radius.elliptical(184, 189)),
-              ),
-            ),
-          ),
+          // bottom right hollow exterior
           Positioned(
             top: 614,
             left: 146,
@@ -68,6 +42,37 @@ class LoginBackground extends StatelessWidget {
               ),
             ),
           ),
+          // bottom left exterior
+          Positioned(
+            top: 743,
+            left: -64,
+            child: Container(
+              width: 184,
+              height: 189,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(254, 249, 239, 1),
+                border: Border.all(
+                  color: Color.fromRGBO(191, 161, 255, 1),
+                  width: 20,
+                ),
+                borderRadius: BorderRadius.all(Radius.elliptical(184, 189)),
+              ),
+            ),
+          ),
+          // bottom right solid interior orange circle
+          Positioned(
+            top: 651,
+            left: 183,
+            child: Container(
+              width: 225,
+              height: 225,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(255, 184, 76, 1),
+                borderRadius: BorderRadius.all(Radius.elliptical(225, 225)),
+              ),
+            ),
+          ),
+          // middle left circle
           Positioned(
             top: 151,
             left: -214,
@@ -84,32 +89,42 @@ class LoginBackground extends StatelessWidget {
               ),
             ),
           ),
-
-          // Removed Positioned(top: 0, left: 0, child: null),
-          Positioned(
-            top: 21.776519775390625,
-            left: 55,
-            child: Container(
-              width: 302.3280334472656,
-              height: 12.377750396728516,
-              child: Stack(
-                children: <Widget>[],
-              ),
-            ),
-          ),
+          // bottom left interior
           Positioned(
             top: 778,
             left: -32,
-            child: Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(254, 249, 239, 1),
-                border: Border.all(
-                  color: Color.fromRGBO(191, 161, 255, 1),
-                  width: 20,
+            child: Stack(
+              children: [
+                Container(
+                  width: 120,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    color: Color.fromRGBO(254, 249, 239, 1),
+                    border: Border.all(
+                      color: Color.fromRGBO(191, 161, 255, 1),
+                      width: 20,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.elliptical(120, 120)),
+                  ),
                 ),
-                borderRadius: BorderRadius.all(Radius.elliptical(120, 120)),
+              ],
+            ),
+          ),
+          // small hollow circle between the top right and bottom right circles
+          Positioned(
+            top: 300,
+            left: 345,
+            child: Container(
+              width:
+                  100, // 1/3 the diameter of the larger circles (300 / 3 = 100)
+              height: 100,
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                border: Border.all(
+                  color: Color.fromRGBO(255, 184, 76, 1),
+                  width: 12,
+                ),
+                borderRadius: BorderRadius.all(Radius.elliptical(100, 100)),
               ),
             ),
           ),
