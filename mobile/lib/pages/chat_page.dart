@@ -35,6 +35,7 @@ class _ChatPageState extends State<ChatPage> {
   Timer? _debounceTimer;
   Timer? _completionTimer;
   ScrollController _scrollController = ScrollController();
+  Map<String, List<String>> _messageBuffer = {};
 
   @override
   void initState() {
@@ -90,29 +91,12 @@ class _ChatPageState extends State<ChatPage> {
     _scrollToBottom();
   }
 
-// updates messages on screen based on server messages
   void _updateCurrentMessageChunk(String text, String reqId) {
-    if (_debounceTimer?.isActive ?? false) {
-      _debounceTimer?.cancel();
-    }
     int index = _chatHistory.indexWhere((msg) => msg.messageId == reqId);
     if (index == -1) return;
-    Message currMessage = _chatHistory[index];
-    print(reqId);
-    print(currMessage.source + ":  " + text);
+
     setState(() {
-      _chatHistory[index] = Message(
-        messageId: currMessage.messageId,
-        userId: currMessage.userId,
-        source: currMessage.source,
-        text: text,
-        time: currMessage.time,
-      );
-    });
-    _debounceTimer = Timer(Duration(milliseconds: 80), () {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollToBottom();
-      });
+      _chatHistory[index] = _chatHistory[index].copyWith(text: text);
     });
   }
 
@@ -150,44 +134,48 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _handleChatResponse(dynamic message) {
-    if (message['type'] == 'chat_response') {
-      setState(() {
-        if (!_buildingMessage || _chatHistory.last.source != "llm") {
-          _currentMessageChunk += "";
-          _addMessageToChatHistory(
-              "llm", _currentMessageChunk, message["reqId"] + "_llm");
-        }
+    final String reqId = message["reqId"] + "_llm";
+    final String text = message['data'];
 
-        if (message['isComplete'] ?? false) {
-          _buildingMessage = false;
-          _currentMessageChunk = "";
-        } else {
-          _currentMessageChunk += message['data'];
-          _updateCurrentMessageChunk(
-              _currentMessageChunk, message["reqId"] + "_llm");
-        }
-      });
-    }
+    setState(() {
+      if (!_messageBuffer.containsKey(reqId)) {
+        _messageBuffer[reqId] = [];
+        _addMessageToChatHistory("llm", "", reqId);
+      }
+      _messageBuffer[reqId]!.add(text);
+
+      String fullMessage = _messageBuffer[reqId]!.join("");
+      _updateCurrentMessageChunk(fullMessage, reqId);
+
+      if (message['isComplete'] ?? false) {
+        _messageBuffer.remove(reqId);
+        _isGenerating = false;
+      }
+    });
+
+    _scrollToBottom();
   }
 
   void _handleTranscription(dynamic message) {
-    if (message['type'] == 'partial_transcript') {
-      setState(() {
-        if (!_buildingMessage || _chatHistory.last.source != "user") {
-          _currentMessageChunk = "";
-          _addMessageToChatHistory(
-              "user", _currentMessageChunk, message["reqId"] + "_user");
-        }
-        if (message['isComplete'] ?? false) {
-          _buildingMessage = false;
-          _currentMessageChunk = "";
-        } else {
-          _currentMessageChunk += " " + message['data'];
-          _updateCurrentMessageChunk(
-              _currentMessageChunk, message["reqId"] + "_user");
-        }
-      });
-    }
+    final String reqId = message["reqId"] + "_user";
+    final String text = message['data'];
+
+    setState(() {
+      if (!_messageBuffer.containsKey(reqId)) {
+        _messageBuffer[reqId] = [];
+        _addMessageToChatHistory("user", "", reqId);
+      }
+      _messageBuffer[reqId]!.add(text);
+
+      String fullMessage = _messageBuffer[reqId]!.join(" ");
+      _updateCurrentMessageChunk(fullMessage, reqId);
+
+      if (message['isComplete'] ?? false) {
+        _messageBuffer.remove(reqId);
+      }
+    });
+
+    _scrollToBottom();
   }
 
   void _finishMessageGeneration() {
