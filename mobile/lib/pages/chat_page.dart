@@ -5,6 +5,7 @@ import 'package:meddymobile/utils/ws_connection.dart';
 import 'package:meddymobile/services/recorder_service.dart';
 import 'package:meddymobile/services/player_service.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:meddymobile/widgets/animated_stop_button.dart'; // Import the AnimatedStopButton
 import 'dart:async';
 
 class ChatPage extends StatefulWidget {
@@ -15,7 +16,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  WSConnection ws = WSConnection(); // add handler for chat and audio
+  WSConnection ws = WSConnection();
   TextEditingController _textEditingController = TextEditingController();
   final ChatService _chatService = ChatService();
   List<Message> _chatHistory = [];
@@ -25,10 +26,12 @@ class _ChatPageState extends State<ChatPage> {
   bool _isTyping = false;
   bool _isRecording = false;
   bool _isLoading = true;
+  bool _isGenerating = false;
 
   String _currentMessageChunk = "";
   bool _buildingMessage = false;
   Timer? _debounceTimer;
+  Timer? _completionTimer;
   ScrollController _scrollController = ScrollController();
 
   @override
@@ -47,6 +50,9 @@ class _ChatPageState extends State<ChatPage> {
       });
     });
     _loadChatHistory();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToBottom();
+    });
   }
 
   Future<void> _loadChatHistory() async {
@@ -56,10 +62,7 @@ class _ChatPageState extends State<ChatPage> {
         _chatHistory = List.from(chatHistory);
         _isLoading = false;
       });
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollToBottom();
-      });
+      _scrollToBottom();
     } catch (e) {
       print('Failed to load chat history: $e');
       setState(() {
@@ -80,9 +83,7 @@ class _ChatPageState extends State<ChatPage> {
         time: DateTime.now(),
       ));
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollToBottom();
-    });
+    _scrollToBottom();
   }
 
 // updates the current message thats being formed
@@ -109,13 +110,15 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _scrollToBottom() {
-    if (_scrollController.hasClients) {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.elasticInOut,
-      );
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   void _sendMessage() async {
@@ -128,6 +131,9 @@ class _ChatPageState extends State<ChatPage> {
           'data': {'text': _textEditingController.text},
         });
         _textEditingController.clear();
+        setState(() {
+          _isGenerating = true;
+        });
       } catch (e) {
         print('Failed to send message: $e');
       }
@@ -136,8 +142,8 @@ class _ChatPageState extends State<ChatPage> {
 
   void _handleChatResponse(dynamic message) {
     if (message['type'] == 'chat_response') {
-      print(_buildingMessage);
-      print(message["data"]);
+      // print(_buildingMessage);
+      // print(message["data"]);
       setState(() {
         if (!_buildingMessage || _chatHistory.last.source != "llm") {
           _currentMessageChunk += message['data'];
@@ -175,13 +181,26 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
+  void _finishMessageGeneration() {
+    setState(() {
+      _currentMessageId = null;
+      _currentMessageChunk = "";
+      _isGenerating = false;
+    });
+  }
+
+  void _stopGenerationVisually() {
+    _completionTimer?.cancel();
+    setState(() {
+      _isGenerating = false;
+    });
+  }
+
   void _toggleAudio() async {
     _isRecording = await _recorderService.toggleRecording();
     if (_isRecording) {
-      // recording about to end
       _playerService.playQueuedAudio();
     } else {
-      // about to start recording
       _playerService.stopPlayback();
     }
 
@@ -196,67 +215,141 @@ class _ChatPageState extends State<ChatPage> {
     _playerService.dispose();
     _scrollController.dispose();
     _debounceTimer?.cancel();
+    _completionTimer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      appBar: AppBar(
+        forceMaterialTransparency: true,
+      ),
+      body: Stack(
+        alignment: Alignment.bottomCenter,
         children: [
-          Expanded(
-            child: _isLoading
-                ? Center(child: CircularProgressIndicator())
-                : SingleChildScrollView(
-                    controller: _scrollController,
-                    child: Column(
-                      children: _chatHistory.map((message) {
-                        return ListTile(
-                          title: Text(message.source),
-                          subtitle: MarkdownBody(
-                            data: message.text,
+          Column(
+            children: [
+              Expanded(
+                child: _isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                        controller: _scrollController,
+                        itemCount: _chatHistory.length,
+                        itemBuilder: (context, index) {
+                          final message = _chatHistory[index];
+                          final isUser = message.source == "user";
+                          return Align(
+                            alignment: isUser
+                                ? Alignment.centerRight
+                                : Alignment.centerLeft,
+                            child: Padding(
+                              padding: /*  isUser
+                                  ? EdgeInsets.only(right: 10)
+                                  : EdgeInsets.only(left: 10), */
+                                  EdgeInsets.symmetric(horizontal: 10),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: isUser
+                                      ? Color.fromRGBO(255, 254, 251, 1)
+                                      : Color.fromRGBO(255, 242, 228, 1),
+                                  borderRadius: BorderRadius.circular(20),
+                                  /* border: Border.all(
+                                      width: 1,
+                                      color: Color.fromRGBO(255, 184, 76, 1),
+                                    ) */
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 10.0, horizontal: 15.0),
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 5.0, horizontal: 10.0),
+                                child: MarkdownBody(data: message.text),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              ),
+              /* if (_isGenerating)
+                AnimatedStopButton(
+                  onPressed: _stopGenerationVisually,
+                ), */
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+              ),
+              Container(
+                margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 16),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Colors.black)),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: _textEditingController,
+                                  decoration: InputDecoration(
+                                    hintText: 'Type your message...',
+                                    border: InputBorder.none,
+                                  ),
+                                  keyboardType: TextInputType.text,
+                                  //added on submit
+                                  onSubmitted: (text) {
+                                    if (text.isNotEmpty) {
+                                      _sendMessage();
+                                    }
+                                  },
+                                ),
+                              ),
+                              InkWell(
+                                onTap: (_isTyping && !_isRecording)
+                                    ? _sendMessage
+                                    : _toggleAudio,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Icon(
+                                    _isRecording
+                                        ? Icons.stop
+                                        : (_isTyping
+                                            ? Icons.arrow_forward_ios_rounded
+                                            : Icons.mic_rounded),
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-          ),
-          Container(
-              margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _textEditingController,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                        hintText: 'Type your message...',
-                        border: InputBorder.none,
-                      ),
-                      keyboardType: TextInputType.text,
-                    ),
-                  ),
-                  InkWell(
-                    onTap: (_isTyping && !_isRecording)
-                        ? _sendMessage
-                        : _toggleAudio,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(
-                        _isRecording
-                            ? Icons.stop
-                            : (_isTyping
-                                ? Icons.arrow_forward_ios_rounded
-                                : Icons.mic_rounded),
-                        color: Theme.of(context).primaryColor,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ))
+                    IconButton(
+                      icon: Icon(Icons.image),
+                      color: Theme.of(context).primaryColor,
+                      onPressed: () {
+                        // Handle image button press
+                      },
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+          if (_isGenerating)
+            Positioned(
+              bottom: 100,
+              left: 80,
+              child: AnimatedStopButton(
+                onPressed: _stopGenerationVisually,
+              ),
+            ),
         ],
       ),
     );
