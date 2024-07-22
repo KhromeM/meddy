@@ -1,3 +1,6 @@
+analyzer:
+  errors:
+    prefer_interpolation_to_compose_strings: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:

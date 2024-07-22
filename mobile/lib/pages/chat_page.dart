@@ -4,7 +4,10 @@ import 'package:meddymobile/services/chat_service.dart';
 import 'package:meddymobile/utils/ws_connection.dart';
 import 'package:meddymobile/services/recorder_service.dart';
 import 'package:meddymobile/services/player_service.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:meddymobile/widgets/animated_stop_button.dart'; // Import the AnimatedStopButton
 import 'dart:async';
+import 'package:uuid/uuid.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -14,20 +17,23 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  WSConnection ws = WSConnection(); // add handler for chat and audio
+  WSConnection ws = WSConnection();
   TextEditingController _textEditingController = TextEditingController();
   final ChatService _chatService = ChatService();
   List<Message> _chatHistory = [];
   late RecorderService _recorderService;
   late PlayerService _playerService;
+  final Uuid _uuid = Uuid();
 
   bool _isTyping = false;
   bool _isRecording = false;
   bool _isLoading = true;
+  bool _isGenerating = false;
 
   String _currentMessageChunk = "";
-  int? _currentMessageId;
-
+  bool _buildingMessage = false;
+  Timer? _debounceTimer;
+  Timer? _completionTimer;
   ScrollController _scrollController = ScrollController();
 
   @override
@@ -37,9 +43,8 @@ class _ChatPageState extends State<ChatPage> {
     _recorderService = RecorderService(ws);
     _playerService = PlayerService(ws);
 
-    ws.setHandler("chat_response", (message) {
-      _handleChatResponse(message);
-    });
+    ws.setHandler("chat_response", _handleChatResponse);
+    ws.setHandler("partial_transcript", _handleTranscription);
 
     _textEditingController.addListener(() {
       setState(() {
@@ -47,19 +52,19 @@ class _ChatPageState extends State<ChatPage> {
       });
     });
     _loadChatHistory();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToBottom();
+    });
   }
 
   Future<void> _loadChatHistory() async {
     try {
       List<Message> chatHistory = await _chatService.getChatHistory();
       setState(() {
-        _chatHistory = chatHistory;
+        _chatHistory = List.from(chatHistory);
         _isLoading = false;
       });
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollToBottom();
-      });
+      _scrollToBottom();
     } catch (e) {
       print('Failed to load chat history: $e');
       setState(() {
@@ -68,104 +73,143 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void _addMessageToChatHistory(String source, String text,
-      {bool temporary = false}) {
+  // adds new message to chat history, only called once per message
+  void _addMessageToChatHistory(String source, String text, String reqId) {
+    print(reqId);
+    print(source + ":  " + text);
     setState(() {
-      int messageId = _chatHistory.length + 1;
+      _buildingMessage = true;
       _chatHistory.add(Message(
-        messageId: _chatHistory.length + 1,
+        messageId: reqId,
         userId: "DEVELOPER",
         source: source,
         text: text,
         time: DateTime.now(),
       ));
-      if (temporary) {
-        _currentMessageId = messageId;
-      }
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollToBottom();
+    _scrollToBottom();
+  }
+
+// updates messages on screen based on server messages
+  void _updateCurrentMessageChunk(String text, String reqId) {
+    if (_debounceTimer?.isActive ?? false) {
+      _debounceTimer?.cancel();
+    }
+    int index = _chatHistory.indexWhere((msg) => msg.messageId == reqId);
+    if (index == -1) return;
+    Message currMessage = _chatHistory[index];
+    print(reqId);
+    print(currMessage.source + ":  " + text);
+    setState(() {
+      _chatHistory[index] = Message(
+        messageId: currMessage.messageId,
+        userId: currMessage.userId,
+        source: currMessage.source,
+        text: text,
+        time: currMessage.time,
+      );
+    });
+    _debounceTimer = Timer(Duration(milliseconds: 80), () {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToBottom();
+      });
     });
   }
 
   void _scrollToBottom() {
-    if (_scrollController.hasClients) {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.elasticInOut,
-      );
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   void _sendMessage() async {
+    final String reqId = _uuid.v4();
     if (_textEditingController.text.isNotEmpty) {
       try {
-        // String text = 
-        _addMessageToChatHistory("user", _textEditingController.text);
+        _addMessageToChatHistory(
+            "user", _textEditingController.text, reqId + "_user");
         print(_textEditingController.text);
         ws.sendMessage({
           'type': 'chat',
-          'data': {'text': _textEditingController.text},
+          'data': {'text': _textEditingController.text, 'reqId': reqId},
         });
         _textEditingController.clear();
+        setState(() {
+          _isGenerating = true;
+        });
       } catch (e) {
         print('Failed to send message: $e');
       }
     }
   }
 
-  void _updateCurrentMessageChunk(String chunk) {
-    setState(() {
-      if (_currentMessageId != null) {
-        int index = _chatHistory
-            .indexWhere((msg) => msg.messageId == _currentMessageId);
-        if (index != -1) {
-          _chatHistory[index] = Message(
-            messageId: _currentMessageId!,
-            userId: "DEVELOPER",
-            source: "llm",
-            text: chunk,
-            time: DateTime.now(),
-          );
-        }
-      }
-    });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollToBottom();
-    });
-  }
-
   void _handleChatResponse(dynamic message) {
     if (message['type'] == 'chat_response') {
       setState(() {
-        if (message['isComplete']) {
-          _currentMessageId = null;
+        if (!_buildingMessage || _chatHistory.last.source != "llm") {
+          _currentMessageChunk += "";
+          _addMessageToChatHistory(
+              "llm", _currentMessageChunk, message["reqId"] + "_llm");
+        }
+
+        if (message['isComplete'] ?? false) {
+          _buildingMessage = false;
           _currentMessageChunk = "";
         } else {
           _currentMessageChunk += message['data'];
+          _updateCurrentMessageChunk(
+              _currentMessageChunk, message["reqId"] + "_llm");
         }
-        if (_currentMessageChunk.isNotEmpty && _currentMessageId == null) {
-          _addMessageToChatHistory("llm", _currentMessageChunk,
-              temporary: true);
-        } else {
-          _updateCurrentMessageChunk(_currentMessageChunk);
-        }
-      });
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollToBottom();
       });
     }
+  }
+
+  void _handleTranscription(dynamic message) {
+    if (message['type'] == 'partial_transcript') {
+      setState(() {
+        if (!_buildingMessage || _chatHistory.last.source != "user") {
+          _currentMessageChunk = "";
+          _addMessageToChatHistory(
+              "user", _currentMessageChunk, message["reqId"] + "_user");
+        }
+        if (message['isComplete'] ?? false) {
+          _buildingMessage = false;
+          _currentMessageChunk = "";
+        } else {
+          _currentMessageChunk += " " + message['data'];
+          _updateCurrentMessageChunk(
+              _currentMessageChunk, message["reqId"] + "_user");
+        }
+      });
+    }
+  }
+
+  void _finishMessageGeneration() {
+    setState(() {
+      _buildingMessage = false;
+      _currentMessageChunk = "";
+      _isGenerating = false;
+    });
+  }
+
+  void _stopGenerationVisually() {
+    _completionTimer?.cancel();
+    setState(() {
+      _isGenerating = false;
+    });
   }
 
   void _toggleAudio() async {
     _isRecording = await _recorderService.toggleRecording();
     if (_isRecording) {
-      // recording about to end
       _playerService.playQueuedAudio();
     } else {
-      // about to start recording
       _playerService.stopPlayback();
     }
 
@@ -179,65 +223,142 @@ class _ChatPageState extends State<ChatPage> {
     _recorderService.dispose();
     _playerService.dispose();
     _scrollController.dispose();
+    _debounceTimer?.cancel();
+    _completionTimer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      appBar: AppBar(
+        forceMaterialTransparency: true,
+      ),
+      body: Stack(
+        alignment: Alignment.bottomCenter,
         children: [
-          Expanded(
-            child: _isLoading
-                ? Center(child: CircularProgressIndicator())
-                : SingleChildScrollView(
-                    controller: _scrollController,
-                    child: Column(
-                      children: _chatHistory.map((message) {
-                        return ListTile(
-                          title: Text(message.source),
-                          subtitle: Text(message.text),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-          ),
-          Container(
-              margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _textEditingController,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                        hintText: 'Type your message...',
-                        border: InputBorder.none,
+          Column(
+            children: [
+              Expanded(
+                child: _isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                        controller: _scrollController,
+                        itemCount: _chatHistory.length,
+                        itemBuilder: (context, index) {
+                          final message = _chatHistory[index];
+                          final isUser = message.source == "user";
+                          return Align(
+                            alignment: isUser
+                                ? Alignment.centerRight
+                                : Alignment.centerLeft,
+                            child: Padding(
+                              padding: /*  isUser
+                                  ? EdgeInsets.only(right: 10)
+                                  : EdgeInsets.only(left: 10), */
+                                  EdgeInsets.symmetric(horizontal: 10),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: isUser
+                                      ? Color.fromRGBO(255, 254, 251, 1)
+                                      : Color.fromRGBO(255, 242, 228, 1),
+                                  borderRadius: BorderRadius.circular(20),
+                                  /* border: Border.all(
+                                      width: 1,
+                                      color: Color.fromRGBO(255, 184, 76, 1),
+                                    ) */
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 10.0, horizontal: 15.0),
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 5.0, horizontal: 10.0),
+                                child: MarkdownBody(data: message.text),
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                      keyboardType: TextInputType.text,
-                    ),
-                  ),
-                  InkWell(
-                    onTap: (_isTyping && !_isRecording)
-                        ? _sendMessage
-                        : _toggleAudio,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(
-                        _isRecording
-                            ? Icons.stop
-                            : (_isTyping
-                                ? Icons.arrow_forward_ios_rounded
-                                : Icons.mic_rounded),
-                        color: Theme.of(context).primaryColor,
+              ),
+              /* if (_isGenerating)
+                AnimatedStopButton(
+                  onPressed: _stopGenerationVisually,
+                ), */
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+              ),
+              Container(
+                margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 16),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Colors.black)),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: _textEditingController,
+                                  decoration: InputDecoration(
+                                    hintText: 'Type your message...',
+                                    border: InputBorder.none,
+                                  ),
+                                  keyboardType: TextInputType.text,
+                                  //added on submit
+                                  onSubmitted: (text) {
+                                    if (text.isNotEmpty) {
+                                      _sendMessage();
+                                    }
+                                  },
+                                ),
+                              ),
+                              InkWell(
+                                onTap: (_isTyping && !_isRecording)
+                                    ? _sendMessage
+                                    : _toggleAudio,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Icon(
+                                    _isRecording
+                                        ? Icons.stop
+                                        : (_isTyping
+                                            ? Icons.arrow_forward_ios_rounded
+                                            : Icons.mic_rounded),
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ))
+                    IconButton(
+                      icon: Icon(Icons.image),
+                      color: Theme.of(context).primaryColor,
+                      onPressed: () {
+                        // Handle image button press
+                      },
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+          if (_isGenerating)
+            Positioned(
+              bottom: 100,
+              left: 80,
+              child: AnimatedStopButton(
+                onPressed: _stopGenerationVisually,
+              ),
+            ),
         ],
       ),
     );

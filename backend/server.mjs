@@ -6,6 +6,7 @@ import { setupWebSocketHandlers } from "./websocket/wsHandlers.mjs";
 import CONFIG from "./config.mjs";
 import chatRoutes from "./server/routes/chatRoutes.mjs";
 import fileRoutes from "./server/routes/fileRoutes.mjs";
+import imageRoutes from "./server/routes/imageRoutes.mjs";
 import appointmentRoutes from "./server/routes/appointmentRoutes.mjs";
 import infoRoutes from "./server/routes/infoRoutes.mjs";
 import doctorRoutes from "./server/routes/doctorRoutes.mjs";
@@ -22,10 +23,11 @@ process.env["TZ"] = "UTC";
 
 export const app = express();
 
+app.use(express.json({ limit: "50mb" }));
 app.use(cors());
 app.use(json());
 
-// app.use(loggerMiddleware);
+app.use(loggerMiddleware);
 app.use(authMiddleware);
 app.use(userMiddleware);
 
@@ -36,6 +38,7 @@ app.use("/api/appointment", appointmentRoutes);
 app.use("/api/doctor", doctorRoutes);
 app.use("/api/info", infoRoutes);
 app.use("/api/medplum", medplumRoutes);
+app.use("/api/image", imageRoutes);
 
 app.use(errorHandler);
 

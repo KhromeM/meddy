@@ -73,15 +73,45 @@ describe("WebSocket Handlers Tests", function () {
 			},
 		};
 		ws.send(JSON.stringify(message));
-
 		let receivedChunks = [];
 		await new Promise((resolve, reject) => {
 			ws.on("message", (data) => {
 				const message = JSON.parse(data);
 				if (message.type === "chat_response") {
 					receivedChunks.push(message.data);
-				} else if (message.type === "chat_end") {
+				}
+				if (message.isComplete) {
 					expect(receivedChunks).to.be.an("array").that.is.not.empty;
+					resolve();
+				}
+			});
+			ws.on("error", reject);
+		});
+	});
+
+	it("should handle chats with images", async () => {
+		ws = new WebSocket(`ws://localhost:${port}/ws`);
+		await authenticateWebSocket(ws);
+
+		const message = {
+			type: "chat",
+			data: {
+				text: "whats in the image?",
+				image: "cookies.jpeg",
+			},
+		};
+		ws.send(JSON.stringify(message));
+		let receivedChunks = [];
+		await new Promise((resolve, reject) => {
+			ws.on("message", (data) => {
+				const message = JSON.parse(data);
+				if (message.type === "chat_response") {
+					receivedChunks.push(message.data);
+				}
+				if (message.isComplete) {
+					expect(receivedChunks).to.be.an("array").that.is.not.empty;
+					expect(receivedChunks.join("")).to.include("cookie");
+					// console.log(receivedChunks.join(""));
 					resolve();
 				}
 			});
@@ -140,7 +170,7 @@ describe("WebSocket Handlers Tests", function () {
 		await new Promise((resolve, reject) => {
 			ws.on("message", async (data) => {
 				const message = JSON.parse(data);
-				if (message.type === "chat_end") {
+				if (message.isComplete) {
 					try {
 						const result = await pool.query(
 							"SELECT * FROM Messages ORDER BY Time ASC"

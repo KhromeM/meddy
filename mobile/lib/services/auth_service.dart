@@ -8,8 +8,7 @@ class AuthService {
   Future<User?> signInWithGoogle() async {
     try {
       // Trigger the authentication flow
-      final GoogleSignInAccount? googleUser =
-          await _googleSignIn.signIn();
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
         // Google sign-in canceled by user
@@ -20,8 +19,7 @@ class AuthService {
           await googleUser.authentication;
 
       // Create a new credential
-      final AuthCredential credential =
-          GoogleAuthProvider.credential(
+      final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
@@ -39,5 +37,15 @@ class AuthService {
   Future<void> signOut() async {
     await _auth.signOut();
     await _googleSignIn.signOut();
+  }
+
+  String? getFirstName() {
+    final user = _auth.currentUser;
+    return user?.displayName?.split(' ')[0];
+  }
+
+  String? getProfileImageUrl() {
+    final user = _auth.currentUser;
+    return user?.photoURL;
   }
 }
