@@ -51,6 +51,9 @@ class _ChatPageState extends State<ChatPage> {
       });
     });
     _loadChatHistory();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToBottom();
+    });
   }
 
   Future<void> _loadChatHistory() async {
@@ -60,6 +63,7 @@ class _ChatPageState extends State<ChatPage> {
         _chatHistory = List.from(chatHistory);
         _isLoading = false;
       });
+      _scrollToBottom();
     } catch (e) {
       print('Failed to load chat history: $e');
       setState(() {
@@ -87,13 +91,15 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _scrollToBottom() {
-    if (_scrollController.hasClients) {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   void _sendMessage() async {
