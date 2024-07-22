@@ -3,6 +3,7 @@ import 'package:meddymobile/pages/chat_page.dart';
 import 'package:meddymobile/widgets/boxes.dart';
 import 'package:meddymobile/widgets/main_background.dart';
 import 'package:meddymobile/widgets/mic_page.dart';
+import 'package:meddymobile/pages/profile_page.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -23,6 +24,7 @@ class _MyHomePageState extends State<MyHomePage> {
     'Text 8',
   ];
 
+  // use temporary assets locally or comment out
   final List<String> images = [
     'assets/image1.jpg',
     'assets/image2.jpg',
@@ -62,6 +64,10 @@ class _MyHomePageState extends State<MyHomePage> {
             leading: InkWell(
               onTap: () {
                 //put api call
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+                );
               },
               child: Padding(
                 padding: const EdgeInsets.only(left: 10),
@@ -123,6 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               SizedBox(height: 20),
+              // add images here or comment out next line if working on android emu
               Boxes(texts: texts, images: images),
               SizedBox(height: 100),
             ],
@@ -145,9 +152,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-
-
 
 /* import 'dart:math';
 import 'package:flutter/material.dart';
