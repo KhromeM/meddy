@@ -37,10 +37,15 @@ export const getEpicPatient = async (medplum, epicPatientId) => {
 	await epicClient.startJwtAssertionLogin(jwt);
 
 	// Read resource
-	const patient = await epicClient.readResource("Patient", epicPatientId);
+	const patient = await epicClient.search("Patient", `identifier=${epicPatientId}`);
 	if (!patient) throw new Error(`Failed to find the given Epic patient ID: ${epicPatientId}`);
 
 	// Create resource for Epic patient in local Medplum repository
 	await medplum.createResourceIfNoneExist(patient, `identifier=${epicPatientId}`);
+
+	// Query for medical data
+	// const diagnosticReport = await epicClient.search("DiagnosticReport", `patient=${epicPatientId}`);
+	// console.log(diagnosticReport);
+
 	return patient;
 };

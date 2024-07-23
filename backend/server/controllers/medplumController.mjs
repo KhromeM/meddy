@@ -6,17 +6,18 @@ await medplum.startClientLogin(process.env.MEDPLUM_CLIENT_ID, process.env.MEDPLU
 
 export const getPatientDetails = async (req, res) => {
 	try {
-		// Get Epic info
-		const epicPatient = await getEpicPatient(medplum, "erXuFYUfucBZaryVksYEcMg3");
-		console.log(epicPatient);
+		// Get Epic info and store in Medplum
+		const patientId = req.params.patientId;
+		const epicPatient = await getEpicPatient(medplum, patientId);
+		const medplumPatient = await medplum.searchResources("Patient", `identifier=${patientId}`);
+		const medplumId = medplumPatient[0].id;
 
 		// Retrieve and parse patient details from Medplum
-		const patientId = req.params.patientId;
-		const patientInfo = await medplum.readPatientEverything(patientId);
+		const patientInfo = await medplum.readPatientEverything(medplumId);
 		const parsedInfo = parsePatientInfo(patientInfo);
 
 		// Create directory if it doesn't exist
-		const directoryPath = `./uploads/patient-${patientId}`;
+		const directoryPath = `./uploads/patient-${medplumId}`;
 		fs.mkdirSync(directoryPath, { recursive: true });
 
 		// Save patient details
@@ -24,10 +25,10 @@ export const getPatientDetails = async (req, res) => {
 		const medplumInfo = JSON.stringify(parsedInfo, null, 2);
 		fs.writeFileSync(medplumInfoPath, medplumInfo);
 
-		res.status(200).json(parsedInfo);
+		res.status(200).json(patientInfo);
 	} catch (err) {
-		console.error("Error fetching patient details from Medplum:", err);
-		res.status(500).json({ status: "fail", message: "Failed to fetch patient details from Medplum" });
+		console.error("Error fetching patient details:", err);
+		res.status(500).json({ status: "fail", message: "Failed to fetch patient details" });
 	}
 };
 
