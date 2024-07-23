@@ -3,7 +3,7 @@ import 'package:meddymobile/pages/chat_page.dart';
 import 'package:meddymobile/widgets/boxes.dart';
 import 'package:meddymobile/widgets/main_background.dart';
 import 'package:meddymobile/widgets/mic_page.dart';
-import 'package:meddymobile/pages/profile_page.dart';
+import 'package:meddymobile/widgets/custom_app_bar.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -55,54 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
         MainBackground(),
         Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            title: const Text('Meddy'),
-            centerTitle: true,
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            forceMaterialTransparency: true,
-            leading: InkWell(
-              onTap: () {
-                //put api call
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ProfilePage()),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Stack(
-                  children: [
-                    //put sth here
-                    Icon(
-                      Icons.circle,
-                      size: 60,
-                    )
-                  ],
-                ),
-              ),
-            ),
-            actions: [
-              InkWell(
-                onTap: () {
-                  //put api call
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const ChatPage()),
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: Stack(
-                    children: [
-                      //put sth here
-                      Icon(Icons.circle, size: 60)
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+          appBar: CustomAppBar(),
           body: Column(
             children: [
               SizedBox(height: 20),
@@ -152,88 +105,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-/* import 'dart:math';
-import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Meddy'),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        forceMaterialTransparency: true,
-      ),
-      body: Column(
-        children: [
-          SizedBox(height: 20),
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Container(
-                width: 100.0,
-                height: 100.0,
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              Icon(
-                Icons.mic,
-                size: 50,
-              ),
-            ],
-          ),
-          SizedBox(height: 20),
-          Expanded(
-            child: GridView.custom(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.all(10.0),
-              gridDelegate: SliverWovenGridDelegate.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                pattern: [
-                  WovenGridTile(2),
-                  WovenGridTile(
-                    3 / 4,
-                    crossAxisRatio: 0.7,
-                    alignment: AlignmentDirectional.centerEnd,
-                  ),
-                ],
-              ),
-              childrenDelegate: SliverChildBuilderDelegate(
-                (context, index) => Container(
-                  color: Colors.blue,
-                  height: Random().nextInt(100) + 50,
-                  child: Center(
-                    child: Text(
-                      'Box ${index + 1}',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ),
-                childCount: 20,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
- */
