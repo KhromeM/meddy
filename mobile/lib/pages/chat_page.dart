@@ -7,6 +7,7 @@ import 'package:meddymobile/services/player_service.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:meddymobile/widgets/animated_stop_button.dart'; // Import the AnimatedStopButton
 import 'dart:async';
+import 'package:uuid/uuid.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -22,6 +23,7 @@ class _ChatPageState extends State<ChatPage> {
   List<Message> _chatHistory = [];
   late RecorderService _recorderService;
   late PlayerService _playerService;
+  final Uuid _uuid = Uuid();
 
   bool _isTyping = false;
   bool _isRecording = false;
@@ -29,10 +31,11 @@ class _ChatPageState extends State<ChatPage> {
   bool _isGenerating = false;
 
   String _currentMessageChunk = "";
-  int? _currentMessageId;
+  bool _buildingMessage = false;
   Timer? _debounceTimer;
   Timer? _completionTimer;
   ScrollController _scrollController = ScrollController();
+  Map<String, List<String>> _messageBuffer = {};
 
   @override
   void initState() {
@@ -41,9 +44,8 @@ class _ChatPageState extends State<ChatPage> {
     _recorderService = RecorderService(ws);
     _playerService = PlayerService(ws);
 
-    ws.setHandler("chat_response", (message) {
-      _handleChatResponse(message);
-    });
+    ws.setHandler("chat_response", _handleChatResponse);
+    ws.setHandler("partial_transcript", _handleTranscription);
 
     _textEditingController.addListener(() {
       setState(() {
@@ -72,22 +74,30 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void _addMessageToChatHistory(String source, String text,
-      {bool temporary = false}) {
+  // adds new message to chat history, only called once per message
+  void _addMessageToChatHistory(String source, String text, String reqId) {
+    print(reqId);
+    print(source + ":  " + text);
     setState(() {
-      int messageId = _chatHistory.length + 1;
+      _buildingMessage = true;
       _chatHistory.add(Message(
-        messageId: messageId,
+        messageId: reqId,
         userId: "DEVELOPER",
         source: source,
         text: text,
         time: DateTime.now(),
       ));
-      if (temporary) {
-        _currentMessageId = messageId;
-      }
     });
     _scrollToBottom();
+  }
+
+  void _updateCurrentMessageChunk(String text, String reqId) {
+    int index = _chatHistory.indexWhere((msg) => msg.messageId == reqId);
+    if (index == -1) return;
+
+    setState(() {
+      _chatHistory[index] = _chatHistory[index].copyWith(text: text);
+    });
   }
 
   void _scrollToBottom() {
@@ -103,13 +113,15 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _sendMessage() async {
+    final String reqId = _uuid.v4();
     if (_textEditingController.text.isNotEmpty) {
       try {
-        _addMessageToChatHistory("user", _textEditingController.text);
+        _addMessageToChatHistory(
+            "user", _textEditingController.text, reqId + "_user");
         print(_textEditingController.text);
         ws.sendMessage({
           'type': 'chat',
-          'data': {'text': _textEditingController.text},
+          'data': {'text': _textEditingController.text, 'reqId': reqId},
         });
         _textEditingController.clear();
         setState(() {
@@ -121,54 +133,54 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void _updateCurrentMessageChunk(String chunk) {
-    if (_debounceTimer?.isActive ?? false) {
-      _debounceTimer?.cancel();
-    }
+  void _handleChatResponse(dynamic message) {
+    final String reqId = message["reqId"] + "_llm";
+    final String text = message['data'];
 
     setState(() {
-      if (_currentMessageId != null) {
-        int index = _chatHistory
-            .indexWhere((msg) => msg.messageId == _currentMessageId);
-        if (index != -1) {
-          _chatHistory[index] = Message(
-            messageId: _currentMessageId!,
-            userId: "DEVELOPER",
-            source: "llm",
-            text: chunk,
-            time: DateTime.now(),
-          );
-        }
+      if (!_messageBuffer.containsKey(reqId)) {
+        _messageBuffer[reqId] = [];
+        _addMessageToChatHistory("llm", "", reqId);
+      }
+      _messageBuffer[reqId]!.add(text);
+
+      String fullMessage = _messageBuffer[reqId]!.join("");
+      _updateCurrentMessageChunk(fullMessage, reqId);
+
+      if (message['isComplete'] ?? false) {
+        _messageBuffer.remove(reqId);
+        _isGenerating = false;
       }
     });
-    _debounceTimer = Timer(Duration(milliseconds: 80), () {
-      _scrollToBottom();
-    });
-    _completionTimer?.cancel();
-    _completionTimer = Timer(Duration(seconds: 1), () {
-      _finishMessageGeneration();
-    });
+
+    _scrollToBottom();
   }
 
-  void _handleChatResponse(dynamic message) {
-    if (message['type'] == 'chat_response') {
-      setState(() {
-        if (_currentMessageId == null) {
-          _currentMessageChunk = message['data'];
-          _addMessageToChatHistory("llm", _currentMessageChunk,
-              temporary: true);
-          _isGenerating = true;
-        } else if (_isGenerating) {
-          _currentMessageChunk += message['data'];
-          _updateCurrentMessageChunk(_currentMessageChunk);
-        }
-      });
-    }
+  void _handleTranscription(dynamic message) {
+    final String reqId = message["reqId"] + "_user";
+    final String text = message['data'];
+
+    setState(() {
+      if (!_messageBuffer.containsKey(reqId)) {
+        _messageBuffer[reqId] = [];
+        _addMessageToChatHistory("user", "", reqId);
+      }
+      _messageBuffer[reqId]!.add(text);
+
+      if (message['isComplete'] ?? false) {
+        _messageBuffer.remove(reqId);
+        return;
+      }
+      String fullMessage = _messageBuffer[reqId]!.join(" ");
+      _updateCurrentMessageChunk(fullMessage, reqId);
+    });
+
+    _scrollToBottom();
   }
 
   void _finishMessageGeneration() {
     setState(() {
-      _currentMessageId = null;
+      _buildingMessage = false;
       _currentMessageChunk = "";
       _isGenerating = false;
     });
