@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:meddymobile/services/auth_service.dart';
 import 'package:meddymobile/pages/signin_page.dart';
-import 'package:meddymobile/pages/my_home_page.dart';
 import 'package:meddymobile/widgets/main_background.dart';
+import 'package:meddymobile/widgets/backnav_app_bar.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -68,36 +68,7 @@ class _ProfilePageState extends State<ProfilePage> {
           MainBackground(), // Using MainBackground widget
           Scaffold(
             backgroundColor: Colors.transparent,
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              leading: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MyHomePage()),
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child:
-                          Icon(Icons.arrow_back, size: 30, color: Colors.white),
-                    ),
-                  ),
-                ),
-              ),
-              actions: [
-                SizedBox(width: 80), // To maintain alignment
-              ],
-            ),
+            appBar: BacknavAppBar(),
             body: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),

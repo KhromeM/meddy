@@ -8,6 +8,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:meddymobile/widgets/animated_stop_button.dart'; // Import the AnimatedStopButton
 import 'dart:async';
 import 'package:uuid/uuid.dart';
+import 'package:meddymobile/widgets/backnav_app_bar.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -219,9 +220,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        forceMaterialTransparency: true,
-      ),
+      appBar: BacknavAppBar(),
       body: Stack(
         alignment: Alignment.bottomCenter,
         children: [
