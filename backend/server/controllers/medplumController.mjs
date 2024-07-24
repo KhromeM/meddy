@@ -1,16 +1,24 @@
 import fs from "fs";
-import { MedplumClient } from "@medplum/core";
+import { MedplumClient, createReference } from "@medplum/core";
 import { getEpicPatient } from "./epicController.mjs";
 const medplum = new MedplumClient();
 await medplum.startClientLogin(process.env.MEDPLUM_CLIENT_ID, process.env.MEDPLUM_CLIENT_SECRET);
 
 export const getPatientDetails = async (req, res) => {
 	try {
-		// Get Epic info and store in Medplum
+		// Retrieve the patient from Epic
 		const patientId = req.params.patientId;
-		const epicPatient = await getEpicPatient(medplum, patientId);
+		const epicClient = await getEpicPatient(medplum, patientId);
 		const medplumPatient = await medplum.searchResources("Patient", `identifier=${patientId}`);
 		const medplumId = medplumPatient[0].id;
+
+		// Retrieve the patient's medical data from Epic and store it in Medplum
+		const diagnosticReport = await epicClient.search("DiagnosticReport", `patient=${patientId}`);
+		for (const report of diagnosticReport.entry) {
+			const resource = report.resource;
+			resource.subject = createReference(medplumPatient[0]);
+			await medplum.createResourceIfNoneExist(resource, `identifier=${resource.identifier[0].value}`);
+		}
 
 		// Retrieve and parse patient details from Medplum
 		const patientInfo = await medplum.readPatientEverything(medplumId);

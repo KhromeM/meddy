@@ -3,6 +3,12 @@ import { createPrivateKey, randomBytes } from "crypto";
 import { SignJWT } from "jose";
 import fetch from "node-fetch";
 
+/**
+ * Retrieves Epic patient and stores it in Medplum
+ * @param {*} medplum - MedplumClient
+ * @param {*} epicPatientId - Epic patient ID
+ * @returns - The Epic client object (connection to Epic)
+ */
 export const getEpicPatient = async (medplum, epicPatientId) => {
 	const privateKeyString = process.env.EPIC_PRIVATE_KEY;
 	const clientId = process.env.EPIC_CLIENT_ID;
@@ -43,9 +49,5 @@ export const getEpicPatient = async (medplum, epicPatientId) => {
 	// Create resource for Epic patient in local Medplum repository
 	await medplum.createResourceIfNoneExist(patient, `identifier=${epicPatientId}`);
 
-	// Query for medical data
-	// const diagnosticReport = await epicClient.search("DiagnosticReport", `patient=${epicPatientId}`);
-	// console.log(diagnosticReport);
-
-	return patient;
+	return epicClient;
 };
