@@ -13,12 +13,8 @@ export const getPatientDetails = async (req, res) => {
 		const medplumId = medplumPatient[0].id;
 
 		// Retrieve the patient's medical data from Epic and store it in Medplum
-		const diagnosticReport = await epicClient.search("DiagnosticReport", `patient=${patientId}`);
-		for (const report of diagnosticReport.entry) {
-			const resource = report.resource;
-			resource.subject = createReference(medplumPatient[0]);
-			await medplum.createResourceIfNoneExist(resource, `identifier=${resource.identifier[0].value}`);
-		}
+		const resourceTypes = ["DiagnosticReport", "MedicationRequest", "Procedure"];
+		await retrieveResources(epicClient, medplum, patientId, medplumPatient, resourceTypes);
 
 		// Retrieve and parse patient details from Medplum
 		const patientInfo = await medplum.readPatientEverything(medplumId);
@@ -33,12 +29,23 @@ export const getPatientDetails = async (req, res) => {
 		const medplumInfo = JSON.stringify(parsedInfo, null, 2);
 		fs.writeFileSync(medplumInfoPath, medplumInfo);
 
-		res.status(200).json(patientInfo);
+		res.status(200).json(parsedInfo);
 	} catch (err) {
 		console.error("Error fetching patient details:", err);
 		res.status(500).json({ status: "fail", message: "Failed to fetch patient details" });
 	}
 };
+
+async function retrieveResources(client, medplum, patientId, medplumPatient, resourceTypes) {
+	for (const resourceType of resourceTypes) {
+		const resources = await client.search(resourceType, `patient=${patientId}`);
+		for (const entry of resources.entry) {
+			const resource = entry.resource;
+			resource.subject = createReference(medplumPatient[0]);
+			await medplum.createResourceIfNoneExist(resource, `identifier=${resource.identifier[0].value}`);
+		}
+	}
+}
 
 function parsePatientInfo(patientInfo) {
 	const result = {
@@ -50,7 +57,7 @@ function parsePatientInfo(patientInfo) {
 		const resourceType = resource.resourceType;
 
 		// Skip CareTeam, DiagnosticReport, Media, and Provenance resources
-		if (["CareTeam", "DiagnosticReport", "Media", "Provenance"].includes(resourceType)) {
+		if (["CareTeam", "Media", "Provenance"].includes(resourceType)) {
 			return;
 		}
 
@@ -63,8 +70,7 @@ function parsePatientInfo(patientInfo) {
 		};
 
 		// Process common fields
-		if (resource.code) {
-			processedResource.code = resource.code.coding[0].code;
+		if (resource.display) {
 			processedResource.display = resource.code.coding[0].display;
 		}
 		if (resource.effectiveDateTime) {
@@ -121,12 +127,17 @@ function parsePatientInfo(patientInfo) {
 				processedResource.vaccineCode = resource.vaccineCode.coding[0].display;
 				break;
 			case "Procedure":
-				if (resource.performedPeriod) {
-					processedResource.startDate = resource.performedPeriod.start;
-					processedResource.endDate = resource.performedPeriod.end;
-				}
-				if (resource.reasonReference) {
-					processedResource.reason = resource.reasonReference[0].display;
+				if (resource.code && resource.code.text) {
+					processedResource.procedureDescription = resource.code.text;
+					if (resource.performedPeriod) {
+						processedResource.startDate = resource.performedPeriod.start;
+						processedResource.endDate = resource.performedPeriod.end;
+					}
+					if (resource.reasonReference && resource.reasonReference[0].display) {
+						processedResource.reason = resource.reasonReference[0].display;
+					}
+				} else {
+					return;
 				}
 				break;
 			case "Condition":
@@ -151,8 +162,15 @@ function parsePatientInfo(patientInfo) {
 			case "MedicationRequest":
 				processedResource.status = resource.status;
 				processedResource.intent = resource.intent;
-				if (resource.medicationReference) {
-					processedResource.medicationId = resource.medicationReference.reference.split("/")[1];
+				if (resource.medicationReference && resource.medicationReference.display) {
+					processedResource.medication = resource.medicationReference.display;
+				}
+				if (
+					resource.dosageInstruction &&
+					resource.dosageInstruction[0] &&
+					resource.dosageInstruction[0].text
+				) {
+					processedResource.dosageInstructions = resource.dosageInstruction[0].text;
 				}
 				if (resource.requester) {
 					processedResource.prescribingDoctor = resource.requester.display;
@@ -178,6 +196,20 @@ function parsePatientInfo(patientInfo) {
 				}
 				if (resource.addresses) {
 					processedResource.addresses = resource.addresses.map((addr) => addr.reference);
+				}
+				break;
+			case "DiagnosticReport":
+				if (resource.conclusionCode && resource.conclusionCode.length > 0) {
+					const display = resource.conclusionCode[0].coding.find(
+						(coding) => coding.display
+					)?.display;
+					if (display) {
+						processedResource.finding = display;
+					} else {
+						return;
+					}
+				} else {
+					return;
 				}
 				break;
 		}
