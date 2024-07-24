@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meddymobile/services/auth_service.dart';
 import 'package:meddymobile/widgets/login_background.dart';
+import 'package:meddymobile/pages/my_home_page.dart';
 
 class SignInPage extends ConsumerStatefulWidget {
   const SignInPage({super.key});
@@ -38,7 +39,7 @@ class _SignInState extends ConsumerState<SignInPage> {
                   ),
                   SizedBox(height: 200),
                   _isLoading
-                      ? CircularProgressIndicator() // TODO: animate our logo as loading
+                      ? CircularProgressIndicator()
                       : GestureDetector(
                           onTap: () async {
                             // Handle Google sign-in
@@ -47,6 +48,13 @@ class _SignInState extends ConsumerState<SignInPage> {
                             });
                             try {
                               await _authService.signInWithGoogle();
+                              if (mounted) {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const MyHomePage()),
+                                );
+                              }
                             } catch (e) {
                               if (!mounted) return;
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -72,13 +80,6 @@ class _SignInState extends ConsumerState<SignInPage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                // Future implementation of logo image
-                                // Image.asset(
-                                //   'path_to_logo_asset',
-                                //   height: 24,
-                                //   width: 24,
-                                // ),
-                                // SizedBox(width: 12),
                                 Image.asset(
                                   'assets/images/google_signin_button.png', // Replace with the path to your Google logo asset
                                   height: 24,
@@ -97,7 +98,6 @@ class _SignInState extends ConsumerState<SignInPage> {
                           ),
                         ),
                   SizedBox(height: 40),
-                  // Display the sign-up text
                   const Spacer(flex: 1),
                 ],
               ),

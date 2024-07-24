@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:meddymobile/pages/chat_page.dart';
 import 'package:meddymobile/widgets/boxes.dart';
 import 'package:meddymobile/widgets/main_background.dart';
 import 'package:meddymobile/widgets/mic_page.dart';
