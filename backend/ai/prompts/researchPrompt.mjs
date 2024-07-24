@@ -17,7 +17,7 @@ Focus on:
 
 Provide your findings in a clear, bullet-point format. Be thorough and objective, listing ALL patterns you observe that could potentially relate to ${condition}, without filtering for relevance.
 
-Your output should be at least 1000 words or about the same length as the patient data passed in.
+Your output should be 250 - 500 words.
 
 Full patient data:
 ${JSON.stringify(data, null, 2)}
@@ -47,7 +47,7 @@ Present your inferences in a numbered list, explaining the reasoning behind each
 Stage 1 Output:
 ${stage1Output}
 
-Your output should be at least 1000 words or about the same length as the patient data passed in.
+Your output should be 250 - 500 words.
 
 Full patient data:
 ${JSON.stringify(data, null, 2)}
@@ -80,7 +80,7 @@ ${stage1Output}
 Stage 2 Output:
 ${stage2Output}
 
-Your output should be at least 1000 words or about the same length as the patient data passed in.
+Your output should be 250 - 500 words.
 
 Full patient data:
 ${JSON.stringify(data, null, 2)}
@@ -114,7 +114,7 @@ Focus on:
 
 Provide a detailed analysis for each selected inference, including potential implications for ${condition} and any recommended follow-up actions or tests specific to ${condition}. Avoid generating the final report or user message, as this will be done in the next stage.
 
-Your output should be at least 1000 words or about the same length as the patient data passed in.
+Your output should be 250 - 500 words.
 
 Stage 1 Output:
 ${stage1Output}
@@ -172,8 +172,7 @@ ${stage4Output}
 Full patient data:
 ${JSON.stringify(data, null, 2)}
 
-Your output should be at least 1000 words or about the same length as the patient data passed in.
-`;
+Your output should be 250 - 500 words.`;
 
 const stage6Prompt = (stage5Output, condition) => `
 You are the final stage in a 6-stage medical research pipeline:

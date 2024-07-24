@@ -5,7 +5,7 @@ import 'package:meddymobile/utils/ws_connection.dart';
 import 'package:meddymobile/services/recorder_service.dart';
 import 'package:meddymobile/services/player_service.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:meddymobile/widgets/animated_stop_button.dart'; // Import the AnimatedStopButton
+import 'package:meddymobile/widgets/animated_stop_button.dart';
 import 'dart:async';
 import 'package:uuid/uuid.dart';
 import 'package:meddymobile/widgets/backnav_app_bar.dart';
@@ -75,10 +75,7 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  // adds new message to chat history, only called once per message
   void _addMessageToChatHistory(String source, String text, String reqId) {
-    print(reqId);
-    print(source + ":  " + text);
     setState(() {
       _buildingMessage = true;
       _chatHistory.add(Message(
@@ -119,7 +116,6 @@ class _ChatPageState extends State<ChatPage> {
       try {
         _addMessageToChatHistory(
             "user", _textEditingController.text, reqId + "_user");
-        print(_textEditingController.text);
         ws.sendMessage({
           'type': 'chat',
           'data': {'text': _textEditingController.text, 'reqId': reqId},
@@ -179,14 +175,6 @@ class _ChatPageState extends State<ChatPage> {
     _scrollToBottom();
   }
 
-  void _finishMessageGeneration() {
-    setState(() {
-      _buildingMessage = false;
-      _currentMessageChunk = "";
-      _isGenerating = false;
-    });
-  }
-
   void _stopGenerationVisually() {
     _completionTimer?.cancel();
     setState(() {
@@ -196,7 +184,7 @@ class _ChatPageState extends State<ChatPage> {
 
   void _toggleAudio() async {
     _isRecording = await _recorderService.toggleRecording();
-    if (_isRecording) {
+    if (!_isRecording) {
       _playerService.playQueuedAudio();
     } else {
       _playerService.stopPlayback();
@@ -220,14 +208,13 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: BacknavAppBar(),
-      body: Stack(
-        alignment: Alignment.bottomCenter,
+      // appBar: BacknavAppBar(),
+      body: Column(
         children: [
-          Column(
-            children: [
-              Expanded(
-                child: _isLoading
+          Expanded(
+            child: Stack(
+              children: [
+                _isLoading
                     ? Center(child: CircularProgressIndicator())
                     : ListView.builder(
                         controller: _scrollController,
@@ -240,20 +227,13 @@ class _ChatPageState extends State<ChatPage> {
                                 ? Alignment.centerRight
                                 : Alignment.centerLeft,
                             child: Padding(
-                              padding: /*  isUser
-                                  ? EdgeInsets.only(right: 10)
-                                  : EdgeInsets.only(left: 10), */
-                                  EdgeInsets.symmetric(horizontal: 10),
+                              padding: EdgeInsets.symmetric(horizontal: 10),
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: isUser
                                       ? Color.fromRGBO(255, 254, 251, 1)
                                       : Color.fromRGBO(255, 242, 228, 1),
                                   borderRadius: BorderRadius.circular(20),
-                                  /* border: Border.all(
-                                      width: 1,
-                                      color: Color.fromRGBO(255, 184, 76, 1),
-                                    ) */
                                 ),
                                 padding: EdgeInsets.symmetric(
                                     vertical: 10.0, horizontal: 15.0),
@@ -265,87 +245,76 @@ class _ChatPageState extends State<ChatPage> {
                           );
                         },
                       ),
-              ),
-              /* if (_isGenerating)
-                AnimatedStopButton(
-                  onPressed: _stopGenerationVisually,
-                ), */
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-              ),
-              Container(
-                margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 16),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 8),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: Colors.black)),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: _textEditingController,
-                                  decoration: InputDecoration(
-                                    hintText: 'Type your message...',
-                                    border: InputBorder.none,
-                                  ),
-                                  keyboardType: TextInputType.text,
-                                  //added on submit
-                                  onSubmitted: (text) {
-                                    if (text.isNotEmpty) {
-                                      _sendMessage();
-                                    }
-                                  },
-                                ),
-                              ),
-                              InkWell(
-                                onTap: (_isTyping && !_isRecording)
-                                    ? _sendMessage
-                                    : _toggleAudio,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Icon(
-                                    _isRecording
-                                        ? Icons.stop
-                                        : (_isTyping
-                                            ? Icons.arrow_forward_ios_rounded
-                                            : Icons.mic_rounded),
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                ),
-                              ),
-                            ],
+                if (_isGenerating)
+                  Positioned(
+                    left: 16,
+                    bottom: 16,
+                    child: AnimatedStopButton(
+                      onPressed: _stopGenerationVisually,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.black),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _textEditingController,
+                            decoration: InputDecoration(
+                              hintText: 'Type your message...',
+                              border: InputBorder.none,
+                            ),
+                            keyboardType: TextInputType.text,
+                            onSubmitted: (text) {
+                              if (text.isNotEmpty) {
+                                _sendMessage();
+                              }
+                            },
                           ),
                         ),
-                      ),
+                        IconButton(
+                          icon: Icon(Icons.image),
+                          color: Theme.of(context).primaryColor,
+                          onPressed: () {
+                            // Handle image button press
+                          },
+                        ),
+                        InkWell(
+                          onTap: (_isTyping && !_isRecording)
+                              ? _sendMessage
+                              : _toggleAudio,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Icon(
+                              _isRecording
+                                  ? Icons.stop
+                                  : (_isTyping
+                                      ? Icons.arrow_forward_ios_rounded
+                                      : Icons.mic_rounded),
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    IconButton(
-                      icon: Icon(Icons.image),
-                      color: Theme.of(context).primaryColor,
-                      onPressed: () {
-                        // Handle image button press
-                      },
-                    ),
-                  ],
+                  ),
                 ),
-              )
-            ],
-          ),
-          if (_isGenerating)
-            Positioned(
-              bottom: 100,
-              left: 80,
-              child: AnimatedStopButton(
-                onPressed: _stopGenerationVisually,
-              ),
+              ],
             ),
+          ),
         ],
       ),
     );
