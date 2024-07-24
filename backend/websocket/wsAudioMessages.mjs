@@ -137,6 +137,7 @@ export async function useTranscription(ws, req) {
 	const user = req.user;
 	try {
 		const chatHistory = await db.getRecentMessagesByUserId(user.userid, 100);
+		console.log(chatHistory);
 		chatHistory.push({ source: "user", text });
 		const stream = await chatStreamProvider(chatHistory, user);
 
