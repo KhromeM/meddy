@@ -54,9 +54,9 @@ export function LandingPage(): JSX.Element {
                 <Button radius="xl" size="md" className={classes.control}>
                   Get started
                 </Button>
-                <Button variant="default" radius="xl" size="md" className={classes.control}>
+                {/* <Button variant="default" radius="xl" size="md" className={classes.control}>
                   Source code
-                </Button>
+                </Button> */}
               </Group>
             </div>
             <img className={classes.heroImage2} src={DoctorImage} alt="Doctor" />

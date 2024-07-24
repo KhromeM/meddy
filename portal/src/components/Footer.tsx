@@ -3,19 +3,19 @@ import classes from './Footer.module.css';
 
 export function Footer(): JSX.Element {
   return (
-    <footer className={classes.footer}>
+    <footer className={classes.footer} style={{backgroundColor:'#FEF9EF'}}>
       <div className={classes.inner}>
         <Container p="xl">
           <Stack gap="xl">
             <SimpleGrid cols={4}>
-              <Anchor href="https://www.medplum.com/docs/tutorials/api-basics/create-fhir-data">Getting started</Anchor>
-              <Anchor href="https://www.medplum.com/docs/tutorials">Playing with Medplum</Anchor>
-              <Anchor href="https://github.com/medplum/foomedical">Open Source</Anchor>
-              <Anchor href="https://www.medplum.com/docs">Documentation</Anchor>
+              <Anchor>Getting started</Anchor>
+              {/* <Anchor>Playing with Medplum</Anchor> */}
+              <Anchor>Open Source</Anchor>
+              <Anchor>Documentation</Anchor>
             </SimpleGrid>
             <Divider />
             <Text c="dimmed" size="sm">
-              &copy; {new Date().getFullYear()} Foo Medical, Inc. All rights reserved.
+              &copy; {new Date().getFullYear()} Meddy, Inc. All rights reserved.
             </Text>
           </Stack>
         </Container>
