@@ -13,7 +13,12 @@ class ChatService {
         "idToken": "dev",
       });
       List<dynamic> chatHistory = jsonDecode(response.body)['chatHistory'];
-      return chatHistory.map((message) => Message.fromJson(message)).toList();
+      print("Parsing messages..");
+      var messages =
+          chatHistory.map((message) => Message.fromJson(message)).toList();
+      print("MESSAGES: ");
+      print(messages);
+      return messages;
     } catch (e) {
       print(e.toString());
       return List.empty();

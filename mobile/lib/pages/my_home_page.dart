@@ -13,39 +13,46 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<String> texts = [
-    'Text 1',
-    'Text 2',
-    'Text 3',
-    'Text 4',
-    'Text 5',
-    'Text 6',
-    'Text 7',
-    'Text 8',
+    'How does sunlight improve my mental health?',
+    // 'How can I fix my circadian rhythm?',
+    'What are the best foods to eat for heart health?',
+    // 'Can you explain the symptoms of diabetes?',
+    // 'How often should I exercise for optimal health?',
+    // 'What are natural remedies for reducing anxiety?',
+    'How can I improve my sleep quality?',
+    // 'What are the early signs of vitamin D deficiency?',
+    'How does stress affect the immune system?',
+    "What's the recommended daily water intake?",
+    // 'Are there any exercises to relieve lower back pain?',
+    // 'How can I naturally lower my blood pressure?',
+    'What are common causes of frequent headaches?',
+    'Can you suggest ways to boost my energy levels?',
+    'How does meditation impact overall health?',
   ];
 
   // use temporary assets locally or comment out
-  final List<String> images = [
-    'assets/image1.jpg',
-    'assets/image2.jpg',
-    'assets/image3.jpg',
-    'assets/image4.jpg',
-    'assets/image5.jpg',
-    'assets/image6.jpg',
-    'assets/image7.jpg',
-    'assets/image8.jpg',
-    'assets/image9.jpg',
-    'assets/image10.jpg',
-    'assets/image11.jpg',
-    'assets/image12.jpg',
-    'assets/image13.jpg',
-    'assets/image14.jpg',
-    'assets/image15.jpg',
-    'assets/image16.jpg',
-    'assets/image17.jpg',
-    'assets/image18.jpg',
-    'assets/image19.jpg',
-    'assets/image20.jpg'
-  ];
+  // final List<String> images = [
+  //   'assets/image1.jpg',
+  //   'assets/image2.jpg',
+  //   'assets/image3.jpg',
+  //   'assets/image4.jpg',
+  //   'assets/image5.jpg',
+  //   'assets/image6.jpg',
+  //   'assets/image7.jpg',
+  //   'assets/image8.jpg',
+  //   'assets/image9.jpg',
+  //   'assets/image10.jpg',
+  //   'assets/image11.jpg',
+  //   'assets/image12.jpg',
+  //   'assets/image13.jpg',
+  //   'assets/image14.jpg',
+  //   'assets/image15.jpg',
+  //   'assets/image16.jpg',
+  //   'assets/image17.jpg',
+  //   'assets/image18.jpg',
+  //   'assets/image19.jpg',
+  //   'assets/image20.jpg'
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +89,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               SizedBox(height: 20),
               // add images here or comment out next line if working on android emu
-              Boxes(texts: texts, images: images),
+              Boxes(
+                texts: texts,
+              ), // images: null),
               SizedBox(height: 100),
             ],
           ),
