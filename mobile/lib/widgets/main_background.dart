@@ -113,18 +113,6 @@ class MainBackground extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 838,
-            left: 130,
-            child: Container(
-              width: 134,
-              height: 5,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100),
-                color: Color.fromRGBO(0, 0, 0, 1),
-              ),
-            ),
-          ),
-          Positioned(
             top: 0,
             left: 0,
             child: SizedBox.shrink(),

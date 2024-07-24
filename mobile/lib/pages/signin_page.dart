@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meddymobile/services/auth_service.dart';
 import 'package:meddymobile/widgets/login_background.dart';
+import 'package:meddymobile/pages/my_home_page.dart';
 
 class SignInPage extends ConsumerStatefulWidget {
   const SignInPage({super.key});
@@ -26,10 +27,19 @@ class _SignInState extends ConsumerState<SignInPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Spacer(flex: 1),
-                  // Display your logo
+                  SizedBox(height: 200),
+                  // Logo
+                  Text(
+                    "Meddy",
+                    style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromRGBO(75, 87, 104, 1.0),
+                    ),
+                  ),
+                  SizedBox(height: 200),
                   _isLoading
-                      ? CircularProgressIndicator() // Show a loading indicator
+                      ? CircularProgressIndicator()
                       : GestureDetector(
                           onTap: () async {
                             // Handle Google sign-in
@@ -38,6 +48,13 @@ class _SignInState extends ConsumerState<SignInPage> {
                             });
                             try {
                               await _authService.signInWithGoogle();
+                              if (mounted) {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const MyHomePage()),
+                                );
+                              }
                             } catch (e) {
                               if (!mounted) return;
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -50,18 +67,15 @@ class _SignInState extends ConsumerState<SignInPage> {
                             }
                           },
                           child: Container(
-                            width: 300,
+                            width: 350,
                             height: 56,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Colors.transparent,
                               borderRadius: BorderRadius.circular(30),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 5,
-                                  offset: Offset(0, 3),
-                                ),
-                              ],
+                              border: Border.all(
+                                color: Color.fromRGBO(255, 184, 76, 1),
+                                width: 4,
+                              ),
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -76,7 +90,7 @@ class _SignInState extends ConsumerState<SignInPage> {
                                   "Continue with Google",
                                   style: TextStyle(
                                     color: Color.fromRGBO(75, 87, 104, 1.0),
-                                    fontSize: 16,
+                                    fontSize: 20,
                                   ),
                                 ),
                               ],
@@ -84,7 +98,6 @@ class _SignInState extends ConsumerState<SignInPage> {
                           ),
                         ),
                   SizedBox(height: 40),
-                  // Display the sign-up text
                   const Spacer(flex: 1),
                 ],
               ),
