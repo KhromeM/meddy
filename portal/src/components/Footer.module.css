@@ -1,9 +1,9 @@
 .footer {
-  background: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8));
+  background: #FEF9EF;
 }
 
 .inner {
-  background: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8));
+  background: #FEF9EF; 
   border-top: 1px solid var(--mantine-color-gray-2);
   padding: var(--mantine-spacing-xl);
   text-align: center;
