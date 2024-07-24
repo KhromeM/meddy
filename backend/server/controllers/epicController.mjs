@@ -47,7 +47,7 @@ export const getEpicPatient = async (medplum, epicPatientId) => {
 	if (!patient) throw new Error(`Failed to find the given Epic patient ID: ${epicPatientId}`);
 
 	// Create resource for Epic patient in local Medplum repository
-	await medplum.createResourceIfNoneExist(patient, `identifier=${epicPatientId}`);
+	await medplum.createResourceIfNoneExist(patient.entry[0].resource, `identifier=${epicPatientId}`);
 
 	return epicClient;
 };

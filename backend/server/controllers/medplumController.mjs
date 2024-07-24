@@ -41,6 +41,7 @@ async function retrieveResources(client, medplum, patientId, medplumPatient, res
 		const resources = await client.search(resourceType, `patient=${patientId}`);
 		for (const entry of resources.entry) {
 			const resource = entry.resource;
+			if (!resource.identifier) continue;
 			resource.subject = createReference(medplumPatient[0]);
 			await medplum.createResourceIfNoneExist(resource, `identifier=${resource.identifier[0].value}`);
 		}
