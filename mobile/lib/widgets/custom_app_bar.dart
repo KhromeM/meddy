@@ -8,6 +8,42 @@ import 'package:meddymobile/pages/profile_page.dart';
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double appBarHeight = 56.0;
 
+  Future _showBottomSheet(BuildContext context){
+    return showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white, 
+      builder: (context)=> SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: 500,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ElevatedButton(
+                onPressed: () { 
+                  Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+              );
+            },
+            child: Text('Reminders'),
+          ),
+              ElevatedButton(
+              onPressed: () {
+                //TODO: make health/research page
+              },
+            child: Text('Your health'),
+          ),
+          // You can add more widgets here if needed
+        ],
+      ),
+      ),
+    ));
+  }
+
+
+  
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -15,10 +51,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       leading: InkWell(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const ProfilePage()),
-          );
+          _showBottomSheet(context);
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const ProfilePage()),
+          // );
         },
         child: Padding(
           padding: const EdgeInsets.only(left: 10),
@@ -28,7 +65,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               Icon(
                 Icons.circle,
                 size: 60,
-                color: Colors.black,
+                color: Colors.brown,
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 14, top: 3),
@@ -37,6 +74,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   size: 20,
                   color: Colors.white,
                 ),
+                
               )
             ],
           ),
