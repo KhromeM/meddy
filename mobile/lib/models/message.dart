@@ -1,5 +1,3 @@
-import 'dart:js_interop';
-
 class Message {
   final String messageId;
   final String userId;
