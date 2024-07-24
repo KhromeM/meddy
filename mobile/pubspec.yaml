@@ -45,7 +45,6 @@ dependencies:
   uuid: ^4.4.2
   flutter_staggered_grid_view: ^0.7.0
   flutter_markdown: ^0.7.3
-  jumping_dot: ^0.0.7
   font_awesome_flutter: ^10.7.0
 
 dev_dependencies:

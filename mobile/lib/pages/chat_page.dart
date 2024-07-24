@@ -220,12 +220,9 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-
       appBar: BacknavAppBar(),
-//       body: Stack(
-//         alignment: Alignment.bottomCenter,
+      body: Stack(
+        alignment: Alignment.bottomCenter,
         children: [
           Column(
             children: [
@@ -327,31 +324,7 @@ class _ChatPageState extends State<ChatPage> {
                             ],
                           ),
                         ),
-                      );
-                    },
-                  ),
-          ),
-          if (_isGenerating)
-            Padding(
-              padding: const EdgeInsets.only(left: 12),
-              child: AnimatedStopButton(
-                onPressed: _stopGenerationVisually,
-              ),
-            ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-          ),
-          Container(
-            margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _textEditingController,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                      hintText: 'Type your message...',
-                      border: InputBorder.none,
+                      ),
                     ),
                     IconButton(
                       icon: Icon(Icons.image),
