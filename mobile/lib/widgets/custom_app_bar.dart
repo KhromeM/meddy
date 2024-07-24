@@ -6,9 +6,33 @@ import 'package:meddymobile/utils/app_colors.dart';
 import 'package:meddymobile/services/auth_service.dart';
 import 'package:meddymobile/pages/signin_page.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final double appBarHeight = 56.0;
-  final AuthService _authService = AuthService(); // Initialize AuthService
+class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
+  @override
+  _CustomAppBarState createState() => _CustomAppBarState();
+
+  @override
+  Size get preferredSize => Size.fromHeight(56.0);
+}
+
+class _CustomAppBarState extends State<CustomAppBar> {
+  final AuthService _authService = AuthService();
+  String _firstName = 'User';
+  String? _profileImageUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    final firstName = _authService.getFirstName();
+    final profileImageUrl = _authService.getProfileImageUrl();
+    setState(() {
+      _firstName = firstName ?? 'User';
+      _profileImageUrl = profileImageUrl;
+    });
+  }
 
   Future<void> _logout(BuildContext context) async {
     try {
@@ -27,34 +51,44 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
-      isScrollControlled: true, // Allows you to control the height
+      isScrollControlled: true,
       builder: (context) => Container(
-        height: MediaQuery.of(context).size.height *
-            0.90, // Set height to 90% of the screen
+        height: MediaQuery.of(context).size.height * 0.75,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildButton(
-                'Reminders',
-                () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ProfilePage()),
-                  );
-                },
-              ),
+              _buildGreetingText(),
               SizedBox(height: 20),
-              _buildButton(
-                'Your Health',
-                () {
-                  //TODO: nav to health page
-                },
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: _buildSquareButton(
+                      'Reminders',
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ProfilePage()),
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(width: 20),
+                  Expanded(
+                    child: _buildSquareButton(
+                      'Health',
+                      () {
+                        // TODO: Navigate to health page
+                      },
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(height: 20),
-              _buildLogoutButton(context), // Add logout button here
+              Spacer(),
+              _buildLogoutButton(context),
             ],
           ),
         ),
@@ -62,26 +96,59 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  Widget _buildButton(String text, VoidCallback onPressed) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: lightPurple,
-          foregroundColor: Colors.black,
-          padding: EdgeInsets.symmetric(vertical: 20),
-          alignment: Alignment.centerLeft,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          elevation: 0,
+  Widget _buildGreetingText() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Hi, $_firstName',
+              style: TextStyle(
+                fontSize: 36,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'How may I assist you today?',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.grey[600],
+              ),
+            ),
+          ],
         ),
+        if (_profileImageUrl != null)
+          CircleAvatar(
+            radius: 30,
+            backgroundImage: NetworkImage(_profileImageUrl!),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildSquareButton(String text, VoidCallback onPressed) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: lightPurple,
+        foregroundColor: Colors.black,
+        padding: EdgeInsets.only(top: 130),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(25),
+        ),
+        elevation: 0,
+      ),
+      child: Align(
+        alignment: Alignment.bottomLeft,
         child: Padding(
-          padding: EdgeInsets.only(left: 16),
+          padding: const EdgeInsets.fromLTRB(
+              15, 8.0, 8.0, 10), // Increase the bottom padding
           child: Text(
             text,
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
           ),
         ),
       ),
@@ -91,27 +158,29 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget _buildLogoutButton(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () => _logout(context),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.red,
-          foregroundColor: Colors.white,
-          padding: EdgeInsets.symmetric(vertical: 20),
-          alignment: Alignment.centerLeft,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-            side: BorderSide(
-              color: Colors.black,
-              width: 3,
-            ), // Black border
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: ElevatedButton(
+          onPressed: () => _logout(context),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+            padding: EdgeInsets.symmetric(vertical: 20),
+            alignment: Alignment.centerLeft,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(
+                color: Colors.black,
+                width: 3,
+              ),
+            ),
+            elevation: 0,
           ),
-          elevation: 0,
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(left: 16),
-          child: Text(
-            'Logout',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+          child: Center(
+            child: Text(
+              'Logout',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+            ),
           ),
         ),
       ),
@@ -182,7 +251,4 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ],
     );
   }
-
-  @override
-  Size get preferredSize => Size.fromHeight(appBarHeight);
 }
