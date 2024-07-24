@@ -29,7 +29,7 @@ export async function handleAudioMessage(state, data) {
 		};
 	}
 	const req = state.requests[reqId];
-	console.log("partial transcript: ", req.partialTranscript, reqId);
+	// console.log("partial transcript: ", req.partialTranscript, reqId);
 	// handlePartialResponse(state.clientSocket, req); // send audio response based on partial transcription to reduce latency
 
 	if (req.partialTranscript.length === 0) {
@@ -42,6 +42,7 @@ export async function handleAudioMessage(state, data) {
 		// Logging
 		req.logs.lastAudioChunkFromClient = Date.now();
 		clearTimeout(state.STTTimeout);
+		console.log();
 		state.STTSocket.requestClose();
 	}
 	if (!audioChunk) return;
@@ -91,7 +92,7 @@ export async function handleAudioMessage(state, data) {
 			});
 			state.STTTimeout = setTimeout(() => {
 				state.STTSocket.requestClose();
-			}, 30000);
+			}, 300000);
 		} catch (error) {
 			console.error("Error creating Deepgram socket:", error);
 			state.clientSocket.send(
@@ -116,9 +117,11 @@ export async function handleAudioMessage(state, data) {
 	}
 	clearTimeout(state.STTTimeout);
 	state.STTTimeout = setTimeout(() => {
-		// console.log("Audio stream timeout. Closing Deepgram connection.");
+		console.log(
+			"Audio stream timeout. Closing Deepgram connection.".toUpperCase()
+		);
 		state.STTSocket.requestClose();
-	}, 30000); // reset timeout clock
+	}, 300000); // reset timeout clock
 
 	try {
 		let audioBuffer = Buffer.from(audioChunk, "base64");

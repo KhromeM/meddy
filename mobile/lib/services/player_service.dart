@@ -1,5 +1,3 @@
-// lib/services/audio_player_service.dart
-
 import 'dart:async';
 import 'dart:convert';
 import 'package:just_audio/just_audio.dart';
@@ -115,3 +113,68 @@ class MyCustomSource extends StreamAudioSource {
     );
   }
 }
+
+// import 'dart:async';
+// import 'dart:convert';
+// import 'package:just_audio/just_audio.dart';
+// import 'package:meddymobile/utils/ws_connection.dart';
+// import 'package:async/async.dart'; // for StreamQueue
+
+// class PlayerService {
+//   final WSConnection _wsConnection;
+//   final AudioPlayer _audioPlayer = AudioPlayer();
+//   final _audioStreamController = StreamController<List<int>>();
+//   late final _audioBuffer =
+//       StreamQueue<List<int>>(_audioStreamController.stream);
+
+//   PlayerService(this._wsConnection) {
+//     _wsConnection.setHandler('audio_3', _handleAudioMessage);
+//   }
+
+//   void _handleAudioMessage(Map<String, dynamic> message) {
+//     if (message['audio'] != null) {
+//       final audioData = base64Decode(message['audio']);
+//       _audioStreamController.add(audioData);
+//     }
+//   }
+
+//   void playQueuedAudio() async {
+//     await _audioPlayer.setAudioSource(
+//       _AudioBufferSource(_audioBuffer),
+//       initialIndex: 0,
+//       initialPosition: Duration.zero,
+//     );
+//     await _audioPlayer.play();
+//   }
+
+//   Future<void> stopPlayback() async {
+//     await _audioPlayer.stop();
+//     _audioStreamController.close();
+//   }
+
+//   Future<void> dispose() async {
+//     await _audioPlayer.dispose();
+//   }
+// }
+
+// class _AudioBufferSource extends StreamAudioSource {
+//   final StreamQueue<List<int>> _audioBuffer;
+
+//   _AudioBufferSource(this._audioBuffer);
+
+//   @override
+//   Future<StreamAudioResponse> request([int? start, int? end]) async {
+//     final audioData = await _audioBuffer.next;
+
+//     final chunkSize = audioData.length;
+//     final chunk = audioData;
+
+//     return StreamAudioResponse(
+//       sourceLength: chunkSize,
+//       contentLength: chunkSize,
+//       offset: 0,
+//       stream: Stream.value(chunk),
+//       contentType: 'audio/mp3',
+//     );
+//   }
+// }
