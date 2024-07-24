@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meddymobile/services/auth_service.dart';
 import 'package:meddymobile/widgets/login_background.dart';
 import 'package:meddymobile/pages/my_home_page.dart';
@@ -39,26 +40,42 @@ class _SignInState extends ConsumerState<SignInPage> {
                   ),
                   SizedBox(height: 200),
                   _isLoading
-                      ? CircularProgressIndicator()
+                      ? CircularProgressIndicator() // TODO: animate our logo as loading
                       : GestureDetector(
                           onTap: () async {
                             // Handle Google sign-in
                             setState(() {
                               _isLoading = true; // Set loading state to true
                             });
+
                             try {
-                              await _authService.signInWithGoogle();
-                              if (mounted) {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const MyHomePage()),
-                                );
+                              User? user =
+                                  await _authService.signInWithGoogle();
+                              if (user != null) {
+                                if (mounted) {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const MyHomePage(),
+                                    ),
+                                  );
+                                }
+                              } else {
+                                // Sign-in failed
+                                if (mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            "Sign-in failed. Please try again.")),
+                                  );
+                                }
                               }
                             } catch (e) {
-                              if (!mounted) return;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(e.toString())));
+                              if (mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(e.toString())),
+                                );
+                              }
                             } finally {
                               setState(() {
                                 _isLoading =
