@@ -202,6 +202,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             child: _isLoading
@@ -221,8 +222,11 @@ class _ChatPageState extends State<ChatPage> {
                   ),
           ),
           if (_isGenerating)
-            AnimatedStopButton(
-              onPressed: _stopGenerationVisually,
+            Padding(
+              padding: const EdgeInsets.only(left: 12),
+              child: AnimatedStopButton(
+                onPressed: _stopGenerationVisually,
+              ),
             ),
           Padding(
             padding: const EdgeInsets.all(8.0),
