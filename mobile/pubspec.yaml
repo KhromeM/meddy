@@ -49,6 +49,7 @@ dependencies:
   intl: ^0.17.0
   percent_indicator: ^4.2.3
   rive: ^0.13.9
+  jumping_dot: ^0.0.7
 
 dev_dependencies:
   flutter_test:
