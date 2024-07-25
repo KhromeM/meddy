@@ -8,7 +8,6 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:meddymobile/widgets/animated_stop_button.dart';
 import 'dart:async';
 import 'package:uuid/uuid.dart';
-import 'package:meddymobile/widgets/backnav_app_bar.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
