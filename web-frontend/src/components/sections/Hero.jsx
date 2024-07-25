@@ -95,7 +95,7 @@ export const Hero = ({ login }) => {
 				</Text>
 				<HStack spacing={4}>
 					<Button
-						leftIcon={
+						rightIcon={
 							<Image
 								src="/assets/svg.svg"
 								boxSize="1.5rem"
