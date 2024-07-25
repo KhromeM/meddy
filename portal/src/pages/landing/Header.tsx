@@ -34,11 +34,11 @@ import { Logo } from '../../components/Logo';
 import classes from './Header.module.css';
 
 const mockdata = [
-  {
-    icon: IconCode,
-    title: 'Open source',
-    description: 'This Pokémon’s cry is very loud and distracting',
-  },
+  // {
+  //   icon: IconCode,
+  //   title: 'Open source',
+  //   description: 'This Pokémon’s cry is very loud and distracting',
+  // },
   {
     icon: IconCoin,
     title: 'Free for everyone',
@@ -59,11 +59,11 @@ const mockdata = [
     title: 'Analytics',
     description: 'This Pokémon uses its flying ability to quickly chase',
   },
-  {
-    icon: IconNotification,
-    title: 'Notifications',
-    description: 'Combusken battles with the intensely hot flames it spews',
-  },
+  // {
+  //   icon: IconNotification,
+  //   title: 'Notifications',
+  //   description: 'Combusken battles with the intensely hot flames it spews',
+  // },
 ];
 
 export function Header(): JSX.Element {
@@ -92,14 +92,14 @@ export function Header(): JSX.Element {
 
   return (
     <>
-      <AppShell.Header px="md">
+      <AppShell.Header px="md" style={{ backgroundColor: '#FEF9EF' }}>
         <Container h="100%">
           <Group justify="space-between" h="100%">
             <UnstyledButton className={classes.logoButton} onClick={() => navigate('/')}>
               <Logo width={240} />
             </UnstyledButton>
 
-            <Group style={{ height: '100%' }} gap={0} className={classes.hiddenMobile}>
+        <Group style={{ height: '100%' }} gap={0} className={classes.hiddenMobile}>
               <HoverCard width={600} position="bottom" radius="md" shadow="md" withinPortal>
                 <HoverCard.Target>
                   <a href="#" className={classes.link}>
@@ -144,13 +144,13 @@ export function Header(): JSX.Element {
               <a href="#" className={classes.link}>
                 Counseling
               </a>
-              <a href="#" className={classes.link}>
+              {/* <a href="#" className={classes.link}>
                 Physicians
               </a>
               <a href="#" className={classes.link}>
                 More
-              </a>
-            </Group>
+              </a> */}
+            </Group>  
 
             <Group className={classes.hiddenMobile}>
               <Button variant="default" onClick={() => navigate('/signin')}>

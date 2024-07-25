@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meddymobile/services/auth_service.dart';
 import 'package:meddymobile/widgets/login_background.dart';
 import 'package:meddymobile/widgets/spinning_logo.dart';
+import 'package:meddymobile/pages/my_home_page.dart';
 
 class SignInPage extends ConsumerStatefulWidget {
   const SignInPage({super.key});
@@ -34,7 +36,8 @@ class _SignInState extends ConsumerState<SignInPage> {
                     style: TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.bold,
-                      color: Color.fromRGBO(75, 87, 104, 1.0),
+                      color:
+                          Color.fromRGBO(75, 87, 104, 1.0),
                     ),
                   ),
                   SizedBox(height: 200),
@@ -49,14 +52,46 @@ class _SignInState extends ConsumerState<SignInPage> {
                           onTap: () async {
                             // Handle Google sign-in
                             setState(() {
-                              _isLoading = true; // Set loading state to true
+                              _isLoading =
+                                  true; // Set loading state to true
                             });
+
                             try {
-                              await _authService.signInWithGoogle();
+                              User? user =
+                                  await _authService
+                                      .signInWithGoogle();
+                              if (user != null) {
+                                if (mounted) {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const MyHomePage(),
+                                    ),
+                                  );
+                                }
+                              } else {
+                                // Sign-in failed
+                                if (mounted) {
+                                  ScaffoldMessenger.of(
+                                          context)
+                                      .showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            "Sign-in failed. Please try again.")),
+                                  );
+                                }
+                              }
                             } catch (e) {
-                              if (!mounted) return;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(e.toString())));
+                              if (mounted) {
+                                ScaffoldMessenger.of(
+                                        context)
+                                    .showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          e.toString())),
+                                );
+                              }
                             } finally {
                               setState(() {
                                 _isLoading =
@@ -69,22 +104,18 @@ class _SignInState extends ConsumerState<SignInPage> {
                             height: 56,
                             decoration: BoxDecoration(
                               color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(30),
+                              borderRadius:
+                                  BorderRadius.circular(30),
                               border: Border.all(
-                                color: Color.fromRGBO(255, 184, 76, 1),
+                                color: Color.fromRGBO(
+                                    255, 184, 76, 1),
                                 width: 4,
                               ),
                             ),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment:
+                                  MainAxisAlignment.center,
                               children: [
-                                // Future implementation of logo image
-                                // Image.asset(
-                                //   'path_to_logo_asset',
-                                //   height: 24,
-                                //   width: 24,
-                                // ),
-                                // SizedBox(width: 12),
                                 Image.asset(
                                   'assets/images/google_signin_button.png', // Replace with the path to your Google logo asset
                                   height: 24,
@@ -94,7 +125,8 @@ class _SignInState extends ConsumerState<SignInPage> {
                                 Text(
                                   "Continue with Google",
                                   style: TextStyle(
-                                    color: Color.fromRGBO(75, 87, 104, 1.0),
+                                    color: Color.fromRGBO(
+                                        75, 87, 104, 1.0),
                                     fontSize: 20,
                                   ),
                                 ),
@@ -103,7 +135,6 @@ class _SignInState extends ConsumerState<SignInPage> {
                           ),
                         ),
                   SizedBox(height: 40),
-                  // Display the sign-up text
                   const Spacer(flex: 1),
                 ],
               ),

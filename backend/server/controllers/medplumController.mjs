@@ -1,7 +1,11 @@
 import fs from "fs";
 import { MedplumClient } from "@medplum/core";
 const medplum = new MedplumClient();
-await medplum.startClientLogin(process.env.MEDPLUM_CLIENT_ID, process.env.MEDPLUM_CLIENT_SECRET);
+import CONFIG from "../../config.mjs";
+await medplum.startClientLogin(
+	CONFIG.MEDPLUM_CLIENT_ID,
+	CONFIG.MEDPLUM_CLIENT_SECRET
+);
 
 export const getPatientDetails = async (req, res) => {
 	try {
@@ -22,7 +26,10 @@ export const getPatientDetails = async (req, res) => {
 		res.status(200).json(parsedInfo);
 	} catch (err) {
 		console.error("Error fetching patient details from Medplum:", err);
-		res.status(500).json({ status: "fail", message: "Failed to fetch patient details from Medplum" });
+		res.status(500).json({
+			status: "fail",
+			message: "Failed to fetch patient details from Medplum",
+		});
 	}
 };
 
@@ -36,7 +43,11 @@ function parsePatientInfo(patientInfo) {
 		const resourceType = resource.resourceType;
 
 		// Skip CareTeam, DiagnosticReport, Media, and Provenance resources
-		if (["CareTeam", "DiagnosticReport", "Media", "Provenance"].includes(resourceType)) {
+		if (
+			["CareTeam", "DiagnosticReport", "Media", "Provenance"].includes(
+				resourceType
+			)
+		) {
 			return;
 		}
 
@@ -67,7 +78,8 @@ function parsePatientInfo(patientInfo) {
 		// Process resource-specific fields
 		switch (resourceType) {
 			case "Patient":
-				processedResource.name = resource.name[0].given.join(" ") + " " + resource.name[0].family;
+				processedResource.name =
+					resource.name[0].given.join(" ") + " " + resource.name[0].family;
 				processedResource.gender = resource.gender;
 				processedResource.birthDate = resource.birthDate;
 				processedResource.address =
@@ -81,7 +93,9 @@ function parsePatientInfo(patientInfo) {
 				if (resource.extension) {
 					resource.extension.forEach((ext) => {
 						if (ext.url.includes("us-core-race")) {
-							processedResource.race = ext.extension.find((e) => e.url === "text").valueString;
+							processedResource.race = ext.extension.find(
+								(e) => e.url === "text"
+							).valueString;
 						} else if (ext.url.includes("us-core-ethnicity")) {
 							processedResource.ethnicity = ext.extension.find(
 								(e) => e.url === "text"
@@ -93,9 +107,11 @@ function parsePatientInfo(patientInfo) {
 				}
 				break;
 			case "RelatedPerson":
-				processedResource.name = resource.name[0].given.join(" ") + " " + resource.name[0].family;
+				processedResource.name =
+					resource.name[0].given.join(" ") + " " + resource.name[0].family;
 				if (resource.relationship && resource.relationship.length > 0) {
-					processedResource.relation = resource.relationship[0].coding[0].display;
+					processedResource.relation =
+						resource.relationship[0].coding[0].display;
 				}
 				break;
 			case "Observation":
@@ -118,7 +134,8 @@ function parsePatientInfo(patientInfo) {
 			case "Condition":
 				processedResource.onsetDate = resource.onsetDateTime;
 				processedResource.abatementDate = resource.abatementDateTime;
-				processedResource.clinicalStatus = resource.clinicalStatus.coding[0].code;
+				processedResource.clinicalStatus =
+					resource.clinicalStatus.coding[0].code;
 				break;
 			case "Encounter":
 				processedResource.class = resource.class.code;
@@ -138,7 +155,8 @@ function parsePatientInfo(patientInfo) {
 				processedResource.status = resource.status;
 				processedResource.intent = resource.intent;
 				if (resource.medicationReference) {
-					processedResource.medicationId = resource.medicationReference.reference.split("/")[1];
+					processedResource.medicationId =
+						resource.medicationReference.reference.split("/")[1];
 				}
 				if (resource.requester) {
 					processedResource.prescribingDoctor = resource.requester.display;
@@ -163,13 +181,16 @@ function parsePatientInfo(patientInfo) {
 					}));
 				}
 				if (resource.addresses) {
-					processedResource.addresses = resource.addresses.map((addr) => addr.reference);
+					processedResource.addresses = resource.addresses.map(
+						(addr) => addr.reference
+					);
 				}
 				break;
 		}
 
 		if (resource.location) {
-			processedResource.location = resource.location.display || resource.location[0].location.display;
+			processedResource.location =
+				resource.location.display || resource.location[0].location.display;
 		}
 
 		result.resourceTypes[resourceType].push(processedResource);
