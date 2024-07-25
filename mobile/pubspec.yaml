@@ -48,6 +48,7 @@ dependencies:
   font_awesome_flutter: ^10.7.0
   intl: ^0.17.0
   percent_indicator: ^4.2.3
+  rive: ^0.13.9
   jumping_dot: ^0.0.7
 
 dev_dependencies:
@@ -65,6 +66,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/animations/
   fonts:
     - family: Nunito
       fonts:
