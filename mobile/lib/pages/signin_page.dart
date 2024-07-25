@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meddymobile/services/auth_service.dart';
 import 'package:meddymobile/widgets/login_background.dart';
+import 'package:meddymobile/widgets/spinning_logo.dart';
 
 class SignInPage extends ConsumerStatefulWidget {
   const SignInPage({super.key});
@@ -38,7 +39,12 @@ class _SignInState extends ConsumerState<SignInPage> {
                   ),
                   SizedBox(height: 200),
                   _isLoading
-                      ? CircularProgressIndicator() // TODO: animate our logo as loading
+                      ? SpinningLogo(
+                          initialSpeed: 1.0,
+                          height: 100,
+                          width: 100,
+                          isVary: true,
+                        )
                       : GestureDetector(
                           onTap: () async {
                             // Handle Google sign-in
