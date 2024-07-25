@@ -27,8 +27,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 let defaultModel = CONFIG.TEST
-	? vertexAIModel
-	: vertexAIModel || anthropicModel || vertexAIModel || openAIModel;
+	? openAIModel
+	: openAIModel || anthropicModel || vertexAIModel || openAIModel;
 
 export const chatStreamProvider = async (
 	chatHistory,
@@ -38,8 +38,9 @@ export const chatStreamProvider = async (
 	data = sampleData1 // dummy data
 ) => {
 	const systemMessage = getSystemMessage(user, data, mode);
+	// console.log(systemMessage, mode);
 	let messages = [
-		// new SystemMessage(systemMessage),
+		new SystemMessage(systemMessage),
 		...chatHistory.slice(0, -1).map((message) => {
 			if (message.source == "user") {
 				return new HumanMessage(message.text);
@@ -136,7 +137,7 @@ function processMessage(user, message) {
 	return { content };
 }
 
-function getSystemMessage(user, data, mode) {
+function getSystemMessage(user, data, mode = 0) {
 	switch (mode) {
 		case 0:
 			return createDefaultSystemPrompt(user.name);

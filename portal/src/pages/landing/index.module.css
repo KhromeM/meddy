@@ -1,6 +1,6 @@
 .outer {
   overflow: hidden;
-  background-image: radial-gradient(640px at left top, var(--mantine-primary-color-light), white);
+  background-color: #FEF9EF;
 }
 
 .inner {

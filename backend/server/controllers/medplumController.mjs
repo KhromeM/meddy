@@ -2,7 +2,8 @@ import fs from "fs";
 import { MedplumClient, createReference } from "@medplum/core";
 import { getEpicPatient } from "./epicController.mjs";
 const medplum = new MedplumClient();
-await medplum.startClientLogin(process.env.MEDPLUM_CLIENT_ID, process.env.MEDPLUM_CLIENT_SECRET);
+import CONFIG from "../../config.mjs";
+await medplum.startClientLogin(CONFIG.MEDPLUM_CLIENT_ID, CONFIG.MEDPLUM_CLIENT_SECRET);
 
 export const getPatientDetails = async (req, res) => {
 	try {

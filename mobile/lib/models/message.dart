@@ -14,8 +14,9 @@ class Message {
   });
 
   factory Message.fromJson(Map<String, dynamic> json) {
+    print(json);
     return Message(
-      messageId: json['messageid'],
+      messageId: json['messageid'].toString(),
       userId: json['userid'],
       source: json['source'],
       text: json['text'],
@@ -31,5 +32,21 @@ class Message {
       'text': text,
       'time': time.toIso8601String(),
     };
+  }
+
+  Message copyWith({
+    String? messageId,
+    String? userId,
+    String? source,
+    String? text,
+    DateTime? time,
+  }) {
+    return Message(
+      messageId: messageId ?? this.messageId,
+      userId: userId ?? this.userId,
+      source: source ?? this.source,
+      text: text ?? this.text,
+      time: time ?? this.time,
+    );
   }
 }

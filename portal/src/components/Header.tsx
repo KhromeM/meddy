@@ -23,7 +23,7 @@ export function Header(): JSX.Element {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
 
   return (
-    <AppShell.Header>
+    <AppShell.Header style={{backgroundColor:'#FEF9EF'}}>
       <Container>
         <div className={classes.inner}>
           <UnstyledButton className={classes.logoButton} onClick={() => navigate('/')}>

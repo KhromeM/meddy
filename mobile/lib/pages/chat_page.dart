@@ -5,7 +5,7 @@ import 'package:meddymobile/utils/ws_connection.dart';
 import 'package:meddymobile/services/recorder_service.dart';
 import 'package:meddymobile/services/player_service.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:meddymobile/widgets/animated_stop_button.dart'; // Import the AnimatedStopButton
+import 'package:meddymobile/widgets/animated_stop_button.dart';
 import 'dart:async';
 import 'package:uuid/uuid.dart';
 
@@ -13,12 +13,13 @@ class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
 
   @override
-  _ChatPageState createState() => _ChatPageState();
+  State<ChatPage> createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
   WSConnection ws = WSConnection();
-  TextEditingController _textEditingController = TextEditingController();
+  TextEditingController _textEditingController =
+      TextEditingController();
   final ChatService _chatService = ChatService();
   List<Message> _chatHistory = [];
   late RecorderService _recorderService;
@@ -35,6 +36,7 @@ class _ChatPageState extends State<ChatPage> {
   Timer? _debounceTimer;
   Timer? _completionTimer;
   ScrollController _scrollController = ScrollController();
+  Map<String, List<String>> _messageBuffer = {};
 
   @override
   void initState() {
@@ -44,7 +46,8 @@ class _ChatPageState extends State<ChatPage> {
     _playerService = PlayerService(ws);
 
     ws.setHandler("chat_response", _handleChatResponse);
-    ws.setHandler("partial_transcript", _handleTranscription);
+    ws.setHandler(
+        "partial_transcript", _handleTranscription);
 
     _textEditingController.addListener(() {
       setState(() {
@@ -59,7 +62,8 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<void> _loadChatHistory() async {
     try {
-      List<Message> chatHistory = await _chatService.getChatHistory();
+      List<Message> chatHistory =
+          await _chatService.getChatHistory();
       setState(() {
         _chatHistory = List.from(chatHistory);
         _isLoading = false;
@@ -73,10 +77,8 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  // adds new message to chat history, only called once per message
-  void _addMessageToChatHistory(String source, String text, String reqId) {
-    print(reqId);
-    print(source + ":  " + text);
+  void _addMessageToChatHistory(
+      String source, String text, String reqId) {
     setState(() {
       _buildingMessage = true;
       _chatHistory.add(Message(
@@ -90,29 +92,15 @@ class _ChatPageState extends State<ChatPage> {
     _scrollToBottom();
   }
 
-// updates messages on screen based on server messages
-  void _updateCurrentMessageChunk(String text, String reqId) {
-    if (_debounceTimer?.isActive ?? false) {
-      _debounceTimer?.cancel();
-    }
-    int index = _chatHistory.indexWhere((msg) => msg.messageId == reqId);
+  void _updateCurrentMessageChunk(
+      String text, String reqId) {
+    int index = _chatHistory
+        .indexWhere((msg) => msg.messageId == reqId);
     if (index == -1) return;
-    Message currMessage = _chatHistory[index];
-    print(reqId);
-    print(currMessage.source + ":  " + text);
+
     setState(() {
-      _chatHistory[index] = Message(
-        messageId: currMessage.messageId,
-        userId: currMessage.userId,
-        source: currMessage.source,
-        text: text,
-        time: currMessage.time,
-      );
-    });
-    _debounceTimer = Timer(Duration(milliseconds: 80), () {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollToBottom();
-      });
+      _chatHistory[index] =
+          _chatHistory[index].copyWith(text: text);
     });
   }
 
@@ -132,12 +120,14 @@ class _ChatPageState extends State<ChatPage> {
     final String reqId = _uuid.v4();
     if (_textEditingController.text.isNotEmpty) {
       try {
-        _addMessageToChatHistory(
-            "user", _textEditingController.text, reqId + "_user");
-        print(_textEditingController.text);
+        _addMessageToChatHistory("user",
+            _textEditingController.text, reqId + "_user");
         ws.sendMessage({
           'type': 'chat',
-          'data': {'text': _textEditingController.text, 'reqId': reqId},
+          'data': {
+            'text': _textEditingController.text,
+            'reqId': reqId
+          },
         });
         _textEditingController.clear();
         setState(() {
@@ -150,52 +140,48 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _handleChatResponse(dynamic message) {
-    if (message['type'] == 'chat_response') {
-      setState(() {
-        if (!_buildingMessage || _chatHistory.last.source != "llm") {
-          _currentMessageChunk += "";
-          _addMessageToChatHistory(
-              "llm", _currentMessageChunk, message["reqId"] + "_llm");
-        }
+    final String reqId = message["reqId"] + "_llm";
+    final String text = message['data'];
 
-        if (message['isComplete'] ?? false) {
-          _buildingMessage = false;
-          _currentMessageChunk = "";
-        } else {
-          _currentMessageChunk += message['data'];
-          _updateCurrentMessageChunk(
-              _currentMessageChunk, message["reqId"] + "_llm");
-        }
-      });
-    }
+    setState(() {
+      if (!_messageBuffer.containsKey(reqId)) {
+        _messageBuffer[reqId] = [];
+        _addMessageToChatHistory("llm", "", reqId);
+      }
+      _messageBuffer[reqId]!.add(text);
+
+      String fullMessage = _messageBuffer[reqId]!.join("");
+      _updateCurrentMessageChunk(fullMessage, reqId);
+
+      if (message['isComplete'] ?? false) {
+        _messageBuffer.remove(reqId);
+        _isGenerating = false;
+      }
+    });
+
+    _scrollToBottom();
   }
 
   void _handleTranscription(dynamic message) {
-    if (message['type'] == 'partial_transcript') {
-      setState(() {
-        if (!_buildingMessage || _chatHistory.last.source != "user") {
-          _currentMessageChunk = "";
-          _addMessageToChatHistory(
-              "user", _currentMessageChunk, message["reqId"] + "_user");
-        }
-        if (message['isComplete'] ?? false) {
-          _buildingMessage = false;
-          _currentMessageChunk = "";
-        } else {
-          _currentMessageChunk += " " + message['data'];
-          _updateCurrentMessageChunk(
-              _currentMessageChunk, message["reqId"] + "_user");
-        }
-      });
-    }
-  }
+    final String reqId = message["reqId"] + "_user";
+    final String text = message['data'];
 
-  void _finishMessageGeneration() {
     setState(() {
-      _buildingMessage = false;
-      _currentMessageChunk = "";
-      _isGenerating = false;
+      if (!_messageBuffer.containsKey(reqId)) {
+        _messageBuffer[reqId] = [];
+        _addMessageToChatHistory("user", "", reqId);
+      }
+      _messageBuffer[reqId]!.add(text);
+
+      if (message['isComplete'] ?? false) {
+        _messageBuffer.remove(reqId);
+        return;
+      }
+      String fullMessage = _messageBuffer[reqId]!.join(" ");
+      _updateCurrentMessageChunk(fullMessage, reqId);
     });
+
+    _scrollToBottom();
   }
 
   void _stopGenerationVisually() {
@@ -207,7 +193,7 @@ class _ChatPageState extends State<ChatPage> {
 
   void _toggleAudio() async {
     _isRecording = await _recorderService.toggleRecording();
-    if (_isRecording) {
+    if (!_isRecording) {
       _playerService.playQueuedAudio();
     } else {
       _playerService.stopPlayback();
@@ -231,134 +217,137 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        forceMaterialTransparency: true,
-      ),
-      body: Stack(
-        alignment: Alignment.bottomCenter,
+      // appBar: BacknavAppBar(),
+      body: Column(
         children: [
-          Column(
-            children: [
-              Expanded(
-                child: _isLoading
-                    ? Center(child: CircularProgressIndicator())
+          Expanded(
+            child: Stack(
+              children: [
+                _isLoading
+                    ? Center(
+                        child: CircularProgressIndicator())
                     : ListView.builder(
                         controller: _scrollController,
                         itemCount: _chatHistory.length,
                         itemBuilder: (context, index) {
-                          final message = _chatHistory[index];
-                          final isUser = message.source == "user";
+                          final message =
+                              _chatHistory[index];
+                          final isUser =
+                              message.source == "user";
                           return Align(
                             alignment: isUser
                                 ? Alignment.centerRight
                                 : Alignment.centerLeft,
                             child: Padding(
-                              padding: /*  isUser
-                                  ? EdgeInsets.only(right: 10)
-                                  : EdgeInsets.only(left: 10), */
-                                  EdgeInsets.symmetric(horizontal: 10),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10),
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: isUser
-                                      ? Color.fromRGBO(255, 254, 251, 1)
-                                      : Color.fromRGBO(255, 242, 228, 1),
-                                  borderRadius: BorderRadius.circular(20),
-                                  /* border: Border.all(
-                                      width: 1,
-                                      color: Color.fromRGBO(255, 184, 76, 1),
-                                    ) */
+                                      ? Color.fromRGBO(
+                                          255, 254, 251, 1)
+                                      : Color.fromRGBO(
+                                          255, 242, 228, 1),
+                                  borderRadius:
+                                      BorderRadius.circular(
+                                          20),
                                 ),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10.0, horizontal: 15.0),
-                                margin: EdgeInsets.symmetric(
-                                    vertical: 5.0, horizontal: 10.0),
-                                child: MarkdownBody(data: message.text),
+                                padding:
+                                    EdgeInsets.symmetric(
+                                        vertical: 10.0,
+                                        horizontal: 15.0),
+                                margin:
+                                    EdgeInsets.symmetric(
+                                        vertical: 5.0,
+                                        horizontal: 10.0),
+                                child: MarkdownBody(
+                                    data: message.text),
                               ),
                             ),
                           );
                         },
                       ),
-              ),
-              /* if (_isGenerating)
-                AnimatedStopButton(
-                  onPressed: _stopGenerationVisually,
-                ), */
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-              ),
-              Container(
-                margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 16),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 8),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: Colors.black)),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: _textEditingController,
-                                  decoration: InputDecoration(
-                                    hintText: 'Type your message...',
-                                    border: InputBorder.none,
-                                  ),
-                                  keyboardType: TextInputType.text,
-                                  //added on submit
-                                  onSubmitted: (text) {
-                                    if (text.isNotEmpty) {
-                                      _sendMessage();
-                                    }
-                                  },
-                                ),
-                              ),
-                              InkWell(
-                                onTap: (_isTyping && !_isRecording)
-                                    ? _sendMessage
-                                    : _toggleAudio,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Icon(
-                                    _isRecording
-                                        ? Icons.stop
-                                        : (_isTyping
-                                            ? Icons.arrow_forward_ios_rounded
-                                            : Icons.mic_rounded),
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                ),
-                              ),
-                            ],
+                if (_isGenerating)
+                  Positioned(
+                    left: 16,
+                    bottom: 16,
+                    child: AnimatedStopButton(
+                      onPressed: _stopGenerationVisually,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.circular(20),
+                      border:
+                          Border.all(color: Colors.black),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller:
+                                _textEditingController,
+                            decoration: InputDecoration(
+                              hintText:
+                                  'Type your message...',
+                              border: InputBorder.none,
+                            ),
+                            keyboardType:
+                                TextInputType.text,
+                            onSubmitted: (text) {
+                              if (text.isNotEmpty) {
+                                _sendMessage();
+                              }
+                            },
                           ),
                         ),
-                      ),
+                        IconButton(
+                          icon: Icon(Icons.image),
+                          color: Theme.of(context)
+                              .primaryColor,
+                          onPressed: () {
+                            // Handle image button press
+                          },
+                        ),
+                        InkWell(
+                          onTap:
+                              (_isTyping && !_isRecording)
+                                  ? _sendMessage
+                                  : _toggleAudio,
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.all(8.0),
+                            child: Icon(
+                              _isRecording
+                                  ? Icons.stop
+                                  : (_isTyping
+                                      ? Icons
+                                          .arrow_forward_ios_rounded
+                                      : Icons.mic_rounded),
+                              color: Theme.of(context)
+                                  .primaryColor,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    IconButton(
-                      icon: Icon(Icons.image),
-                      color: Theme.of(context).primaryColor,
-                      onPressed: () {
-                        // Handle image button press
-                      },
-                    ),
-                  ],
+                  ),
                 ),
-              )
-            ],
-          ),
-          if (_isGenerating)
-            Positioned(
-              bottom: 100,
-              left: 80,
-              child: AnimatedStopButton(
-                onPressed: _stopGenerationVisually,
-              ),
+              ],
             ),
+          ),
         ],
       ),
     );
