@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:meddymobile/models/message.dart';
 import 'package:meddymobile/services/chat_service.dart';
@@ -6,8 +9,12 @@ import 'package:meddymobile/services/recorder_service.dart';
 import 'package:meddymobile/services/player_service.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:meddymobile/widgets/animated_stop_button.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
+import 'dart:typed_data';
 import 'dart:async';
 import 'package:uuid/uuid.dart';
+import 'package:image/image.dart' as img;
 
 class ChatPage extends StatefulWidget {
   final String? initialPrompt;
@@ -26,17 +33,19 @@ class _ChatPageState extends State<ChatPage> {
   late PlayerService _playerService;
   final Uuid _uuid = Uuid();
 
-  bool _isTyping = false;
   bool _isRecording = false;
   bool _isLoading = true;
   bool _isGenerating = false;
 
-  String _currentMessageChunk = "";
-  bool _buildingMessage = false;
   Timer? _debounceTimer;
   Timer? _completionTimer;
+  String? _previewImagePath;
   ScrollController _scrollController = ScrollController();
+  ImagePicker _picker = ImagePicker();
+  Map<String, Uint8List?> _imageCache = {};
   Map<String, List<String>> _messageBuffer = {};
+  ValueNotifier<bool> _isTypingNotifier = ValueNotifier(false);
+  bool _isSendingImage = false;
 
   @override
   void initState() {
@@ -49,12 +58,10 @@ class _ChatPageState extends State<ChatPage> {
     ws.setHandler("partial_transcript", _handleTranscription);
 
     _textEditingController.addListener(() {
-      setState(() {
-        _isTyping = _textEditingController.text.isNotEmpty;
-        if (_isRecording && _isTyping) {
-          _toggleAudio(); // Stop recording if user starts typing
-        }
-      });
+      bool isTyping = _textEditingController.text.isNotEmpty;
+      if (_isTypingNotifier.value != isTyping) {
+        _isTypingNotifier.value = isTyping;
+      }
     });
     _loadChatHistory();
     if(widget.initialPrompt != null){
@@ -82,17 +89,62 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void _addMessageToChatHistory(String source, String text, String reqId) {
+  Future<File> _resizeImage(String imagePath) async {
+    final image = File(imagePath);
+    final bytes = await image.readAsBytes();
+    img.Image? originalImage = img.decodeImage(bytes);
+    if (originalImage == null) return image;
+
+    img.Image resizedImage = img.copyResize(originalImage, width: 800);
+    final resizedBytes = img.encodeJpg(resizedImage);
+    final resizedFile = File('${image.path}_resized.jpg')
+      ..writeAsBytesSync(resizedBytes);
+
+    return resizedFile;
+  }
+
+  Future<void> _selectImageFromCamera() async {
+    final image = await _picker.pickImage(source: ImageSource.camera);
+    if (image != null) {
+      final resizedImage = await _resizeImage(image.path);
+      setState(() {
+        _previewImagePath = resizedImage.path;
+      });
+    }
+  }
+
+  Future<void> _selectImageFromGallery() async {
+    final image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      final resizedImage = await _resizeImage(image.path);
+      setState(() {
+        _previewImagePath = resizedImage.path;
+      });
+    }
+  }
+
+  Future<Uint8List?> _fetchImage(String imageID) async {
+    if (_imageCache.containsKey(imageID)) {
+      return _imageCache[imageID];
+    }
+    Uint8List? imageData = await _chatService.fetchImage(imageID);
+    _imageCache[imageID] = imageData;
+    return imageData;
+  }
+
+  void _addMessageToChatHistory(String source, String text, String reqId,
+      {String? imageID}) {
     setState(() {
-      _buildingMessage = true;
       _chatHistory.add(Message(
         messageId: reqId,
         userId: "DEVELOPER",
         source: source,
+        imageID: imageID,
         text: text,
         time: DateTime.now(),
       ));
     });
+
     _scrollToBottom();
   }
 
@@ -117,22 +169,49 @@ class _ChatPageState extends State<ChatPage> {
     });
   }
 
-  void _sendMessage() async {
+  Future<void> _sendMessage() async {
+    if (_isSendingImage) return;
+
     final String reqId = _uuid.v4();
-    if (_textEditingController.text.isNotEmpty) {
+    if (_textEditingController.text.isNotEmpty || _previewImagePath != null) {
       try {
-        _addMessageToChatHistory(
-            "user", _textEditingController.text, reqId + "_user");
-        ws.sendMessage({
-          'type': 'chat',
-          'data': {'text': _textEditingController.text, 'reqId': reqId},
-        });
-        _textEditingController.clear();
         setState(() {
+          _isSendingImage = true;
+        });
+
+        if (_previewImagePath != null) {
+          String imageBaseName = path.basename(_previewImagePath!);
+          await _chatService.uploadImage(_previewImagePath!);
+          String text = _textEditingController.text.isEmpty
+              ? "describe this image"
+              : _textEditingController.text;
+          _addMessageToChatHistory("user", text, reqId + "_user",
+              imageID: imageBaseName);
+          ws.sendMessage({
+            'type': 'chat',
+            'data': {'text': text, 'image': imageBaseName, 'reqId': reqId}
+          });
+        } else {
+          _addMessageToChatHistory(
+              "user", _textEditingController.text, reqId + "_user");
+          ws.sendMessage({
+            'type': 'chat',
+            'data': {'text': _textEditingController.text, 'reqId': reqId},
+          });
+        }
+
+        _textEditingController.clear();
+
+        setState(() {
+          _previewImagePath = null;
           _isGenerating = true;
+          _isSendingImage = false;
         });
       } catch (e) {
         print('Failed to send message: $e');
+        setState(() {
+          _isSendingImage = false;
+        });
       }
     }
   }
@@ -220,13 +299,14 @@ class _ChatPageState extends State<ChatPage> {
     _scrollController.dispose();
     _debounceTimer?.cancel();
     _completionTimer?.cancel();
+    _textEditingController.dispose();
+    _isTypingNotifier.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: BacknavAppBar(),
       body: Column(
         children: [
           Expanded(
@@ -247,6 +327,7 @@ class _ChatPageState extends State<ChatPage> {
                             child: Padding(
                               padding: EdgeInsets.symmetric(horizontal: 10),
                               child: Container(
+                                key: ValueKey(message.messageId),
                                 decoration: BoxDecoration(
                                   color: isUser
                                       ? Color.fromRGBO(255, 254, 251, 1)
@@ -257,7 +338,45 @@ class _ChatPageState extends State<ChatPage> {
                                     vertical: 10.0, horizontal: 15.0),
                                 margin: EdgeInsets.symmetric(
                                     vertical: 5.0, horizontal: 10.0),
-                                child: MarkdownBody(data: message.text),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (message.imageID != null)
+                                      FutureBuilder<Uint8List?>(
+                                        future: _fetchImage(message.imageID!),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return CircularProgressIndicator();
+                                          } else if (snapshot.hasError) {
+                                            return Text('Error loading image');
+                                          } else if (snapshot.hasData) {
+                                            return Column(
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          16.0),
+                                                  child: Image.memory(
+                                                    snapshot.data!,
+                                                    width: 100,
+                                                    height: 130,
+                                                    fit: BoxFit.cover,
+                                                    gaplessPlayback: true,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 8),
+                                              ],
+                                            );
+                                          } else {
+                                            return Text('Image not available');
+                                          }
+                                        },
+                                      ),
+                                    if (message.text.isNotEmpty)
+                                      MarkdownBody(data: message.text),
+                                  ],
+                                ),
                               ),
                             ),
                           );
@@ -265,8 +384,8 @@ class _ChatPageState extends State<ChatPage> {
                       ),
                 if (_isGenerating)
                   Positioned(
-                    left: 16,
-                    bottom: 16,
+                    bottom: 60,
+                    left: 12,
                     child: AnimatedStopButton(
                       onPressed: _stopGenerationVisually,
                     ),
@@ -276,69 +395,113 @@ class _ChatPageState extends State<ChatPage> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
-            child: Row(
+            child: Stack(
               children: [
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.black),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _textEditingController,
-                            decoration: InputDecoration(
-                              hintText: 'Type your message...',
-                              border: InputBorder.none,
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.black),
+                  ),
+                  child: Column(
+                    children: [
+                      if (_previewImagePath != null)
+                        Stack(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(bottom: 8),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(16.0),
+                                child: Image.file(
+                                  File(_previewImagePath!),
+                                  width: 100, // Full width of the container
+                                  height: 130, // Adjust as needed
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
-                            keyboardType: TextInputType.text,
-                            onSubmitted: (text) {
-                              if (text.isNotEmpty) {
-                                _sendMessage();
-                              }
+                            Positioned(
+                              top: 5,
+                              right: 5,
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    _previewImagePath = null;
+                                  });
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.black54,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.close,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _textEditingController,
+                              decoration: InputDecoration(
+                                hintText: 'Type your message...',
+                                border: InputBorder.none,
+                              ),
+                              keyboardType: TextInputType.text,
+                              onSubmitted: (text) {
+                                if (text.isNotEmpty) {
+                                  _sendMessage();
+                                }
+                              },
+                              enabled: !_isRecording,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.camera_alt_rounded),
+                            color: Theme.of(context).primaryColor,
+                            onPressed: () {
+                              _selectImageFromCamera();
                             },
-                            enabled:
-                                !_isRecording, // Disable text field when recording
                           ),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.image),
-                          color: Theme.of(context).primaryColor,
-                          onPressed: () {
-                            // Handle image button press
-                          },
-                        ),
-                        InkWell(
-                          onTap: () async {
-                            if (_isRecording) {
-                              _toggleAudio();
-                            } else {
-                              if (_isTyping) {
-                                _sendMessage();
-                              } else {
-                                _toggleAudio();
-                              }
-                            }
-                          },
-                          child: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: 20,
-                            child: Icon(
-                              _isRecording
-                                  ? Icons.stop
-                                  : (_isTyping
-                                      ? Icons.arrow_forward_ios
-                                      : Icons.mic),
-                              color: Theme.of(context).primaryColor,
-                            ),
+                          IconButton(
+                            icon: Icon(Icons.image),
+                            color: Theme.of(context).primaryColor,
+                            onPressed: () {
+                              _selectImageFromGallery();
+                            },
                           ),
-                        ),
-                      ],
-                    ),
+                          ValueListenableBuilder<bool>(
+                            valueListenable: _isTypingNotifier,
+                            builder: (context, isTyping, child) {
+                              return _isSendingImage ? CircularProgressIndicator() : InkWell(
+                                onTap:
+                                    (isTyping || _previewImagePath != null) &&
+                                            !_isRecording
+                                        ? _sendMessage
+                                        : _toggleAudio,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Icon(
+                                    _isRecording
+                                        ? Icons.stop
+                                        : (isTyping || _previewImagePath != null
+                                            ? Icons.arrow_forward_ios_rounded
+                                            : Icons.mic_rounded),
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ],
