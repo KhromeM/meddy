@@ -21,6 +21,7 @@
 		"react-aria-components": "^1.2.1",
 		"react-dom": "^18.2.0",
 		"react-router-dom": "^6.25.1",
+		"three": "^0.167.0",
 		"uuid": "^10.0.0"
 	},
 	"devDependencies": {

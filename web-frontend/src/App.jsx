@@ -7,27 +7,33 @@ import "./styles/chat.css";
 import { AuthProvider } from "./firebase/AuthService.jsx";
 import Navbar from "./components/Navbar.jsx";
 import customTheme from "./theme";
+import CursorEffect from "./components/CursorEffect.jsx";
+import { StoreProvider } from "./StoreState.jsx";
 
 function App() {
 	return (
-		<ChakraProvider theme={customTheme}>
-			<Router>
-				<AuthProvider>
-					<Routes>
-						<Route path="/" element={<LandingPage />} />
-						<Route
-							path="/chat"
-							element={
-								<>
-									<Navbar />
-									<Chat />
-								</>
-							}
-						/>
-					</Routes>
-				</AuthProvider>
-			</Router>
-		</ChakraProvider>
+		<StoreProvider>
+			<ChakraProvider theme={customTheme}>
+				<Router>
+					<AuthProvider>
+						{/* <CursorEffect /> */}
+
+						<Routes>
+							<Route path="/" element={<LandingPage />} />
+							<Route
+								path="/chat"
+								element={
+									<>
+										<Navbar />
+										<Chat />
+									</>
+								}
+							/>
+						</Routes>
+					</AuthProvider>
+				</Router>
+			</ChakraProvider>
+		</StoreProvider>
 	);
 }
 

@@ -14,8 +14,11 @@ import {
 	IconButton,
 } from "@chakra-ui/react";
 import { ChevronDownIcon, CloseIcon } from "@chakra-ui/icons";
+// import { StoreDispatch } from "../../StoreState";
 
 const Navbar = () => {
+	// const dispatch = useContext(StoreDispatch);
+
 	return (
 		<Box>
 			{/* Announcement Bar */}
@@ -30,7 +33,14 @@ const Navbar = () => {
 				<Text fontSize="sm">Meddy: Your personal medical assistant</Text>
 				<HStack spacing={4}>
 					<Text fontSize="sm">Now available on iOS and Android</Text>
-					<Button size="sm" colorScheme="whiteAlpha" variant="outline">
+					<Button
+						size="sm"
+						colorScheme="whiteAlpha"
+						// onClick={() => {
+						// 	dispatch({ type: "CIRCLE_GROW" });
+						// }}
+						variant="outline"
+					>
 						Download →
 					</Button>
 				</HStack>
