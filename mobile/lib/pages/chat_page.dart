@@ -50,6 +50,9 @@ class _ChatPageState extends State<ChatPage> {
     _textEditingController.addListener(() {
       setState(() {
         _isTyping = _textEditingController.text.isNotEmpty;
+        if (_isRecording && _isTyping) {
+          _toggleAudio(); // Stop recording if user starts typing
+        }
       });
     });
     _loadChatHistory();
@@ -182,16 +185,24 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _toggleAudio() async {
-    _isRecording = await _recorderService.toggleRecording();
-    if (!_isRecording) {
+    if (_isRecording) {
+      await _recorderService.toggleRecording();
+      setState(() {
+        _isRecording = false;
+      });
       _playerService.playQueuedAudio();
     } else {
-      _playerService.stopPlayback();
+      bool isRecording = await _recorderService.toggleRecording();
+      setState(() {
+        _isRecording = isRecording;
+        if (_isRecording) {
+          _textEditingController.clear(); // Clear text when starting recording
+        }
+      });
+      if (!_isRecording) {
+        _playerService.stopPlayback();
+      }
     }
-
-    setState(() {
-      print('Audio Mode: $_isRecording');
-    });
   }
 
   @override
@@ -282,6 +293,8 @@ class _ChatPageState extends State<ChatPage> {
                                 _sendMessage();
                               }
                             },
+                            enabled:
+                                !_isRecording, // Disable text field when recording
                           ),
                         ),
                         IconButton(
@@ -292,17 +305,26 @@ class _ChatPageState extends State<ChatPage> {
                           },
                         ),
                         InkWell(
-                          onTap: (_isTyping && !_isRecording)
-                              ? _sendMessage
-                              : _toggleAudio,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                          onTap: () async {
+                            if (_isRecording) {
+                              _toggleAudio();
+                            } else {
+                              if (_isTyping) {
+                                _sendMessage();
+                              } else {
+                                _toggleAudio();
+                              }
+                            }
+                          },
+                          child: CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: 20,
                             child: Icon(
                               _isRecording
                                   ? Icons.stop
                                   : (_isTyping
-                                      ? Icons.arrow_forward_ios_rounded
-                                      : Icons.mic_rounded),
+                                      ? Icons.arrow_forward_ios
+                                      : Icons.mic),
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
