@@ -12,6 +12,8 @@ export function Responses(): JSX.Element {
   const theme = useMantineTheme();
   const navigate = useNavigate();
   const profile = useMedplumProfile() as Patient;
+  
+  //  gives forbidden error, need to use medplum api key
   const responses = medplum
     .searchResources('QuestionnaireResponse', `source=${getReferenceString(profile)}&_sort=-authored`)
     .read();
