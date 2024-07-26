@@ -87,7 +87,7 @@ export const TTS_WS = async (
 	const TTS_Socket = new WebSocket(
 		`wss://api.elevenlabs.io/v1/text-to-speech/${
 			VOICES[req.lang]
-		}/stream-input?model_id=${turbo}&output_format=${output_format}`
+		}/stream-input?model_id=${turbo}`
 	);
 	streamLLMToElevenLabs(
 		TTS_Socket,

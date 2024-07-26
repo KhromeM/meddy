@@ -31,7 +31,7 @@ import classes from './HomePage.module.css';
 const carouselItems = [
   {
     img: <IconChecklist />,
-    title: 'Welcome to Foo Medical',
+    title: 'Welcome to Meddy',
     description:
       'Lorem ipsum at porta donec ultricies ut, arcu morbi amet arcu ornare, curabitur pharetra magna tempus',
     url: '/get-care',
@@ -106,12 +106,7 @@ export function HomePage(): JSX.Element {
   const profileName = profile.name ? formatHumanName(profile.name[0]) : '';
 
   return (
-    <Box bg="gray.0">
-      <Box className={classes.announcements}>
-        <span>
-          Announcements go here. <Anchor href="#">Include links if needed.</Anchor>
-        </span>
-      </Box>
+    <Box bg="gray.0"> 
       <div className={classes.hero}>
         <Overlay
           gradient="linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.4) 40%)"

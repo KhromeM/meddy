@@ -1,11 +1,70 @@
 import 'package:flutter/material.dart';
 
-class LoginBackground extends StatelessWidget {
+class LoginBackground extends StatefulWidget {
+  @override
+  _LoginBackgroundState createState() => _LoginBackgroundState();
+}
+
+class _LoginBackgroundState extends State<LoginBackground>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 4),
+      vsync: this,
+    )..repeat(reverse: true);
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Widget _buildAnimatedCircle({
+    required double top,
+    required double left,
+    required double baseSize,
+    required Color color,
+    bool isFilled = false,
+    double borderWidth = 20,
+  }) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        final size = baseSize + (10 * _animation.value);
+        return Positioned(
+          top: top,
+          left: left,
+          child: Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              color: isFilled ? color : Color.fromRGBO(254, 249, 239, 1),
+              border: isFilled
+                  ? null
+                  : Border.all(
+                      color: color,
+                      width: borderWidth,
+                    ),
+              borderRadius: BorderRadius.all(Radius.elliptical(size, size)),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.sizeOf(context).width,
-      height: MediaQuery.sizeOf(context).height,
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
         color: Color.fromRGBO(254, 249, 239, 1),
@@ -13,120 +72,56 @@ class LoginBackground extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           // red top right circle
-          Positioned(
+          _buildAnimatedCircle(
             top: -28,
             left: 262,
-            child: Container(
-              width: 184,
-              height: 189,
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(255, 86, 94, 0.5),
-                borderRadius: BorderRadius.all(Radius.elliptical(184, 189)),
-              ),
-            ),
+            baseSize: 184,
+            color: Color.fromRGBO(255, 86, 94, 0.5),
+            isFilled: true,
           ),
           // bottom right hollow exterior
-          Positioned(
+          _buildAnimatedCircle(
             top: 614,
             left: 146,
-            child: Container(
-              width: 300,
-              height: 300,
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(254, 249, 239, 1),
-                border: Border.all(
-                  color: Color.fromRGBO(255, 184, 76, 1),
-                  width: 20,
-                ),
-                borderRadius: BorderRadius.all(Radius.elliptical(300, 300)),
-              ),
-            ),
+            baseSize: 300,
+            color: Color.fromRGBO(255, 184, 76, 1),
           ),
           // bottom left exterior
-          Positioned(
+          _buildAnimatedCircle(
             top: 743,
             left: -64,
-            child: Container(
-              width: 184,
-              height: 189,
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(254, 249, 239, 1),
-                border: Border.all(
-                  color: Color.fromRGBO(191, 161, 255, 1),
-                  width: 20,
-                ),
-                borderRadius: BorderRadius.all(Radius.elliptical(184, 189)),
-              ),
-            ),
+            baseSize: 184,
+            color: Color.fromRGBO(191, 161, 255, 1),
           ),
           // bottom right solid interior orange circle
-          Positioned(
+          _buildAnimatedCircle(
             top: 651,
             left: 183,
-            child: Container(
-              width: 225,
-              height: 225,
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(255, 184, 76, 1),
-                borderRadius: BorderRadius.all(Radius.elliptical(225, 225)),
-              ),
-            ),
+            baseSize: 225,
+            color: Color.fromRGBO(255, 184, 76, 1),
+            isFilled: true,
           ),
           // middle left circle
-          Positioned(
+          _buildAnimatedCircle(
             top: 151,
             left: -214,
-            child: Container(
-              width: 300,
-              height: 300,
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(254, 249, 239, 1),
-                border: Border.all(
-                  color: Color.fromRGBO(255, 184, 76, 1),
-                  width: 20,
-                ),
-                borderRadius: BorderRadius.all(Radius.elliptical(300, 300)),
-              ),
-            ),
+            baseSize: 300,
+            color: Color.fromRGBO(255, 184, 76, 1),
           ),
           // bottom left interior
-          Positioned(
+          _buildAnimatedCircle(
             top: 778,
             left: -32,
-            child: Stack(
-              children: [
-                Container(
-                  width: 120,
-                  height: 120,
-                  decoration: BoxDecoration(
-                    color: Color.fromRGBO(254, 249, 239, 1),
-                    border: Border.all(
-                      color: Color.fromRGBO(191, 161, 255, 1),
-                      width: 20,
-                    ),
-                    borderRadius: BorderRadius.all(Radius.elliptical(120, 120)),
-                  ),
-                ),
-              ],
-            ),
+            baseSize: 120,
+            color: Color.fromRGBO(191, 161, 255, 1),
           ),
           // small hollow circle between the top right and bottom right circles
-          Positioned(
+          _buildAnimatedCircle(
             top: 300,
             left: 345,
-            child: Container(
-              width:
-                  100, // 1/3 the diameter of the larger circles (300 / 3 = 100)
-              height: 100,
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                border: Border.all(
-                  color: Color.fromRGBO(255, 184, 76, 1),
-                  width: 12,
-                ),
-                borderRadius: BorderRadius.all(Radius.elliptical(100, 100)),
-              ),
-            ),
+            baseSize: 100,
+            color: Color.fromRGBO(255, 184, 76, 1),
+            borderWidth: 12,
           ),
         ],
       ),
