@@ -24,6 +24,7 @@ export async function handleAudioMessage(state, data) {
 			lang: "en",
 			type: "audio",
 			isComplete: false,
+			userFinishedTalking: false,
 			user: state.user,
 			logs: {},
 		};
@@ -40,6 +41,7 @@ export async function handleAudioMessage(state, data) {
 	}
 	if (isComplete && state.STTSocket) {
 		// Logging
+		req.userFinishedTalking = true;
 		req.logs.lastAudioChunkFromClient = Date.now();
 		clearTimeout(state.STTTimeout);
 		console.log();
@@ -63,6 +65,7 @@ export async function handleAudioMessage(state, data) {
 			);
 
 			state.STTSocket.addListener(LiveTranscriptionEvents.Close, () => {
+				if (!req.userFinishedTalking) return; // this socket randomly closes after 30 seconds even if the user didnt send the signal (???) (hacky fix)
 				console.log("DG CLOSING", reqId);
 				if (req.isComplete) return; // helps stop dev mode bs from flutter and react
 				req.isComplete = true;
