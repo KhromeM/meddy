@@ -40,12 +40,11 @@ export async function handleAudioMessage(state, data) {
 		req.logs.reqId = reqId;
 	}
 	if (isComplete && state.STTSocket) {
-		// Logging
 		req.userFinishedTalking = true;
-		req.logs.lastAudioChunkFromClient = Date.now();
 		clearTimeout(state.STTTimeout);
-		console.log();
 		state.STTSocket.requestClose();
+		// Logging
+		req.logs.lastAudioChunkFromClient = Date.now();
 	}
 	if (!audioChunk) return;
 	if (!state.STTSocket || state.STTSocket.getReadyState() !== 1) {
