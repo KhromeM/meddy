@@ -7,14 +7,22 @@ import "./styles/chat.css";
 import { AuthProvider } from "./firebase/AuthService.jsx";
 import Navbar from "./components/Navbar.jsx";
 import customTheme from "./theme";
-
+import ReactFluidCursor from "./components/ReactFluidCursor/ReactFluidCursor.jsx";
 function App() {
 	return (
 		<ChakraProvider theme={customTheme}>
 			<Router>
 				<AuthProvider>
 					<Routes>
-						<Route path="/" element={<LandingPage />} />
+						<Route
+							path="/"
+							element={
+								<>
+									{/* <ReactFluidCursor /> */}
+									<LandingPage />{" "}
+								</>
+							}
+						/>
 						<Route
 							path="/chat"
 							element={
