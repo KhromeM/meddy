@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-
+import 'package:meddymobile/pages/chat_page.dart';
 class Boxes extends StatelessWidget {
   final List<String> texts;
   final List<String>? images;
@@ -19,8 +19,15 @@ class Boxes extends StatelessWidget {
     super.key,
     required this.texts,
     this.images,
-  });
 
+  });
+  void onBoxTap(BuildContext context, final String myPrompt){
+    Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =>  ChatPage(initialPrompt: myPrompt)),
+            );
+
+  }
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -32,7 +39,9 @@ class Boxes extends StatelessWidget {
         crossAxisSpacing: 10.0,
         itemCount: texts.length,
         itemBuilder: (context, index) {
-          return Container(
+          return GestureDetector(
+            onTap: () => onBoxTap(context, texts[index]),
+          child: Container(
             width: index.isEven ? 200 : 170,
             height: Random().nextInt(100) + 50,
             decoration: BoxDecoration(
@@ -71,7 +80,7 @@ class Boxes extends StatelessWidget {
                 ),
               ],
             ),
-          );
+          ));
         },
       ),
     );

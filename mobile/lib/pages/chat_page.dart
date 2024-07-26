@@ -10,7 +10,8 @@ import 'dart:async';
 import 'package:uuid/uuid.dart';
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({super.key});
+  final String? initialPrompt;
+  const ChatPage({super.key, this.initialPrompt});
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -55,8 +56,12 @@ class _ChatPageState extends State<ChatPage> {
       });
     });
     _loadChatHistory();
+    if(widget.initialPrompt != null){
+        _sendInitialPrompt(widget.initialPrompt!);
+      }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToBottom();
+      
     });
   }
 
@@ -190,7 +195,10 @@ class _ChatPageState extends State<ChatPage> {
       _isGenerating = false;
     });
   }
-
+  void _sendInitialPrompt(String prompt) {
+    _textEditingController.text = prompt;
+    _sendMessage();
+  }
   void _toggleAudio() async {
     _isRecording = await _recorderService.toggleRecording();
     if (!_isRecording) {
