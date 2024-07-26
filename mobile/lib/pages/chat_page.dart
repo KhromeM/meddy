@@ -13,13 +13,12 @@ class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
 
   @override
-  State<ChatPage> createState() => _ChatPageState();
+  _ChatPageState createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
   WSConnection ws = WSConnection();
-  TextEditingController _textEditingController =
-      TextEditingController();
+  TextEditingController _textEditingController = TextEditingController();
   final ChatService _chatService = ChatService();
   List<Message> _chatHistory = [];
   late RecorderService _recorderService;
@@ -46,12 +45,14 @@ class _ChatPageState extends State<ChatPage> {
     _playerService = PlayerService(ws);
 
     ws.setHandler("chat_response", _handleChatResponse);
-    ws.setHandler(
-        "partial_transcript", _handleTranscription);
+    ws.setHandler("partial_transcript", _handleTranscription);
 
     _textEditingController.addListener(() {
       setState(() {
         _isTyping = _textEditingController.text.isNotEmpty;
+        if (_isRecording && _isTyping) {
+          _toggleAudio(); // Stop recording if user starts typing
+        }
       });
     });
     _loadChatHistory();
@@ -62,8 +63,7 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<void> _loadChatHistory() async {
     try {
-      List<Message> chatHistory =
-          await _chatService.getChatHistory();
+      List<Message> chatHistory = await _chatService.getChatHistory();
       setState(() {
         _chatHistory = List.from(chatHistory);
         _isLoading = false;
@@ -77,8 +77,7 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void _addMessageToChatHistory(
-      String source, String text, String reqId) {
+  void _addMessageToChatHistory(String source, String text, String reqId) {
     setState(() {
       _buildingMessage = true;
       _chatHistory.add(Message(
@@ -92,15 +91,12 @@ class _ChatPageState extends State<ChatPage> {
     _scrollToBottom();
   }
 
-  void _updateCurrentMessageChunk(
-      String text, String reqId) {
-    int index = _chatHistory
-        .indexWhere((msg) => msg.messageId == reqId);
+  void _updateCurrentMessageChunk(String text, String reqId) {
+    int index = _chatHistory.indexWhere((msg) => msg.messageId == reqId);
     if (index == -1) return;
 
     setState(() {
-      _chatHistory[index] =
-          _chatHistory[index].copyWith(text: text);
+      _chatHistory[index] = _chatHistory[index].copyWith(text: text);
     });
   }
 
@@ -120,14 +116,11 @@ class _ChatPageState extends State<ChatPage> {
     final String reqId = _uuid.v4();
     if (_textEditingController.text.isNotEmpty) {
       try {
-        _addMessageToChatHistory("user",
-            _textEditingController.text, reqId + "_user");
+        _addMessageToChatHistory(
+            "user", _textEditingController.text, reqId + "_user");
         ws.sendMessage({
           'type': 'chat',
-          'data': {
-            'text': _textEditingController.text,
-            'reqId': reqId
-          },
+          'data': {'text': _textEditingController.text, 'reqId': reqId},
         });
         _textEditingController.clear();
         setState(() {
@@ -192,16 +185,24 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _toggleAudio() async {
-    _isRecording = await _recorderService.toggleRecording();
-    if (!_isRecording) {
+    if (_isRecording) {
+      await _recorderService.toggleRecording();
+      setState(() {
+        _isRecording = false;
+      });
       _playerService.playQueuedAudio();
     } else {
-      _playerService.stopPlayback();
+      bool isRecording = await _recorderService.toggleRecording();
+      setState(() {
+        _isRecording = isRecording;
+        if (_isRecording) {
+          _textEditingController.clear(); // Clear text when starting recording
+        }
+      });
+      if (!_isRecording) {
+        _playerService.stopPlayback();
+      }
     }
-
-    setState(() {
-      print('Audio Mode: $_isRecording');
-    });
   }
 
   @override
@@ -224,44 +225,31 @@ class _ChatPageState extends State<ChatPage> {
             child: Stack(
               children: [
                 _isLoading
-                    ? Center(
-                        child: CircularProgressIndicator())
+                    ? Center(child: CircularProgressIndicator())
                     : ListView.builder(
                         controller: _scrollController,
                         itemCount: _chatHistory.length,
                         itemBuilder: (context, index) {
-                          final message =
-                              _chatHistory[index];
-                          final isUser =
-                              message.source == "user";
+                          final message = _chatHistory[index];
+                          final isUser = message.source == "user";
                           return Align(
                             alignment: isUser
                                 ? Alignment.centerRight
                                 : Alignment.centerLeft,
                             child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10),
+                              padding: EdgeInsets.symmetric(horizontal: 10),
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: isUser
-                                      ? Color.fromRGBO(
-                                          255, 254, 251, 1)
-                                      : Color.fromRGBO(
-                                          255, 242, 228, 1),
-                                  borderRadius:
-                                      BorderRadius.circular(
-                                          20),
+                                      ? Color.fromRGBO(255, 254, 251, 1)
+                                      : Color.fromRGBO(255, 242, 228, 1),
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
-                                padding:
-                                    EdgeInsets.symmetric(
-                                        vertical: 10.0,
-                                        horizontal: 15.0),
-                                margin:
-                                    EdgeInsets.symmetric(
-                                        vertical: 5.0,
-                                        horizontal: 10.0),
-                                child: MarkdownBody(
-                                    data: message.text),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 10.0, horizontal: 15.0),
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 5.0, horizontal: 10.0),
+                                child: MarkdownBody(data: message.text),
                               ),
                             ),
                           );
@@ -284,60 +272,60 @@ class _ChatPageState extends State<ChatPage> {
               children: [
                 Expanded(
                   child: Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 8),
+                    padding: EdgeInsets.symmetric(horizontal: 8),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius:
-                          BorderRadius.circular(20),
-                      border:
-                          Border.all(color: Colors.black),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.black),
                     ),
                     child: Row(
                       children: [
                         Expanded(
                           child: TextField(
-                            controller:
-                                _textEditingController,
+                            controller: _textEditingController,
                             decoration: InputDecoration(
-                              hintText:
-                                  'Type your message...',
+                              hintText: 'Type your message...',
                               border: InputBorder.none,
                             ),
-                            keyboardType:
-                                TextInputType.text,
+                            keyboardType: TextInputType.text,
                             onSubmitted: (text) {
                               if (text.isNotEmpty) {
                                 _sendMessage();
                               }
                             },
+                            enabled:
+                                !_isRecording, // Disable text field when recording
                           ),
                         ),
                         IconButton(
                           icon: Icon(Icons.image),
-                          color: Theme.of(context)
-                              .primaryColor,
+                          color: Theme.of(context).primaryColor,
                           onPressed: () {
                             // Handle image button press
                           },
                         ),
                         InkWell(
-                          onTap:
-                              (_isTyping && !_isRecording)
-                                  ? _sendMessage
-                                  : _toggleAudio,
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.all(8.0),
+                          onTap: () async {
+                            if (_isRecording) {
+                              _toggleAudio();
+                            } else {
+                              if (_isTyping) {
+                                _sendMessage();
+                              } else {
+                                _toggleAudio();
+                              }
+                            }
+                          },
+                          child: CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: 20,
                             child: Icon(
                               _isRecording
                                   ? Icons.stop
                                   : (_isTyping
-                                      ? Icons
-                                          .arrow_forward_ios_rounded
-                                      : Icons.mic_rounded),
-                              color: Theme.of(context)
-                                  .primaryColor,
+                                      ? Icons.arrow_forward_ios
+                                      : Icons.mic),
+                              color: Theme.of(context).primaryColor,
                             ),
                           ),
                         ),
