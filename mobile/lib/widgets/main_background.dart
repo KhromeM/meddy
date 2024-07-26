@@ -86,20 +86,6 @@ class _MainBackgroundState extends State<MainBackground>
             baseSize: 280,
           ),
           Positioned(
-            top: 151,
-            left: 265,
-            child: Container(
-              width: 25,
-              height: 25,
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(255, 255, 255, 1),
-              ),
-              child: Stack(
-                children: [],
-              ),
-            ),
-          ),
-          Positioned(
             top: 491,
             left: 31,
             child: Container(
