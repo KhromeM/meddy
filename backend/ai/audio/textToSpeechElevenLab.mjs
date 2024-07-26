@@ -40,7 +40,22 @@ const endOfSentenceMarkersSet = new Set([
 	"}",
 	"]",
 ]);
-const TTSEnglish = "eleven_turbo_v2";
+const endOfSentenceMarkersSet2 = new Set([
+	". ",
+	"! ",
+	"? ",
+	"\n ",
+	"; ",
+	": ",
+	"\t ",
+	'" ',
+	"' ",
+	"\\ ",
+	") ",
+	"} ",
+	"] ",
+]);
+const turbo = "eleven_turbo_v2_5";
 const TTSMulti = "eleven_multilingual_v2";
 const filePath = "./ai/audio/genAudio/experiments/spn/exp1";
 
@@ -68,10 +83,11 @@ export const TTS_WS = async (
 		defaultModel,
 		mode
 	);
+	const output_format = "mp3_44100_64"; //req.source == "mobile" ? "pcm_16000" : "mp3_44100_64";
 	const TTS_Socket = new WebSocket(
 		`wss://api.elevenlabs.io/v1/text-to-speech/${
 			VOICES[req.lang]
-		}/stream-input?model_id=${req.lang == "en" ? TTSEnglish : TTSMulti}`
+		}/stream-input?model_id=${turbo}`
 	);
 	streamLLMToElevenLabs(
 		TTS_Socket,
@@ -79,6 +95,7 @@ export const TTS_WS = async (
 		clientSocket,
 		(data) => {
 			const message = JSON.parse(data);
+			// console.log(message);
 			clientSocket.send(
 				JSON.stringify({
 					...message,
@@ -91,6 +108,7 @@ export const TTS_WS = async (
 				if (!req.logs.firstAudioChunkFromTTS) {
 					req.logs.firstAudioChunkFromTTS = Date.now();
 				}
+
 				const audioChunk = Buffer.from(message.audio, "base64");
 				fileStream.write(audioChunk); // write the audio to some file in the server as well to save it
 			}
@@ -129,7 +147,7 @@ async function streamLLMToElevenLabs(
 	voiceSettings,
 	optimize_streaming_latency,
 	chunk_length_schedule,
-	bufferLimit
+	bufferLimit = 100
 ) {
 	console.log("11 LABS CALL");
 	TTS_Socket.on("open", async () => {
@@ -141,12 +159,14 @@ async function streamLLMToElevenLabs(
 					similarity_boost: 0.8,
 				},
 				xi_api_key: CONFIG.ELEVENLABS_API_KEY,
-				optimize_streaming_latency: optimize_streaming_latency || 0,
+				optimize_streaming_latency: 4, // 4 || optimize_streaming_latency || 0, // MAX OPTIMIZATION
 				chunk_length_schedule: chunk_length_schedule || [120, 160, 250, 290],
 			})
 		);
+
 		const totalResponse = [];
 		let partialResponse = "";
+		let sentTTSChunk = false;
 		for await (const chunk of llmStream) {
 			// logging
 			if (req && !req.logs.firstLLMChunk) {
@@ -164,9 +184,25 @@ async function streamLLMToElevenLabs(
 					})
 				);
 			}
+			// if (
+			// 	(!sentTTSChunk && partialResponse.length > 25) ||
+			// 	endOfSentenceMarkersSet.has(chunk.slice(-2)) || // if havent sent TTS any chunks, send if over 25 chars in buffer or ending with EOS char
+			// 	(partialResponse.length > bufferLimit / 2 &&
+			// 		endOfSentenceMarkersSet.has(chunk.slice(-2))) || // if the built up response is more than half the buffer limit and ends with a EOS char
+			// 	partialResponse.length > bufferLimit // or over the buffer limit
+			// ) {
+			// 	sentTTSChunk = true; // have sent tts a chunk
+			// 	TTS_Socket.send(
+			// 		JSON.stringify({
+			// 			text: partialResponse + CHUNK_SEPERATOR,
+			// 		})
+			// 	);
+			// 	partialResponse = "";
+			// }
+
 			if (
-				partialResponse.length > bufferLimit || // if the built up response is more than 500 characters
-				endOfSentenceMarkersSet.has(chunk[chunk.length - 1]) // if the built up response ends with a ending of sentence signifier
+				partialResponse.length > bufferLimit &&
+				endOfSentenceMarkersSet.has(chunk.slice(-2)) // if the built up response ends with a ending of sentence signifier
 			) {
 				TTS_Socket.send(
 					JSON.stringify({
@@ -214,9 +250,7 @@ export const TTS_SSE = async (
 ) => {
 	const llmStream = await chatStreamProvider(chatHistory, user, defaultModel);
 	const ws = new WebSocket(
-		`wss://api.elevenlabs.io/v1/text-to-speech/${
-			VOICES[lang]
-		}/stream-input?model_id=${lang == "ENG" ? TTSEnglish : TTSMulti}`
+		`wss://api.elevenlabs.io/v1/text-to-speech/${VOICES[lang]}/stream-input?model_id=${turbo}`
 	);
 	streamLLMToElevenLabs(ws, llmStream, null, (data) => {
 		const message = JSON.parse(data);

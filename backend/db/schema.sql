@@ -9,7 +9,8 @@ CREATE TABLE Users (
     Address VARCHAR(255),
     Email VARCHAR(255),
     Language VARCHAR(255),
-    Phone VARCHAR(255)
+    Phone VARCHAR(255),
+    PatientID VARCHAR(255)
 );
 
 CREATE TABLE Doctors (
