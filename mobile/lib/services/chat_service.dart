@@ -5,20 +5,24 @@ import 'package:http/http.dart' as http;
 import 'package:meddymobile/models/message.dart';
 import 'package:path/path.dart' as path;
 
-
 class ChatService {
-  static const String baseUrl =
-      'https://trymeddy.com/api';
-      // 'http://localhost:8000/api';
+  static const String baseUrl = 'https://trymeddy.com/api';
+  // 'http://localhost:8000/api';
 
   Future<List<Message>> getChatHistory() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/chat'), headers: {
+      final response = await http
+          .get(Uri.parse('$baseUrl/chat'), headers: {
         "idToken": "dev",
       });
-      List<dynamic> chatHistory = jsonDecode(response.body)['chatHistory'];
-      var messages =
-          chatHistory.map((message) => Message.fromJson(message)).toList();
+      List<dynamic> chatHistory =
+          jsonDecode(response.body)['chatHistory'];
+      print("Parsing messages..");
+      var messages = chatHistory
+          .map((message) => Message.fromJson(message))
+          .toList();
+      print("MESSAGES: ");
+      print(messages);
       return messages;
     } catch (e) {
       print(e.toString());
@@ -53,7 +57,8 @@ class ChatService {
 
   Future<Uint8List?> fetchImage(String imageId) async {
     try {
-      final uri = Uri.parse('$baseUrl/image').replace(queryParameters: {
+      final uri = Uri.parse('$baseUrl/image')
+          .replace(queryParameters: {
         'image': imageId,
       });
 
@@ -68,7 +73,8 @@ class ChatService {
       if (response.statusCode == 200) {
         return response.bodyBytes;
       } else {
-        print('Error fetching image: ${response.statusCode}');
+        print(
+            'Error fetching image: ${response.statusCode}');
         return null;
       }
     } catch (e) {
