@@ -18,12 +18,12 @@ class Boxes extends StatelessWidget {
   ];
 
   static const List<Color> highContrastColors = [
-    Color(0xFF000000), // Black
     Color(0xFFFFFFFF), // White
-    Color(0xFFFF0000), // Red
-    Color(0xFF00FF00), // Green
-    Color(0xFF0000FF), // Blue
-    Color(0xFFFFFF00), // Yellow
+    Color(0xFFFFFFFF), // White
+    Color(0xFFFFFFFF), // White
+    Color(0xFFFFFFFF), // White
+    Color(0xFFFFFFFF), // White
+    Color(0xFFFFFFFF), // White
   ];
 
   const Boxes({
