@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meddymobile/utils/app_colors.dart';
 import 'package:meddymobile/widgets/boxes.dart';
 import 'package:meddymobile/widgets/high_contrast_mode.dart';
 import 'package:meddymobile/widgets/main_background.dart';
@@ -79,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       width: 100.0,
                       height: 100.0,
                       decoration: BoxDecoration(
-                        color: Colors.red,
+                        color: orangeAccent,
                         shape: BoxShape.circle,
                       ),
                     ),

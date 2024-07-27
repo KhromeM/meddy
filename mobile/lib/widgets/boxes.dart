@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:meddymobile/pages/chat_page.dart';
 
 class Boxes extends StatelessWidget {
   final List<String> texts;
@@ -31,6 +32,15 @@ class Boxes extends StatelessWidget {
     this.images,
     required this.isHighContrast,
   });
+  void onBoxTap(
+      BuildContext context, final String myPrompt) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              ChatPage(initialPrompt: myPrompt)),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,53 +53,55 @@ class Boxes extends StatelessWidget {
         crossAxisSpacing: 10.0,
         itemCount: texts.length,
         itemBuilder: (context, index) {
-          return Container(
-            width: index.isEven ? 200 : 170,
-            height: Random().nextInt(100) + 50,
-            decoration: BoxDecoration(
-              color: isHighContrast
-                  ? highContrastColors[
-                      index % pastelColors.length]
-                  : pastelColors[
-                      index % pastelColors.length],
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Stack(
-              children: [
-                if (images != null &&
-                    index < images!.length)
-                  Positioned.fill(
-                    child: ClipRRect(
-                      borderRadius:
-                          BorderRadius.circular(20),
-                      child: Image.asset(
-                        images![index],
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Padding(
-                    padding: EdgeInsets.all(12.0),
-                    child: Text(
-                      texts[index],
-                      style: TextStyle(
-                        color: const Color.fromARGB(
-                            255, 0, 0, 0),
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      maxLines: 4,
-                      // overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
+          return GestureDetector(
+              onTap: () => onBoxTap(context, texts[index]),
+              child: Container(
+                width: index.isEven ? 200 : 170,
+                height: Random().nextInt(100) + 50,
+                decoration: BoxDecoration(
+                  color: isHighContrast
+                      ? highContrastColors[
+                          index % pastelColors.length]
+                      : pastelColors[
+                          index % pastelColors.length],
+                  borderRadius: BorderRadius.circular(20),
                 ),
-              ],
-            ),
-          );
+                child: Stack(
+                  children: [
+                    if (images != null &&
+                        index < images!.length)
+                      Positioned.fill(
+                        child: ClipRRect(
+                          borderRadius:
+                              BorderRadius.circular(20),
+                          child: Image.asset(
+                            images![index],
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: Padding(
+                        padding: EdgeInsets.all(12.0),
+                        child: Text(
+                          texts[index],
+                          style: TextStyle(
+                            color: const Color.fromARGB(
+                                255, 0, 0, 0),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          maxLines: 4,
+                          // overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ));
         },
       ),
     );
