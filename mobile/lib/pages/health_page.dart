@@ -3,6 +3,7 @@ import 'package:meddymobile/services/auth_service.dart';
 import 'package:meddymobile/pages/signin_page.dart';
 import 'package:meddymobile/pages/my_home_page.dart';
 import 'package:meddymobile/widgets/main_background.dart';
+import 'package:meddymobile/utils/app_colors.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -59,7 +60,38 @@ class _ProfilePageState extends State<ProfilePage> {
       });
     }
   }
-
+Widget _buildLogoutButtonProfile(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 75,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: ElevatedButton(
+          onPressed: () => _logout(),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+            padding: EdgeInsets.symmetric(vertical: 20),
+            alignment: Alignment.centerLeft,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(
+                color: Colors.black,
+                width: 3,
+              ),
+            ),
+            elevation: 0,
+          ),
+          child: Center(
+            child: Text(
+              'Logout',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,7 +116,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     width: 60,
                     height: 60,
                     decoration: BoxDecoration(
-                      color: Colors.green,
+                      color: orangeAccent,
                       shape: BoxShape.circle,
                     ),
                     child: Center(
@@ -170,20 +202,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             bottomNavigationBar: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
-                onPressed:
-                    _isLoading ? null : _logout, // Disable button while loading
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: _isLoading
-                    ? CircularProgressIndicator() // Show loading indicator
-                    : Text(
-                        'Logout',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
-              ),
+              child: _buildLogoutButtonProfile(context),
             ),
           ),
         ],

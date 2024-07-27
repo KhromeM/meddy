@@ -1,5 +1,5 @@
 // appbar for navigating back to home page
-
+import 'package:meddymobile/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:meddymobile/pages/my_home_page.dart';
@@ -27,7 +27,7 @@ class BacknavAppBar extends StatelessWidget implements PreferredSizeWidget {
               Icon(
                 Icons.circle,
                 size: 60,
-                color: Color.fromARGB(255, 255, 181, 93),
+                color: orangeAccent,
                 // Color.fromARGB(255, 202, 235, 69) theme green
                 //Color.fromARGB(255, 255, 181, 93) theme orange
               ),

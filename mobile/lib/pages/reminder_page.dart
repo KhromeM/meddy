@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:meddymobile/services/auth_service.dart';
 import 'package:meddymobile/widgets/main_background.dart';
 import 'package:meddymobile/widgets/backnav_app_bar.dart';
+import 'package:meddymobile/utils/app_colors.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
@@ -44,7 +45,7 @@ class _ReminderPageState extends State<ReminderPage> {
       dateCards.add(
         Expanded(
           child: Card(
-            color: i == 0 ? Color.fromARGB(255, 255, 181, 93) : Colors.white,
+            color: i == 0 ? orangeAccent : Colors.white,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
