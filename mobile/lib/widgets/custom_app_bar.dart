@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:meddymobile/pages/chat_page.dart';
+import 'package:meddymobile/pages/health_page.dart';
 import 'package:meddymobile/pages/reminder_page.dart';
 import 'package:meddymobile/utils/app_colors.dart';
 import 'package:meddymobile/services/auth_service.dart';
@@ -81,7 +82,11 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     child: _buildSquareButton(
                       'Health',
                       () {
-                        // TODO: Navigate to health page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ProfilePage()),
+                        );
                       },
                     ),
                   ),
