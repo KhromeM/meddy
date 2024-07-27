@@ -6,6 +6,7 @@ import 'package:meddymobile/services/recorder_service.dart';
 import 'package:meddymobile/services/player_service.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:meddymobile/widgets/animated_stop_button.dart';
+import 'package:meddymobile/widgets/high_contrast_mode.dart';
 import 'dart:async';
 import 'package:uuid/uuid.dart';
 
@@ -216,6 +217,26 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    final highContrastMode = HighContrastMode.of(context);
+
+    // Define colors for normal and high contrast modes
+    final Color userMessageColor =
+        highContrastMode?.isHighContrast == true
+            ? Colors.black
+            : Color.fromRGBO(255, 254, 251, 1);
+    final Color llmMessageColor =
+        highContrastMode?.isHighContrast == true
+            ? Colors.white
+            : Color.fromRGBO(255, 242, 228, 1);
+    final Color userTextColor =
+        highContrastMode?.isHighContrast == true
+            ? Colors.white
+            : Colors.black;
+    final Color llmTextColor =
+        highContrastMode?.isHighContrast == true
+            ? Colors.black
+            : Colors.black;
+
     return Scaffold(
       // appBar: BacknavAppBar(),
       body: Column(
@@ -244,10 +265,8 @@ class _ChatPageState extends State<ChatPage> {
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: isUser
-                                      ? Color.fromRGBO(
-                                          255, 254, 251, 1)
-                                      : Color.fromRGBO(
-                                          255, 242, 228, 1),
+                                      ? userMessageColor
+                                      : llmMessageColor,
                                   borderRadius:
                                       BorderRadius.circular(
                                           20),
@@ -261,7 +280,16 @@ class _ChatPageState extends State<ChatPage> {
                                         vertical: 5.0,
                                         horizontal: 10.0),
                                 child: MarkdownBody(
-                                    data: message.text),
+                                  data: message.text,
+                                  styleSheet:
+                                      MarkdownStyleSheet(
+                                    p: TextStyle(
+                                      color: isUser
+                                          ? userTextColor
+                                          : llmTextColor,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           );

@@ -5,6 +5,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 class Boxes extends StatelessWidget {
   final List<String> texts;
   final List<String>? images;
+  final bool isHighContrast;
 
   static const List<Color> pastelColors = [
     Color(0xFFFFD1DC), // Pastel pink
@@ -15,10 +16,20 @@ class Boxes extends StatelessWidget {
     Color(0xFFFFDAB9), // Pastel orange
   ];
 
+  static const List<Color> highContrastColors = [
+    Color(0xFF000000), // Black
+    Color(0xFFFFFFFF), // White
+    Color(0xFFFF0000), // Red
+    Color(0xFF00FF00), // Green
+    Color(0xFF0000FF), // Blue
+    Color(0xFFFFFF00), // Yellow
+  ];
+
   const Boxes({
     super.key,
     required this.texts,
     this.images,
+    required this.isHighContrast,
   });
 
   @override
@@ -36,15 +47,21 @@ class Boxes extends StatelessWidget {
             width: index.isEven ? 200 : 170,
             height: Random().nextInt(100) + 50,
             decoration: BoxDecoration(
-              color: pastelColors[index % pastelColors.length],
+              color: isHighContrast
+                  ? highContrastColors[
+                      index % pastelColors.length]
+                  : pastelColors[
+                      index % pastelColors.length],
               borderRadius: BorderRadius.circular(20),
             ),
             child: Stack(
               children: [
-                if (images != null && index < images!.length)
+                if (images != null &&
+                    index < images!.length)
                   Positioned.fill(
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius:
+                          BorderRadius.circular(20),
                       child: Image.asset(
                         images![index],
                         fit: BoxFit.cover,
@@ -60,7 +77,8 @@ class Boxes extends StatelessWidget {
                     child: Text(
                       texts[index],
                       style: TextStyle(
-                        color: const Color.fromARGB(255, 0, 0, 0),
+                        color: const Color.fromARGB(
+                            255, 0, 0, 0),
                         fontSize: 20,
                         fontWeight: FontWeight.w500,
                       ),
