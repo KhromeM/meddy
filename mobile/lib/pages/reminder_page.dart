@@ -134,8 +134,6 @@ class _ReminderPageState extends State<ReminderPage> {
                     if (_showDatePicker)
                       Column(
                         children: [
-                          Text(
-                              'Date: ${DateFormat.yMd().format(reminderDate)}'),
                           SizedBox(height: 10),
                           Container(
                             padding: EdgeInsets.symmetric(vertical: 10),
@@ -152,6 +150,18 @@ class _ReminderPageState extends State<ReminderPage> {
                           ),
                         ],
                       ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(left: 15),
+                          child: Text(
+                            style: TextStyle(color: Colors.red),
+                            '${DateFormat.yMd().format(reminderDate)}',
+                          ),
+                        )
+                      ],
+                    ),
                     Divider(),
                     SwitchListTile(
                       title: Text('Time'),
@@ -169,7 +179,6 @@ class _ReminderPageState extends State<ReminderPage> {
                     if (_showTimePicker)
                       Column(
                         children: [
-                          Text('Time: ${reminderTime.format(context)}'),
                           SizedBox(height: 10),
                           Container(
                             padding: EdgeInsets.symmetric(vertical: 10),
@@ -192,15 +201,23 @@ class _ReminderPageState extends State<ReminderPage> {
                                   child: Text('Select Time'),
                                 ),
                                 SizedBox(width: 10),
-                                Text(
-                                  reminderTime.format(context),
-                                  style: TextStyle(fontSize: 18),
-                                ),
                               ],
                             ),
                           ),
                         ],
                       ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(left: 15),
+                          child: Text(
+                            style: TextStyle(color: Colors.red),
+                            '${reminderTime.format(context)}',
+                          ),
+                        )
+                      ],
+                    ),
                     Divider(),
                     Text('Repeat: $_repeatOption'),
                     ElevatedButton(
