@@ -14,7 +14,7 @@ class _MainBackgroundState extends State<MainBackground>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(seconds: 4),
+      duration: const Duration(seconds: 3),
       vsync: this,
     )..repeat(reverse: true);
     _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
@@ -26,34 +26,60 @@ class _MainBackgroundState extends State<MainBackground>
     super.dispose();
   }
 
-  Widget _buildAnimatedCircle({
+  Widget _buildCircle({
     required double top,
     required double left,
+    required double size,
     required Color color,
-    required double baseSize,
+    bool isFilled = false,
+    double borderWidth = 20,
+    bool isAnimated = false,
   }) {
-    return AnimatedBuilder(
-      animation: _animation,
-      builder: (context, child) {
-        final size = baseSize + (20 * _animation.value);
-        return Positioned(
-          top: top,
-          left: left,
-          child: Container(
-            width: size,
-            height: size,
-            decoration: BoxDecoration(
-              color: Color.fromRGBO(254, 249, 239, 1),
-              border: Border.all(
-                color: color,
-                width: 20,
-              ),
-              borderRadius: BorderRadius.circular(size / 2),
-            ),
-          ),
-        );
-      },
+    Widget circle = Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: isFilled ? color : Color.fromRGBO(254, 249, 239, 1),
+        border: Border.all(
+          color: color,
+          width: borderWidth,
+        ),
+        borderRadius: BorderRadius.all(Radius.elliptical(size, size)),
+      ),
     );
+
+    if (isAnimated) {
+      return AnimatedBuilder(
+        animation: _animation,
+        builder: (context, child) {
+          final animatedSize =
+              size + (size * 0.25 * _animation.value); // 25% size variation
+          return Positioned(
+            top: top + (size - animatedSize) / 2,
+            left: left + (size - animatedSize) / 2,
+            child: Container(
+              width: animatedSize,
+              height: animatedSize,
+              decoration: BoxDecoration(
+                color: isFilled ? color : Color.fromRGBO(254, 249, 239, 1),
+                border: Border.all(
+                  color: color,
+                  width: borderWidth,
+                ),
+                borderRadius: BorderRadius.all(
+                    Radius.elliptical(animatedSize, animatedSize)),
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      return Positioned(
+        top: top,
+        left: left,
+        child: circle,
+      );
+    }
   }
 
   @override
@@ -67,23 +93,29 @@ class _MainBackgroundState extends State<MainBackground>
       ),
       child: Stack(
         children: <Widget>[
-          _buildAnimatedCircle(
+          // bottom right circle
+          _buildCircle(
             top: 660,
             left: 110,
+            size: 280,
             color: Color.fromRGBO(255, 184, 76, 1),
-            baseSize: 280,
+            isAnimated: true,
           ),
-          _buildAnimatedCircle(
+          // top right circle
+          _buildCircle(
             top: -87,
             left: 243,
-            color: Color.fromRGBO(66, 133, 244, 1),
-            baseSize: 280,
+            size: 280,
+            color: Color(0xFFA489E0),
+            isAnimated: true,
           ),
-          _buildAnimatedCircle(
+          // middle left circle
+          _buildCircle(
             top: 192,
             left: -157,
-            color: Color.fromRGBO(255, 86, 94, 1),
-            baseSize: 280,
+            size: 280,
+            color: Color(0xFFCAEB45),
+            isAnimated: true,
           ),
           Positioned(
             top: 151,
@@ -94,11 +126,9 @@ class _MainBackgroundState extends State<MainBackground>
               decoration: BoxDecoration(
                 color: Color.fromRGBO(255, 255, 255, 1),
               ),
-              child: Stack(
-                children: [],
-              ),
             ),
           ),
+          // Other positioned elements remain unchanged
           Positioned(
             top: 491,
             left: 31,
