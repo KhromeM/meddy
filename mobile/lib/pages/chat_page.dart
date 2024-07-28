@@ -126,6 +126,7 @@ class _ChatPageState extends State<ChatPage> {
     }
     Uint8List? imageData = await _chatService.fetchImage(imageID);
     _imageCache[imageID] = imageData;
+    _scrollToBottom();
     return imageData;
   }
 
