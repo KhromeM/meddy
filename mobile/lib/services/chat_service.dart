@@ -14,12 +14,11 @@ class ChatService {
       final response = await http.get(Uri.parse('$baseUrl/chat'), headers: {
         "idToken": "dev",
       });
-      List<dynamic> chatHistory = jsonDecode(response.body)['chatHistory'];
-      // print("Parsing messages..");
-      var messages =
-          chatHistory.map((message) => Message.fromJson(message)).toList();
-      // print("MESSAGES: ");
-      // print(messages);
+      List<dynamic> chatHistory =
+          jsonDecode(response.body)['chatHistory'];
+      var messages = chatHistory
+          .map((message) => Message.fromJson(message))
+          .toList();
       return messages;
     } catch (e) {
       print(e.toString());

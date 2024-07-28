@@ -7,12 +7,11 @@ import 'package:meddymobile/services/chat_service.dart';
 import 'package:meddymobile/utils/ws_connection.dart';
 import 'package:meddymobile/services/recorder_service.dart';
 import 'package:meddymobile/services/player_service.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:meddymobile/widgets/animated_stop_button.dart';
 import 'package:meddymobile/widgets/high_contrast_mode.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:meddymobile/widgets/message_list.dart';
 import 'package:path/path.dart' as path;
-import 'dart:typed_data';
 import 'dart:async';
 import 'package:uuid/uuid.dart';
 import 'package:image/image.dart' as img;
@@ -68,9 +67,7 @@ class _ChatPageState extends State<ChatPage> {
     if (widget.initialPrompt != null) {
       _sendInitialPrompt(widget.initialPrompt!);
     }
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollToBottom();
-    });
+    _scrollToBottom();
   }
 
   Future<void> _loadChatHistory() async {
@@ -155,13 +152,16 @@ class _ChatPageState extends State<ChatPage> {
     setState(() {
       _chatHistory[index] = _chatHistory[index].copyWith(text: text);
     });
+    _scrollToBottom();
   }
 
   void _scrollToBottom() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 100), () {
       if (_scrollController.hasClients) {
+        final position = _scrollController.position.maxScrollExtent;
         _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
+          position,
           duration: Duration(milliseconds: 300),
           curve: Curves.easeOut,
         );
@@ -173,18 +173,19 @@ class _ChatPageState extends State<ChatPage> {
     if (_isSendingImage) return;
 
     final String reqId = _uuid.v4();
+    String text = _textEditingController.text.isEmpty
+        ? "describe this image"
+        : _textEditingController.text;
+
     if (_textEditingController.text.isNotEmpty || _previewImagePath != null) {
       try {
-        setState(() {
-          _isSendingImage = true;
-        });
-
         if (_previewImagePath != null) {
+          setState(() {
+            _isSendingImage = true;
+          });
           String imageBaseName = path.basename(_previewImagePath!);
           await _chatService.uploadImage(_previewImagePath!);
-          String text = _textEditingController.text.isEmpty
-              ? "describe this image"
-              : _textEditingController.text;
+
           _addMessageToChatHistory("user", text, reqId + "_user",
               imageID: imageBaseName);
           ws.sendMessage({
@@ -235,8 +236,6 @@ class _ChatPageState extends State<ChatPage> {
         _isGenerating = false;
       }
     });
-
-    _scrollToBottom();
   }
 
   void _handleTranscription(dynamic message) {
@@ -255,7 +254,10 @@ class _ChatPageState extends State<ChatPage> {
         return;
       }
       String fullMessage = _messageBuffer[reqId]!.join(" ");
-      _updateCurrentMessageChunk(fullMessage, reqId);
+      _updateCurrentMessageChunk(
+        fullMessage,
+        reqId,
+      );
     });
 
     _scrollToBottom();
@@ -308,20 +310,6 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    final highContrastMode = HighContrastMode.of(context);
-
-    // Define colors for normal and high contrast modes
-    final Color userMessageColor = highContrastMode?.isHighContrast == true
-        ? Colors.black
-        : Color.fromRGBO(255, 254, 251, 1);
-    final Color llmMessageColor = highContrastMode?.isHighContrast == true
-        ? Colors.white
-        : Color.fromRGBO(255, 242, 228, 1);
-    final Color userTextColor =
-        highContrastMode?.isHighContrast == true ? Colors.white : Colors.black;
-    final Color llmTextColor =
-        highContrastMode?.isHighContrast == true ? Colors.black : Colors.black;
-
     return Scaffold(
       body: Column(
         children: [
@@ -330,43 +318,10 @@ class _ChatPageState extends State<ChatPage> {
               children: [
                 _isLoading
                     ? Center(child: CircularProgressIndicator())
-                    : ListView.builder(
-                        controller: _scrollController,
-                        itemCount: _chatHistory.length,
-                        itemBuilder: (context, index) {
-                          final message = _chatHistory[index];
-                          final isUser = message.source == "user";
-                          return Align(
-                            alignment: isUser
-                                ? Alignment.centerRight
-                                : Alignment.centerLeft,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              child: Container(
-                                key: ValueKey(message.messageId),
-                                decoration: BoxDecoration(
-                                  color: isUser
-                                      ? userMessageColor
-                                      : llmMessageColor,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10.0, horizontal: 15.0),
-                                margin: EdgeInsets.symmetric(
-                                    vertical: 5.0, horizontal: 10.0),
-                                child: MarkdownBody(
-                                  data: message.text,
-                                  styleSheet: MarkdownStyleSheet(
-                                    p: TextStyle(
-                                      color:
-                                          isUser ? userTextColor : llmTextColor,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
+                    : MessageList(
+                        messages: _chatHistory,
+                        scrollController: _scrollController,
+                        fetchImage: _fetchImage,
                       ),
                 if (_isGenerating)
                   Positioned(
@@ -401,8 +356,8 @@ class _ChatPageState extends State<ChatPage> {
                                 borderRadius: BorderRadius.circular(16.0),
                                 child: Image.file(
                                   File(_previewImagePath!),
-                                  width: 100, // Full width of the container
-                                  height: 130, // Adjust as needed
+                                  width: 100,
+                                  height: 130,
                                   fit: BoxFit.cover,
                                 ),
                               ),
