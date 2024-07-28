@@ -11,16 +11,13 @@ class ChatService {
 
   Future<List<Message>> getChatHistory() async {
     try {
-      final response = await http
-          .get(Uri.parse('$baseUrl/chat'), headers: {
+      final response = await http.get(Uri.parse('$baseUrl/chat'), headers: {
         "idToken": "dev",
       });
-      List<dynamic> chatHistory =
-          jsonDecode(response.body)['chatHistory'];
+      List<dynamic> chatHistory = jsonDecode(response.body)['chatHistory'];
       print("Parsing messages..");
-      var messages = chatHistory
-          .map((message) => Message.fromJson(message))
-          .toList();
+      var messages =
+          chatHistory.map((message) => Message.fromJson(message)).toList();
       print("MESSAGES: ");
       print(messages);
       return messages;
@@ -57,8 +54,7 @@ class ChatService {
 
   Future<Uint8List?> fetchImage(String imageId) async {
     try {
-      final uri = Uri.parse('$baseUrl/image')
-          .replace(queryParameters: {
+      final uri = Uri.parse('$baseUrl/image').replace(queryParameters: {
         'image': imageId,
       });
 
@@ -73,8 +69,7 @@ class ChatService {
       if (response.statusCode == 200) {
         return response.bodyBytes;
       } else {
-        print(
-            'Error fetching image: ${response.statusCode}');
+        print('Error fetching image: ${response.statusCode}');
         return null;
       }
     } catch (e) {
