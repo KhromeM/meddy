@@ -16,7 +16,7 @@ class Message {
   });
 
   factory Message.fromJson(Map<String, dynamic> json) {
-    print(json);
+    // print(json);
     return Message(
       messageId: json['messageid'].toString(),
       userId: json['userid'],
@@ -56,4 +56,3 @@ class Message {
     );
   }
 }
-
