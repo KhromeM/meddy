@@ -91,7 +91,7 @@ export const TTS_WS = async (
 				})
 			);
 			if (message.audio) {
-				console.log(message.audio);
+				// console.log(message.audio);
 				// logging
 				if (!req.logs.firstAudioChunkFromTTS) {
 					req.logs.firstAudioChunkFromTTS = Date.now();
