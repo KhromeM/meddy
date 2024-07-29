@@ -117,6 +117,7 @@ class _MainBackgroundState extends State<MainBackground>
             color: Color(0xFFCAEB45),
             isAnimated: true,
           ),
+          // Merging the conflicting section
           Positioned(
             top: 151,
             left: 265,
@@ -128,7 +129,6 @@ class _MainBackgroundState extends State<MainBackground>
               ),
             ),
           ),
-          // Other positioned elements remain unchanged
           Positioned(
             top: 491,
             left: 31,
