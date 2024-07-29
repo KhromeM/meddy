@@ -1,11 +1,15 @@
+import { v4 as uuid } from "uuid";
+
 class AudioService {
 	constructor(wsConnection) {
 		this.wsConnection = wsConnection;
 		this.audioContext = null;
-		this.audioQueue = [];
+		this.audioQueue1 = [];
+		this.audioQueue3 = [];
 		this.isPlaying = false;
 		this.microphone = null;
 		this.lang = "en";
+		this.requestId = null;
 	}
 
 	initAudioContext() {
@@ -24,40 +28,54 @@ class AudioService {
 		for (let i = 0; i < audioData.length; i++) {
 			view[i] = audioData.charCodeAt(i);
 		}
-		if (!arrayBuffer) return this.playNextChunk();
-		const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
-		const source = this.audioContext.createBufferSource();
-		source.buffer = audioBuffer;
-		source.connect(this.audioContext.destination);
 
-		source.onended = () => {
+		if (!arrayBuffer || arrayBuffer.byteLength == 0) return;
+		try {
+			const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
+			const source = this.audioContext.createBufferSource();
+			source.buffer = audioBuffer;
+			source.connect(this.audioContext.destination);
+			await new Promise((resolve) => {
+				source.onended = () => {
+					this.isPlaying = false;
+					resolve();
+				};
+				source.start(0);
+				this.isPlaying = true;
+			});
+		} catch (err) {
+			console.error("error playing audio: ", err);
+			console.log(arrayBuffer);
 			this.isPlaying = false;
-			this.playNextChunk();
-		};
-
-		source.start(0);
-		this.isPlaying = true;
+		}
 	}
 
-	playNextChunk() {
-		console.log("playing chunk");
-		if (this.audioQueue.length > 0 && !this.isPlaying) {
-			const nextChunk = this.audioQueue.shift();
-			try {
-				this.playAudioChunk(nextChunk);
-			} catch (err) {
-				console.error("error playing chunk ", err);
-				this.playNextChunk();
+	playBestAudio() {
+		const loop = setInterval(async () => {
+			if (this.isPlaying) return;
+			if (this.audioQueue3.length > 0) {
+				// if we have the best audio then just play that then end the loop
+				await this.playQueue(this.audioQueue3);
+				clearInterval(loop);
+				return;
 			}
-		}
+			if (this.audioQueue1.length > 0) {
+				await this.playQueue(this.audioQueue1);
+			}
+		}, 100);
 	}
-
-	queueAudioChunk(base64Audio) {
-		console.log("TIME TO AUDIO: ", Date.now());
-		this.audioQueue.push(base64Audio);
-		if (!this.isPlaying) {
-			this.playNextChunk();
-		}
+	async playQueue(audioQueue) {
+		await new Promise(async (resolve) => {
+			while (audioQueue.length > 0) {
+				const chunk = audioQueue.shift();
+				try {
+					await this.playAudioChunk(chunk);
+				} catch (err) {
+					console.error("error playing chunk ", err);
+				}
+			}
+			resolve();
+		});
 	}
 
 	async getMicrophone() {
@@ -75,6 +93,18 @@ class AudioService {
 			console.warn("Microphone is already recording");
 			return;
 		}
+		this.requestId = uuid();
+
+		this.wsConnection.setHandler("audio_3", (message) => {
+			if (message.audio) {
+				this.audioQueue3.push(message.audio);
+			}
+		});
+		this.wsConnection.setHandler("audio_1", (message) => {
+			if (message.audio) {
+				this.audioQueue1.push(message.audio);
+			}
+		});
 
 		try {
 			this.microphone = await this.getMicrophone();
@@ -101,8 +131,12 @@ class AudioService {
 			data: {
 				isComplete: true,
 				audioChunk: " ",
+				reqId: this.requestId,
+				lang: this.lang,
 			},
 		});
+		this.requestId = null;
+		this.playBestAudio();
 	}
 
 	async handleAudioData(event) {
@@ -120,6 +154,7 @@ class AudioService {
 						mimeType: event.data.type,
 						isComplete: false,
 						lang: this.lang,
+						reqId: this.requestId,
 					},
 				});
 			} catch (error) {

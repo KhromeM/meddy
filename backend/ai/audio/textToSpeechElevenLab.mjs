@@ -88,6 +88,7 @@ export const TTS_WS = async (
 					...message,
 					reqId: req.reqId,
 					type,
+					output_format,
 				})
 			);
 			if (message.audio) {

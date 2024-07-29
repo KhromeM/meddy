@@ -24,7 +24,7 @@ class WSConnection {
 
 			this.socket.onmessage = (event) => {
 				const message = JSON.parse(event.data);
-				console.log(message);
+				console.log(message.type, message);
 				const handler = this.handlers[message.type];
 				if (handler) {
 					handler(message);

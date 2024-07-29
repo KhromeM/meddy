@@ -18,21 +18,21 @@ const Chat = () => {
 	const wsConnectionRef = useRef(null);
 	const audioServiceRef = useRef(null);
 
+	const setupWebSocket = async () => {
+		if (user && !wsConnectionRef.current) {
+			console.log("CONNECTING WS");
+			const wsConnection = new WSConnection();
+			await wsConnection.connect();
+			const idToken = await user.getIdToken(false);
+			await wsConnection.authenticate(idToken);
+			wsConnectionRef.current = wsConnection;
+			audioServiceRef.current = new AudioService(wsConnection);
+			console.log("WebSocket connected and authenticated");
+		}
+	};
+
 	useEffect(() => {
-		const setupWebSocket = async () => {
-			if (user && !wsConnectionRef.current) {
-				const wsConnection = new WSConnection();
-				await wsConnection.connect();
-				const idToken = await user.getIdToken(false);
-				await wsConnection.authenticate(idToken);
-				wsConnectionRef.current = wsConnection;
-				audioServiceRef.current = new AudioService(wsConnection);
-				console.log("WebSocket connected and authenticated");
-			}
-		};
-
 		setupWebSocket().catch(console.error);
-
 		return () => {
 			if (wsConnectionRef.current) {
 				wsConnectionRef.current.close();
@@ -40,13 +40,6 @@ const Chat = () => {
 			}
 		};
 	}, [user]);
-	useEffect(() => {
-		if (wsConnectionRef.current) {
-			wsConnectionRef.current.setHandler("audio_3", (message) => {
-				audioServiceRef.current.queueAudioChunk(message.audio);
-			});
-		}
-	}, [wsConnectionRef, audioServiceRef]);
 
 	const scrollToBottom = () => {
 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -57,6 +50,7 @@ const Chat = () => {
 	}, [messages]);
 
 	const messageLLM = async (message) => {
+		await setupWebSocket(); // doesnt do anything theres already a ws connection
 		setInProgress(true);
 		let currentResponse = "";
 
@@ -93,18 +87,23 @@ const Chat = () => {
 		messageLLM(message);
 	};
 
-	const toggleAudio = () => {
-		setAudioMode((prevMode) => {
-			const newMode = !prevMode;
-			if (newMode) {
-				audioServiceRef.current.startRecording();
-			} else {
-				audioServiceRef.current.stopRecording();
-			}
-			return newMode;
-		});
-	};
+	const toggleAudio = async () => {
+		try {
+			await setupWebSocket(); // Ensure WebSocket is set up
 
+			if (!audioMode) {
+				await audioServiceRef.current.startRecording();
+				setAudioMode(true);
+			} else {
+				await audioServiceRef.current.stopRecording();
+				setAudioMode(false);
+			}
+		} catch (err) {
+			console.error("Error toggling audio mode:", err);
+			setAudioMode(false);
+		}
+	};
+	console.log(audioMode);
 	return (
 		<Flex direction="column" h="100vh" bg={"fef9ef"}>
 			{messages.length === 0 ? (

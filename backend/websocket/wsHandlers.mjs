@@ -62,7 +62,7 @@ export function setupWebSocketHandlers(wss) {
 			ws.on("message", async (message) => {
 				try {
 					const { type, data } = JSON.parse(message);
-					console.log(JSON.parse(message));
+					// console.log(JSON.parse(message));
 					// if (!type || !data) {
 					// 	console.log("INVALID: ", JSON.parse(message));
 

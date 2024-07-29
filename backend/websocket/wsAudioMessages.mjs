@@ -32,7 +32,7 @@ export async function handleAudioMessage(state, data) {
 	}
 	const req = state.requests[reqId];
 	// console.log("partial transcript: ", req.partialTranscript, reqId);
-	// handlePartialResponse(state.clientSocket, req); // send audio response based on partial transcription to reduce latency
+	handlePartialResponse(state.clientSocket, req); // send audio response based on partial transcription to reduce latency
 
 	if (req.partialTranscript.length === 0) {
 		// Logging
