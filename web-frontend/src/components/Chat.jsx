@@ -1,23 +1,41 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Box, Flex, useColorModeValue, Image, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import InitialView from "./InitialView";
 import { useAuth } from "../firebase/AuthService.jsx";
-import { chatLLMStreamWS, openWebSocket } from "../server/LLM.js";
+import { chatLLMStreamWS } from "../server/sendMessage.js";
 import MeddyIcon from "./MeddyIcon.jsx";
+import WSConnection from "../utils/WSConnection";
 
 const Chat = () => {
 	const [messages, setMessages] = useState([]);
+	const [audioMode, setAudioMode] = useState(false);
 	const [inProgress, setInProgress] = useState(false);
 	const { user } = useAuth();
 	const messagesEndRef = useRef(null);
-	const bgColor = useColorModeValue("linen", "gray.800");
+	const wsConnectionRef = useRef(null);
 
 	useEffect(() => {
-		(async () => {
-			await openWebSocket(user);
-		})();
+		const setupWebSocket = async () => {
+			if (user && !wsConnectionRef.current) {
+				const wsConnection = new WSConnection();
+				await wsConnection.connect();
+				const idToken = await user.getIdToken(false);
+				await wsConnection.authenticate(idToken);
+				wsConnectionRef.current = wsConnection;
+				console.log("WebSocket connected and authenticated");
+			}
+		};
+
+		setupWebSocket().catch(console.error);
+
+		return () => {
+			if (wsConnectionRef.current) {
+				wsConnectionRef.current.close();
+				wsConnectionRef.current = null;
+			}
+		};
 	}, [user]);
 
 	const scrollToBottom = () => {
@@ -48,7 +66,12 @@ const Chat = () => {
 			setInProgress(false);
 		};
 
-		chatLLMStreamWS(message, onChunk, onComplete);
+		await chatLLMStreamWS(
+			wsConnectionRef.current,
+			message,
+			onChunk,
+			onComplete
+		);
 	};
 
 	const addMessageFromUser = (message) => {
@@ -60,6 +83,10 @@ const Chat = () => {
 		messageLLM(message);
 	};
 
+	const toggleAudio = () => {
+		setAudioMode(!audioMode);
+	};
+
 	return (
 		<Flex direction="column" h="100vh" bg={"fef9ef"}>
 			{messages.length === 0 ? (
@@ -68,8 +95,7 @@ const Chat = () => {
 						<Flex>
 							<MeddyIcon boxSize="5rem" color="#843a06" />
 							<Text textColor="#843a06" textAlign="center">
-								{" "}
-								{true ? "Listening..." : ""}
+								{audioMode ? "Listening..." : ""}
 							</Text>
 						</Flex>
 					</Flex>
@@ -84,7 +110,12 @@ const Chat = () => {
 					/>
 				</Box>
 			)}
-			<MessageInput onSend={addMessageFromUser} inProgress={inProgress} />
+			<MessageInput
+				onSend={addMessageFromUser}
+				inProgress={inProgress}
+				toggleAudio={toggleAudio}
+				audioMode={audioMode}
+			/>
 		</Flex>
 	);
 };

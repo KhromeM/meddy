@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Flex, Input, IconButton } from "@chakra-ui/react";
-import { FaMicrophone, FaAngleRight } from "react-icons/fa";
+import { FaMicrophone, FaAngleRight, FaRegStopCircle } from "react-icons/fa";
 
-const MessageInput = ({ onSend, inProgress }) => {
+const MessageInput = ({ onSend, inProgress, toggleAudio, audioMode }) => {
 	const [text, setText] = useState("");
 
 	const handleSend = () => {
@@ -54,11 +54,12 @@ const MessageInput = ({ onSend, inProgress }) => {
 				/>
 			</Flex>
 			<IconButton
-				icon={<FaMicrophone />}
+				icon={audioMode ? <FaRegStopCircle /> : <FaMicrophone />}
 				colorScheme="orange"
 				aria-label="Voice input"
 				borderRadius="full"
 				size="lg"
+				onClick={toggleAudio}
 			/>
 		</Flex>
 	);
