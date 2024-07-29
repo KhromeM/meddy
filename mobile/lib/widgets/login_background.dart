@@ -14,7 +14,7 @@ class _LoginBackgroundState extends State<LoginBackground>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(seconds: 4),
+      duration: const Duration(seconds: 3),
       vsync: this,
     )..repeat(reverse: true);
     _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
@@ -26,38 +26,60 @@ class _LoginBackgroundState extends State<LoginBackground>
     super.dispose();
   }
 
-  Widget _buildAnimatedCircle({
+  Widget _buildCircle({
     required double top,
     required double left,
-    required double baseSize,
+    required double size,
     required Color color,
     bool isFilled = false,
     double borderWidth = 20,
+    bool isAnimated = false,
   }) {
-    return AnimatedBuilder(
-      animation: _animation,
-      builder: (context, child) {
-        final size = baseSize + (10 * _animation.value);
-        return Positioned(
-          top: top,
-          left: left,
-          child: Container(
-            width: size,
-            height: size,
-            decoration: BoxDecoration(
-              color: isFilled ? color : Color.fromRGBO(254, 249, 239, 1),
-              border: isFilled
-                  ? null
-                  : Border.all(
-                      color: color,
-                      width: borderWidth,
-                    ),
-              borderRadius: BorderRadius.all(Radius.elliptical(size, size)),
-            ),
-          ),
-        );
-      },
+    Widget circle = Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: isFilled ? color : Color.fromRGBO(254, 249, 239, 1),
+        border: Border.all(
+          color: color,
+          width: borderWidth,
+        ),
+        borderRadius: BorderRadius.all(Radius.elliptical(size, size)),
+      ),
     );
+
+    if (isAnimated) {
+      return AnimatedBuilder(
+        animation: _animation,
+        builder: (context, child) {
+          final animatedSize =
+              size + (size * 0.25 * _animation.value); // 25% size variation
+          return Positioned(
+            top: top + (size - animatedSize) / 2,
+            left: left + (size - animatedSize) / 2,
+            child: Container(
+              width: animatedSize,
+              height: animatedSize,
+              decoration: BoxDecoration(
+                color: isFilled ? color : Color.fromRGBO(254, 249, 239, 1),
+                border: Border.all(
+                  color: color,
+                  width: borderWidth,
+                ),
+                borderRadius: BorderRadius.all(
+                    Radius.elliptical(animatedSize, animatedSize)),
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      return Positioned(
+        top: top,
+        left: left,
+        child: circle,
+      );
+    }
   }
 
   @override
@@ -71,57 +93,62 @@ class _LoginBackgroundState extends State<LoginBackground>
       ),
       child: Stack(
         children: <Widget>[
-          // red top right circle
-          _buildAnimatedCircle(
+          // top right circle
+          _buildCircle(
             top: -28,
             left: 262,
-            baseSize: 184,
-            color: Color.fromRGBO(255, 86, 94, 0.5),
-            isFilled: true,
+            size: 184,
+            color: Color(0xFFA489E0),
+            isFilled: false,
+            isAnimated: true,
           ),
           // bottom right hollow exterior
-          _buildAnimatedCircle(
+          _buildCircle(
             top: 614,
             left: 146,
-            baseSize: 300,
+            size: 300,
             color: Color.fromRGBO(255, 184, 76, 1),
-          ),
-          // bottom left exterior
-          _buildAnimatedCircle(
-            top: 743,
-            left: -64,
-            baseSize: 184,
-            color: Color.fromRGBO(191, 161, 255, 1),
           ),
           // bottom right solid interior orange circle
-          _buildAnimatedCircle(
-            top: 651,
-            left: 183,
-            baseSize: 225,
+          _buildCircle(
+            top: 676,
+            left: 208,
+            size: 175,
             color: Color.fromRGBO(255, 184, 76, 1),
             isFilled: true,
+            isAnimated: true,
           ),
-          // middle left circle
-          _buildAnimatedCircle(
-            top: 151,
-            left: -214,
-            baseSize: 300,
-            color: Color.fromRGBO(255, 184, 76, 1),
-          ),
-          // bottom left interior
-          _buildAnimatedCircle(
-            top: 778,
-            left: -32,
-            baseSize: 120,
+          // bottom left exterior
+          _buildCircle(
+            top: 743,
+            left: -64,
+            size: 184,
             color: Color.fromRGBO(191, 161, 255, 1),
           ),
+          // middle left circle
+          _buildCircle(
+            top: 151,
+            left: -214,
+            size: 250,
+            color: Color(0xFFCAEB45),
+            isAnimated: true,
+          ),
+          // bottom left interior
+          _buildCircle(
+            top: 788,
+            left: -22,
+            size: 100,
+            color: Color.fromRGBO(191, 161, 255, 1),
+            isAnimated: true,
+          ),
           // small hollow circle between the top right and bottom right circles
-          _buildAnimatedCircle(
+          _buildCircle(
             top: 300,
             left: 345,
-            baseSize: 100,
+            size: 100,
             color: Color.fromRGBO(255, 184, 76, 1),
             borderWidth: 12,
+            isAnimated: true,
           ),
         ],
       ),
