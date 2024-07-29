@@ -4,7 +4,7 @@ import 'package:meddymobile/widgets/main_background.dart';
 import 'package:meddymobile/widgets/backnav_app_bar.dart';
 import 'package:meddymobile/utils/app_colors.dart';
 import 'package:intl/intl.dart';
-import 'package:percent_indicator/percent_indicator.dart';
+import 'package:meddymobile/services/appointment_service.dart';
 
 class ReminderPage extends StatefulWidget {
   const ReminderPage({super.key});
@@ -27,30 +27,94 @@ class _ReminderPageState extends State<ReminderPage> {
   void initState() {
     super.initState();
     _firstName = _authService.getFirstName() ?? 'User';
+    _fetchAppointments();
   }
 
-  void _addReminder(DateTime date, TimeOfDay time) {
-    setState(() {
-      _reminders.add({
-        'date': date,
-        'time': time,
-        'repeatDays': _repeatOption,
+  void _fetchAppointments() async {
+    final service = AppointmentService();
+    try {
+      final appointments = await service.getAppointmentsByDate(
+        DateFormat('yyyy-MM-dd').format(_selectedDate),
+      );
+      // Update _reminders with fetched appointments
+      setState(() {
+        _reminders = appointments
+            .map((app) => {
+                  'date': DateTime.parse(app['date']),
+                  'time': TimeOfDay.fromDateTime(DateTime.parse(app['date'])),
+                  'repeatDays': app['repeatDays'] ?? 'Never',
+                })
+            .toList();
       });
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Reminder added!'),
-        behavior: SnackBarBehavior.floating, // Makes the Snackbar floating
-        margin: EdgeInsets.symmetric(
-            horizontal: 16, vertical: 20), // Adds padding around the Snackbar
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-    );
+    } catch (e) {
+      // Handle error
+      print(e);
+    }
   }
 
-  void _removeReminder(int index) {
+  void _addReminder(DateTime date, TimeOfDay time) async {
+    final service = AppointmentService();
+    try {
+      await service.createAppointment(
+        date: DateFormat('yyyy-MM-dd').format(date),
+        userId: 'userId', // Replace with actual user ID
+        doctorId: 'doctorId', // Replace with actual doctor ID
+      );
+      // Update UI
+      setState(() {
+        _reminders.add({
+          'date': date,
+          'time': time,
+          'repeatDays': _repeatOption,
+        });
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Reminder added!'),
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+      );
+    } catch (e) {
+      // Handle error
+      print(e);
+    }
+  }
+
+  void _removeReminder(int index) async {
+    final service = AppointmentService();
+    try {
+      await service.deleteAppointment(_reminders[index]['id']);
+      setState(() {
+        _reminders.removeAt(index);
+      });
+    } catch (e) {
+      // Handle error
+      print(e);
+    }
+  }
+
+  void _updateReminder(
+      String appointmentId, DateTime date, TimeOfDay time) async {
+    final service = AppointmentService();
+    try {
+      await service.updateAppointment(
+        appointmentId: appointmentId,
+        date: DateFormat('yyyy-MM-dd').format(date),
+        userId: 'userId', // Replace with actual user ID
+        doctorId: 'doctorId', // Replace with actual doctor ID
+      );
+      // Update UI if needed
+    } catch (e) {
+      // Handle error
+      print(e);
+    }
+  }
+
+  void _updateSelectedDate(DateTime date) {
     setState(() {
-      _reminders.removeAt(index);
+      _selectedDate = date;
     });
   }
 
@@ -118,6 +182,12 @@ class _ReminderPageState extends State<ReminderPage> {
                       ],
                     ),
                     Divider(),
+                    TextFormField(
+                      initialValue: 'New Reminder',
+                      decoration: InputDecoration(
+                        labelText: 'Reminder Title',
+                      ),
+                    ),
                     SwitchListTile(
                       title: Text('Date'),
                       value: _showDatePicker,
@@ -312,118 +382,152 @@ class _ReminderPageState extends State<ReminderPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          MainBackground(),
-          Scaffold(
-            backgroundColor: Colors.transparent,
-            appBar: BacknavAppBar(),
-            body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Reminders",
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
+    DateTime today = DateTime.now();
+    List<Map<String, dynamic>> todaysReminders = _reminders
+        .where((reminder) =>
+            reminder['date'].year == _selectedDate.year &&
+            reminder['date'].month == _selectedDate.month &&
+            reminder['date'].day == _selectedDate.day)
+        .toList();
+
+    List<Map<String, dynamic>> futureReminders = _reminders
+        .where((reminder) =>
+            reminder['date'].isAfter(_selectedDate) ||
+            (reminder['date'].year == _selectedDate.year &&
+                reminder['date'].month == _selectedDate.month &&
+                reminder['date'].day > _selectedDate.day))
+        .toList();
+
+    return Stack(
+      children: [
+        MainBackground(),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: BacknavAppBar(),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Reminders',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
                         ),
-                        Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  right: 5), // Adjust padding here
-                              child: Text(
-                                DateFormat.MMMM().format(_selectedDate),
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.calendar_today),
-                              onPressed: () => _selectDate(context),
-                            ),
-                          ],
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.calendar_today, size: 24.0),
+                        onPressed: () async {
+                          DateTime? selectedDate = await showDatePicker(
+                            context: context,
+                            initialDate: _selectedDate,
+                            firstDate: DateTime(2000),
+                            lastDate: DateTime(2101),
+                          );
+                          if (selectedDate != null) {
+                            _updateSelectedDate(selectedDate);
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: _buildDateCards(),
+                  ),
+                  SizedBox(height: 10),
+// Today's Reminders Section
+                  Text(
+                    'Today\'s Reminders',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  if (todaysReminders.isNotEmpty) ...[
+                    ...todaysReminders.map((reminder) {
+                      return ListTile(
+                        title: Text(
+                          'Reminder at ${DateFormat.jm().format(DateTime(
+                            reminder['date'].year,
+                            reminder['date'].month,
+                            reminder['date'].day,
+                            reminder['time'].hour,
+                            reminder['time'].minute,
+                          ))}',
+                          style: TextStyle(color: Colors.blue),
                         ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: _buildDateCards(),
-                    ),
-                    SizedBox(height: 40),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Tasks',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () =>
+                              _removeReminder(_reminders.indexOf(reminder)),
                         ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    Column(
-                      children: _reminders.map((reminder) {
-                        return Card(
-                          margin: EdgeInsets.symmetric(vertical: 8),
-                          child: ListTile(
-                            contentPadding: EdgeInsets.all(16),
-                            title: Text(
-                              '${DateFormat.yMd().format(reminder['date'])} at ${reminder['time'].format(context)}',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            subtitle: Text('Repeat: ${reminder['repeatDays']}'),
-                            trailing: IconButton(
-                              icon: Icon(Icons.delete, color: Colors.red),
-                              onPressed: () {
-                                _removeReminder(_reminders.indexOf(reminder));
-                              },
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
+                      );
+                    }).toList(),
+                  ] else ...[
+                    Text('No reminders!', style: TextStyle(color: Colors.grey)),
                   ],
-                ),
+                  SizedBox(height: 20),
+// Upcoming Reminders Section
+                  Text(
+                    'Upcoming Reminders',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  if (futureReminders.isNotEmpty) ...[
+                    ...futureReminders.map((reminder) {
+                      return ListTile(
+                        title: Text(
+                          'Reminder on ${DateFormat.yMMMd().format(reminder['date'])} at ${reminder['time'].format(context)}',
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () =>
+                              _removeReminder(_reminders.indexOf(reminder)),
+                        ),
+                      );
+                    }).toList(),
+                  ] else ...[
+                    Text('No reminders!', style: TextStyle(color: Colors.grey)),
+                  ],
+                ],
               ),
             ),
           ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showAddReminderBottomSheet,
-        child: Icon(Icons.add_circle_outline, color: Colors.white),
-        backgroundColor: Colors.orangeAccent,
-        tooltip: 'Add Reminder',
-      ),
+          floatingActionButton: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              backgroundColor: Colors.orangeAccent,
+            ),
+            onPressed: _showAddReminderBottomSheet,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.add_circle_outline, color: Colors.white),
+                SizedBox(width: 8),
+                Text(
+                  'Reminder',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-      });
-    }
   }
 }
