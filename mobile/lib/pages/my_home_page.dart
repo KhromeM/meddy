@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:meddymobile/utils/app_colors.dart';
 import 'package:meddymobile/widgets/boxes.dart';
+import 'package:meddymobile/widgets/high_contrast_mode.dart';
 import 'package:meddymobile/widgets/main_background.dart';
 import 'package:meddymobile/widgets/mic_page.dart';
 import 'package:meddymobile/widgets/custom_app_bar.dart';
@@ -56,6 +58,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final highContrastMode = HighContrastMode.of(context);
+
     return Stack(
       children: [
         MainBackground(),
@@ -76,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       width: 100.0,
                       height: 100.0,
                       decoration: BoxDecoration(
-                        color: Colors.red,
+                        color: orangeAccent,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -91,9 +95,21 @@ class _MyHomePageState extends State<MyHomePage> {
               // add images here or comment out next line if working on android emu
               Boxes(
                 texts: texts,
+                isHighContrast:
+                    highContrastMode?.isHighContrast ??
+                        false,
               ), // images: null),
               SizedBox(height: 100),
             ],
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed:
+                highContrastMode?.toggleHighContrastMode,
+            child: Icon(
+              highContrastMode?.isHighContrast == true
+                  ? Icons.brightness_7
+                  : Icons.brightness_3,
+            ),
           ),
         ),
       ],
@@ -103,7 +119,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void _showMic() {
     showDialog(
       context: context,
-      barrierDismissible: true, // prevent closing the dialog
+      barrierDismissible:
+          true, // prevent closing the dialog
       builder: (context) {
         return Material(
           color: Theme.of(context).colorScheme.surface,

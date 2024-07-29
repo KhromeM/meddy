@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:meddymobile/pages/chat_page.dart';
+import 'package:meddymobile/pages/health_page.dart';
 import 'package:meddymobile/pages/reminder_page.dart';
 import 'package:meddymobile/utils/app_colors.dart';
 import 'package:meddymobile/services/auth_service.dart';
 import 'package:meddymobile/pages/signin_page.dart';
-
+import 'package:flutter_svg/flutter_svg.dart';
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   @override
   _CustomAppBarState createState() => _CustomAppBarState();
@@ -81,7 +82,11 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     child: _buildSquareButton(
                       'Health',
                       () {
-                        // TODO: Navigate to health page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ProfilePage()),
+                        );
                       },
                     ),
                   ),
@@ -197,26 +202,12 @@ class _CustomAppBarState extends State<CustomAppBar> {
           _showBottomSheet(context);
         },
         child: Padding(
-          padding: const EdgeInsets.only(left: 10),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Icon(
-                Icons.circle,
-                size: 60,
-                color: Colors.brown,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 14, top: 3),
-                child: FaIcon(
-                  FontAwesomeIcons.splotch,
-                  size: 20,
-                  color: Colors.white,
-                ),
-              )
-            ],
-          ),
+        padding: const EdgeInsets.only(left: 14.0, top: 0, bottom: 0, right: 0),
+        child: SvgPicture.asset(
+          'assets/images/logo_image.svg',
+          fit: BoxFit.contain,
         ),
+      ),
       ),
       actions: [
         InkWell(

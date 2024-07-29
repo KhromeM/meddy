@@ -35,3 +35,13 @@
 		opacity: 0.2;
 	}
 }
+
+h1,
+p {
+	line-height: 100%;
+}
+
+::selection {
+	color: black;
+	background: rgba(204, 120, 92, 0.5);
+}

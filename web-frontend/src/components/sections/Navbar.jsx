@@ -45,13 +45,13 @@ const Navbar = () => {
 
 			{/* Main Navbar */}
 			<Flex
-				bg="white"
+				bg="#FEF9EF"
 				py={4}
 				px={8}
 				justifyContent="space-between"
 				alignItems="center"
 				borderBottomWidth={1}
-				borderColor="gray.200"
+				borderColor="black"
 			>
 				{/* Logo */}
 				<Flex alignItems="center">

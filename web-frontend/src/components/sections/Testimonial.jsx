@@ -14,7 +14,7 @@ export const Testimonial = () => (
 					"I wanted to access my own medical data without jumping through a
 					dozen hoops"
 				</Text>
-				<Text fontWeight="bold">John Williams, Blind mf</Text>
+				<Text fontWeight="bold">John Williams, Early Meddy Adopter</Text>
 				<Image
 					src="/assets/svg-10.svg"
 					boxSize="100px"
