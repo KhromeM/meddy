@@ -1,18 +1,24 @@
-import { useState, useRef, useEffect } from "react";
-import { Box, VStack, Heading } from "@chakra-ui/react";
+import React, { useState, useRef, useEffect } from "react";
+import { Box, Flex, useColorModeValue, Image, Text } from "@chakra-ui/react";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
+import InitialView from "./InitialView";
 import { useAuth } from "../firebase/AuthService.jsx";
-import { chatLLM, chatLLMStreamWS, openWebSocket } from "../server/LLM.js";
+import { chatLLMStreamWS, openWebSocket } from "../server/LLM.js";
+import MeddyIcon from "./MeddyIcon.jsx";
 
 const Chat = () => {
 	const [messages, setMessages] = useState([]);
 	const [inProgress, setInProgress] = useState(false);
-	const responseBufferRef = useRef("");
-	const updateIntervalRef = useRef(null);
 	const { user } = useAuth();
-
 	const messagesEndRef = useRef(null);
+	const bgColor = useColorModeValue("linen", "gray.800");
+
+	useEffect(() => {
+		(async () => {
+			await openWebSocket(user);
+		})();
+	}, [user]);
 
 	const scrollToBottom = () => {
 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -21,12 +27,6 @@ const Chat = () => {
 	useEffect(() => {
 		scrollToBottom();
 	}, [messages]);
-
-	useEffect(() => {
-		(async () => {
-			await openWebSocket(user);
-		})();
-	}, [user]);
 
 	const messageLLM = async (message) => {
 		setInProgress(true);
@@ -60,30 +60,32 @@ const Chat = () => {
 		messageLLM(message);
 	};
 
-	if (!user) return <Heading> Login to Chat</Heading>;
 	return (
-		<Box
-			className="chat-container"
-			p={4}
-			maxW="lg"
-			borderWidth="1px"
-			borderRadius="lg"
-			overflow="hidden"
-			bg="white"
-			boxShadow="lg"
-		>
-			<Heading as="h1" size="lg" mb={4} textAlign="center" color="teal.500">
-				Chat Application
-			</Heading>
-			<VStack spacing={4}>
-				<MessageList
-					messages={messages}
-					messagesEndRef={messagesEndRef}
-					inProgress={inProgress}
-				/>
-				<MessageInput onSend={addMessageFromUser} inProgress={inProgress} />
-			</VStack>
-		</Box>
+		<Flex direction="column" h="100vh" bg={"fef9ef"}>
+			{messages.length === 0 ? (
+				<Box flex={1} overflowY="auto" px={4} py={2}>
+					<Flex justify="center" mb={8}>
+						<Flex>
+							<MeddyIcon boxSize="5rem" color="#843a06" />
+							<Text textColor="#843a06" textAlign="center">
+								{" "}
+								{true ? "Listening..." : ""}
+							</Text>
+						</Flex>
+					</Flex>
+					<InitialView />
+				</Box>
+			) : (
+				<Box flex={1} overflowY="auto" px={4} py={2}>
+					<MessageList
+						messages={messages}
+						messagesEndRef={messagesEndRef}
+						inProgress={inProgress}
+					/>
+				</Box>
+			)}
+			<MessageInput onSend={addMessageFromUser} inProgress={inProgress} />
+		</Flex>
 	);
 };
 

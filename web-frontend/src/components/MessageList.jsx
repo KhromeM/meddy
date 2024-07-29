@@ -1,30 +1,19 @@
-import { Box, VStack } from "@chakra-ui/react";
+import React from "react";
+import { VStack } from "@chakra-ui/react";
 import Message from "./Message";
 
 const MessageList = ({ messages, messagesEndRef, inProgress }) => {
 	return (
-		<Box
-			className="message-list"
-			p={4}
-			bg="gray.50"
-			borderRadius="lg"
-			overflowY="auto"
-			maxH="50vh"
-			w="100%"
-		>
-			<VStack spacing={4} align="stretch">
-				{messages.map((msg, index) => (
-					<Message
-						key={index}
-						message={msg}
-						isStreaming={
-							index === messages.length - 1 && !msg.isUser && inProgress
-						}
-					/>
-				))}
-				<div ref={messagesEndRef}></div>
-			</VStack>
-		</Box>
+		<VStack spacing={4} align="stretch">
+			{messages.map((msg, index) => (
+				<Message
+					key={index}
+					message={msg}
+					isStreaming={index === messages.length - 1 && inProgress}
+				/>
+			))}
+			<div ref={messagesEndRef} />
+		</VStack>
 	);
 };
 
