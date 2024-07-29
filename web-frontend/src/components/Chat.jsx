@@ -7,6 +7,7 @@ import { useAuth } from "../firebase/AuthService.jsx";
 import { chatLLMStreamWS } from "../server/sendMessage.js";
 import MeddyIcon from "./MeddyIcon.jsx";
 import WSConnection from "../utils/WSConnection";
+import AudioService from "../utils/AudioService";
 
 const Chat = () => {
 	const [messages, setMessages] = useState([]);
@@ -15,6 +16,7 @@ const Chat = () => {
 	const { user } = useAuth();
 	const messagesEndRef = useRef(null);
 	const wsConnectionRef = useRef(null);
+	const audioServiceRef = useRef(null);
 
 	useEffect(() => {
 		const setupWebSocket = async () => {
@@ -24,6 +26,7 @@ const Chat = () => {
 				const idToken = await user.getIdToken(false);
 				await wsConnection.authenticate(idToken);
 				wsConnectionRef.current = wsConnection;
+				audioServiceRef.current = new AudioService(wsConnection);
 				console.log("WebSocket connected and authenticated");
 			}
 		};
@@ -37,6 +40,13 @@ const Chat = () => {
 			}
 		};
 	}, [user]);
+	useEffect(() => {
+		if (wsConnectionRef.current) {
+			wsConnectionRef.current.setHandler("audio_3", (message) => {
+				audioServiceRef.current.queueAudioChunk(message.audio);
+			});
+		}
+	}, [wsConnectionRef, audioServiceRef]);
 
 	const scrollToBottom = () => {
 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -84,7 +94,15 @@ const Chat = () => {
 	};
 
 	const toggleAudio = () => {
-		setAudioMode(!audioMode);
+		setAudioMode((prevMode) => {
+			const newMode = !prevMode;
+			if (newMode) {
+				audioServiceRef.current.startRecording();
+			} else {
+				audioServiceRef.current.stopRecording();
+			}
+			return newMode;
+		});
 	};
 
 	return (
