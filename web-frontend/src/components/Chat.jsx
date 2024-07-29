@@ -8,6 +8,7 @@ import { chatLLMStreamWS } from "../server/sendMessage.js";
 import MeddyIcon from "./MeddyIcon.jsx";
 import WSConnection from "../utils/WSConnection";
 import AudioService from "../utils/AudioService";
+import Navbar from "./Navbar.jsx";
 
 const Chat = () => {
 	const [messages, setMessages] = useState([]);
@@ -106,6 +107,7 @@ const Chat = () => {
 	console.log(audioMode);
 	return (
 		<Flex direction="column" h="100vh" bg={"fef9ef"}>
+			<Navbar />{" "}
 			{messages.length === 0 ? (
 				<Box flex={1} overflowY="auto" px={4} py={2}>
 					<Flex justify="center" mb={8}>
