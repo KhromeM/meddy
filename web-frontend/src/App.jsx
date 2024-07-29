@@ -13,7 +13,7 @@ function App() {
 		<ChakraProvider theme={customTheme}>
 			<Router>
 				<AuthProvider>
-					{/* <ReactFluidCursor /> */}
+					<ReactFluidCursor />
 
 					<Routes>
 						<Route

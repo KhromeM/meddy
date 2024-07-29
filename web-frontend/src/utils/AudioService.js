@@ -41,12 +41,10 @@ class AudioService {
 					resolve();
 				};
 				source.start(0);
-				this.isPlaying = true;
 			});
 		} catch (err) {
 			console.error("error playing audio: ", err);
 			console.log(arrayBuffer);
-			this.isPlaying = false;
 		}
 	}
 
@@ -65,6 +63,7 @@ class AudioService {
 		}, 100);
 	}
 	async playQueue(audioQueue) {
+		this.isPlaying = true;
 		await new Promise(async (resolve) => {
 			while (audioQueue.length > 0) {
 				const chunk = audioQueue.shift();
@@ -74,6 +73,7 @@ class AudioService {
 					console.error("error playing chunk ", err);
 				}
 			}
+			this.isPlaying = false;
 			resolve();
 		});
 	}
@@ -122,6 +122,7 @@ class AudioService {
 			return;
 		}
 
+		await new Promise((resolve) => setTimeout(resolve, 50)); // get any audio chunks from the mic that are still being processed
 		this.microphone.stop();
 		this.microphone = null;
 		console.log("Stopped recording");
