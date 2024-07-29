@@ -24,6 +24,7 @@ export async function handleAudioMessage(state, data) {
 			lang: "en",
 			type: "audio",
 			isComplete: false,
+			source: state.source,
 			userFinishedTalking: false,
 			user: state.user,
 			logs: {},

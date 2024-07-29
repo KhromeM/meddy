@@ -54,6 +54,7 @@ dependencies:
   image_picker: ^1.1.2
   image: ^4.2.0
   path: ^1.9.0
+  sound_stream: ^0.3.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
