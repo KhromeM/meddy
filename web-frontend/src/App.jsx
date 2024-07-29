@@ -13,12 +13,13 @@ function App() {
 		<ChakraProvider theme={customTheme}>
 			<Router>
 				<AuthProvider>
+					{/* <ReactFluidCursor /> */}
+
 					<Routes>
 						<Route
 							path="/"
 							element={
 								<>
-									{/* <ReactFluidCursor /> */}
 									<LandingPage />{" "}
 								</>
 							}
@@ -27,7 +28,6 @@ function App() {
 							path="/chat"
 							element={
 								<>
-									<Navbar />
 									<Chat />
 								</>
 							}

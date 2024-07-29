@@ -1,76 +1,66 @@
-import { useState } from "react";
-import {
-	Box,
-	Input,
-	Button,
-	IconButton,
-	HStack,
-	Image,
-} from "@chakra-ui/react";
-import { AttachmentIcon } from "@chakra-ui/icons";
+import React, { useState } from "react";
+import { Flex, Input, IconButton } from "@chakra-ui/react";
+import { FaMicrophone, FaAngleRight } from "react-icons/fa";
 
 const MessageInput = ({ onSend, inProgress }) => {
 	const [text, setText] = useState("");
-	const [image, setImage] = useState(null);
 
 	const handleSend = () => {
-		if (text || image || !inProgress) {
-			onSend({ text, image, isUser: true });
+		if (text.trim() && !inProgress) {
+			onSend({ text: text.trim(), isUser: true });
 			setText("");
-			setImage(null);
-		}
-	};
-
-	const handleImageUpload = (e) => {
-		const file = e.target.files[0];
-		if (file) {
-			const reader = new FileReader();
-			reader.onloadend = () => {
-				setImage(reader.result);
-			};
-			reader.readAsDataURL(file);
 		}
 	};
 
 	const handleKeyPress = (e) => {
-		if (e.key === "Enter") {
+		if (e.key === "Enter" && !e.shiftKey) {
+			e.preventDefault();
 			handleSend();
 		}
 	};
 
 	return (
-		<Box className="message-input" mt={4} w="100%">
-			<HStack spacing={2}>
+		<Flex
+			margin={10}
+			p={4}
+			bg="white"
+			borderTopWidth={1}
+			borderColor="gray.200"
+			borderRadius={"xl"}
+		>
+			<Flex
+				flex={1}
+				borderWidth={1}
+				borderColor="gray.200"
+				borderRadius="full"
+				bg="white"
+				align="center"
+				mr={2}
+			>
 				<Input
-					type="text"
 					value={text}
 					onChange={(e) => setText(e.target.value)}
 					onKeyPress={handleKeyPress}
-					placeholder="Type a message..."
-				/>
-				<Input
-					type="file"
-					accept="image/*"
-					onChange={handleImageUpload}
-					display="none"
-					id="file-upload"
+					placeholder="Type message..."
+					border="none"
+					_focus={{ boxShadow: "none" }}
 				/>
 				<IconButton
-					as="label"
-					htmlFor="file-upload"
-					icon={<AttachmentIcon />}
-					variant="outline"
+					icon={<FaAngleRight />}
+					onClick={handleSend}
+					isDisabled={inProgress || !text.trim()}
+					aria-label="Send message"
+					size="lg"
 				/>
-				<Button onClick={handleSend} colorScheme="teal" isDisabled={inProgress}>
-					Send
-				</Button>
-			</HStack>
-			{image && (
-				<Box mt={2}>
-					<Image src={image} alt="Preview" maxH="100px" borderRadius="md" />
-				</Box>
-			)}
-		</Box>
+			</Flex>
+			<IconButton
+				icon={<FaMicrophone />}
+				colorScheme="orange"
+				aria-label="Voice input"
+				borderRadius="full"
+				size="lg"
+			/>
+		</Flex>
 	);
 };
 
