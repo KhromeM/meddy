@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 let isProd = import.meta.env.PROD;
-isProd = false;
+// isProd = false;
 
 const wsURL = isProd
 	? "wss://www.trymeddy.com/api/"
