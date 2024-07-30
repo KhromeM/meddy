@@ -8,7 +8,6 @@ import 'package:meddymobile/utils/ws_connection.dart';
 import 'package:meddymobile/services/recorder_service.dart';
 import 'package:meddymobile/services/player_service.dart';
 import 'package:meddymobile/widgets/animated_stop_button.dart';
-import 'package:meddymobile/widgets/high_contrast_mode.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meddymobile/widgets/message_list.dart';
 import 'package:path/path.dart' as path;
@@ -353,13 +352,52 @@ class _ChatPageState extends State<ChatPage> {
                           children: [
                             Container(
                               margin: EdgeInsets.only(bottom: 8),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16.0),
-                                child: Image.file(
-                                  File(_previewImagePath!),
-                                  width: 100,
-                                  height: 130,
-                                  fit: BoxFit.cover,
+                              child: GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return Dialog(
+                                        child: ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                            maxWidth: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.8,
+                                            maxHeight: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.8,
+                                          ),
+                                          child: SingleChildScrollView(
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          16.0),
+                                                  child: Image.file(
+                                                    File(_previewImagePath!),
+                                                    fit: BoxFit.contain,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(16.0),
+                                  child: Image.file(
+                                    File(_previewImagePath!),
+                                    width: 100,
+                                    height: 130,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                             ),
