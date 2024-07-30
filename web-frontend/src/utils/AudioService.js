@@ -37,7 +37,6 @@ class AudioService {
 			source.connect(this.audioContext.destination);
 			await new Promise((resolve) => {
 				source.onended = () => {
-					this.isPlaying = false;
 					resolve();
 				};
 				source.start(0);
@@ -53,17 +52,18 @@ class AudioService {
 			if (this.isPlaying) return;
 			if (this.audioQueue3.length > 0) {
 				// if we have the best audio then just play that then end the loop
+				this.isPlaying = true;
 				await this.playQueue(this.audioQueue3);
+				this.isPlaying = false;
 				clearInterval(loop);
 				return;
 			}
 			if (this.audioQueue1.length > 0) {
 				await this.playQueue(this.audioQueue1);
 			}
-		}, 100);
+		}, 250);
 	}
 	async playQueue(audioQueue) {
-		this.isPlaying = true;
 		await new Promise(async (resolve) => {
 			while (audioQueue.length > 0) {
 				const chunk = audioQueue.shift();
@@ -73,7 +73,6 @@ class AudioService {
 					console.error("error playing chunk ", err);
 				}
 			}
-			this.isPlaying = false;
 			resolve();
 		});
 	}
