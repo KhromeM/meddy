@@ -7,9 +7,12 @@ import 'package:meddymobile/utils/app_colors.dart';
 import 'package:meddymobile/services/auth_service.dart';
 import 'package:meddymobile/pages/signin_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
+import 'package:meddymobile/widgets/high_contrast_mode.dart';
+
+class CustomAppBar extends StatefulWidget
+    implements PreferredSizeWidget {
   @override
-  _CustomAppBarState createState() => _CustomAppBarState();
+  State<CustomAppBar> createState() => _CustomAppBarState();
 
   @override
   Size get preferredSize => Size.fromHeight(56.0);
@@ -28,7 +31,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   Future<void> _fetchUserData() async {
     final firstName = _authService.getFirstName();
-    final profileImageUrl = _authService.getProfileImageUrl();
+    final profileImageUrl =
+        _authService.getProfileImageUrl();
     setState(() {
       _firstName = firstName ?? 'User';
       _profileImageUrl = profileImageUrl;
@@ -39,7 +43,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
     try {
       await _authService.signOut();
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const SignInPage()),
+        MaterialPageRoute(
+            builder: (context) => const SignInPage()),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -48,55 +53,94 @@ class _CustomAppBarState extends State<CustomAppBar> {
     }
   }
 
-  Future<void> _showBottomSheet(BuildContext context) async {
+  Future<void> _showBottomSheet(
+      BuildContext context) async {
     return showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
       isScrollControlled: true,
-      builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.75,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildGreetingText(),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      builder: (context) => StatefulBuilder(
+        builder: (BuildContext context,
+            StateSetter setModalState) {
+          final highContrastMode =
+              HighContrastMode.of(context);
+
+          return SizedBox(
+            height:
+                MediaQuery.of(context).size.height * 0.75,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 20, vertical: 30),
+              child: Column(
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: _buildSquareButton(
-                      'Reminders',
-                      () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ReminderPage()),
-                        );
-                      },
-                    ),
+                  _buildGreetingText(),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment:
+                        MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          setModalState(() {
+                            highContrastMode
+                                ?.toggleHighContrastMode();
+                          });
+                        },
+                        icon: Icon(
+                          highContrastMode
+                                      ?.isHighContrast ==
+                                  true
+                              ? Icons.brightness_7
+                              : Icons.brightness_3,
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(width: 20),
-                  Expanded(
-                    child: _buildSquareButton(
-                      'Health',
-                      () {
-                        Navigator.push(
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: _buildSquareButton(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => const ProfilePage()),
-                        );
-                      },
-                    ),
+                          'Reminders',
+                          () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ReminderPage()),
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 20),
+                      Expanded(
+                        child: _buildSquareButton(
+                          context,
+                          'Health',
+                          () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ProfilePage()),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
+                  Spacer(),
+                  _buildLogoutButton(context),
                 ],
               ),
-              Spacer(),
-              _buildLogoutButton(context),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -128,17 +172,23 @@ class _CustomAppBarState extends State<CustomAppBar> {
         if (_profileImageUrl != null)
           CircleAvatar(
             radius: 30,
-            backgroundImage: NetworkImage(_profileImageUrl!),
+            backgroundImage:
+                NetworkImage(_profileImageUrl!),
           ),
       ],
     );
   }
 
-  Widget _buildSquareButton(String text, VoidCallback onPressed) {
+  Widget _buildSquareButton(BuildContext context,
+      String text, VoidCallback onPressed) {
+    final highContrastMode = HighContrastMode.of(context);
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: lightPurple,
+        backgroundColor:
+            highContrastMode?.isHighContrast == true
+                ? Colors.black
+                : lightPurple,
         foregroundColor: Colors.black,
         padding: EdgeInsets.only(top: 130),
         shape: RoundedRectangleBorder(
@@ -149,11 +199,17 @@ class _CustomAppBarState extends State<CustomAppBar> {
       child: Align(
         alignment: Alignment.bottomLeft,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-              15, 8.0, 8.0, 10), // Increase the bottom padding
+          padding: const EdgeInsets.fromLTRB(15, 8.0, 8.0,
+              10), // Increase the bottom padding
           child: Text(
             text,
-            style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+            style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.w600,
+                color:
+                    highContrastMode?.isHighContrast == true
+                        ? Colors.white
+                        : Colors.black),
           ),
         ),
       ),
@@ -184,7 +240,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
           child: Center(
             child: Text(
               'Logout',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600),
             ),
           ),
         ),
@@ -202,19 +260,21 @@ class _CustomAppBarState extends State<CustomAppBar> {
           _showBottomSheet(context);
         },
         child: Padding(
-        padding: const EdgeInsets.only(left: 14.0, top: 0, bottom: 0, right: 0),
-        child: SvgPicture.asset(
-          'assets/images/logo_image.svg',
-          fit: BoxFit.contain,
+          padding: const EdgeInsets.only(
+              left: 14.0, top: 0, bottom: 0, right: 0),
+          child: SvgPicture.asset(
+            'assets/images/logo_image.svg',
+            fit: BoxFit.contain,
+          ),
         ),
-      ),
       ),
       actions: [
         InkWell(
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const ChatPage()),
+              MaterialPageRoute(
+                  builder: (context) => const ChatPage()),
             );
           },
           child: Padding(
