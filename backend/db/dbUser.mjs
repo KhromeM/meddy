@@ -69,7 +69,16 @@ export const updateUser = (
 	phone,
 	patientId
 ) => {
-	console.log("updating user", user);
+	console.log(
+		"updating user:",
+		userId,
+		name,
+		address,
+		email,
+		language,
+		phone,
+		patientId
+	);
 	const query =
 		"UPDATE Users SET Name = $2, Address = $3, Email = $4, Language = $5, Phone = $6, PatientID = $7 WHERE UserID = $1 RETURNING *";
 	const values = [userId, name, address, email, language, phone, patientId];
