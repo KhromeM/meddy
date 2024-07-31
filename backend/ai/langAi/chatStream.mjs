@@ -80,6 +80,7 @@ export const getChatResponse = async (
 	for await (const chunk of chatStream) {
 		resp.push(chunk);
 	}
+	console.log(resp.join(""));
 	return resp.join("");
 };
 

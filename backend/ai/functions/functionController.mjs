@@ -19,7 +19,6 @@ export const executeLLMFunction = async (text) => {
 	try {
 		// Parse input
 		text = text.replace(/\\n/g, "").replace(/\\/g, "").replace(/\t/g, "");
-		console.log("Parsed Text: ", text);
 		const parsedText = JSON.parse(text);
 		const functionName = parsedText.function;
 		const params = parsedText.params;

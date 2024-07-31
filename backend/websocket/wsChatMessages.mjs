@@ -30,11 +30,12 @@ export async function handleChatMessage(state, data) {
 			);
 		}
 
-		const llmResponse = llmResponseChunks.join("");
+		let llmResponse = llmResponseChunks.join("");
 
-		let functionCallResponse = "\n";
+		let functionCallResponse = "";
 		// function calling trigger
-		if (llmResponse == "Processing...") {
+		if (llmResponse.slice(0, 13) == "Processing...") {
+			llmResponse = llmResponse.slice(0, 13); // model is stupid and sees in chat history it responded with more than just "Processing"
 			functionCallResponse = await execUserRequest(
 				user,
 				chatHistory.slice(-6),

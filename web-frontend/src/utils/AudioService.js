@@ -63,6 +63,7 @@ class AudioService {
 			}
 		}, 250);
 	}
+	
 	async playQueue(audioQueue) {
 		await new Promise(async (resolve) => {
 			while (audioQueue.length > 0) {

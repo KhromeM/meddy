@@ -1,23 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Flex, Input, IconButton } from "@chakra-ui/react";
 import { FaMicrophone, FaAngleRight, FaRegStopCircle } from "react-icons/fa";
 
 const MessageInput = ({ onSend, inProgress, toggleAudio, audioMode }) => {
 	const [text, setText] = useState("");
 
-	const handleSend = () => {
+	const handleSend = useCallback(() => {
 		if (text.trim() && !inProgress) {
 			onSend({ text: text.trim(), isUser: true });
 			setText("");
 		}
-	};
+	}, [text, inProgress, onSend]);
 
-	const handleKeyPress = (e) => {
+	const handleKeyPress = useCallback((e) => {
 		if (e.key === "Enter" && !e.shiftKey) {
 			e.preventDefault();
 			handleSend();
 		}
-	};
+	}, [handleSend]);
 
 	return (
 		<Flex

@@ -16,7 +16,6 @@ export const execUserRequest = async (
 		openAIModel,
 		1 // function calling mode
 	);
-	console.log("Function calling RESPONSE: ", llmResponse);
 	const response = "\n" + (await executeLLMFunction(llmResponse));
 
 	clientSocket.send(
