@@ -11,49 +11,49 @@ import Navbar from "./Navbar.jsx";
 import { images } from "../../assets/images.js";
 
 const Chat = () => {
-	const [messages, setMessages] = useState([]);
-	const [audioMode, setAudioMode] = useState(false);
-	const [inProgress, setInProgress] = useState(false);
-	const { user } = useAuth();
-	const messagesEndRef = useRef(null);
-	const wsConnectionRef = useRef(null);
-	const audioServiceRef = useRef(null);
+  const [messages, setMessages] = useState([]);
+  const [audioMode, setAudioMode] = useState(false);
+  const [inProgress, setInProgress] = useState(false);
+  const { user } = useAuth();
+  const messagesEndRef = useRef(null);
+  const wsConnectionRef = useRef(null);
+  const audioServiceRef = useRef(null);
 
-	const setupWebSocket = async () => {
-		if (user && !wsConnectionRef.current) {
-			console.log("CONNECTING WS");
-			const wsConnection = new WSConnection();
-			await wsConnection.connect();
-			const idToken = await user.getIdToken(false);
-			await wsConnection.authenticate(idToken);
-			wsConnectionRef.current = wsConnection;
-			audioServiceRef.current = new AudioService(wsConnection);
-			console.log("WebSocket connected and authenticated");
-		}
-	};
+  const setupWebSocket = async () => {
+    if (user && !wsConnectionRef.current) {
+      console.log("CONNECTING WS");
+      const wsConnection = new WSConnection();
+      await wsConnection.connect();
+      const idToken = await user.getIdToken(false);
+      await wsConnection.authenticate(idToken);
+      wsConnectionRef.current = wsConnection;
+      audioServiceRef.current = new AudioService(wsConnection);
+      console.log("WebSocket connected and authenticated");
+    }
+  };
 
-	useEffect(() => {
-		setupWebSocket().catch(console.error);
-		return () => {
-			if (wsConnectionRef.current) {
-				wsConnectionRef.current.close();
-				wsConnectionRef.current = null;
-			}
-		};
-	}, [user]);
+  useEffect(() => {
+    setupWebSocket().catch(console.error);
+    return () => {
+      if (wsConnectionRef.current) {
+        wsConnectionRef.current.close();
+        wsConnectionRef.current = null;
+      }
+    };
+  }, [user]);
 
-	const scrollToBottom = () => {
-		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-	};
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
-	useEffect(() => {
-		scrollToBottom();
-	}, [messages]);
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
-	const messageLLM = async (message) => {
-		await setupWebSocket(); // doesnt do anything theres already a ws connection
-		setInProgress(true);
-		let currentResponse = "";
+  const messageLLM = async (message) => {
+    await setupWebSocket(); // doesnt do anything theres already a ws connection
+    setInProgress(true);
+    let currentResponse = "";
 
 		const onChunk = (respObj) => {
 			const { data, result } = respObj;
@@ -71,30 +71,30 @@ const Chat = () => {
 			});
 		};
 
-		const onComplete = () => {
-			setInProgress(false);
-		};
+    const onComplete = () => {
+      setInProgress(false);
+    };
 
-		await chatLLMStreamWS(
-			wsConnectionRef.current,
-			message,
-			onChunk,
-			onComplete
-		);
-	};
+    await chatLLMStreamWS(
+      wsConnectionRef.current,
+      message,
+      onChunk,
+      onComplete
+    );
+  };
 
-	const addMessageFromUser = (message) => {
-		setMessages((prevMessages) => [
-			...prevMessages,
-			{ text: message.text, isUser: true },
-			{ text: "", isUser: false },
-		]);
-		messageLLM(message);
-	};
+  const addMessageFromUser = (message) => {
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { text: message.text, isUser: true },
+      { text: "", isUser: false },
+    ]);
+    messageLLM(message);
+  };
 
-	const toggleAudio = async () => {
-		try {
-			await setupWebSocket(); // Ensure WebSocket is set up
+  const toggleAudio = async () => {
+    try {
+      await setupWebSocket(); // Ensure WebSocket is set up
 
 			if (!audioMode) {
 				await audioServiceRef.current.startRecording();
