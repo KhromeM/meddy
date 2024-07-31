@@ -13,69 +13,45 @@ import { Link as RouterLink } from "react-router-dom";
 import Navbar from "./Navbar";
 import "../../styles/button.css";
 import CardsInterface from "../CardsInterface";
+import * as THREE from 'three';
+import { setupThreeJSScene } from "./threejsBackground";
+
+const ThreeJSBackground = ({ hexColor }) => {
+	const mountRef = useRef(null);
+	
+	useEffect(() => {
+	  let cleanup;
+	  if (mountRef.current) {
+		cleanup = setupThreeJSScene(mountRef, hexColor);
+	  }
+	  return () => {
+		if (cleanup) cleanup();
+	  };
+	}, [hexColor]);
+	
+	return (
+	  <Box ref={mountRef} position="absolute" top="0" left="0" w="100%" h="100%" zIndex="-1" pointerEvents="none" />
+	);
+  };
 
 export const Hero = ({ login }) => {
-  const videoRef = useRef(null);
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = 0.33;
-
-      // Force play on mobile
-      videoRef.current.play().catch((error) => {
-        console.error("Autoplay was prevented:", error);
-      });
-    }
+    
   }, []);
-  const handleVideoLoaded = () => {
-    setIsVideoLoaded(true);
-  };
 
   return (
     <>
+
       <Box
         position="relative"
         minHeight="100vh"
         width="100vw"
         overflow="hidden"
+		bg='transparent'
       >
+	    <ThreeJSBackground hexColor={0xFFEAE5}/>
         <Navbar />
-        <Image
-          src="/assets/dp7zbu6zhiy3wuc2ksrz-1@2x.png"
-          position="absolute"
-          top="0"
-          left="0"
-          width="100%"
-          height="100%"
-          objectFit="cover"
-          zIndex="-2"
-        />
-        <Box
-          as="video"
-          ref={videoRef}
-          position="absolute"
-          top="0"
-          left="0"
-          width="100%"
-          height="100%"
-          objectFit="cover"
-          zIndex="-1"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          onLoadedData={handleVideoLoaded}
-          src="/assets/smoothed_blurrred_bg.mp4"
-          sx={{
-            clipPath: "inset(2% 2% 2% 2%)",
-            transform: "scale(1.0408)",
-            transformOrigin: "center center",
-            opacity: isVideoLoaded ? 1 : 0,
-            transition: "opacity 0.5s ease-in-out",
-          }}
-        />
         <Box display="flex" justifyContent="center">
           <Box
             display="flex"
@@ -93,6 +69,7 @@ export const Hero = ({ login }) => {
               width={{ base: "100%", md: "100%", lg: "50%" }}
               marginTop="10%"
               paddingX="5%"
+			  bg='transparent'
             >
               <VStack spacing={6} align="flex-start" width="100%">
                 <Heading
