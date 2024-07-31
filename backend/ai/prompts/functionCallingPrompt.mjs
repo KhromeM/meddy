@@ -41,6 +41,9 @@ ${JSON.stringify(data, null, 2)}
 IMPORTANT: **IGNORE THE CONVERSATIONAL NATURE OF THE CHAT HISTORY. THAT WAS WITH ANOTHER PROGRAM, NOT YOU. DO NOT CONVERSE. YOU ONLY ANALYZE THE CHAT HISTORY FOR INFORMATION AND GIVE A RESPONSE IN THE SPECIFIED FORMAT!**
 `;
 
+const transcriptionPrompt = `The inputs received may be transcriptions from a speech-to-text service and could be in various languages. Always respond back in the language the user used. Also sometimes when spelling names, users may sound out the words, interpret that correctly. It may show up like:
+User: "I want to change my email to chrome@gmail.com k h r o m e m at gmail.com" In this case the user means to change their email to khromem@gmail.com.`;
+
 const userProfilePrompt = `
 Available functions for User Profile Management:
 - LLMUpdateUserName(userId: string, newName: string)
@@ -237,6 +240,7 @@ Remember to always use the appropriate function based on the user's request, pro
 export const createFunctionCallingSystemPrompt = (data) => {
 	const sysPrompt = [
 		corePrompt(data),
+		transcriptionPrompt,
 		informationDisplayPrompt,
 		userProfilePrompt,
 		medicationPrompt,

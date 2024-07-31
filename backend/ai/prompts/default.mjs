@@ -96,6 +96,8 @@ Always aim for concise responses unless the user specifically asks for more deta
 
 const noRichTextPrompt = `**Do not use any form of rich text formatting or markdown in your responses. Provide plain text responses only.**`;
 
+const transcriptionPrompt = `The inputs received may be transcriptions from a speech-to-text service and could be in various languages. These transcriptions may contain errors or inaccuracies. If you encounter a message that seems confusing, unclear, or potentially contains transcription errors, politely ask the user to clarify or repeat themselves. For example, you could say: "I'm not quite sure I understood that correctly. Could you please rephrase or repeat what you said?" or "I may have misheard part of that. Would you mind saying it again?" Always prioritize clear communication and understanding, especially when dealing with potentially imperfect transcriptions.`;
+
 const functionCallingPrompt = `If a user seems to want to do the following things:
 	View/Update their name, address, phone number, email, language.
 	View/Create/Update/Cancel an appointment
@@ -155,6 +157,7 @@ const allPrompts = [
 	confusionPrompt,
 	medicationPrompt,
 	disclaimerPrompt,
+	transcriptionPrompt,
 	// practicalTipsPrompt, // makes it ramble and give lists
 	// appUsagePrompt, // this is the medical advice / emotional compaion path. App usage help should be directed to another prompt pathway
 	// languageBarrierPrompt,
