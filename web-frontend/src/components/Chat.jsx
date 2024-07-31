@@ -33,23 +33,23 @@ const Chat = () => {
     }
   };
 
-	useEffect(() => {
-		setupWebSocket().catch(console.error);
-		return () => {
-			if (wsConnectionRef.current) {
-				wsConnectionRef.current.close();
-				wsConnectionRef.current = null;
-			}
-		};
-	}, [user]);
+  useEffect(() => {
+    setupWebSocket().catch(console.error);
+    return () => {
+      if (wsConnectionRef.current) {
+        wsConnectionRef.current.close();
+        wsConnectionRef.current = null;
+      }
+    };
+  }, [user]);
 
-	const scrollToBottom = () => {
-		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-	};
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
-	useEffect(() => {
-		scrollToBottom();
-	}, [messages]);
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const messageLLM = async (message) => {
     await setupWebSocket(); // doesnt do anything theres already a ws connection
