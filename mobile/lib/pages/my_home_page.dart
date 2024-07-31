@@ -5,6 +5,7 @@ import 'package:meddymobile/widgets/high_contrast_mode.dart';
 import 'package:meddymobile/widgets/main_background.dart';
 import 'package:meddymobile/widgets/mic_page.dart';
 import 'package:meddymobile/widgets/custom_app_bar.dart';
+import 'package:meddymobile/widgets/tutorial_overlay.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -56,6 +57,16 @@ class _MyHomePageState extends State<MyHomePage> {
   //   'assets/image20.jpg'
   // ];
 
+  GlobalKey _micButtonKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showTutorial();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final highContrastMode = HighContrastMode.of(context);
@@ -70,6 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               SizedBox(height: 20),
               InkWell(
+                key: _micButtonKey,
                 onTap: () {
                   _showMic();
                 },
@@ -118,6 +130,26 @@ class _MyHomePageState extends State<MyHomePage> {
           child: MicPage(),
         );
       },
+    );
+  }
+
+  void _showTutorial() {
+    RenderBox renderBox = _micButtonKey.currentContext!
+        .findRenderObject() as RenderBox;
+    Offset position = renderBox.localToGlobal(Offset.zero);
+    Size size = renderBox.size;
+
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        opaque: false,
+        pageBuilder: (_, __, ___) =>
+            TutorialOverlayFullScreen(
+          targetPosition: position +
+              Offset(size.width / 2, size.height / 2),
+          targetSize: size,
+          message: 'Tap here to use the microphone',
+        ),
+      ),
     );
   }
 }

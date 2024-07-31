@@ -26,7 +26,8 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   WSConnection ws = WSConnection();
-  TextEditingController _textEditingController = TextEditingController();
+  TextEditingController _textEditingController =
+      TextEditingController();
   final ChatService _chatService = ChatService();
   List<Message> _chatHistory = [];
   late RecorderService _recorderService;
@@ -44,7 +45,8 @@ class _ChatPageState extends State<ChatPage> {
   ImagePicker _picker = ImagePicker();
   Map<String, Uint8List?> _imageCache = {};
   Map<String, List<String>> _messageBuffer = {};
-  ValueNotifier<bool> _isTypingNotifier = ValueNotifier(false);
+  ValueNotifier<bool> _isTypingNotifier =
+      ValueNotifier(false);
   bool _isSendingImage = false;
 
   @override
@@ -55,10 +57,12 @@ class _ChatPageState extends State<ChatPage> {
     _playerService = PlayerService(ws);
 
     ws.setHandler("chat_response", _handleChatResponse);
-    ws.setHandler("partial_transcript", _handleTranscription);
+    ws.setHandler(
+        "partial_transcript", _handleTranscription);
 
     _textEditingController.addListener(() {
-      bool isTyping = _textEditingController.text.isNotEmpty;
+      bool isTyping =
+          _textEditingController.text.isNotEmpty;
       if (_isTypingNotifier.value != isTyping) {
         _isTypingNotifier.value = isTyping;
       }
@@ -72,7 +76,8 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<void> _loadChatHistory() async {
     try {
-      List<Message> chatHistory = await _chatService.getChatHistory();
+      List<Message> chatHistory =
+          await _chatService.getChatHistory();
       setState(() {
         _chatHistory = List.from(chatHistory);
         _isLoading = false;
@@ -92,7 +97,8 @@ class _ChatPageState extends State<ChatPage> {
     img.Image? originalImage = img.decodeImage(bytes);
     if (originalImage == null) return image;
 
-    img.Image resizedImage = img.copyResize(originalImage, width: 800);
+    img.Image resizedImage =
+        img.copyResize(originalImage, width: 800);
     final resizedBytes = img.encodeJpg(resizedImage);
     final resizedFile = File('${image.path}_resized.jpg')
       ..writeAsBytesSync(resizedBytes);
@@ -101,7 +107,8 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Future<void> _selectImageFromCamera() async {
-    final image = await _picker.pickImage(source: ImageSource.camera);
+    final image =
+        await _picker.pickImage(source: ImageSource.camera);
     if (image != null) {
       final resizedImage = await _resizeImage(image.path);
       setState(() {
@@ -111,7 +118,8 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Future<void> _selectImageFromGallery() async {
-    final image = await _picker.pickImage(source: ImageSource.gallery);
+    final image = await _picker.pickImage(
+        source: ImageSource.gallery);
     if (image != null) {
       final resizedImage = await _resizeImage(image.path);
       setState(() {
@@ -124,13 +132,15 @@ class _ChatPageState extends State<ChatPage> {
     if (_imageCache.containsKey(imageID)) {
       return _imageCache[imageID];
     }
-    Uint8List? imageData = await _chatService.fetchImage(imageID);
+    Uint8List? imageData =
+        await _chatService.fetchImage(imageID);
     _imageCache[imageID] = imageData;
     _scrollToBottom();
     return imageData;
   }
 
-  void _addMessageToChatHistory(String source, String text, String reqId,
+  void _addMessageToChatHistory(
+      String source, String text, String reqId,
       {String? imageID}) {
     setState(() {
       _chatHistory.add(Message(
@@ -146,21 +156,27 @@ class _ChatPageState extends State<ChatPage> {
     _scrollToBottom();
   }
 
-  void _updateCurrentMessageChunk(String text, String reqId) {
-    int index = _chatHistory.indexWhere((msg) => msg.messageId == reqId);
+  void _updateCurrentMessageChunk(
+      String text, String reqId) {
+    int index = _chatHistory
+        .indexWhere((msg) => msg.messageId == reqId);
     if (index == -1) return;
 
     setState(() {
-      _chatHistory[index] = _chatHistory[index].copyWith(text: text);
+      _chatHistory[index] =
+          _chatHistory[index].copyWith(text: text);
     });
     _scrollToBottom();
   }
 
   void _scrollToBottom() {
-    if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
-    _debounceTimer = Timer(const Duration(milliseconds: 100), () {
+    if (_debounceTimer?.isActive ?? false)
+      _debounceTimer!.cancel();
+    _debounceTimer =
+        Timer(const Duration(milliseconds: 100), () {
       if (_scrollController.hasClients) {
-        final position = _scrollController.position.maxScrollExtent;
+        final position =
+            _scrollController.position.maxScrollExtent;
         _scrollController.animateTo(
           position,
           duration: Duration(milliseconds: 300),
@@ -178,27 +194,38 @@ class _ChatPageState extends State<ChatPage> {
         ? "describe this image"
         : _textEditingController.text;
 
-    if (_textEditingController.text.isNotEmpty || _previewImagePath != null) {
+    if (_textEditingController.text.isNotEmpty ||
+        _previewImagePath != null) {
       try {
         if (_previewImagePath != null) {
           setState(() {
             _isSendingImage = true;
           });
-          String imageBaseName = path.basename(_previewImagePath!);
-          await _chatService.uploadImage(_previewImagePath!);
+          String imageBaseName =
+              path.basename(_previewImagePath!);
+          await _chatService
+              .uploadImage(_previewImagePath!);
 
-          _addMessageToChatHistory("user", text, reqId + "_user",
+          _addMessageToChatHistory(
+              "user", text, reqId + "_user",
               imageID: imageBaseName);
           ws.sendMessage({
             'type': 'chat',
-            'data': {'text': text, 'image': imageBaseName, 'reqId': reqId}
+            'data': {
+              'text': text,
+              'image': imageBaseName,
+              'reqId': reqId
+            }
           });
         } else {
-          _addMessageToChatHistory(
-              "user", _textEditingController.text, reqId + "_user");
+          _addMessageToChatHistory("user",
+              _textEditingController.text, reqId + "_user");
           ws.sendMessage({
             'type': 'chat',
-            'data': {'text': _textEditingController.text, 'reqId': reqId},
+            'data': {
+              'text': _textEditingController.text,
+              'reqId': reqId
+            },
           });
         }
 
@@ -284,11 +311,13 @@ class _ChatPageState extends State<ChatPage> {
       });
       _playerService.playQueuedAudio();
     } else {
-      bool isRecording = await _recorderService.toggleRecording();
+      bool isRecording =
+          await _recorderService.toggleRecording();
       setState(() {
         _isRecording = isRecording;
         if (_isRecording) {
-          _textEditingController.clear(); // Clear text when starting recording
+          _textEditingController
+              .clear(); // Clear text when starting recording
         }
       });
       if (!_isRecording) {
@@ -318,7 +347,8 @@ class _ChatPageState extends State<ChatPage> {
             child: Stack(
               children: [
                 _isLoading
-                    ? Center(child: CircularProgressIndicator())
+                    ? Center(
+                        child: CircularProgressIndicator())
                     : MessageList(
                         messages: _chatHistory,
                         scrollController: _scrollController,
@@ -340,7 +370,8 @@ class _ChatPageState extends State<ChatPage> {
             child: Stack(
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 8),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
@@ -352,9 +383,12 @@ class _ChatPageState extends State<ChatPage> {
                         Stack(
                           children: [
                             Container(
-                              margin: EdgeInsets.only(bottom: 8),
+                              margin: EdgeInsets.only(
+                                  bottom: 8),
                               child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16.0),
+                                borderRadius:
+                                    BorderRadius.circular(
+                                        16.0),
                                 child: Image.file(
                                   File(_previewImagePath!),
                                   width: 100,
@@ -369,7 +403,8 @@ class _ChatPageState extends State<ChatPage> {
                               child: InkWell(
                                 onTap: () {
                                   setState(() {
-                                    _previewImagePath = null;
+                                    _previewImagePath =
+                                        null;
                                   });
                                 },
                                 child: Container(
@@ -390,12 +425,15 @@ class _ChatPageState extends State<ChatPage> {
                         children: [
                           Expanded(
                             child: TextField(
-                              controller: _textEditingController,
+                              controller:
+                                  _textEditingController,
                               decoration: InputDecoration(
-                                hintText: 'Type your message...',
+                                hintText:
+                                    'Type your message...',
                                 border: InputBorder.none,
                               ),
-                              keyboardType: TextInputType.text,
+                              keyboardType:
+                                  TextInputType.text,
                               onSubmitted: (text) {
                                 if (text.isNotEmpty) {
                                   _sendMessage();
@@ -405,41 +443,53 @@ class _ChatPageState extends State<ChatPage> {
                             ),
                           ),
                           IconButton(
-                            icon: Icon(Icons.camera_alt_rounded),
-                            color: Theme.of(context).primaryColor,
+                            icon: Icon(
+                                Icons.camera_alt_rounded),
+                            color: Theme.of(context)
+                                .primaryColor,
                             onPressed: () {
                               _selectImageFromCamera();
                             },
                           ),
                           IconButton(
                             icon: Icon(Icons.image),
-                            color: Theme.of(context).primaryColor,
+                            color: Theme.of(context)
+                                .primaryColor,
                             onPressed: () {
                               _selectImageFromGallery();
                             },
                           ),
                           ValueListenableBuilder<bool>(
-                            valueListenable: _isTypingNotifier,
-                            builder: (context, isTyping, child) {
+                            valueListenable:
+                                _isTypingNotifier,
+                            builder:
+                                (context, isTyping, child) {
                               return _isSendingImage
                                   ? CircularProgressIndicator()
                                   : InkWell(
                                       onTap: (isTyping ||
-                                                  _previewImagePath != null) &&
+                                                  _previewImagePath !=
+                                                      null) &&
                                               !_isRecording
                                           ? _sendMessage
                                           : _toggleAudio,
                                       child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding:
+                                            const EdgeInsets
+                                                .all(8.0),
                                         child: Icon(
                                           _isRecording
                                               ? Icons.stop
                                               : (isTyping ||
-                                                      _previewImagePath != null
+                                                      _previewImagePath !=
+                                                          null
                                                   ? Icons
                                                       .arrow_forward_ios_rounded
-                                                  : Icons.mic_rounded),
-                                          color: Theme.of(context).primaryColor,
+                                                  : Icons
+                                                      .mic_rounded),
+                                          color: Theme.of(
+                                                  context)
+                                              .primaryColor,
                                         ),
                                       ),
                                     );
