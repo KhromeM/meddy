@@ -80,8 +80,10 @@ async function getMicrophone() {
 		throw error;
 	}
 }
+let uuid;
 
 async function openMicrophone(microphone, socket) {
+	uuid = crypto.randomUUID();
 	return new Promise((resolve) => {
 		microphone.onstart = () => {
 			chatResponse = "";
@@ -115,6 +117,7 @@ async function openMicrophone(microphone, socket) {
 								mimeType: event.data.type,
 								isComplete: false,
 								lang,
+								reqId: uuid,
 							},
 						})
 					);
@@ -137,6 +140,7 @@ async function closeMicrophone(microphone, socket) {
 			type: "audio",
 			data: {
 				isComplete: true,
+				reqId: uuid,
 			},
 		})
 	);
@@ -166,7 +170,7 @@ async function start(socket) {
 const dev = "ws://localhost:8000/api";
 const server = "wss://trymeddy.com/api/";
 window.addEventListener("load", () => {
-	const socket = new WebSocket(server || dev);
+	const socket = new WebSocket(dev || server || dev);
 	langSelect.addEventListener("change", (event) => {
 		event.preventDefault();
 
@@ -196,7 +200,7 @@ window.addEventListener("load", () => {
 			chatResponse += data.data;
 		} else if (data.type === "partial_transcript") {
 			userText += data.data + " ";
-		} else if (data.type.slice(0, 5) === "audio") {
+		} else if (data.type === "audio_3") {
 			queueAudioChunk(data.audio);
 		}
 		captions.innerHTML = getInner();

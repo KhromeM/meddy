@@ -8,7 +8,7 @@ import 'package:meddymobile/widgets/high_contrast_mode.dart';
 class MessageList extends StatelessWidget {
   final List<Message> messages;
   final ScrollController scrollController;
-  final Function(String) fetchImage;
+  final Future<Uint8List?> Function(String) fetchImage;
 
   MessageList({
     required this.messages,
@@ -19,23 +19,17 @@ class MessageList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final highContrastMode = HighContrastMode.of(context);
-    
-    final Color userMessageColor =
-        highContrastMode?.isHighContrast == true
-            ? Colors.black
-            : Color.fromRGBO(255, 254, 251, 1);
-    final Color llmMessageColor =
-        highContrastMode?.isHighContrast == true
-            ? Colors.white
-            : Color.fromRGBO(255, 242, 228, 1);
+
+    final Color userMessageColor = highContrastMode?.isHighContrast == true
+        ? Colors.black
+        : Color.fromRGBO(255, 254, 251, 1);
+    final Color llmMessageColor = highContrastMode?.isHighContrast == true
+        ? Colors.white
+        : Color.fromRGBO(255, 242, 228, 1);
     final Color userTextColor =
-        highContrastMode?.isHighContrast == true
-            ? Colors.white
-            : Colors.black;
+        highContrastMode?.isHighContrast == true ? Colors.white : Colors.black;
     final Color llmTextColor =
-        highContrastMode?.isHighContrast == true
-            ? Colors.black
-            : Colors.black;
+        highContrastMode?.isHighContrast == true ? Colors.black : Colors.black;
 
     return ListView.builder(
       controller: scrollController,
@@ -63,25 +57,54 @@ class MessageList extends StatelessWidget {
                     FutureBuilder<Uint8List?>(
                       future: fetchImage(message.imageID!),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return CircularProgressIndicator();
                         } else if (snapshot.hasError) {
                           return Text('Error loading image');
                         } else if (snapshot.hasData) {
-                          return Column(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(16.0),
-                                child: Image.memory(
-                                  snapshot.data!,
-                                  width: 100,
-                                  height: 130,
-                                  fit: BoxFit.cover,
-                                  gaplessPlayback: true,
-                                ),
+                          return GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return Dialog(
+                                    child: ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                        maxWidth: MediaQuery.of(context).size.width * 0.8,
+                                        maxHeight:
+                                            MediaQuery.of(context).size.height * 0.8,
+                                      ),
+                                      child: SingleChildScrollView(
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(16.0),
+                                              child: Image.memory(
+                                                snapshot.data!,
+                                                fit: BoxFit.fill,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16.0),
+                              child: Image.memory(
+                                snapshot.data!,
+                                width: 100,
+                                height: 130,
+                                fit: BoxFit.fill,
+                                gaplessPlayback: true,
                               ),
-                              SizedBox(height: 8),
-                            ],
+                            ),
                           );
                         } else {
                           return Text('Image not available');
