@@ -8,20 +8,22 @@ export const createDGSocket = async (language = "en", mobile) => {
 	let dgConnection;
 	if (mobile) {
 		dgConnection = deepgram.listen.live({
-			language,
+			// language,
 			punctuate: true,
 			smart_format: true,
 			model,
 			encoding: "linear16",
 			sample_rate: 16000,
 			channels: 1,
+			language: "multi",
 		});
 	} else {
 		dgConnection = deepgram.listen.live({
-			language,
+			// language,
 			punctuate: true,
 			smart_format: true,
 			model,
+			language: "multi",
 		});
 	}
 	await new Promise((resolve) =>
