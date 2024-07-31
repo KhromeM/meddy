@@ -60,7 +60,7 @@ export const getUserById = (userId) => {
  * @param {string} patientId - The new patient ID of the user
  * @returns {Promise<Object>} - A promise that resolves to the updated user object
  */
-export const updateUser = (
+export const updateUserWithParams = (
 	userId,
 	name,
 	address,
@@ -79,6 +79,21 @@ export const updateUser = (
 		phone,
 		patientId
 	);
+	const query =
+		"UPDATE Users SET Name = $2, Address = $3, Email = $4, Language = $5, Phone = $6, PatientID = $7 WHERE UserID = $1 RETURNING *";
+	const values = [userId, name, address, email, language, phone, patientId];
+	return pool
+		.query(query, values)
+		.then((res) => res.rows[0])
+		.catch((err) => {
+			console.error("Error updating user:", err);
+			throw err;
+		});
+};
+
+export const updateUser = (user) => {
+	console.log("updating user:", user);
+	const { userId, name, address, email, language, phone, patientId } = user;
 	const query =
 		"UPDATE Users SET Name = $2, Address = $3, Email = $4, Language = $5, Phone = $6, PatientID = $7 WHERE UserID = $1 RETURNING *";
 	const values = [userId, name, address, email, language, phone, patientId];
