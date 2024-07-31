@@ -1,4 +1,4 @@
-const isProd = import.meta.env.PROD;
+const isProd = import.meta.env.PROD
 
 let wsURL = isProd ? "wss://www.trymeddy.com/api/" : "ws://localhost:8000/api";
 // wsURL = "wss://www.trymeddy.com/api/";
