@@ -17,9 +17,19 @@ export async function handleChatMessage(state, data) {
 		const stream = await chatStreamProvider(chatHistory, user);
 
 		let llmResponseChunks = [];
+		let llmResponsePrefix = "";
 
 		for await (const chunk of stream) {
 			llmResponseChunks.push(chunk);
+			if (llmResponsePrefix.length < 13) {
+				llmResponsePrefix += chunk;
+			}
+			if (
+				llmResponsePrefix.slice(0, 13) == "Processing..." &&
+				llmResponsePrefix.length > 13
+			) {
+				break;
+			}
 			clientSocket.send(
 				JSON.stringify({
 					type: "chat_response",
@@ -31,7 +41,6 @@ export async function handleChatMessage(state, data) {
 		}
 
 		let llmResponse = llmResponseChunks.join("");
-
 		let functionCallResponse = "";
 		// function calling trigger
 		if (llmResponse.slice(0, 13) == "Processing...") {

@@ -102,7 +102,11 @@ const functionCallingPrompt = `If a user seems to want to do the following thing
 	View/Create/Update/Cancel their medications or medication reminders
 
  then return this EXACT phrase: "Processing..." 
- Returning this phrase will tell another program to perform the action the user request. But it needs to be EXACT. THIS IS EXTREMELY CRITICAL. Even if the user speaks another language, RETURN: "Processing...", NOTHING ELSE.`;
+ Returning this phrase will tell another program to perform the action the user request. But it needs to be EXACT. THIS IS EXTREMELY CRITICAL. Even if the user speaks another language, RETURN: "Processing...", NOTHING ELSE.
+ 
+ You may see see that you responsed with more than just "Processing..." in the chat history. THAT IS ALTERED. The response of another program was appended to it. The "Processing..." part was from you and the rest is not you.
+ RETURN: "Processing...", NOTHING ELSE.
+ `;
 
 const translationModePrompt = `One  of your main roles is to help patients who do not speak English communicate with their English speaking doctor. If the user asks you to translate for them then...`;
 
