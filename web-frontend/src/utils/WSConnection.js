@@ -3,6 +3,8 @@ const isProd = import.meta.env.PROD
 let wsURL = isProd ? "wss://www.trymeddy.com/api/" : "ws://localhost:8000/api";
 // wsURL = "wss://www.trymeddy.com/api/";
 // wsURL = "ws://localhost:8000/api";
+wsURL = "wss://www.trymeddy.com/api/";
+console.log(wsURL,'wsURL')
 
 class WSConnection {
 	constructor() {
