@@ -14,14 +14,15 @@ import {
 	updateAppointment,
 	getUserAppointments,
 } from "../../db/dbAppointments.mjs";
+import JSON5 from "json5";
 
-export const executeLLMFunction = async (text) => {
+export const executeLLMFunction = async (rspObj) => {
 	try {
 		// Parse input
 		// text = text.replace(/\\n/g, "").replace(/\\/g, "").replace(/\t/g, "");
-		const parsedText = JSON.parse(text);
-		const functionName = parsedText.function;
-		const params = parsedText.params;
+		// const parsedText = JSON5.parse(text.slice(1, -1));
+		const functionName = rspObj.function;
+		const params = rspObj.params;
 
 		// Execute function with given parameters
 		let user, appointment;
@@ -170,7 +171,7 @@ export const executeLLMFunction = async (text) => {
 		}
 	} catch (err) {
 		console.log(`Error in LLM function calling:`, err);
-		console.log("Response that caused an error: ", JSON.stringify(text));
+		console.log("Response that caused an error: ", JSON5.stringify(text));
 		return "Sorry, something went wrong!";
 	}
 };
