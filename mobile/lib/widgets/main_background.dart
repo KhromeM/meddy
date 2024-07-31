@@ -117,18 +117,6 @@ class _MainBackgroundState extends State<MainBackground>
             color: Color(0xFFCAEB45),
             isAnimated: true,
           ),
-          // Merging the conflicting section
-          Positioned(
-            top: 151,
-            left: 265,
-            child: Container(
-              width: 25,
-              height: 25,
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(255, 255, 255, 1),
-              ),
-            ),
-          ),
           Positioned(
             top: 491,
             left: 31,

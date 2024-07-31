@@ -50,6 +50,8 @@ migrate_working_dir/
 /build
 build
 
+/meddata/*
+
 # Firebase
 mobile/ios/Runner/GoogleService-Info.plist
 mobile/android/app/google-services.json

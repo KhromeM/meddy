@@ -14,6 +14,7 @@ import 'package:path/path.dart' as path;
 import 'dart:async';
 import 'package:uuid/uuid.dart';
 import 'package:image/image.dart' as img;
+import 'package:meddymobile/widgets/backnav_app_bar.dart';
 
 class ChatPage extends StatefulWidget {
   final String? initialPrompt;
@@ -309,148 +310,204 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(
-            child: Stack(
-              children: [
-                _isLoading
-                    ? Center(child: CircularProgressIndicator())
-                    : MessageList(
-                        messages: _chatHistory,
-                        scrollController: _scrollController,
-                        fetchImage: _fetchImage,
-                      ),
-                if (_isGenerating)
-                  Positioned(
-                    bottom: 60,
-                    left: 12,
-                    child: AnimatedStopButton(
-                      onPressed: _stopGenerationVisually,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
-            child: Stack(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.black),
-                  ),
-                  child: Column(
-                    children: [
-                      if (_previewImagePath != null)
-                        Stack(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(bottom: 8),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16.0),
-                                child: Image.file(
-                                  File(_previewImagePath!),
-                                  width: 100,
-                                  height: 130,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              top: 5,
-                              right: 5,
-                              child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    _previewImagePath = null;
-                                  });
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.black54,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    Icons.close,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+          Column(
+            children: [
+              Expanded(
+                child: Stack(
+                  children: [
+                    _isLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : MessageList(
+                            messages: _chatHistory,
+                            scrollController: _scrollController,
+                            fetchImage: _fetchImage,
+                          ),
+                    if (_isGenerating)
+                      Positioned(
+                        bottom: 60,
+                        left: 12,
+                        child: AnimatedStopButton(
+                          onPressed: _stopGenerationVisually,
                         ),
-                      Row(
+                      ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
+                child: Stack(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.black),
+                      ),
+                      child: Column(
                         children: [
-                          Expanded(
-                            child: TextField(
-                              controller: _textEditingController,
-                              decoration: InputDecoration(
-                                hintText: 'Type your message...',
-                                border: InputBorder.none,
-                              ),
-                              keyboardType: TextInputType.text,
-                              onSubmitted: (text) {
-                                if (text.isNotEmpty) {
-                                  _sendMessage();
-                                }
-                              },
-                              enabled: !_isRecording,
-                            ),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.camera_alt_rounded),
-                            color: Theme.of(context).primaryColor,
-                            onPressed: () {
-                              _selectImageFromCamera();
-                            },
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.image),
-                            color: Theme.of(context).primaryColor,
-                            onPressed: () {
-                              _selectImageFromGallery();
-                            },
-                          ),
-                          ValueListenableBuilder<bool>(
-                            valueListenable: _isTypingNotifier,
-                            builder: (context, isTyping, child) {
-                              return _isSendingImage
-                                  ? CircularProgressIndicator()
-                                  : InkWell(
-                                      onTap: (isTyping ||
-                                                  _previewImagePath != null) &&
-                                              !_isRecording
-                                          ? _sendMessage
-                                          : _toggleAudio,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Icon(
-                                          _isRecording
-                                              ? Icons.stop
-                                              : (isTyping ||
-                                                      _previewImagePath != null
-                                                  ? Icons
-                                                      .arrow_forward_ios_rounded
-                                                  : Icons.mic_rounded),
-                                          color: Theme.of(context).primaryColor,
-                                        ),
+                          if (_previewImagePath != null)
+                            Stack(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(bottom: 8),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return Dialog(
+                                            child: ConstrainedBox(
+                                              constraints: BoxConstraints(
+                                                maxWidth: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.8,
+                                                maxHeight:
+                                                    MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.8,
+                                              ),
+                                              child: SingleChildScrollView(
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              16.0),
+                                                      child: Image.file(
+                                                        File(
+                                                            _previewImagePath!),
+                                                        fit: BoxFit.contain,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(16.0),
+                                      child: Image.file(
+                                        File(_previewImagePath!),
+                                        width: 100,
+                                        height: 130,
+                                        fit: BoxFit.cover,
                                       ),
-                                    );
-                            },
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 5,
+                                  right: 5,
+                                  child: InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        _previewImagePath = null;
+                                      });
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.black54,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Icons.close,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: _textEditingController,
+                                  decoration: InputDecoration(
+                                    hintText: 'Type your message...',
+                                    border: InputBorder.none,
+                                  ),
+                                  keyboardType: TextInputType.text,
+                                  onSubmitted: (text) {
+                                    if (text.isNotEmpty) {
+                                      _sendMessage();
+                                    }
+                                  },
+                                  enabled: !_isRecording,
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.camera_alt_rounded),
+                                color: Theme.of(context).primaryColor,
+                                onPressed: () {
+                                  _selectImageFromCamera();
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.image),
+                                color: Theme.of(context).primaryColor,
+                                onPressed: () {
+                                  _selectImageFromGallery();
+                                },
+                              ),
+                              ValueListenableBuilder<bool>(
+                                valueListenable: _isTypingNotifier,
+                                builder: (context, isTyping, child) {
+                                  return _isSendingImage
+                                      ? CircularProgressIndicator()
+                                      : InkWell(
+                                          onTap: (isTyping ||
+                                                      _previewImagePath !=
+                                                          null) &&
+                                                  !_isRecording
+                                              ? _sendMessage
+                                              : _toggleAudio,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Icon(
+                                              _isRecording
+                                                  ? Icons.stop
+                                                  : (isTyping ||
+                                                          _previewImagePath !=
+                                                              null
+                                                      ? Icons
+                                                          .arrow_forward_ios_rounded
+                                                      : Icons.mic_rounded),
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                            ),
+                                          ),
+                                        );
+                                },
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: BacknavAppBar(), // Positioned on top of the chat content
           ),
         ],
       ),
