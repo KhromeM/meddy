@@ -19,7 +19,7 @@ export const executeLLMFunction = async (text) => {
 	try {
 		// Parse input
 		text = text.replace(/\\n/g, "").replace(/\\/g, "").replace(/\t/g, "");
-		console.log(text);
+		console.log("Parsed Text: ", text);
 		const parsedText = JSON.parse(text);
 		const functionName = parsedText.function;
 		const params = parsedText.params;
@@ -63,10 +63,16 @@ export const executeLLMFunction = async (text) => {
 					return `You have no medications.`;
 				}
 
-				const medicationList = medications.map((med) => `${med.name} (${med.dosage})`).join(", ");
+				const medicationList = medications
+					.map((med) => `${med.name} (${med.dosage})`)
+					.join(", ");
 				return `Here are your current medications: ${medicationList}.`;
 			case "LLMAddMedication":
-				await createMedication(params.userId, params.medicationName, params.dosage);
+				await createMedication(
+					params.userId,
+					params.medicationName,
+					params.dosage
+				);
 				return `Your medication ${params.medicationName} has been added successfully!`;
 			case "LLMDeleteMedication":
 				await deleteMedication(params.medicationId);
@@ -109,7 +115,9 @@ export const executeLLMFunction = async (text) => {
 							timeZone: "UTC",
 							hour12: true,
 						};
-						const formattedDate = date.toLocaleString("en-US", options).replace(",", "");
+						const formattedDate = date
+							.toLocaleString("en-US", options)
+							.replace(",", "");
 						return `${apt.description} on ${formattedDate}`;
 					})
 					.join(", ");

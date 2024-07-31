@@ -80,13 +80,7 @@ export const getChatResponse = async (
 	for await (const chunk of chatStream) {
 		resp.push(chunk);
 	}
-	const totResp = resp.join("");
-
-	if (mode == 1) {
-		return executeLLMFunction(totResp);
-	} else {
-		return totResp;
-	}
+	return resp.join("");
 };
 
 // Makes sure the same source is not sending a message twice in a row

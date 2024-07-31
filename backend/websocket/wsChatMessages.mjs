@@ -1,5 +1,6 @@
 import db from "../db/db.mjs";
 import { chatStreamProvider } from "../ai/langAi/chatStream.mjs";
+import { execUserRequest } from "../utils/functionCalling.mjs";
 
 export async function handleChatMessage(state, data) {
 	const { clientSocket, user } = state;
@@ -31,8 +32,23 @@ export async function handleChatMessage(state, data) {
 
 		const llmResponse = llmResponseChunks.join("");
 
+		let functionCallResponse = "\n";
+		// function calling trigger
+		if (llmResponse == "Processing...") {
+			functionCallResponse = await execUserRequest(
+				user,
+				chatHistory.slice(-6),
+				clientSocket,
+				reqId
+			);
+		}
+
 		await db.createMessage(user.userid, "user", text, image);
-		await db.createMessage(user.userid, "llm", llmResponse);
+		await db.createMessage(
+			user.userid,
+			"llm",
+			llmResponse + functionCallResponse
+		);
 
 		clientSocket.send(
 			JSON.stringify({
