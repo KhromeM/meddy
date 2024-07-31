@@ -1,8 +1,7 @@
 import { Router } from "express";
 import {
-  getChatHistory,
-  postChatMessage,
-  postChatMessageStream,
+	getChatHistory,
+	postChatMessage,
 } from "../controllers/chatController.mjs";
 
 import { postAudioTrans } from "../controllers/groqSpeechToTextController.mjs";
@@ -12,8 +11,7 @@ const router = Router();
 
 router.get("/", getChatHistory);
 router.post("/", postChatMessage);
-router.post("/stream", postChatMessageStream);
-router.post("/groq-stt", postAudioTrans);
-router.post("/classify", transcriptClassify);
+// router.post("/groq-stt", postAudioTrans);
+// router.post("/classify", transcriptClassify);
 
 export default router;
