@@ -53,7 +53,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
       context: context,
       backgroundColor: Colors.white,
       isScrollControlled: true,
-      builder: (context) => Container(
+      builder: (context) => SizedBox(
         height: MediaQuery.of(context).size.height * 0.75,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),

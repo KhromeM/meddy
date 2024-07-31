@@ -129,7 +129,7 @@ class _ReminderPageState extends State<ReminderPage> {
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            return Container(
+            return SizedBox(
               height: MediaQuery.of(context).size.height * 0.85,
               child: Padding(
                 padding: EdgeInsets.all(16),
@@ -227,7 +227,7 @@ class _ReminderPageState extends State<ReminderPage> {
                           padding: EdgeInsets.only(left: 15),
                           child: Text(
                             style: TextStyle(color: Colors.red),
-                            '${DateFormat.yMd().format(reminderDate)}',
+                            DateFormat.yMd().format(reminderDate),
                           ),
                         )
                       ],
@@ -283,7 +283,7 @@ class _ReminderPageState extends State<ReminderPage> {
                           padding: EdgeInsets.only(left: 15),
                           child: Text(
                             style: TextStyle(color: Colors.red),
-                            '${reminderTime.format(context)}',
+                            reminderTime.format(context),
                           ),
                         )
                       ],
@@ -470,7 +470,7 @@ class _ReminderPageState extends State<ReminderPage> {
                               _removeReminder(_reminders.indexOf(reminder)),
                         ),
                       );
-                    }).toList(),
+                    }),
                   ] else ...[
                     Text('No reminders!', style: TextStyle(color: Colors.grey)),
                   ],
@@ -497,7 +497,7 @@ class _ReminderPageState extends State<ReminderPage> {
                               _removeReminder(_reminders.indexOf(reminder)),
                         ),
                       );
-                    }).toList(),
+                    }),
                   ] else ...[
                     Text('No reminders!', style: TextStyle(color: Colors.grey)),
                   ],

@@ -8,7 +8,6 @@ import 'package:meddymobile/utils/ws_connection.dart';
 import 'package:meddymobile/services/recorder_service.dart';
 import 'package:meddymobile/services/player_service.dart';
 import 'package:meddymobile/widgets/animated_stop_button.dart';
-import 'package:meddymobile/widgets/high_contrast_mode.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meddymobile/widgets/message_list.dart';
 import 'package:path/path.dart' as path;
