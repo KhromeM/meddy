@@ -94,7 +94,13 @@ const Navbar = () => {
 				</HStack>
 
 				{/* Try on Web Button */}
-				<Button variant="outline" borderRadius="full">
+				<Button
+					variant="outline"
+					borderRadius="full"
+					onClick={() => {
+						window.location.href = "/chat";
+					}}
+				>
 					TRY ON WEB →
 				</Button>
 			</Flex>
