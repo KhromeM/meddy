@@ -3,6 +3,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { LandingPage } from "./components/LandingPage";
 import Chat from "./components/Chat.jsx";
+import Research from "./components/Research.jsx";
 import "./styles/chat.css";
 import { AuthProvider } from "./firebase/AuthService.jsx";
 import Navbar from "./components/Navbar.jsx";
@@ -29,6 +30,14 @@ function App() {
 							element={
 								<>
 									<Chat />
+								</>
+							}
+						/>
+						<Route
+							path="/research"
+							element={
+								<>
+									<Research />
 								</>
 							}
 						/>

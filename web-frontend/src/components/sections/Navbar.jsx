@@ -76,7 +76,7 @@ const Navbar = () => {
 							<MenuItem>Product 2</MenuItem>
 						</MenuList>
 					</Menu>
-					<Link>RESEARCH</Link>
+					<Link to="/research">RESEARCH</Link>
 					<Menu>
 						<MenuButton
 							as={Button}
