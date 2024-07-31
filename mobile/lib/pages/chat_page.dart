@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:meddymobile/models/message.dart';
@@ -8,7 +7,6 @@ import 'package:meddymobile/utils/ws_connection.dart';
 import 'package:meddymobile/services/recorder_service.dart';
 import 'package:meddymobile/services/player_service.dart';
 import 'package:meddymobile/widgets/animated_stop_button.dart';
-import 'package:meddymobile/widgets/high_contrast_mode.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meddymobile/widgets/message_list.dart';
 import 'package:path/path.dart' as path;
@@ -92,6 +90,11 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Future<File> _resizeImage(String imagePath) async {
+    return await compute(_resizeImageIsolate, imagePath);
+  }
+
+  static Future<File> _resizeImageIsolate(
+      String imagePath) async {
     final image = File(imagePath);
     final bytes = await image.readAsBytes();
     img.Image? originalImage = img.decodeImage(bytes);
@@ -135,7 +138,6 @@ class _ChatPageState extends State<ChatPage> {
     Uint8List? imageData =
         await _chatService.fetchImage(imageID);
     _imageCache[imageID] = imageData;
-    _scrollToBottom();
     return imageData;
   }
 
@@ -170,8 +172,9 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _scrollToBottom() {
-    if (_debounceTimer?.isActive ?? false)
+    if (_debounceTimer?.isActive ?? false) {
       _debounceTimer!.cancel();
+    }
     _debounceTimer =
         Timer(const Duration(milliseconds: 100), () {
       if (_scrollController.hasClients) {
@@ -282,10 +285,7 @@ class _ChatPageState extends State<ChatPage> {
         return;
       }
       String fullMessage = _messageBuffer[reqId]!.join(" ");
-      _updateCurrentMessageChunk(
-        fullMessage,
-        reqId,
-      );
+      _updateCurrentMessageChunk(fullMessage, reqId);
     });
 
     _scrollToBottom();

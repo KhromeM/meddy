@@ -62,9 +62,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _showTutorial();
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   _showTutorial();
+    // });
   }
 
   @override
