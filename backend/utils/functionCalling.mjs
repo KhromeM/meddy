@@ -1,10 +1,14 @@
-import { getChatResponse, jsonChatResponse } from "../ai/langAi/chatStream.mjs";
-import { openAIModel } from "../ai/langAi/model.mjs";
+import { jsonChatResponse } from "../ai/langAi/chatStream.mjs";
+import {
+	vertexAIModel,
+	openAIModel,
+	anthropicModel,
+} from "../ai/langAi/model.mjs";
 import { executeLLMFunction } from "../ai/functions/functionController.mjs";
 import db from "../db/db.mjs";
 import { z } from "zod";
 
-const defaultModel = openAIModel;
+const defaultModel = vertexAIModel || openAIModel || vertexAIModel;
 
 export const execUserRequest = async (
 	user,
@@ -43,25 +47,33 @@ export const execUserRequest = async (
 		}),
 	});
 	const structuredModel = defaultModel.withStructuredOutput(structure);
-	const llmResponse = await jsonChatResponse(
+	let llmResponse = await jsonChatResponse(
 		chatHistory,
 		user,
 		structuredModel,
 		1 // function calling mode
 	);
+	// llmResponse = llmResponse.content;
+	// console.log(llmResponse, llmResponse.type);
+	// llmResponse = llmResponse.trimStart().trimEnd();
+	// const result = await executeLLMFunction(JSON.parse(llmResponse));
+
 	console.log("STRUC RESPONSE: ", llmResponse);
-	const response = "\n" + (await executeLLMFunction(llmResponse));
+	const result = await executeLLMFunction(llmResponse);
+
+	result.response = "\n" + result.response;
 
 	clientSocket.send(
 		JSON.stringify({
 			type: "chat_response",
-			data: response,
+			data: result.response,
 			isComplete: false,
 			reqId,
+			result,
 		})
 	);
-	if (audioMode) {
+	if (audioMode && result.response.length < 200) {
 	}
 
-	return response || "";
+	return result.response || "";
 };
