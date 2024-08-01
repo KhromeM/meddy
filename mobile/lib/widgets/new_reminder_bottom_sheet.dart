@@ -1,42 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class DatePickerWidget extends StatelessWidget {
-  final DateTime selectedDate;
+
+class DatePickerWidget extends StatefulWidget {
+  final DateTime initialDate;
   final Function(DateTime) onDateChanged;
 
   const DatePickerWidget({
     Key? key,
-    required this.selectedDate,
+    required this.initialDate,
     required this.onDateChanged,
   }) : super(key: key);
+
+  @override
+  _DatePickerWidgetState createState() => _DatePickerWidgetState();
+}
+
+class _DatePickerWidgetState extends State<DatePickerWidget> {
+  late DateTime selectedDate;
+  bool _showDatePicker = false;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedDate = widget.initialDate;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 10),
-        Container(
-          padding: EdgeInsets.symmetric(vertical: 10),
-          child: CalendarDatePicker(
-            initialDate: selectedDate,
-            firstDate: DateTime(2000),
-            lastDate: DateTime(2101),
-            onDateChanged: onDateChanged,
-          ),
-        ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              padding: EdgeInsets.only(left: 15),
-              child: Text(
-                '${DateFormat.yMd().format(selectedDate)}',
-                style: TextStyle(color: Colors.red),
-              ),
-            )
+            Text('Date: '),
+            SizedBox(width: 10),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _showDatePicker = !_showDatePicker;
+                });
+              },
+              child: Text('${DateFormat.yMd().format(selectedDate)}'),
+            ),
           ],
         ),
+        SizedBox(height: 10),
+        if (_showDatePicker)
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: CalendarDatePicker(
+              initialDate: selectedDate,
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2101),
+              onDateChanged: (DateTime date) {
+                setState(() {
+                  selectedDate = date;
+                  _showDatePicker = false;
+                });
+                widget.onDateChanged(date);
+              },
+            ),
+          ),
       ],
     );
   }
@@ -62,6 +87,8 @@ class TimePickerWidget extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Text('Time: '),
+              SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () async {
                   final TimeOfDay? pickedTime = await showTimePicker(
@@ -72,24 +99,13 @@ class TimePickerWidget extends StatelessWidget {
                     onTimeChanged(pickedTime);
                   }
                 },
-                child: Text('Select Time'),
+                child: Text('${selectedTime.format(context)}'),
               ),
               SizedBox(width: 10),
             ],
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              padding: EdgeInsets.only(left: 15),
-              child: Text(
-                '${selectedTime.format(context)}',
-                style: TextStyle(color: Colors.red),
-              ),
-            )
-          ],
-        ),
+        
       ],
     );
   }
@@ -108,7 +124,6 @@ class _AddReminderBottomSheetState extends State<AddReminderBottomSheet> {
   DateTime reminderDate = DateTime.now();
   TimeOfDay reminderTime = TimeOfDay.now();
   bool _showDatePicker = false;
-  bool _showTimePicker = false;
   String _repeatOption = 'Never';
 
   @override
@@ -143,21 +158,10 @@ class _AddReminderBottomSheetState extends State<AddReminderBottomSheet> {
                 labelText: 'Reminder Title',
               ),
             ),
-            SwitchListTile(
-              title: Text('Date'),
-              value: _showDatePicker,
-              onChanged: (bool value) {
-                setState(() {
-                  _showDatePicker = value;
-                  if (value) {
-                    _showTimePicker = false;
-                  }
-                });
-              },
-            ),
-            if (_showDatePicker)
+
+
               DatePickerWidget(
-                selectedDate: reminderDate,
+                initialDate: reminderDate,
                 onDateChanged: (DateTime date) {
                   setState(() {
                     reminderDate = date;
@@ -165,19 +169,8 @@ class _AddReminderBottomSheetState extends State<AddReminderBottomSheet> {
                 },
               ),
             Divider(),
-            SwitchListTile(
-              title: Text('Time'),
-              value: _showTimePicker,
-              onChanged: (bool value) {
-                setState(() {
-                  _showTimePicker = value;
-                  if (value) {
-                    _showDatePicker = false;
-                  }
-                });
-              },
-            ),
-            if (_showTimePicker)
+            
+
               TimePickerWidget(
                 selectedTime: reminderTime,
                 onTimeChanged: (TimeOfDay time) {
@@ -187,11 +180,17 @@ class _AddReminderBottomSheetState extends State<AddReminderBottomSheet> {
                 },
               ),
             Divider(),
-            Text('Repeat: $_repeatOption'),
-            ElevatedButton(
-              onPressed: () => _showRepeatOptionsDialog(context),
-              child: Text('Select Repeat Option'),
-            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Repeat: '),
+              SizedBox(width: 10), // Adds 10 pixels of space between the text and button
+              ElevatedButton(
+                onPressed: () => _showRepeatOptionsDialog(context),
+                child: Text(_repeatOption),
+              ),
+            ],
+          ),
           ],
         ),
       ),
