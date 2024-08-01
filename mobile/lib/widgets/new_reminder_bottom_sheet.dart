@@ -1,42 +1,70 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:meddymobile/utils/app_colors.dart';
 
-class DatePickerWidget extends StatelessWidget {
-  final DateTime selectedDate;
+class DatePickerWidget extends StatefulWidget {
+  final DateTime initialDate;
   final Function(DateTime) onDateChanged;
 
   const DatePickerWidget({
     Key? key,
-    required this.selectedDate,
+    required this.initialDate,
     required this.onDateChanged,
   }) : super(key: key);
+
+  @override
+  _DatePickerWidgetState createState() => _DatePickerWidgetState();
+}
+
+class _DatePickerWidgetState extends State<DatePickerWidget> {
+  late DateTime selectedDate;
+  bool _showDatePicker = false;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedDate = widget.initialDate;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 10),
-        Container(
-          padding: EdgeInsets.symmetric(vertical: 10),
-          child: CalendarDatePicker(
-            initialDate: selectedDate,
-            firstDate: DateTime(2000),
-            lastDate: DateTime(2101),
-            onDateChanged: onDateChanged,
-          ),
-        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Container(
-              padding: EdgeInsets.only(left: 15),
-              child: Text(
-                '${DateFormat.yMd().format(selectedDate)}',
-                style: TextStyle(color: Colors.red),
-              ),
-            )
+            Text('Date: '),
+            SizedBox(width: 60),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _showDatePicker = !_showDatePicker;
+                });
+              },
+              style: ElevatedButton.styleFrom(
+              backgroundColor: lightPurple, 
+              foregroundColor: Colors.black, 
+            ),
+              child: Text('${DateFormat.yMd().format(selectedDate)}'),
+            ),
           ],
         ),
+        if (_showDatePicker)
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: CalendarDatePicker(
+              initialDate: selectedDate,
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2101),
+              onDateChanged: (DateTime date) {
+                setState(() {
+                  selectedDate = date;
+                  _showDatePicker = false;
+                });
+                widget.onDateChanged(date);
+              },
+            ),
+          ),
       ],
     );
   }
@@ -56,12 +84,13 @@ class TimePickerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 10),
         Container(
           padding: EdgeInsets.symmetric(vertical: 10),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              Text('Time: '),
+              SizedBox(width: 60),
               ElevatedButton(
                 onPressed: () async {
                   final TimeOfDay? pickedTime = await showTimePicker(
@@ -72,24 +101,17 @@ class TimePickerWidget extends StatelessWidget {
                     onTimeChanged(pickedTime);
                   }
                 },
-                child: Text('Select Time'),
+                style: ElevatedButton.styleFrom(
+              backgroundColor: lightPurple, 
+              foregroundColor: Colors.black, 
+            ),
+                child: Text('${selectedTime.format(context)}'),
               ),
               SizedBox(width: 10),
             ],
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              padding: EdgeInsets.only(left: 15),
-              child: Text(
-                '${selectedTime.format(context)}',
-                style: TextStyle(color: Colors.red),
-              ),
-            )
-          ],
-        ),
+        
       ],
     );
   }
@@ -108,7 +130,6 @@ class _AddReminderBottomSheetState extends State<AddReminderBottomSheet> {
   DateTime reminderDate = DateTime.now();
   TimeOfDay reminderTime = TimeOfDay.now();
   bool _showDatePicker = false;
-  bool _showTimePicker = false;
   String _repeatOption = 'Never';
 
   @override
@@ -132,71 +153,67 @@ class _AddReminderBottomSheetState extends State<AddReminderBottomSheet> {
                     widget.onAddReminder(reminderDate, reminderTime, _repeatOption);
                     Navigator.of(context).pop();
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: orangeAccent,
+                    foregroundColor: Colors.white,
+                  ),
                   child: Text('Apply'),
                 ),
               ],
             ),
+            SizedBox(height: 12),
             Divider(),
+            SizedBox(height: 12),
             TextFormField(
               initialValue: 'New Reminder',
               decoration: InputDecoration(
                 labelText: 'Reminder Title',
               ),
             ),
-            SwitchListTile(
-              title: Text('Date'),
-              value: _showDatePicker,
-              onChanged: (bool value) {
+            SizedBox(height: 12),
+            DatePickerWidget(
+              initialDate: reminderDate,
+              onDateChanged: (DateTime date) {
                 setState(() {
-                  _showDatePicker = value;
-                  if (value) {
-                    _showTimePicker = false;
-                  }
+                  reminderDate = date;
                 });
               },
             ),
-            if (_showDatePicker)
-              DatePickerWidget(
-                selectedDate: reminderDate,
-                onDateChanged: (DateTime date) {
-                  setState(() {
-                    reminderDate = date;
-                  });
-                },
-              ),
+            SizedBox(height: 12),
             Divider(),
-            SwitchListTile(
-              title: Text('Time'),
-              value: _showTimePicker,
-              onChanged: (bool value) {
+            SizedBox(height: 8),
+            TimePickerWidget(
+              selectedTime: reminderTime,
+              onTimeChanged: (TimeOfDay time) {
                 setState(() {
-                  _showTimePicker = value;
-                  if (value) {
-                    _showDatePicker = false;
-                  }
+                  reminderTime = time;
                 });
               },
             ),
-            if (_showTimePicker)
-              TimePickerWidget(
-                selectedTime: reminderTime,
-                onTimeChanged: (TimeOfDay time) {
-                  setState(() {
-                    reminderTime = time;
-                  });
-                },
-              ),
+            SizedBox(height: 8),
             Divider(),
-            Text('Repeat: $_repeatOption'),
-            ElevatedButton(
-              onPressed: () => _showRepeatOptionsDialog(context),
-              child: Text('Select Repeat Option'),
+            SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text('Repeat: '),
+                SizedBox(width: 60),
+                ElevatedButton(
+                  onPressed: () => _showRepeatOptionsDialog(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: lightPurple,
+                    foregroundColor: Colors.black,
+                  ),
+                  child: Text(_repeatOption),
+                ),
+              ],
             ),
           ],
         ),
       ),
     );
   }
+
 
   void _showDiscardChangesDialog(BuildContext context) {
     showDialog(
