@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
+import 'package:meddymobile/utils/app_colors.dart';
 
 class DatePickerWidget extends StatefulWidget {
   final DateTime initialDate;
@@ -31,21 +31,24 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
     return Column(
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text('Date: '),
-            SizedBox(width: 10),
+            SizedBox(width: 60),
             ElevatedButton(
               onPressed: () {
                 setState(() {
                   _showDatePicker = !_showDatePicker;
                 });
               },
+              style: ElevatedButton.styleFrom(
+              backgroundColor: lightPurple, 
+              foregroundColor: Colors.black, 
+            ),
               child: Text('${DateFormat.yMd().format(selectedDate)}'),
             ),
           ],
         ),
-        SizedBox(height: 10),
         if (_showDatePicker)
           Container(
             padding: EdgeInsets.symmetric(vertical: 10),
@@ -81,14 +84,13 @@ class TimePickerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 10),
         Container(
           padding: EdgeInsets.symmetric(vertical: 10),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text('Time: '),
-              SizedBox(width: 10),
+              SizedBox(width: 60),
               ElevatedButton(
                 onPressed: () async {
                   final TimeOfDay? pickedTime = await showTimePicker(
@@ -99,6 +101,10 @@ class TimePickerWidget extends StatelessWidget {
                     onTimeChanged(pickedTime);
                   }
                 },
+                style: ElevatedButton.styleFrom(
+              backgroundColor: lightPurple, 
+              foregroundColor: Colors.black, 
+            ),
                 child: Text('${selectedTime.format(context)}'),
               ),
               SizedBox(width: 10),
@@ -147,55 +153,67 @@ class _AddReminderBottomSheetState extends State<AddReminderBottomSheet> {
                     widget.onAddReminder(reminderDate, reminderTime, _repeatOption);
                     Navigator.of(context).pop();
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: orangeAccent,
+                    foregroundColor: Colors.white,
+                  ),
                   child: Text('Apply'),
                 ),
               ],
             ),
+            SizedBox(height: 12),
             Divider(),
+            SizedBox(height: 12),
             TextFormField(
               initialValue: 'New Reminder',
               decoration: InputDecoration(
                 labelText: 'Reminder Title',
               ),
             ),
-
-
-              DatePickerWidget(
-                initialDate: reminderDate,
-                onDateChanged: (DateTime date) {
-                  setState(() {
-                    reminderDate = date;
-                  });
-                },
-              ),
+            SizedBox(height: 12),
+            DatePickerWidget(
+              initialDate: reminderDate,
+              onDateChanged: (DateTime date) {
+                setState(() {
+                  reminderDate = date;
+                });
+              },
+            ),
+            SizedBox(height: 12),
             Divider(),
-            
-
-              TimePickerWidget(
-                selectedTime: reminderTime,
-                onTimeChanged: (TimeOfDay time) {
-                  setState(() {
-                    reminderTime = time;
-                  });
-                },
-              ),
+            SizedBox(height: 8),
+            TimePickerWidget(
+              selectedTime: reminderTime,
+              onTimeChanged: (TimeOfDay time) {
+                setState(() {
+                  reminderTime = time;
+                });
+              },
+            ),
+            SizedBox(height: 8),
             Divider(),
+            SizedBox(height: 12),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Repeat: '),
-              SizedBox(width: 10), // Adds 10 pixels of space between the text and button
-              ElevatedButton(
-                onPressed: () => _showRepeatOptionsDialog(context),
-                child: Text(_repeatOption),
-              ),
-            ],
-          ),
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text('Repeat: '),
+                SizedBox(width: 60),
+                ElevatedButton(
+                  onPressed: () => _showRepeatOptionsDialog(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: lightPurple,
+                    foregroundColor: Colors.black,
+                  ),
+                  child: Text(_repeatOption),
+                ),
+              ],
+            ),
           ],
         ),
       ),
     );
   }
+
 
   void _showDiscardChangesDialog(BuildContext context) {
     showDialog(
