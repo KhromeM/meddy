@@ -15,6 +15,7 @@ import {
 	getUserAppointments,
 } from "../../db/dbAppointments.mjs";
 import JSON5 from "json5";
+import { summarizeAppointmentFromChatHistory } from "../../utils/saveAppointments.mjs";
 
 export const executeLLMFunction = async (rspObj) => {
 	try {
@@ -163,6 +164,10 @@ export const executeLLMFunction = async (rspObj) => {
 				);
 				return params.response;
 				return `The appointment has been rescheduled successfully`;
+			case "LLMSaveAppointment":
+				user = await getUserById(params.userId);
+				return await summarizeAppointmentFromChatHistory(user);
+
 			case "LLMGenerateSummaryForAppointment":
 				appointment = await getAppointmentById(params.appointmentId);
 				return appointment.transcriptsummary;
