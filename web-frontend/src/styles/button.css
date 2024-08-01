@@ -1,32 +1,63 @@
 .download-button {
-    position: relative;
-    overflow: hidden;
+  position: relative;
+  overflow: hidden;
+}
+
+.download-icon {
+  position: relative;
+  transition: transform 0.5s ease-in-out;
+}
+
+.download-button:hover .download-icon {
+  animation: moveArrow 1s;
+}
+
+@keyframes moveArrow {
+  0% {
+    transform: translateX(0);
   }
-  
-  .download-icon {
-    position: relative;
-    transition: transform 0.5s ease-in-out;
+  50% {
+    transform: translateX(100%);
+    opacity: 0;
   }
-  
-  .download-button:hover .download-icon {
-    animation: moveArrow 1s ;
+  51% {
+    transform: translateX(-100%);
+    opacity: 0;
   }
-  
-  @keyframes moveArrow {
-    0% {
-      transform: translateX(0);
-    }
-    50% {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    51% {
-      transform: translateX(-100%);
-      opacity: 0;
-    }
-    100% {
-      transform: translateX(0);
-      opacity: 1;
-    }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
   }
-  
+}
+
+.back-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.back-icon {
+  position: relative;
+  transition: transform 0.5s ease-in-out;
+}
+
+.back-button:hover .back-icon {
+  animation: moveArrowBack 1s;
+}
+
+@keyframes moveArrowBack {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  51% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
