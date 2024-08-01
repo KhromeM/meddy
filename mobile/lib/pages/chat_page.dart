@@ -241,16 +241,15 @@ class _ChatPageState extends State<ChatPage> {
     if (result != null) {
       _messageResult = result;
     }
-
     setState(() {
       if (!_messageBuffer.containsKey(reqId)) {
         _messageBuffer[reqId] = [];
-        _addMessageToChatHistory("llm", "", reqId, result: result);
+        _addMessageToChatHistory("llm", "", reqId, result: _messageResult);
       }
       _messageBuffer[reqId]!.add(text);
 
       String fullMessage = _messageBuffer[reqId]!.join("");
-      _updateCurrentMessageChunk(fullMessage, reqId, result: result);
+      _updateCurrentMessageChunk(fullMessage, reqId, result: _messageResult);
 
       if (message['isComplete'] ?? false) {
         _messageBuffer.remove(reqId);
