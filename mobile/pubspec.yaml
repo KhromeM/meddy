@@ -55,6 +55,7 @@ dependencies:
   image: ^4.2.0
   path: ^1.9.0
   sound_stream: ^0.4.1
+  fl_chart: ^0.68.0
   # comment the following line  out for android users
   # sound_stream: ^0.3.0
 dev_dependencies:

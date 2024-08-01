@@ -88,7 +88,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const ProfilePage()),
+                              builder: (context) => HealthPage()),
                         );
                       },
                     ),
