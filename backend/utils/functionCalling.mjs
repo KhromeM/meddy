@@ -8,7 +8,7 @@ import { executeLLMFunction } from "../ai/functions/functionController.mjs";
 import db from "../db/db.mjs";
 import { z } from "zod";
 
-const defaultModel = vertexAIModel || openAIModel || vertexAIModel;
+const defaultModel = openAIModel || vertexAIModel;
 
 export const execUserRequest = async (
 	user,
