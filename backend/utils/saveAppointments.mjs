@@ -1,7 +1,9 @@
 import { z } from "zod";
-import { defaultModel } from "../ai/models/defaultModel.js";
-import { jsonChatResponse } from "../ai/jsonChatResponse.js";
-import * as db from "../db/db.js";
+import { openAIModel } from "../ai/langAi/model.mjs";
+import { jsonChatResponse } from "../ai/langAi/chatStream.mjs";
+import db from "../db/db.mjs";
+
+const defaultModel = openAIModel;
 
 export const summarizeAppointmentFromChatHistory = async (user) => {
 	const chatHistory = await db.getRecentMessagesByUserId(user.userid, 200);
@@ -23,7 +25,7 @@ export const summarizeAppointmentFromChatHistory = async (user) => {
 		structuredModel,
 		3 // save appointment mode
 	);
-	console.log("SAVE APPOINTMENT RESPONSE");
+	console.log("SAVE APPOINTMENT RESPONSE", llmResponse);
 	db.createAppointment(
 		new Date(),
 		llmResponse.transcript,
