@@ -1,15 +1,6 @@
-import {
-	HumanMessage,
-	SystemMessage,
-	AIMessage,
-} from "@langchain/core/messages";
+import { HumanMessage, SystemMessage, AIMessage } from "@langchain/core/messages";
 import { StringOutputParser } from "@langchain/core/output_parsers";
-import {
-	vertexAIModel,
-	groqModel,
-	anthropicModel,
-	openAIModel,
-} from "./model.mjs";
+import { vertexAIModel, groqModel, anthropicModel, openAIModel } from "./model.mjs";
 import CONFIG from "../../config.mjs";
 import { createDefaultSystemPrompt } from "../prompts/default.mjs";
 import { createStallResponsePrompt } from "../prompts/stallResponse.mjs";
@@ -26,9 +17,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-let defaultModel = CONFIG.TEST
-	? openAIModel
-	: openAIModel || anthropicModel || vertexAIModel || openAIModel;
+let defaultModel = CONFIG.TEST ? openAIModel : openAIModel || anthropicModel || vertexAIModel || openAIModel;
 
 export const chatStreamProvider = async (
 	chatHistory,
@@ -58,39 +47,29 @@ export const chatStreamProvider = async (
 	return await chain.stream(messages);
 };
 
-export const getChatResponse = async (
-	chatHistory,
-	user,
-	model = defaultModel,
-	mode = 0
-) => {
+export const getChatResponse = async (chatHistory, user, model = defaultModel, mode = 1) => {
 	let data = sampleData1;
 	if (mode == 1) {
 		data = await getUserInfo(user.userid);
 	}
 
-	const chatStream = await chatStreamProvider(
-		chatHistory,
-		user,
-		model,
-		mode,
-		data
-	);
+	const chatStream = await chatStreamProvider(chatHistory, user, model, mode, data);
 	const resp = [];
 	for await (const chunk of chatStream) {
 		resp.push(chunk);
 	}
-	// console.log(resp.join(""));
-	return resp.join("");
+
+	const finalResponse = resp.join("");
+	if (mode == 1) {
+		const functionCallingResponse = JSON.parse(finalResponse);
+		await executeLLMFunction(functionCallingResponse);
+		return functionCallingResponse.params.response;
+	}
+
+	return finalResponse;
 };
 
-export const jsonChatResponse = async (
-	chatHistory,
-	user,
-	model = defaultModel,
-	mode,
-	data = sampleData1
-) => {
+export const jsonChatResponse = async (chatHistory, user, model = defaultModel, mode, data = sampleData1) => {
 	if (mode == 1) {
 		data = await getUserInfo(user.userid);
 	}
@@ -134,10 +113,7 @@ function processMessage(user, message) {
 
 	if (message.image) {
 		try {
-			const imagePath = path.resolve(
-				__dirname,
-				`../../uploads/${user.userid}/${message.image}`
-			);
+			const imagePath = path.resolve(__dirname, `../../uploads/${user.userid}/${message.image}`);
 
 			const img = fs.readFileSync(imagePath);
 			const type = getContentType(message.image);
