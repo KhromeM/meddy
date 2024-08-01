@@ -27,10 +27,11 @@ class ChatProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateMessage(String messageId, String text) {
+  void updateMessage(String messageId, String text,
+      {Map<String, dynamic>? result}) {
     int index = _messages.indexWhere((msg) => msg.messageId == messageId);
     if (index != -1) {
-      _messages[index] = _messages[index].copyWith(text: text);
+      _messages[index] = _messages[index].copyWith(text: text, result: result);
       notifyListeners();
     }
   }
