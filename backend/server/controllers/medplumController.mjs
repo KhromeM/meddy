@@ -25,19 +25,6 @@ export const retrieveCleanedPatientDetailsFromEpic = async (patientId) => {
 	const resourceTypes = ["DiagnosticReport", "MedicationRequest", "Procedure"];
 	await retreiveExternalResources(epicClient, medplum, patientId, medplumPatient, resourceTypes);
 
-	// await medplum.createResource({
-	// 	resourceType: "Appointment",
-	// 	status: "booked",
-	// 	start: "2024-01-01T14:00:00.000Z",
-	// 	end: "2024-01-01T15:00:00.000Z",
-	// 	participant: [
-	// 		{
-	// 			actor: createReference(medplumPatient[0]),
-	// 			status: "accepted",
-	// 		},
-	// 	],
-	// });
-
 	// Retrieve and parse patient details from Medplum
 	const patientInfo = await medplum.readPatientEverything(medplumId);
 	const parsedInfo = parseFHIRResponse(patientInfo);
@@ -248,13 +235,6 @@ function parseFHIRResponse(patientInfo) {
 	return result;
 }
 
-export const getAllAppointments = async (patientId) => {
-	const medplumPatient = await medplum.searchResources("Patient", `identifier=${patientId}`);
-	const appointments = await medplum.searchResources("Appointment", `patient=${medplumPatient[0].id}`);
-	const parsedAppointments = parseFHIRResponse(appointments);
-	return parsedAppointments;
-};
-
 export const createAppointment = async (patientId, appointment) => {
 	const medplumPatient = await medplum.searchResources("Patient", `identifier=${patientId}`);
 	appointment.participant = [
@@ -267,14 +247,16 @@ export const createAppointment = async (patientId, appointment) => {
 	return appointment;
 };
 
-export const updateAppointment = async (appointmentId, startDate, endDate) => {
+export const updateAppointment = async (appointmentId, startDate, endDate, description) => {
 	const appointment = await medplum.readResource("Appointment", appointmentId);
 	appointment.start = startDate;
 	appointment.end = endDate;
+	appointment.description = description;
 	await medplum.updateResource(appointment);
 	return appointment;
 };
 
 export const deleteAppointment = async (appointmentId) => {
-	await medplum.deleteResource("Appointment", appointmentId);
+	const response = await medplum.deleteResource("Appointment", appointmentId);
+	console.log(response);
 };

@@ -69,8 +69,17 @@ export const getChatResponse = async (
 	for await (const chunk of chatStream) {
 		resp.push(chunk);
 	}
-	// console.log(resp.join(""));
-	return resp.join("");
+
+	const finalResponse = resp.join("");
+	if (mode == 1) {
+		console.log(finalResponse);
+		console.log(data.medplumInfo.resourceTypes);
+		const functionCallingResponse = JSON.parse(finalResponse);
+		await executeLLMFunction(functionCallingResponse);
+		return functionCallingResponse.params.response;
+	}
+
+	return finalResponse;
 };
 
 export const jsonChatResponse = async (
