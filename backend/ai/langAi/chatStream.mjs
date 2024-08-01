@@ -39,6 +39,8 @@ export const chatStreamProvider = async (
 	mode,
 	data = sampleData1 // dummy data
 ) => {
+	if (chatHistory[0].source == "llm") chatHistory.shift(); // gemini doesnt like the first message to be from an llm
+
 	const systemMessage = getSystemMessage(user, data, mode);
 	// console.log(systemMessage, mode);
 	let messages = [
@@ -66,6 +68,8 @@ export const getChatResponse = async (
 	model = defaultModel,
 	mode = 0
 ) => {
+	if (chatHistory[0].source == "llm") chatHistory.shift(); // gemini doesnt like the first message to be from an llm
+
 	let data = sampleData1;
 	if (mode == 1) {
 		data = await getUserInfo(user.userid);
@@ -93,22 +97,24 @@ export const jsonChatResponse = async (
 	mode,
 	data = sampleData1
 ) => {
+	if (chatHistory[0].source == "llm") chatHistory.shift(); // gemini doesnt like the first message to be from an llm
+
 	if (mode == 1) {
 		data = await getUserInfo(user.userid);
 	}
 	const systemMessage = getSystemMessage(user, data, mode);
 	let messages = [
 		new SystemMessage(systemMessage),
-		...chatHistory.slice(0, -1).map((message) => {
+		...chatHistory.map((message) => {
 			if (message.source == "user") {
 				return new HumanMessage(message.text);
 			} else {
 				return new AIMessage(message.text);
 			}
 		}),
-		new HumanMessage(processMessage(user, chatHistory[chatHistory.length - 1])),
 	];
 	messages = cleanMessages(messages);
+	// console.log(messages.map((m) => m.constructor.name));
 	return await model.invoke(messages);
 };
 
