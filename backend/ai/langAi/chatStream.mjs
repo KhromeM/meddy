@@ -61,8 +61,6 @@ export const getChatResponse = async (chatHistory, user, model = defaultModel, m
 
 	const finalResponse = resp.join("");
 	if (mode == 1) {
-		console.log(finalResponse);
-		console.log(data.medplumInfo.resourceTypes);
 		const functionCallingResponse = JSON.parse(finalResponse);
 		await executeLLMFunction(functionCallingResponse);
 		return functionCallingResponse.params.response;
