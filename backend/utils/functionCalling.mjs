@@ -46,18 +46,21 @@ export const execUserRequest = async (
 			endDate: z.string().optional(),
 		}),
 	});
-	const structuredModel = defaultModel; //defaultModel.withStructuredOutput(structure);
+	const structuredModel = defaultModel.withStructuredOutput(structure);
 	let llmResponse = await jsonChatResponse(
 		chatHistory,
 		user,
 		structuredModel,
 		1 // function calling mode
 	);
-	llmResponse = llmResponse.content;
-	console.log(llmResponse, llmResponse.type);
-	llmResponse = llmResponse.trimStart().trimEnd();
+	// llmResponse = llmResponse.content;
+	// console.log(llmResponse, llmResponse.type);
+	// llmResponse = llmResponse.trimStart().trimEnd();
+	// const result = await executeLLMFunction(JSON.parse(llmResponse));
+
 	console.log("STRUC RESPONSE: ", llmResponse);
-	const result = await executeLLMFunction(JSON.parse(llmResponse));
+	const result = await executeLLMFunction(llmResponse);
+
 	result.response = "\n" + result.response;
 
 	clientSocket.send(
