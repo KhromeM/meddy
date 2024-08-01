@@ -10,25 +10,45 @@ import classes from './index.module.css';
 
 const features = [
   {
-    title: 'Comprehsive Care Plans',
+    title: 'Multilingual Communication',
     description:
-      'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.',
+      'Meddy understands and responds in multiple languages, breaking down communication barriers between patients and healthcare providers.',
   },
   {
-    title: 'No hidden fees',
+    title: 'Voice-Activated Assistance',
     description:
-      'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.',
+      'Interact with Meddy using just your voice, making it easy for elderly patients or those with limited mobility to get the information they need.',
   },
   {
-    title: '24/7 Messaging',
+    title: 'Simplified Medical Explanations',
     description:
-      'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.',
+      'Complex medical terms and instructions are translated into easy-to-understand language, ensuring patients fully comprehend their health information.',
   },
   {
-    title: 'Clinically rigorous',
+    title: 'Medication Reminders',
     description:
-      'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.',
+      "Never miss a dose with Meddy's personalized medication reminders, helping patients stick to their prescribed treatment plans.",
   },
+  // {
+  //   title: 'Appointment Summaries',
+  //   description:
+  //     'Meddy records and summarizes doctor appointments, helping patients remember important details and instructions from their healthcare visits.',
+  // },
+  // {
+  //   title: '24/7 Health Information Access',
+  //   description:
+  //     'Get answers to health-related questions anytime, day or night, providing peace of mind and reducing unnecessary doctor visits.',
+  // },
+  // {
+  //   title: 'Emotional Support',
+  //   description:
+  //     'Meddy offers a compassionate ear, providing emotional support and companionship to patients dealing with health concerns.',
+  // },
+  // {
+  //   title: 'Secure User Profiles',
+  //   description:
+  //     'Store and manage personal health information securely, ensuring your medical data is always at your fingertips when needed.',
+  // },
 ];
 
 export function LandingPage(): JSX.Element {
@@ -42,13 +62,11 @@ export function LandingPage(): JSX.Element {
           <div className={classes.inner}>
             <div className={classes.content}>
               <Title className={classes.title}>
-                An extraordinary
-                <br />
-                <span className={classes.highlight}>doctor&apos;s office</span>
+                Your
+                <span className={classes.highlight}> Personal </span> Medical Companion
               </Title>
               <Text size="lg" c="dimmed" mt="md">
-                This is not actually a medical practice, this is a sample open source application for developers to
-                clone, customize and run.
+                Bridging the gap between you and your doctor
               </Text>
               <Group mt={30}>
                 <Button radius="xl" size="md" className={classes.control}>
@@ -66,14 +84,14 @@ export function LandingPage(): JSX.Element {
           <div className={classes.inner}>
             <div style={{ width: 500 }}>
               <Title order={3} fw={500} c={theme.primaryColor} mb="lg">
-                Healthcare
+                Reimagining Healthcare Communication
               </Title>
               <Title order={1} fw={500} mb="md">
-                A better way to get care
+                Empowering patients, one conversation at a time
               </Title>
               <Text size="xl" c="gray">
-                Lorem ipsum dolor sit amet consect adipisicing elit. Possimus magnam voluptatum cupiditate veritatis in
-                accusamus quisquam.
+                Meddy uses advanced AI to break down language barriers and medical jargon, ensuring you understand your
+                health journey every step of the way.
               </Text>
             </div>
             <img className={classes.heroImage3} src={LabImage} alt="Laboratory" />
