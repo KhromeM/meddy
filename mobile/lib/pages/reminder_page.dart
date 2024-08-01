@@ -5,7 +5,7 @@ import 'package:meddymobile/widgets/backnav_app_bar.dart';
 import 'package:meddymobile/utils/app_colors.dart';
 import 'package:intl/intl.dart';
 import 'package:meddymobile/services/appointment_service.dart';
-
+import 'package:meddymobile/widgets/new_reminder_bottom_sheet.dart';
 class ReminderPage extends StatefulWidget {
   const ReminderPage({super.key});
 
@@ -118,230 +118,23 @@ class _ReminderPageState extends State<ReminderPage> {
     });
   }
 
-  Future<void> _showAddReminderBottomSheet() async {
-    DateTime reminderDate = DateTime.now();
-    TimeOfDay reminderTime = TimeOfDay.now();
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return SizedBox(
-              height: MediaQuery.of(context).size.height * 0.85,
-              child: Padding(
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('Discard Changes?'),
-                                  content: Text(
-                                      'Are you sure you want to discard changes?'),
-                                  actions: [
-                                    TextButton(
-                                      child: Text('Cancel'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                    TextButton(
-                                      child: Text('Discard Changes',
-                                          style: TextStyle(color: Colors.red)),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        Navigator.of(context)
-                                            .pop(); // Close the BottomSheet
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                          child: Text('Cancel'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            _addReminder(reminderDate, reminderTime);
-                            Navigator.of(context)
-                                .pop(); // Close the BottomSheet
-                          },
-                          child: Text('Apply'),
-                        ),
-                      ],
-                    ),
-                    Divider(),
-                    TextFormField(
-                      initialValue: 'New Reminder',
-                      decoration: InputDecoration(
-                        labelText: 'Reminder Title',
-                      ),
-                    ),
-                    SwitchListTile(
-                      title: Text('Date'),
-                      value: _showDatePicker,
-                      onChanged: (bool value) {
-                        setState(() {
-                          _showDatePicker = value;
-                          if (value) {
-                            _showTimePicker =
-                                false; // Ensure only one picker is shown at a time
-                          }
-                        });
-                      },
-                    ),
-                    if (_showDatePicker)
-                      Column(
-                        children: [
-                          SizedBox(height: 10),
-                          Container(
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: CalendarDatePicker(
-                              initialDate: reminderDate,
-                              firstDate: DateTime(2000),
-                              lastDate: DateTime(2101),
-                              onDateChanged: (DateTime date) {
-                                setState(() {
-                                  reminderDate = date;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.only(left: 15),
-                          child: Text(
-                            style: TextStyle(color: Colors.red),
-                            DateFormat.yMd().format(reminderDate),
-                          ),
-                        )
-                      ],
-                    ),
-                    Divider(),
-                    SwitchListTile(
-                      title: Text('Time'),
-                      value: _showTimePicker,
-                      onChanged: (bool value) {
-                        setState(() {
-                          _showTimePicker = value;
-                          if (value) {
-                            _showDatePicker =
-                                false; // Ensure only one picker is shown at a time
-                          }
-                        });
-                      },
-                    ),
-                    if (_showTimePicker)
-                      Column(
-                        children: [
-                          SizedBox(height: 10),
-                          Container(
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    final TimeOfDay? pickedTime =
-                                        await showTimePicker(
-                                      context: context,
-                                      initialTime: reminderTime,
-                                    );
-                                    if (pickedTime != null) {
-                                      setState(() {
-                                        reminderTime = pickedTime;
-                                      });
-                                    }
-                                  },
-                                  child: Text('Select Time'),
-                                ),
-                                SizedBox(width: 10),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.only(left: 15),
-                          child: Text(
-                            style: TextStyle(color: Colors.red),
-                            reminderTime.format(context),
-                          ),
-                        )
-                      ],
-                    ),
-                    Divider(),
-                    Text('Repeat: $_repeatOption'),
-                    ElevatedButton(
-                      onPressed: () async {
-                        final String? selectedOption = await showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('Repeat Options'),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  ListTile(
-                                    title: Text('Daily'),
-                                    onTap: () =>
-                                        Navigator.of(context).pop('Daily'),
-                                  ),
-                                  ListTile(
-                                    title: Text('Weekends'),
-                                    onTap: () =>
-                                        Navigator.of(context).pop('Weekends'),
-                                  ),
-                                  ListTile(
-                                    title: Text('Weekdays'),
-                                    onTap: () =>
-                                        Navigator.of(context).pop('Weekdays'),
-                                  ),
-                                  ListTile(
-                                    title: Text('Never'),
-                                    onTap: () =>
-                                        Navigator.of(context).pop('Never'),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
-                        if (selectedOption != null) {
-                          setState(() {
-                            _repeatOption = selectedOption;
-                          });
-                        }
-                      },
-                      child: Text('Select Repeat Option'),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
+void _showAddReminderBottomSheet() {
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.white,
+    isScrollControlled: true,
+    builder: (BuildContext context) {
+      return AddReminderBottomSheet(
+        onAddReminder: (DateTime date, TimeOfDay time, String repeatOption) {
+          _addReminder(date, time);
+          setState(() {
+            _repeatOption = repeatOption;
+          });
+        },
+      );
+    },
+  );
+}
 
   List<Widget> _buildDateCards() {
     List<Widget> dateCards = [];
@@ -470,7 +263,7 @@ class _ReminderPageState extends State<ReminderPage> {
                               _removeReminder(_reminders.indexOf(reminder)),
                         ),
                       );
-                    }),
+                    }).toList(),
                   ] else ...[
                     Text('No reminders!', style: TextStyle(color: Colors.grey)),
                   ],
@@ -497,7 +290,7 @@ class _ReminderPageState extends State<ReminderPage> {
                               _removeReminder(_reminders.indexOf(reminder)),
                         ),
                       );
-                    }),
+                    }).toList(),
                   ] else ...[
                     Text('No reminders!', style: TextStyle(color: Colors.grey)),
                   ],
@@ -511,7 +304,7 @@ class _ReminderPageState extends State<ReminderPage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              backgroundColor: Colors.orangeAccent,
+              backgroundColor: orangeAccent,
             ),
             onPressed: _showAddReminderBottomSheet,
             child: Row(
