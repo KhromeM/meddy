@@ -30,7 +30,7 @@ export const chatLLMStreamWS = async (
 
 	wsConnection.setHandler("chat_response", (response) => {
 		if (response.reqId != reqId) return;
-		onChunk(response.data);
+		onChunk(response);
 		if (response.isComplete) {
 			onComplete();
 		}
