@@ -20,17 +20,6 @@ class MessageList extends StatelessWidget {
   Widget build(BuildContext context) {
     final highContrastMode = HighContrastMode.of(context);
 
-    final Color userMessageColor = highContrastMode?.isHighContrast == true
-        ? Colors.black
-        : Color.fromRGBO(255, 254, 251, 1);
-    final Color llmMessageColor = highContrastMode?.isHighContrast == true
-        ? Colors.white
-        : Color.fromRGBO(255, 242, 228, 1);
-    final Color userTextColor =
-        highContrastMode?.isHighContrast == true ? Colors.white : Colors.black;
-    final Color llmTextColor =
-        highContrastMode?.isHighContrast == true ? Colors.black : Colors.black;
-
     return ListView.builder(
       controller: scrollController,
       itemCount: messages.length,
@@ -38,6 +27,31 @@ class MessageList extends StatelessWidget {
       itemBuilder: (context, index) {
         final message = messages[index];
         final isUser = message.source == "user";
+
+        Color messageColor;
+        Color textColor;
+        IconData? resultIcon;
+        Color? iconColor;
+
+        if (message.result != null) {
+          if (message.result!['success'] == true) {
+            messageColor = Colors.green[100]!;
+            textColor = Colors.black;
+            resultIcon = Icons.check_circle;
+            iconColor = Colors.green;
+          } else {
+            messageColor = Colors.red[100]!;
+            textColor = Colors.black;
+            resultIcon = Icons.error;
+            iconColor = Colors.red;
+          }
+        } else {
+          messageColor = isUser
+              ? Color.fromRGBO(255, 254, 251, 1)
+              : Color.fromRGBO(255, 242, 228, 1);
+          textColor = Colors.black;
+        }
+
         return Align(
           alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
           child: Padding(
@@ -45,7 +59,7 @@ class MessageList extends StatelessWidget {
             child: Container(
               key: ValueKey(message.messageId),
               decoration: BoxDecoration(
-                color: isUser ? userMessageColor : llmMessageColor,
+                color: messageColor,
                 borderRadius: BorderRadius.circular(20),
               ),
               padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
@@ -71,9 +85,12 @@ class MessageList extends StatelessWidget {
                                   return Dialog(
                                     child: ConstrainedBox(
                                       constraints: BoxConstraints(
-                                        maxWidth: MediaQuery.of(context).size.width * 0.8,
+                                        maxWidth:
+                                            MediaQuery.of(context).size.width *
+                                                0.8,
                                         maxHeight:
-                                            MediaQuery.of(context).size.height * 0.8,
+                                            MediaQuery.of(context).size.height *
+                                                0.8,
                                       ),
                                       child: SingleChildScrollView(
                                         child: Column(
@@ -115,9 +132,15 @@ class MessageList extends StatelessWidget {
                     MarkdownBody(
                       data: message.text,
                       styleSheet: MarkdownStyleSheet(
-                        p: TextStyle(
-                          color: isUser ? userTextColor : llmTextColor,
-                        ),
+                        p: TextStyle(color: textColor),
+                      ),
+                    ),
+                  if (resultIcon != null)
+                    Padding(
+                      padding: EdgeInsets.only(top: 8.0),
+                      child: Icon(
+                        resultIcon,
+                        color: iconColor,
                       ),
                     ),
                 ],
