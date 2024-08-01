@@ -1,6 +1,100 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+class DatePickerWidget extends StatelessWidget {
+  final DateTime selectedDate;
+  final Function(DateTime) onDateChanged;
+
+  const DatePickerWidget({
+    Key? key,
+    required this.selectedDate,
+    required this.onDateChanged,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(height: 10),
+        Container(
+          padding: EdgeInsets.symmetric(vertical: 10),
+          child: CalendarDatePicker(
+            initialDate: selectedDate,
+            firstDate: DateTime(2000),
+            lastDate: DateTime(2101),
+            onDateChanged: onDateChanged,
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.only(left: 15),
+              child: Text(
+                '${DateFormat.yMd().format(selectedDate)}',
+                style: TextStyle(color: Colors.red),
+              ),
+            )
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class TimePickerWidget extends StatelessWidget {
+  final TimeOfDay selectedTime;
+  final Function(TimeOfDay) onTimeChanged;
+
+  const TimePickerWidget({
+    Key? key,
+    required this.selectedTime,
+    required this.onTimeChanged,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(height: 10),
+        Container(
+          padding: EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  final TimeOfDay? pickedTime = await showTimePicker(
+                    context: context,
+                    initialTime: selectedTime,
+                  );
+                  if (pickedTime != null) {
+                    onTimeChanged(pickedTime);
+                  }
+                },
+                child: Text('Select Time'),
+              ),
+              SizedBox(width: 10),
+            ],
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.only(left: 15),
+              child: Text(
+                '${selectedTime.format(context)}',
+                style: TextStyle(color: Colors.red),
+              ),
+            )
+          ],
+        ),
+      ],
+    );
+  }
+}
+
 class AddReminderBottomSheet extends StatefulWidget {
   final Function(DateTime, TimeOfDay, String) onAddReminder;
 
@@ -62,36 +156,14 @@ class _AddReminderBottomSheetState extends State<AddReminderBottomSheet> {
               },
             ),
             if (_showDatePicker)
-              Column(
-                children: [
-                  SizedBox(height: 10),
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: CalendarDatePicker(
-                      initialDate: reminderDate,
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2101),
-                      onDateChanged: (DateTime date) {
-                        setState(() {
-                          reminderDate = date;
-                        });
-                      },
-                    ),
-                  ),
-                ],
+              DatePickerWidget(
+                selectedDate: reminderDate,
+                onDateChanged: (DateTime date) {
+                  setState(() {
+                    reminderDate = date;
+                  });
+                },
               ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  padding: EdgeInsets.only(left: 15),
-                  child: Text(
-                    '${DateFormat.yMd().format(reminderDate)}',
-                    style: TextStyle(color: Colors.red),
-                  ),
-                )
-              ],
-            ),
             Divider(),
             SwitchListTile(
               title: Text('Time'),
@@ -106,46 +178,14 @@ class _AddReminderBottomSheetState extends State<AddReminderBottomSheet> {
               },
             ),
             if (_showTimePicker)
-              Column(
-                children: [
-                  SizedBox(height: 10),
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () async {
-                            final TimeOfDay? pickedTime = await showTimePicker(
-                              context: context,
-                              initialTime: reminderTime,
-                            );
-                            if (pickedTime != null) {
-                              setState(() {
-                                reminderTime = pickedTime;
-                              });
-                            }
-                          },
-                          child: Text('Select Time'),
-                        ),
-                        SizedBox(width: 10),
-                      ],
-                    ),
-                  ),
-                ],
+              TimePickerWidget(
+                selectedTime: reminderTime,
+                onTimeChanged: (TimeOfDay time) {
+                  setState(() {
+                    reminderTime = time;
+                  });
+                },
               ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  padding: EdgeInsets.only(left: 15),
-                  child: Text(
-                    '${reminderTime.format(context)}',
-                    style: TextStyle(color: Colors.red),
-                  ),
-                )
-              ],
-            ),
             Divider(),
             Text('Repeat: $_repeatOption'),
             ElevatedButton(
