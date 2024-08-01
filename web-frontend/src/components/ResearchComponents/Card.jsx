@@ -17,7 +17,7 @@ const Card = ({ bg, title, children, bgImage }) => {
     const rotateY = (0.5 * mouseX) / (cardWidth / 2); // Decreased tilt amount and reversed sign
 
     setTiltStyle({
-      transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(0.99)`,
+      transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
     });
   };
 
