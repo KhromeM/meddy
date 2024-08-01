@@ -72,8 +72,6 @@ export const getChatResponse = async (
 
 	const finalResponse = resp.join("");
 	if (mode == 1) {
-		console.log(finalResponse);
-		console.log(data.medplumInfo.resourceTypes);
 		const functionCallingResponse = JSON.parse(finalResponse);
 		await executeLLMFunction(functionCallingResponse);
 		return functionCallingResponse.params.response;
