@@ -1,18 +1,12 @@
 import { getUserById, updateUser } from "../../db/dbUser.mjs";
-import {
-	createMedication,
-	createReminder,
-	deleteReminder,
-	getUserMedications,
-	deleteMedication,
-	getUserReminders,
-} from "../../db/dbInfo.mjs";
+import { createMedication, createReminder, deleteReminder, deleteMedication } from "../../db/dbInfo.mjs";
 import {
 	createAppointment,
 	updateAppointment,
 	deleteAppointment,
 } from "../../server/controllers/medplumController.mjs";
 import { summarizeAppointmentFromChatHistory } from "../../utils/saveAppointments.mjs";
+
 
 export const executeLLMFunction = async (rspObj) => {
 	try {
@@ -43,6 +37,7 @@ export const executeLLMFunction = async (rspObj) => {
 					params.response ||
 					`Your name has been successfully updated to ${params.newName}!`;
 				break;
+
 			case "LLMUpdateUserPhone":
 				user = await getUserById(params.userId);
 				user.phone = params.newPhoneNumber;
@@ -51,6 +46,7 @@ export const executeLLMFunction = async (rspObj) => {
 					params.response ||
 					`Your phone number has been successfully updated to ${params.newPhoneNumber}!`;
 				break;
+
 			case "LLMUpdateUserAddress":
 				user = await getUserById(params.userId);
 				user.address = params.newAddress;
@@ -59,6 +55,7 @@ export const executeLLMFunction = async (rspObj) => {
 					params.response ||
 					`Your address has been successfully updated to ${params.newAddress}!`;
 				break;
+
 			case "LLMUpdateUserEmail":
 				user = await getUserById(params.userId);
 				user.email = params.newEmail;
@@ -67,6 +64,7 @@ export const executeLLMFunction = async (rspObj) => {
 					params.response ||
 					`Your email has been successfully updated to ${params.newEmail}!`;
 				break;
+
 			case "LLMUpdateUserLanguagePreference":
 				user = await getUserById(params.userId);
 				user.language = params.language;

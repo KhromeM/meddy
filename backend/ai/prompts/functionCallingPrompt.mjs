@@ -79,10 +79,10 @@ Example for Medical Management:
 const appointmentManagementPrompt = `
 Available functions for Appointment Management:
 - LLMGetAppointmentList()
-- LLMScheduleAppointment(patientId: string, appointmentStartTime: string, appointmentEndTime: string, description: string) // Example dateTime: "2023-07-11T14:00:00Z"
-- LLMCancelAppointment(appointmentId: string)
-- LLMRescheduleAppointment(appointmentId: string, appointmentStartTime: string, appointmentEndTime: string, description: string)
 - LLMSaveAppointment(patientId: string) // Call this if the user asks you to save their doctor's appointment
+- LLMScheduleAppointment(patientId: string, appointmentStartTime, appointmentEndTime: string, description) // Example dateTime: "2023-07-11T14:00:00Z"
+- LLMCancelAppointment(appointmentId: string)
+- LLMRescheduleAppointment(appointmentId: string, appointmentStartTime: string, appointmentEndTime: string, description)
 
 Remember to only include the required params for each function.
 
