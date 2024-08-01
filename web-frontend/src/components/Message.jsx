@@ -10,7 +10,7 @@ const Message = ({ message, isStreaming }) => {
 	let userName = user?.displayName || "You";
 	userName = userName.split(" ")[0];
 
-	console.log(message);
+	// console.log(message);
 	const getBackgroundColor = () => {
 		if (!result) return isUser ? "white" : "#fff2e4";
 		return result.success ? "green.50" : "red.50";
