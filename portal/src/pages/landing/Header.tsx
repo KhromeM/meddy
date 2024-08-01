@@ -29,7 +29,7 @@ import {
   IconFingerprint,
   IconNotification,
 } from '@tabler/icons-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Logo } from '../../components/Logo';
 import classes from './Header.module.css';
 
@@ -92,14 +92,14 @@ export function Header(): JSX.Element {
 
   return (
     <>
-      <AppShell.Header px="md" style={{ backgroundColor: '#FEF9EF' }}>
+      <AppShell.Header px="md" style={{ backgroundColor: theme.colors.secondary[0] }}>
         <Container h="100%">
           <Group justify="space-between" h="100%">
             <UnstyledButton className={classes.logoButton} onClick={() => navigate('/')}>
               <Logo width={240} />
             </UnstyledButton>
 
-        <Group style={{ height: '100%' }} gap={0} className={classes.hiddenMobile}>
+            <Group style={{ height: '100%' }} gap={0} className={classes.hiddenMobile}>
               <HoverCard width={600} position="bottom" radius="md" shadow="md" withinPortal>
                 <HoverCard.Target>
                   <a href="#" className={classes.link}>
@@ -141,16 +141,16 @@ export function Header(): JSX.Element {
                   </div>
                 </HoverCard.Dropdown>
               </HoverCard>
-              <a href="#" className={classes.link}>
-                Counseling
-              </a>
+              <Link key="about us" to="aboutus" className={classes.link}>
+                About Us
+              </Link>
               {/* <a href="#" className={classes.link}>
                 Physicians
               </a>
               <a href="#" className={classes.link}>
                 More
               </a> */}
-            </Group>  
+            </Group>
 
             <Group className={classes.hiddenMobile}>
               <Button variant="default" onClick={() => navigate('/signin')}>
