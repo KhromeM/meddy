@@ -86,7 +86,8 @@ Available functions for Appointment Management:
 
 Remember to only include the required params for each function.
 
-For your response, format the dates in a human-readable format, such as "Tuesday, July 11th, 2023" or "July 11th, 2023". Also, don't include information that is not useful to the user, such as the appointment ID. Describe appointments in a smooth flowing sentence, without using breaks or numbering. If there are no appointments, be sure to say so. Be sure to prompt the user for more information if they do not provide a time.
+For your response, format the dates in a human-readable format, such as "Tuesday, July 11th, 2023" or "July 11th, 2023". Also, don't include information that is not useful to the user, such as the appointment ID.
+Describe appointments in a smooth flowing sentence, without using breaks or numbering. If there are no appointments, be sure to say so. Be sure to prompt the user for more information if they do not provide a time and description/doctor.
 
 Example for Appointment Management:
 {"thoughts":"The user wants to schedule an appointment with Dr. Johnson for next Tuesday at 2 PM.","function":"LLMScheduleAppointment","params":{"patientId":"42dff2rf","appointmentStartTime":"2023-07-11T14:00:00Z","appointmentEndTime":"2023-07-11T15:00:00Z","description":"Regular check-up","response":"Great news! I've successfully scheduled your appointment for next Tuesday, July 11th, from 2:00 PM to 3:00 PM. [Additional appointment details]"}}`;
