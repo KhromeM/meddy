@@ -1,43 +1,59 @@
 import fs from "fs";
 import { MedplumClient, createReference } from "@medplum/core";
 import { getEpicPatient } from "./epicController.mjs";
-const medplum = new MedplumClient();
 import CONFIG from "../../config.mjs";
+const medplum = new MedplumClient();
 await medplum.startClientLogin(CONFIG.MEDPLUM_CLIENT_ID, CONFIG.MEDPLUM_CLIENT_SECRET);
 
 export const getPatientDetails = async (req, res) => {
 	try {
-		// Retrieve the patient from Epic
-		const patientId = req.params.patientId;
-		const epicClient = await getEpicPatient(medplum, patientId);
-		const medplumPatient = await medplum.searchResources("Patient", `identifier=${patientId}`);
-		const medplumId = medplumPatient[0].id;
-
-		// Retrieve the patient's medical data from Epic and store it in Medplum
-		const resourceTypes = ["DiagnosticReport", "MedicationRequest", "Procedure"];
-		await retrieveResources(epicClient, medplum, patientId, medplumPatient, resourceTypes);
-
-		// Retrieve and parse patient details from Medplum
-		const patientInfo = await medplum.readPatientEverything(medplumId);
-		const parsedInfo = parsePatientInfo(patientInfo);
-
-		// Create directory if it doesn't exist
-		const directoryPath = `./uploads/patient-${medplumId}`;
-		fs.mkdirSync(directoryPath, { recursive: true });
-
-		// Save patient details
-		const medplumInfoPath = `${directoryPath}/medplumInfo.json`;
-		const medplumInfo = JSON.stringify(parsedInfo, null, 2);
-		fs.writeFileSync(medplumInfoPath, medplumInfo);
-
-		res.status(200).json(parsedInfo);
+		const patientDetails = await retrieveCleanedPatientDetailsFromEpic(req.params.patientId);
+		res.status(200).json(patientDetails);
 	} catch (err) {
 		console.error("Error fetching patient details:", err);
 		res.status(500).json({ status: "fail", message: "Failed to fetch patient details" });
 	}
 };
 
-async function retrieveResources(client, medplum, patientId, medplumPatient, resourceTypes) {
+export const retrieveCleanedPatientDetailsFromEpic = async (patientId) => {
+	// Retrieve the patient from Epic
+	const epicClient = await getEpicPatient(medplum, patientId);
+	const medplumPatient = await medplum.searchResources("Patient", `identifier=${patientId}`);
+	const medplumId = medplumPatient[0].id;
+
+	// Retrieve the patient's medical data from Epic and store it in Medplum
+	const resourceTypes = ["DiagnosticReport", "MedicationRequest", "Procedure"];
+	await retreiveExternalResources(epicClient, medplum, patientId, medplumPatient, resourceTypes);
+
+	// await medplum.createResource({
+	// 	resourceType: "Appointment",
+	// 	status: "booked",
+	// 	start: "2024-01-01T14:00:00.000Z",
+	// 	end: "2024-01-01T15:00:00.000Z",
+	// 	participant: [
+	// 		{
+	// 			actor: createReference(medplumPatient[0]),
+	// 			status: "accepted",
+	// 		},
+	// 	],
+	// });
+
+	// Retrieve and parse patient details from Medplum
+	const patientInfo = await medplum.readPatientEverything(medplumId);
+	const parsedInfo = parseFHIRResponse(patientInfo);
+
+	// Create directory if it doesn't exist
+	const directoryPath = `./uploads/patient-${medplumId}`;
+	fs.mkdirSync(directoryPath, { recursive: true });
+
+	// Save patient details
+	const medplumInfoPath = `${directoryPath}/medplumInfo.json`;
+	const medplumInfo = JSON.stringify(parsedInfo, null, 2);
+	fs.writeFileSync(medplumInfoPath, medplumInfo);
+	return parsedInfo;
+};
+
+async function retreiveExternalResources(client, medplum, patientId, medplumPatient, resourceTypes) {
 	for (const resourceType of resourceTypes) {
 		const resources = await client.search(resourceType, `patient=${patientId}`);
 		for (const entry of resources.entry) {
@@ -49,7 +65,7 @@ async function retrieveResources(client, medplum, patientId, medplumPatient, res
 	}
 }
 
-function parsePatientInfo(patientInfo) {
+function parseFHIRResponse(patientInfo) {
 	const result = {
 		resourceTypes: {},
 	};
@@ -214,6 +230,12 @@ function parsePatientInfo(patientInfo) {
 					return;
 				}
 				break;
+			case "Appointment":
+				processedResource.startDate = resource.start;
+				processedResource.endDate = resource.end;
+				processedResource.status = resource.status;
+				processedResource.id = resource.id;
+				break;
 		}
 
 		if (resource.location) {
@@ -225,3 +247,34 @@ function parsePatientInfo(patientInfo) {
 
 	return result;
 }
+
+export const getAllAppointments = async (patientId) => {
+	const medplumPatient = await medplum.searchResources("Patient", `identifier=${patientId}`);
+	const appointments = await medplum.searchResources("Appointment", `patient=${medplumPatient[0].id}`);
+	const parsedAppointments = parseFHIRResponse(appointments);
+	return parsedAppointments;
+};
+
+export const createAppointment = async (patientId, appointment) => {
+	const medplumPatient = await medplum.searchResources("Patient", `identifier=${patientId}`);
+	appointment.participant = [
+		{
+			actor: createReference(medplumPatient[0]),
+			status: "accepted",
+		},
+	];
+	await medplum.createResource(appointment);
+	return appointment;
+};
+
+export const updateAppointment = async (appointmentId, startDate, endDate) => {
+	const appointment = await medplum.readResource("Appointment", appointmentId);
+	appointment.start = startDate;
+	appointment.end = endDate;
+	await medplum.updateResource(appointment);
+	return appointment;
+};
+
+export const deleteAppointment = async (appointmentId) => {
+	await medplum.deleteResource("Appointment", appointmentId);
+};
