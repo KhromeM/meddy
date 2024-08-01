@@ -10,6 +10,7 @@ class AudioService {
 		this.microphone = null;
 		this.lang = "en";
 		this.requestId = null;
+		this.isAudioQueue1Started = false;
 	}
 
 	initAudioContext() {
@@ -48,21 +49,36 @@ class AudioService {
 	}
 
 	playBestAudio() {
-		const loop = setInterval(async () => {
-			if (this.isPlaying) return;
-			if (this.audioQueue3.length > 0) {
-				// if we have the best audio then just play that then end the loop
+		const playAudio = async() => {
+			if(this.isPlaying){
+				setTimeout(playAudio, 250);
+				return;
+			}
+			if(this.audioQueue3.length > 0 && !this.isAudioQueue1Started){
 				this.isPlaying = true;
 				await this.playQueue(this.audioQueue3);
 				this.isPlaying = false;
-				clearInterval(loop);
-				return;
-			}
-			if (this.audioQueue1.length > 0) {
+			}else if(this.audioQueue1.length > 0 && !this.isAudioQueue1Started){
+				this.isAudioQueue1Started = true;
+				this.isPlaying = true;
 				await this.playQueue(this.audioQueue1);
+				this.isPlaying = false;
+
+				if(this.audioQueue3.length > 0){
+					this.isPlaying = true;
+					await this.playQueue(this.audioQueue3);
+					this.isPlaying = false;
+				}
+			}else if(this.audioQueue3.length > 0 && this.isAudioQueue1Started){
+				this.isPlaying = true;
+				await this.playQueue(this.audioQueue3);
+				this.isPlaying = false;
 			}
-		}, 250);
+			setTimeout(playAudio, 250)
+		};
+		playAudio();
 	}
+
 	async playQueue(audioQueue) {
 		await new Promise(async (resolve) => {
 			while (audioQueue.length > 0) {

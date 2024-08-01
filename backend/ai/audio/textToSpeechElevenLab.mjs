@@ -6,6 +6,7 @@ import CONFIG from "../../config.mjs";
 import { getAudioDurationInSeconds } from "get-audio-duration";
 import db from "../../db/db.mjs";
 import { writeLog } from "../../extra/logging/logging.mjs";
+import { execUserRequest } from "../../utils/functionCalling.mjs";
 import {
 	groqModel,
 	anthropicModel,
@@ -49,7 +50,7 @@ const filePath = "./ai/audio/genAudio/experiments/spn/exp1";
 /**
  * Converts chat history to speech using ElevenLabs API and streams the audio to the client
  * @param {Array} chatHistory - Array of message objects representing the chat history
- * @param {WebSocket} outputSocket - WebSocket connection to the client for forwarding audio
+ * @param {WebSocket} clientSocket - WebSocket connection to the client for forwarding audio
  * @param {WriteStream} fileStream - File stream to write the audio locally
  * @param {Object} req -- Request object containing a lot of information
  * @param {Number} quality -- The quality of the transcipt used to generate the response (0-3), 0 = 0, 1 = 50 chars, 2 = 150 chars, 3 = total
@@ -110,6 +111,7 @@ export const TTS_WS = async (
 			}
 		},
 		req,
+		chatHistory,
 		quality
 	);
 };
@@ -118,9 +120,10 @@ export const TTS_WS = async (
  * Streams LLM output to ElevenLabs API for text-to-speech conversion
  * @param {WebSocket} TTS_Socket - WebSocket connection to ElevenLabs API
  * @param {AsyncIterable<string>} llmStream - Async iterable of LLM text chunks
- * @param {WebSocket} outputSocket - WebSocket connection to the client for forwarding audio
+ * @param {WebSocket} clientSocket - WebSocket connection to the client for forwarding audio
  * @param {function} callback - Callback function to handle messages from ElevenLabs
  * @param {Object} req -- Request object from express, used for logging
+ * @param {Array} chatHistory - Array of message objects representing the chat history
  * @param {Object} [voiceSettings] - Voice settings for ElevenLabs API
  * @param {number} [optimize_streaming_latency=0] - Latency optimization level
  * @param {number[]} [chunk_length_schedule=[120,160,250,290]] - Chunk length schedule for streaming
@@ -129,9 +132,10 @@ export const TTS_WS = async (
 async function streamLLMToElevenLabs(
 	TTS_Socket,
 	llmStream,
-	outputSocket,
+	clientSocket,
 	callback,
 	req,
+	chatHistory,
 	quality = 3,
 	voiceSettings,
 	optimize_streaming_latency,
@@ -154,13 +158,11 @@ async function streamLLMToElevenLabs(
 			})
 		);
 
-		console.log(
-			"OUTPUT FORMAT: ",
-			req.source == "mobile" ? "pcm_16000" : "mp3_44100_64"
-		);
 		const totalResponse = [];
 		let partialResponse = "";
 		let sentTTSChunk = false;
+		let functionCallResponse = "";
+
 		for await (const chunk of llmStream) {
 			// logging
 			if (req && !req.logs.firstLLMChunk) {
@@ -169,8 +171,14 @@ async function streamLLMToElevenLabs(
 			}
 			partialResponse += chunk;
 			totalResponse.push(chunk);
-			if (outputSocket && quality == 3) {
-				outputSocket.send(
+			if (clientSocket && quality == 3) {
+				// function calling trigger
+				if (partialResponse.slice(0, 13) == "Processing...") {
+					partialResponse = partialResponse.slice(0, 13);
+					break;
+				}
+
+				clientSocket.send(
 					JSON.stringify({
 						type: "chat_response",
 						data: chunk,
@@ -178,21 +186,6 @@ async function streamLLMToElevenLabs(
 					})
 				);
 			}
-			// if (
-			// 	(!sentTTSChunk && partialResponse.length > 25) ||
-			// 	endOfSentenceMarkersSet.has(chunk.slice(-2)) || // if havent sent TTS any chunks, send if over 25 chars in buffer or ending with EOS char
-			// 	(partialResponse.length > bufferLimit / 2 &&
-			// 		endOfSentenceMarkersSet.has(chunk.slice(-2))) || // if the built up response is more than half the buffer limit and ends with a EOS char
-			// 	partialResponse.length > bufferLimit // or over the buffer limit
-			// ) {
-			// 	sentTTSChunk = true; // have sent tts a chunk
-			// 	TTS_Socket.send(
-			// 		JSON.stringify({
-			// 			text: partialResponse + CHUNK_SEPERATOR,
-			// 		})
-			// 	);
-			// 	partialResponse = "";
-			// }
 
 			if (
 				partialResponse.length > bufferLimit ||
@@ -204,6 +197,7 @@ async function streamLLMToElevenLabs(
 						text: partialResponse + CHUNK_SEPERATOR,
 					})
 				);
+
 				partialResponse = "";
 			}
 		}
@@ -212,11 +206,24 @@ async function streamLLMToElevenLabs(
 				text: partialResponse + CHUNK_SEPERATOR,
 			})
 		);
+		if (partialResponse == "Processing...") {
+			functionCallResponse = await execUserRequest(
+				req.user,
+				chatHistory.slice(-7),
+				clientSocket,
+				req.reqId
+			);
+			TTS_Socket.send(
+				JSON.stringify({
+					text: functionCallResponse + CHUNK_SEPERATOR,
+				})
+			);
+		}
 		TTS_Socket.send(JSON.stringify({ text: EOS_MESSAGE }));
-		req.logs.llmResponse = totalResponse.join(""); // logging
+		req.logs.llmResponse = totalResponse.join("") + functionCallResponse; // logging
 		req.response = req.logs.llmResponse;
 		if (quality == 3) {
-			await db.createMessage(req.user.userid, "llm", totalResponse.join(""));
+			await db.createMessage(req.user.userid, "llm", req.response);
 		}
 	});
 	TTS_Socket.on("message", callback);

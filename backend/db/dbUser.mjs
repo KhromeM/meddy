@@ -11,7 +11,15 @@ import { pool } from "./dbConfig.mjs";
  * @param {string} patientId - The patient ID of the user
  * @returns {Promise<Object>} - A promise that resolves to the created user object
  */
-export const createUser = (userId, name, address, email, language, phone, patientId) => {
+export const createUser = (
+	userId,
+	name,
+	address,
+	email,
+	language,
+	phone,
+	patientId
+) => {
 	const query =
 		"INSERT INTO Users (UserID, Name, Address, Email, Language, Phone, PatientID) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *";
 	const values = [userId, name, address, email, language, phone, patientId];
@@ -52,10 +60,44 @@ export const getUserById = (userId) => {
  * @param {string} patientId - The new patient ID of the user
  * @returns {Promise<Object>} - A promise that resolves to the updated user object
  */
-export const updateUser = (userId, name, address, email, language, phone, patientId) => {
+export const updateUserWithParams = (
+	userId,
+	name,
+	address,
+	email,
+	language,
+	phone,
+	patientId
+) => {
+	// console.log(
+	// 	"updating user:",
+	// 	userId,
+	// 	name,
+	// 	address,
+	// 	email,
+	// 	language,
+	// 	phone,
+	// 	patientId
+	// );
 	const query =
 		"UPDATE Users SET Name = $2, Address = $3, Email = $4, Language = $5, Phone = $6, PatientID = $7 WHERE UserID = $1 RETURNING *";
 	const values = [userId, name, address, email, language, phone, patientId];
+	return pool
+		.query(query, values)
+		.then((res) => res.rows[0])
+		.catch((err) => {
+			console.error("Error updating user:", err);
+			throw err;
+		});
+};
+
+export const updateUser = (user) => {
+	// console.log("updating user:", user);
+	const { userid, name, address, email, language, phone, patientid } = user;
+	const query =
+		"UPDATE Users SET Name = $2, Address = $3, Email = $4, Language = $5, Phone = $6, PatientID = $7 WHERE UserID = $1 RETURNING *";
+	const values = [userid, name, address, email, language, phone, patientid];
+	// console.log("values: ", values);
 	return pool
 		.query(query, values)
 		.then((res) => res.rows[0])

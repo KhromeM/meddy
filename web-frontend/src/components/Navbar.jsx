@@ -3,7 +3,7 @@ import { useAuth } from "../firebase/AuthService.jsx";
 
 const Navbar = () => {
 	const { user, login, logout } = useAuth();
-	console.log(user);
+	// console.log(user);
 	const handleAuth = () => {
 		if (user) {
 			logout();

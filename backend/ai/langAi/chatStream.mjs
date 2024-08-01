@@ -5,7 +5,7 @@ import CONFIG from "../../config.mjs";
 import { createDefaultSystemPrompt } from "../prompts/default.mjs";
 import { createStallResponsePrompt } from "../prompts/stallResponse.mjs";
 
-import { createFunctionCallingSystemPrompt } from "../prompts/functionCalling.mjs";
+import { createFunctionCallingSystemPrompt } from "../prompts/functionCallingPrompt.mjs";
 import { sampleData1 } from "../prompts/sampleData.mjs";
 import { executeLLMFunction } from "../functions/functionController.mjs";
 import { getUserInfo } from "../../db/dbInfo.mjs";
@@ -58,13 +58,34 @@ export const getChatResponse = async (chatHistory, user, model = defaultModel, m
 	for await (const chunk of chatStream) {
 		resp.push(chunk);
 	}
-	const totResp = resp.join("");
+	// console.log(resp.join(""));
+	return resp.join("");
+};
 
+export const jsonChatResponse = async (
+	chatHistory,
+	user,
+	model = defaultModel,
+	mode,
+	data = sampleData1
+) => {
 	if (mode == 1) {
-		return executeLLMFunction(totResp);
-	} else {
-		return totResp;
+		data = await getUserInfo(user.userid);
 	}
+	const systemMessage = getSystemMessage(user, data, mode);
+	let messages = [
+		new SystemMessage(systemMessage),
+		...chatHistory.slice(0, -1).map((message) => {
+			if (message.source == "user") {
+				return new HumanMessage(message.text);
+			} else {
+				return new AIMessage(message.text);
+			}
+		}),
+		new HumanMessage(processMessage(user, chatHistory[chatHistory.length - 1])),
+	];
+	messages = cleanMessages(messages);
+	return await model.invoke(messages);
 };
 
 // Makes sure the same source is not sending a message twice in a row
