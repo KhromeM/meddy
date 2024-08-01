@@ -1,8 +1,9 @@
 import 'dart:io';
-
-import 'package:flutter/foundation.dart';
+import 'dart:typed_data'; // Add this import
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:meddymobile/models/message.dart';
+import 'package:meddymobile/providers/chat_provider.dart';
 import 'package:meddymobile/services/chat_service.dart';
 import 'package:meddymobile/utils/ws_connection.dart';
 import 'package:meddymobile/services/recorder_service.dart';
@@ -63,23 +64,28 @@ class _ChatPageState extends State<ChatPage> {
         _isTypingNotifier.value = isTyping;
       }
     });
-    _loadChatHistory();
+
+    // Fetch chat history from ChatProvider
+    _loadChatHistoryFromProvider();
     if (widget.initialPrompt != null) {
       _sendInitialPrompt(widget.initialPrompt!);
     }
     _scrollToBottom();
   }
 
-  Future<void> _loadChatHistory() async {
+  Future<void> _loadChatHistoryFromProvider() async {
     try {
-      List<Message> chatHistory = await _chatService.getChatHistory();
+      print('Fetching chat history from ChatProvider...');
+      List<Message> chatHistory =
+          Provider.of<ChatProvider>(context, listen: false).messages;
       setState(() {
         _chatHistory = List.from(chatHistory);
         _isLoading = false;
       });
+      print('Chat history loaded from ChatProvider.');
       _scrollToBottom();
     } catch (e) {
-      print('Failed to load chat history: $e');
+      print('Failed to load chat history from ChatProvider: $e');
       setState(() {
         _isLoading = false;
       });
@@ -132,21 +138,25 @@ class _ChatPageState extends State<ChatPage> {
 
   void _addMessageToChatHistory(String source, String text, String reqId,
       {String? imageID}) {
+    Message newMessage = Message(
+      messageId: reqId,
+      userId: "DEVELOPER",
+      source: source,
+      imageID: imageID,
+      text: text,
+      time: DateTime.now(),
+    );
+    Provider.of<ChatProvider>(context, listen: false).addMessage(newMessage);
     setState(() {
-      _chatHistory.add(Message(
-        messageId: reqId,
-        userId: "DEVELOPER",
-        source: source,
-        imageID: imageID,
-        text: text,
-        time: DateTime.now(),
-      ));
+      _chatHistory.add(newMessage);
     });
 
     _scrollToBottom();
   }
 
   void _updateCurrentMessageChunk(String text, String reqId) {
+    Provider.of<ChatProvider>(context, listen: false)
+        .updateMessage(reqId, text);
     int index = _chatHistory.indexWhere((msg) => msg.messageId == reqId);
     if (index == -1) return;
 
@@ -309,7 +319,6 @@ class _ChatPageState extends State<ChatPage> {
     super.dispose();
   }
 
-  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
