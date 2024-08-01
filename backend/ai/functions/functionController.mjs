@@ -1,12 +1,5 @@
 import { getUserById, updateUser } from "../../db/dbUser.mjs";
-import {
-	createMedication,
-	createReminder,
-	deleteReminder,
-	getUserMedications,
-	deleteMedication,
-	getUserReminders,
-} from "../../db/dbInfo.mjs";
+import { createMedication, createReminder, deleteReminder, deleteMedication } from "../../db/dbInfo.mjs";
 import {
 	createAppointment,
 	updateAppointment,
