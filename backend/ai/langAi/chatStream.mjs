@@ -14,9 +14,11 @@ import CONFIG from "../../config.mjs";
 import { createDefaultSystemPrompt } from "../prompts/default.mjs";
 import { createStallResponsePrompt } from "../prompts/stallResponse.mjs";
 
-import { createFunctionCallingSystemPrompt } from "../prompts/functionCallingPrompt.mjs";
+import {
+	createFunctionCallingSystemPrompt,
+	createSaveAppointmentPrompt,
+} from "../prompts/functionCallingPrompt.mjs";
 import { sampleData1 } from "../prompts/sampleData.mjs";
-import { executeLLMFunction } from "../functions/functionController.mjs";
 import { getUserInfo } from "../../db/dbInfo.mjs";
 import fs from "fs";
 import path from "path";
@@ -166,6 +168,8 @@ function getSystemMessage(user, data, mode = 0) {
 			return createFunctionCallingSystemPrompt(data);
 		case 2:
 			return createStallResponsePrompt();
+		case 3:
+			return createSaveAppointmentPrompt();
 		case 5:
 			return "You are a top tier researcher. Do your best work. This is an extremly important research task. Finding the truth is of paramount importance, a person's life may be on the line.";
 		default:

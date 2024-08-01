@@ -1,4 +1,4 @@
-import { getChatResponse, jsonChatResponse } from "../ai/langAi/chatStream.mjs";
+import { jsonChatResponse } from "../ai/langAi/chatStream.mjs";
 import { openAIModel } from "../ai/langAi/model.mjs";
 import { executeLLMFunction } from "../ai/functions/functionController.mjs";
 import db from "../db/db.mjs";
