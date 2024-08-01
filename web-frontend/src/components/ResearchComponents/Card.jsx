@@ -1,7 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Text } from "@chakra-ui/react";
 
 const Card = ({ bg, title, children, bgImage }) => {
+  const [tiltStyle, setTiltStyle] = useState({});
+
+  const handleMouseMove = (e) => {
+    const card = e.currentTarget;
+    const cardRect = card.getBoundingClientRect();
+    const cardWidth = cardRect.width;
+    const cardHeight = cardRect.height;
+    const centerX = cardRect.left + cardWidth / 2;
+    const centerY = cardRect.top + cardHeight / 2;
+    const mouseX = e.clientX - centerX;
+    const mouseY = e.clientY - centerY;
+    const rotateX = (-0.5 * mouseY) / (cardHeight / 2); // Decreased tilt amount and reversed sign
+    const rotateY = (0.5 * mouseX) / (cardWidth / 2); // Decreased tilt amount and reversed sign
+
+    setTiltStyle({
+      transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(0.99)`,
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setTiltStyle({
+      transform: "perspective(1000px) scale(1)",
+    });
+  };
+
   return (
     <Box
       position="relative"
@@ -13,10 +38,10 @@ const Card = ({ bg, title, children, bgImage }) => {
       bgImage={bgImage ? `url(${bgImage})` : ""}
       bgSize="cover"
       bgPosition="center"
-      transition="transform 0.2s ease-in-out"
-      _hover={{
-        transform: "scale(0.99)",
-      }}
+      transition="transform 0.1s ease-out" // Adjusted transition for snappier effect
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={tiltStyle}
       _before={{
         content: '""',
         position: "absolute",
@@ -24,8 +49,6 @@ const Card = ({ bg, title, children, bgImage }) => {
         left: 0,
         right: 0,
         bottom: 0,
-        bg: "rgba(255, 255, 255, 0.1)",
-        backdropFilter: "blur(10px)",
         zIndex: 1,
       }}
     >
