@@ -47,7 +47,7 @@ export const chatStreamProvider = async (
 	return await chain.stream(messages);
 };
 
-export const getChatResponse = async (chatHistory, user, model = defaultModel, mode = 0) => {
+export const getChatResponse = async (chatHistory, user, model = defaultModel, mode = 1) => {
 	let data = sampleData1;
 	if (mode == 1) {
 		data = await getUserInfo(user.userid);
@@ -58,17 +58,20 @@ export const getChatResponse = async (chatHistory, user, model = defaultModel, m
 	for await (const chunk of chatStream) {
 		resp.push(chunk);
 	}
-	// console.log(resp.join(""));
-	return resp.join("");
+
+	const finalResponse = resp.join("");
+	if (mode == 1) {
+		console.log(finalResponse);
+		console.log(data.medplumInfo.resourceTypes);
+		const functionCallingResponse = JSON.parse(finalResponse);
+		await executeLLMFunction(functionCallingResponse);
+		return functionCallingResponse.params.response;
+	}
+
+	return finalResponse;
 };
 
-export const jsonChatResponse = async (
-	chatHistory,
-	user,
-	model = defaultModel,
-	mode,
-	data = sampleData1
-) => {
+export const jsonChatResponse = async (chatHistory, user, model = defaultModel, mode, data = sampleData1) => {
 	if (mode == 1) {
 		data = await getUserInfo(user.userid);
 	}

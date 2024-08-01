@@ -9,6 +9,7 @@ const structure = z.object({
     params: z.object({
         response: z.string().describe("A string that will be displayed to the user, telling them about what was done."),
         userId: z.string().optional(),
+        patientId: z.string().optional(),
         newName: z.string().optional(),
         newPhoneNumber: z.string().optional(),
         newAddress: z.string().optional(),
@@ -20,20 +21,21 @@ const structure = z.object({
         time: z.string().optional(),
         reminderId: z.string().optional(),
         description: z.string().optional(),
+        appointmentId: z.string().optional(), // Find this from medplumInfo
+        appointmentStartTime: z.string().optional(),
+        appointmentEndTime: z.string().optional(),
         appointmentId: z.string().optional(),
-        dateTime: z.string().optional(),
-        doctorId: z.string().optional(),
-        newDateTime: z.string().optional(),
         startDate: z.string().optional(),
         endDate: z.string().optional(),
     })
 })
 
 IMPORTANT: 
-- Always provide your response in this exact JSON structure. 
+- Always provide your response in this exact JSON structure without any additional characters.
 - All text intended for the user must be in the "response" field under "params".
 - Only include the params that are required for the specific function you're calling. Leave out any params that aren't needed.
 - The "userId" should always be included in the params for any function that requires it.
+- Today's date is ${new Date().toISOString().split("T")[0]}
 
 User data: 
 ${JSON.stringify(data, null, 2)}
@@ -88,23 +90,26 @@ Example for Medical Management:
 
 const appointmentManagementPrompt = `
 Available functions for Appointment Management:
-- LLMGetAppointmentList(userId: string)
-- LLMScheduleAppointment(userId: string, dateTime: string, description: string, doctorId: string) // Example dateTime: "2023-07-11T14:00:00Z"
-- LLMCancelAppointment(userId: string, appointmentId: string)
-- LLMRescheduleAppointment(userId: string, appointmentId: string, newDateTime: string)
+- LLMGetAppointmentList()
+- LLMScheduleAppointment(patientId: string, appointmentStartTime, appointmentEndTime: string, description) // Example dateTime: "2023-07-11T14:00:00Z"
+- LLMCancelAppointment(appointmentId: string)
+- LLMRescheduleAppointment(appointmentId: string, appointmentStartTime: string, appointmentEndTime: string, description)
 
 Remember to only include the required params for each function.
+
+For your response, format the dates in a human-readable format, such as "Tuesday, July 11th, 2023" or "July 11th, 2023". Also, don't include information that is not useful to the user, such as the appointment ID.
+Describe appointments in a smooth flowing sentence, without using breaks or numbering. If there are no appointments, be sure to say so. Be sure to prompt the user for more information if they do not provide a time.
 
 Example for Appointment Management:
 {
   "thoughts": "The user wants to schedule an appointment with Dr. Johnson for next Tuesday at 2 PM.",
   "function": "LLMScheduleAppointment",
   "params": {
-    "userId": "42dff2rf",
-    "doctorId": "drJohnson",
-    "dateTime": "2023-07-11T14:00:00Z",
+    "patientId": "42dff2rf",
+    "appointmentStartTime": "2023-07-11T14:00:00Z",
+    "appointmentEndTime": "2023-07-11T15:00:00Z",
     "description": "Regular check-up",
-    "response": "Great news! I've successfully scheduled your appointment with Dr. Johnson for next Tuesday, July 11th, at 2:00 PM. [Additional appointment details]"
+    "response": "Great news! I've successfully scheduled your appointment for next Tuesday, July 11th, at 2:00 PM. [Additional appointment details]"
   }
 }`;
 
@@ -132,7 +137,8 @@ const informationDisplayPrompt = `
 Available function for Information Display:
 - LLMDisplayInformation(information: string)
 
-Use this function when you need to present information to the user that doesn't require any other action. Format the information clearly and readably.
+Use this function when you need to present information to the user that is not described and doesn't require any other action. Format the information clearly and readably.
+Prioritize information under medplumInfo when formulating the response. If there is a name under medplumInfo.resourceTypes.Patient.name, use that name, and do not return the user.name.
 
 Example:
 {
