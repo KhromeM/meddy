@@ -3,6 +3,7 @@ import { Grid, GridItem } from "@chakra-ui/react";
 import Card from "./ResearchComponents/Card";
 import smiley from "./ResearchComponents/smiley.webp";
 import greenhex from "./ResearchComponents/green_hex.png";
+import gray from "./ResearchComponents/dark_gray_background.png";
 const Research = () => {
   return (
     <Grid
@@ -19,13 +20,13 @@ const Research = () => {
       height="100vh"
     >
       <GridItem area="biomarkers">
-        <Card bg="gray.700" title="Biomarkers" bgImage={smiley}></Card>
+        <Card title="Biomarkers" bgImage={gray}></Card>
       </GridItem>
       <GridItem area="biologicalAge">
         <Card bg="orange.400" title="Biological Age" bgImage={greenhex}></Card>
       </GridItem>
       <GridItem area="physicalHealth">
-        <Card bg="white" title="Physical Health"></Card>
+        <Card bg="red" title="Physical Health"></Card>
       </GridItem>
       <GridItem area="range">
         <Card bg="black" title="Out of Range"></Card>

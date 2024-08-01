@@ -13,6 +13,10 @@ const Card = ({ bg, title, children, bgImage }) => {
       bgImage={bgImage ? `url(${bgImage})` : ""}
       bgSize="cover"
       bgPosition="center"
+      transition="transform 0.2s ease-in-out"
+      _hover={{
+        transform: "scale(0.99)",
+      }}
       _before={{
         content: '""',
         position: "absolute",
