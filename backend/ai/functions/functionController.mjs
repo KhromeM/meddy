@@ -1,19 +1,10 @@
 import { getUserById, updateUser } from "../../db/dbUser.mjs";
-import {
-	createMedication,
-	createReminder,
-	deleteReminder,
-	getUserMedications,
-	deleteMedication,
-	getUserReminders,
-} from "../../db/dbInfo.mjs";
+import { createMedication, createReminder, deleteReminder, deleteMedication } from "../../db/dbInfo.mjs";
 import {
 	createAppointment,
-	deleteAppointment,
-	getAppointmentById,
 	updateAppointment,
-	getUserAppointments,
-} from "../../db/dbAppointments.mjs";
+	deleteAppointment,
+} from "../../server/controllers/medplumController.mjs";
 import { summarizeAppointmentFromChatHistory } from "../../utils/saveAppointments.mjs";
 
 export const executeLLMFunction = async (rspObj) => {
@@ -23,6 +14,8 @@ export const executeLLMFunction = async (rspObj) => {
 		let user, appointment, response;
 
 		switch (functionName) {
+			case "LLMDisplayInformation":
+				return params.information;
 			case "LLMDidNotUnderstand":
 				return {
 					function: functionName,
@@ -134,16 +127,11 @@ export const executeLLMFunction = async (rspObj) => {
 					params.response || `The appointment has been cancelled successfully.`;
 				break;
 			case "LLMRescheduleAppointment":
-				appointment = await getAppointmentById(params.appointmentId);
-				appointment.date = params.newDateTime;
 				await updateAppointment(
-					appointment.appointmentid,
-					appointment.date,
-					appointment.transcript,
-					appointment.transcriptsummary,
-					appointment.description,
-					appointment.userid,
-					appointment.doctorid
+					params.appointmentId,
+					params.appointmentStartTime,
+					params.appointmentEndTime,
+					params.description
 				);
 				response =
 					params.response ||
