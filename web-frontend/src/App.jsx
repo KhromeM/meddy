@@ -7,7 +7,6 @@ import "./styles/chat.css";
 import { AuthProvider } from "./firebase/AuthService.jsx";
 import customTheme from "./theme";
 import { EVI } from "./components/EVI.jsx";
-import { Team } from "./components/Team.jsx";
 import { Contact } from "./components/contact.jsx";
 import { AboutUsPage } from "./components/about.jsx";
 import PrivacyPolicy from "./components/PrivacyPolicy.jsx";
@@ -21,7 +20,6 @@ function App() {
 						<Route path="/" element={<LandingPage />} />
 						<Route path="/chat" element={<Chat />} />
 						<Route path="/EVI" element={<EVI />} />
-						<Route path="/team" element={<Team />} />
 						<Route path="/contact" element={<Contact />} />
 						<Route path="/about" element={<AboutUsPage />} />
 						<Route path="/privacy" element={<PrivacyPolicy />} />
