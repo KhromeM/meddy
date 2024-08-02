@@ -9,6 +9,7 @@ import customTheme from "./theme";
 import { EVI } from "./components/EVI.jsx";
 import { Team } from "./components/Team.jsx";
 import PrivacyPolicy from "./components/PrivacyPolicy.jsx";
+import Recommendations from "./components/Recommendations.jsx";
 
 function App() {
 	return (
