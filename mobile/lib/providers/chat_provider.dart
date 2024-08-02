@@ -11,6 +11,9 @@ class ChatProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
 
   Future<void> loadChatHistory() async {
+    _isLoading = true;
+    notifyListeners();
+
     try {
       List<Message> chatHistory = await _chatService.getChatHistory();
       _messages = chatHistory;
@@ -23,8 +26,10 @@ class ChatProvider with ChangeNotifier {
   }
 
   void addMessage(Message message) {
-    _messages.add(message);
-    notifyListeners();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _messages.add(message);
+      notifyListeners();
+    });
   }
 
   void updateMessage(String messageId, String text,
