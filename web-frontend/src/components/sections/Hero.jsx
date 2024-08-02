@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   VStack,
@@ -13,38 +13,31 @@ import { Link as RouterLink } from "react-router-dom";
 import Navbar from "./Navbar";
 import "../../styles/button.css";
 import CardsInterface from "../CardsInterface";
-import * as THREE from "three";
-import { setupThreeJSScene } from "./threejsBackground";
-
-const ThreeJSBackground = ({ hexColor }) => {
-  const mountRef = useRef(null);
-
-  useEffect(() => {
-    let cleanup;
-    if (mountRef.current) {
-      cleanup = setupThreeJSScene(mountRef, hexColor);
-    }
-    return () => {
-      if (cleanup) cleanup();
-    };
-  }, [hexColor]);
-
-  return (
-    <Box
-      ref={mountRef}
-      position="absolute"
-      top="0"
-      left="0"
-      w="100%"
-      h="100%"
-      zIndex="-1"
-      pointerEvents="none"
-    />
-  );
-};
+import { Gradient } from "../Gradient"; // Import the Gradient class
+import "../../styles/gradient.css"; // Import the gradient CSS
 
 export const Hero = ({ login }) => {
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const gradient = new Gradient();
+    gradient.initGradient("#gradient-canvas");
+
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      const maxScroll = 400;
+      const opacity = Math.max(1 - scrollPosition / maxScroll, 0);
+
+      const canvas = document.querySelector("#gradient-canvas");
+      if (canvas) {
+        canvas.style.opacity = opacity;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <>
@@ -55,7 +48,11 @@ export const Hero = ({ login }) => {
         overflow="hidden"
         bg="transparent"
       >
-        <ThreeJSBackground hexColor={0xffeae5} />
+        <canvas
+          id="gradient-canvas"
+          data-js-darken-top
+          data-transition-in
+        ></canvas>
         <Navbar />
         <Box display="flex" justifyContent="center">
           <Box
@@ -115,11 +112,11 @@ export const Hero = ({ login }) => {
                   >
                     Download App
                   </Button>
-                  <button
+                  <Button
                     onClick={() => {
                       window.location.href = "/chat";
                     }}
-                    className="custom-button"
+                    className="download-button"
                     rightIcon={
                       <Image
                         src="/assets/svg-1.svg"
@@ -128,9 +125,10 @@ export const Hero = ({ login }) => {
                         className="download-icon"
                       />
                     }
+                    variant="outline"
                   >
                     Try on Web
-                  </button>
+                  </Button>
                 </HStack>
               </VStack>
             </Box>

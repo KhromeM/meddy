@@ -15,7 +15,6 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [audioMode, setAudioMode] = useState(false);
   const [inProgress, setInProgress] = useState(false);
-  const [messageBuffer, setMessageBuffer] = useState({});
   const { user } = useAuth();
   const messagesEndRef = useRef(null);
   const wsConnectionRef = useRef(null);
