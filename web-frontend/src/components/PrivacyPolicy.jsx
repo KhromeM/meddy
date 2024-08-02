@@ -14,18 +14,34 @@ import {
   Divider,
 } from "@chakra-ui/react";
 
+import { useEffect } from "react";
+import { Gradient } from "./Gradient"; // Import the Gradient class
+import "../styles/gradient.css"; // Import the gradient CSS
+
 const PrivacyPolicy = () => {
+  useEffect(() => {
+    const gradient = new Gradient();
+    gradient.initGradient("#gradient-canvas");
+  }, []);
   return (
     <Box
+      position="relative"
+      minHeight="100vh"
+      w="full"
+      overflow="hidden"
+      bg="transparent"
       display="flex"
       alignItems="center"
       rowGap={8}
       flexDirection="column"
-      bg="gray.50"
-      minHeight="100  vh"
       py={12}
     >
-      <Container maxW="container.md">
+      <canvas
+        id="gradient-canvas"
+        data-js-darken-top
+        data-transition-in
+      ></canvas>
+      <Container maxW="container.lg">
         <VStack spacing={5} align="stretch">
           <Heading as="h1" size="2xl" textAlign="center">
             Privacy Policy
@@ -129,7 +145,7 @@ const PrivacyPolicy = () => {
             className="back-icon"
           />
         }
-        variant="outline"
+        variant="solid"
       >
         Take me back
       </Button>
