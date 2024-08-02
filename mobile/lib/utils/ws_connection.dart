@@ -19,7 +19,8 @@ class WSConnection {
   WebSocketChannel? _channel;
   bool _isConnected = false;
   final String _serverUrl = 'wss://www.trymeddy.com/api/';
-  // 'ws://localhost:8000/api';
+  // final String _serverUrl = 'ws://localhost:8000/api';
+
   final Map<String, Handler> _handlers = {};
   Completer<bool>? _authCompleter;
 

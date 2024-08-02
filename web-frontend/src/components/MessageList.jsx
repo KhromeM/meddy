@@ -3,18 +3,18 @@ import { VStack } from "@chakra-ui/react";
 import Message from "./Message";
 
 const MessageList = ({ messages, messagesEndRef, inProgress }) => {
-	return (
-		<VStack spacing={4} align="stretch">
-			{messages.map((msg, index) => (
-				<Message
-					key={index}
-					message={msg}
-					isStreaming={index === messages.length - 1 && inProgress}
-				/>
-			))}
-			<div ref={messagesEndRef} />
-		</VStack>
-	);
+  return (
+    <VStack spacing={4} align="stretch">
+      {messages.map((msg, index) => (
+        <Message
+          key={msg.messageId}
+          message={msg}
+          isStreaming={index === messages.length - 1 && inProgress}
+        />
+      ))}
+      <div ref={messagesEndRef} />
+    </VStack>
+  );
 };
 
 export default MessageList;

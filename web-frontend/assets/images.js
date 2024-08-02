@@ -7,6 +7,8 @@ import graphDark from './graphDark.jpg'
 import ecnomicGraph from './economicGraph.jpg'
 import superHero from './superhero.png'
 import graphThree from './graph3.jpg'
+import meddyChatLogo from './meddyChatLogo.png'
+
 
 export const images = {
     boyImg,
@@ -17,5 +19,6 @@ export const images = {
     superHero,
     graphDark,
     ecnomicGraph,
-    graphThree
+    graphThree,
+    meddyChatLogo
 }

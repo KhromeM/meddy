@@ -1,13 +1,15 @@
 import React, { useState, useCallback } from "react";
 import { Flex, Input, IconButton } from "@chakra-ui/react";
 import { FaMicrophone, FaAngleRight, FaRegStopCircle } from "react-icons/fa";
+import { VscSend } from "react-icons/vsc";
+import { GoPaperclip } from "react-icons/go";
 
 const MessageInput = ({ onSend, inProgress, toggleAudio, audioMode }) => {
 	const [text, setText] = useState("");
 
 	const handleSend = useCallback(() => {
 		if (text.trim() && !inProgress) {
-			onSend({ text: text.trim(), isUser: true });
+			onSend(text.trim());
 			setText("");
 		}
 	}, [text, inProgress, onSend]);
@@ -22,21 +24,29 @@ const MessageInput = ({ onSend, inProgress, toggleAudio, audioMode }) => {
 	return (
 		<Flex
 			margin={10}
-			p={4}
-			bg="white"
-			borderTopWidth={1}
-			borderColor="gray.200"
-			borderRadius={"xl"}
+			p={2}
+				minW={{base: '80%', md: '60%', lg:'800px'}}
+				maxW={{base: '100%', md: '80%', lg:'1280px'}}
+	
+			mx={'auto'}
 		>
 			<Flex
 				flex={1}
 				borderWidth={1}
-				borderColor="gray.200"
+				borderColor="#843A05"
 				borderRadius="full"
 				bg="white"
 				align="center"
+				width={'100%'}
+				px={4}
 				mr={2}
 			>
+				<IconButton _hover={{background:'transparent'}} bg={'transparent'}
+					icon={<GoPaperclip />}
+					onClick={handleSend}
+					aria-label="upload file"
+					size="xl"
+				/>
 				<Input
 					value={text}
 					onChange={(e) => setText(e.target.value)}
@@ -44,9 +54,10 @@ const MessageInput = ({ onSend, inProgress, toggleAudio, audioMode }) => {
 					placeholder="Type message..."
 					border="none"
 					_focus={{ boxShadow: "none" }}
+				
 				/>
-				<IconButton
-					icon={<FaAngleRight />}
+				<IconButton _hover={{background:'transparent'}} bg={'transparent'}
+					icon={<VscSend />}
 					onClick={handleSend}
 					isDisabled={inProgress || !text.trim()}
 					aria-label="Send message"
