@@ -80,25 +80,34 @@ const Chat = () => {
     const reqId = message.reqId + "_llm";
     const text = message.data;
 
-    setMessageBuffer((prev) => {
-      const updatedBuffer = { ...prev };
-      if (!updatedBuffer[reqId]) {
-        addMessageToChatHistory("llm", "", reqId);
-        updatedBuffer[reqId] = [];
+    setMessages((prevMessages) => {
+      const lastLLMMessageIndex = prevMessages.findLastIndex(
+        (msg) => msg.source === "llm" && msg.messageId === reqId
+      );
+
+      if (lastLLMMessageIndex !== -1) {
+        const updatedMessages = [...prevMessages];
+        updatedMessages[lastLLMMessageIndex] = {
+          ...updatedMessages[lastLLMMessageIndex],
+          text: (updatedMessages[lastLLMMessageIndex].text || "") + text,
+          isComplete: message.isComplete,
+        };
+        return updatedMessages;
+      } else {
+        return [
+          ...prevMessages,
+          {
+            messageId: reqId,
+            source: "llm",
+            text: text,
+            time: new Date(),
+            isComplete: message.isComplete,
+          },
+        ];
       }
-      updatedBuffer[reqId] = [...updatedBuffer[reqId], text];
-
-      const fullMessage = updatedBuffer[reqId].join("");
-      updateCurrentMessageChunk(fullMessage, reqId);
-
-      return updatedBuffer;
     });
 
     if (message.isComplete) {
-      setMessageBuffer((prev) => {
-        const { [reqId]: _, ...rest } = prev;
-        return rest;
-      });
       setInProgress(false);
     }
   };
@@ -107,50 +116,63 @@ const Chat = () => {
     const reqId = message.reqId + "_user";
     const text = message.data;
 
-    setMessageBuffer((prev) => {
-      const updatedBuffer = { ...prev };
-      if (!updatedBuffer[reqId]) {
-        addMessageToChatHistory("user", text, reqId);
-        updatedBuffer[reqId] = [text];
-      } else {
-        updatedBuffer[reqId] = [...updatedBuffer[reqId], text];
-        const fullMessage = updatedBuffer[reqId].join(" ");
-        updateCurrentMessageChunk(fullMessage, reqId);
-      }
-      return updatedBuffer;
-    });
+    setMessages((prevMessages) => {
+      const lastUserMessageIndex = prevMessages.findLastIndex(
+        (msg) => msg.source === "user" && msg.messageId === reqId
+      );
 
-    if (message.isComplete) {
-      setMessageBuffer((prev) => {
-        const { [reqId]: _, ...rest } = prev;
-        return rest;
-      });
-    }
+      if (lastUserMessageIndex !== -1) {
+        // Update existing transcription
+        const updatedMessages = [...prevMessages];
+        updatedMessages[lastUserMessageIndex] = {
+          ...updatedMessages[lastUserMessageIndex],
+          text: text,
+          isComplete: message.isComplete,
+        };
+        return updatedMessages;
+      } else {
+        // Create new transcription message
+        return [
+          ...prevMessages,
+          {
+            messageId: reqId,
+            source: "user",
+            text: text,
+            isAudio: true,
+            time: new Date(),
+            isComplete: message.isComplete,
+          },
+        ];
+      }
+    });
   };
 
   const handleAudioResponse = (audioChunk, queueNumber, isComplete) => {
     setMessages((prevMessages) => {
-      const lastMessage = prevMessages[prevMessages.length - 1];
-      if (
-        lastMessage &&
-        lastMessage.source === "llm" &&
-        lastMessage.isAudio &&
-        lastMessage.queueNumber === queueNumber
-      ) {
+      const lastLLMMessageIndex = prevMessages.findLastIndex(
+        (msg) => msg.source === "llm" && msg.queueNumber === queueNumber
+      );
+
+      if (lastLLMMessageIndex !== -1) {
         const updatedMessages = [...prevMessages];
-        updatedMessages[updatedMessages.length - 1] = {
-          ...lastMessage,
-          audioChunks: [...(lastMessage.audioChunks || []), audioChunk],
+        const lastLLMMessage = updatedMessages[lastLLMMessageIndex];
+
+        updatedMessages[lastLLMMessageIndex] = {
+          ...lastLLMMessage,
+          audioChunks: [...(lastLLMMessage.audioChunks || []), audioChunk],
+          isAudio: true,
+          queueNumber: queueNumber,
           isComplete: isComplete,
         };
+
         return updatedMessages;
-      } else if (audioChunk) {
-        // Only want to create a new message if there's actual audio content
+      } else {
         return [
           ...prevMessages,
           {
             messageId: uuidv4(),
             source: "llm",
+            text: "",
             isAudio: true,
             audioChunks: [audioChunk],
             queueNumber: queueNumber,
@@ -159,7 +181,6 @@ const Chat = () => {
           },
         ];
       }
-      return prevMessages;
     });
   };
 
