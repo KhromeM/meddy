@@ -1,52 +1,86 @@
-import React from "react";
-import { useGoogleLogin } from "@react-oauth/google";
+import React, { useState, useEffect } from "react";
 import { Button } from "@chakra-ui/react";
 import { useAuth } from "../firebase/AuthService";
 import { serverUrl } from "../utils/Info";
 
 const GFitOAuthButton = () => {
 	const { user } = useAuth();
+	const [isLoading, setIsLoading] = useState(false);
 
-	const giveGFitOauth = useGoogleLogin({
-		// ux_mode: "redirect",
-		redirect_uri: "http://localhost:5173/google-fit-callback",
-		flow: "auth-code",
-		clientId:
-			"136111862564-u0anpbd6voife3pl7vno9lgnfd5t9kqe.apps.googleusercontent.com",
-		scope,
-		onSuccess: async (codeResponse) => {
-			const code = codeResponse.code;
-			console.log(code);
+	const handleGFitOAuth = async () => {
+		setIsLoading(true);
+		try {
 			const idToken = await user?.getIdToken();
-			// send to server
-			const response = await fetch(serverUrl.http + "/credentials/gfit-token", {
-				method: "POST",
+			// Get the OAuth URL from the server
+			const response = await fetch(serverUrl.http + "/credentials/gfiturl", {
 				headers: {
-					"Content-Type": "application/json",
+					idtoken: idToken,
 				},
-				body: JSON.stringify({
-					code,
-					idToken,
-				}),
 			});
 			console.log(response);
-
-			try {
-			} catch (error) {
-				console.error("Error fetching Google Fit data:", error);
+			const data = await response.json();
+			if (data.status === "success") {
+				// Redirect the user to the Google Fit OAuth page
+				window.location.href = data.data.url;
+			} else {
+				console.error("Failed to get Google Fit OAuth URL");
 			}
-		},
-		onError: (error) => console.error("GiveGFitOauth Failed:", error),
-	});
+		} catch (error) {
+			console.error("Error initiating Google Fit OAuth:", error);
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	// Function to handle the callback
+	const handleCallback = async () => {
+		if (!user) {
+			return;
+		}
+		const urlParams = new URLSearchParams(window.location.search);
+		const code = urlParams.get("code");
+		const idToken = await user?.getIdToken();
+
+		if (code) {
+			try {
+				const response = await fetch(serverUrl.http + "/credentials/gfitcode", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						idtoken: idToken,
+					},
+					body: JSON.stringify({
+						code,
+					}),
+				});
+
+				const data = await response.json();
+				if (data.status === "success") {
+					console.log("Google Fit connected successfully");
+					// You might want to update the UI or state here to reflect the successful connection
+				} else {
+					console.error("Failed to save Google Fit token");
+				}
+			} catch (error) {
+				console.error("Error handling Google Fit callback:", error);
+			}
+		}
+	};
+
+	// Check for the code in the URL when the component mounts
+	useEffect(() => {
+		const urlParams = new URLSearchParams(window.location.search);
+		const code = urlParams.get("code");
+		if (code) {
+			handleCallback();
+		}
+	}, [user]);
 
 	return (
-		<Button onClick={() => giveGFitOauth()} colorScheme="blue">
+		<Button onClick={handleGFitOAuth} colorScheme="blue" isLoading={isLoading}>
 			Connect Google Fit
 		</Button>
 	);
 };
 
 export default GFitOAuthButton;
-
-const scope =
-	"https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.blood_glucose.read https://www.googleapis.com/auth/fitness.blood_pressure.read https://www.googleapis.com/auth/fitness.body.read https://www.googleapis.com/auth/fitness.body_temperature.read https://www.googleapis.com/auth/fitness.heart_rate.read https://www.googleapis.com/auth/fitness.nutrition.read https://www.googleapis.com/auth/fitness.sleep.read";

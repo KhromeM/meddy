@@ -39,7 +39,7 @@ import {
 	deleteCondition,
 } from "./dbInfo.mjs";
 
-import { saveGFitToken, getGFitToken } from "./dbCredentials.mjs";
+import { getCredentials, saveCredentials } from "./dbCredentials.mjs";
 
 export default {
 	createUser,
@@ -83,6 +83,6 @@ export default {
 	getConditionById,
 	updateCondition,
 	deleteCondition,
-	saveGFitToken,
-	getGFitToken,
+	saveCredentials,
+	getCredentials,
 };

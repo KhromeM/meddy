@@ -95,8 +95,14 @@ CREATE TABLE Conditions (
 );
 
 CREATE TABLE Credentials (
-    UserID VARCHAR(255) PRIMARY KEY REFERENCES Users(UserID),
-    GFitToken TEXT
+    UserID VARCHAR(255),
+    ProviderName VARCHAR(50),
+    AccessToken TEXT,
+    RefreshToken TEXT,
+    Scope TEXT,
+    TokenType VARCHAR(50),
+    ExpiryDate TIMESTAMP,
+    PRIMARY KEY (UserID, ProviderName)
 );
 -- repeat for the test db   
 CREATE DATABASE meddysql_test;

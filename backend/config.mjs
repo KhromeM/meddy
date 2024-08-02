@@ -2,9 +2,9 @@ import dotenv from "dotenv";
 dotenv.config();
 const port = 8000;
 const isTestEnv = process.env.NODE_ENV === "test";
-// const redirectUrl = "https://www.trymeddy.com/google-fit-callback";
-const redirectUrl = "http:/localhost:5173/google-fit-callback";
-// const redirectUrl = "https://meddyai.firebaseapp.com/__/auth/handler";
+// const redirectUrl = "https://www.trymeddy.com/chat;
+const redirectUrl = "http://localhost:5173/chat";
+
 export default {
 	port: isTestEnv ? port + 1 : port,
 	OPENAI_API_KEY: process.env.OPENAI_API_KEY,
