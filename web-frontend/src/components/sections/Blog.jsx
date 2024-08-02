@@ -66,7 +66,7 @@ const Blog = () => {
           <BlogPost
             title="Who is Meddy?"
             date="Apr 18, 2024"
-            image="/assets/gfd1mhkys4v2qt6dyfzb-1@2x.png"
+            image="/assets/meddy.png"
           />
           <BlogPost
             title="Meddy-human symbiosis"

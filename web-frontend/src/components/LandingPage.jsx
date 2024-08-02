@@ -6,6 +6,7 @@ import { Features } from "./sections/Features";
 import { Testimonial } from "./sections/Testimonial";
 import Blog from "./sections/Blog";
 import { Footer } from "./sections/Footer";
+import { Endorsements } from "./endorsements.jsx";
 import Recommendations from "./sections/Recommendations";
 
 export const LandingPage = () => {
@@ -28,6 +29,10 @@ export const LandingPage = () => {
         <Container maxW="container.xl" px={4}>
           <Blog />
         </Container>
+
+				<Container maxW="container.xl" px={4}>
+					<Endorsements />
+				</Container>
 
         <Container maxW="container.xl" px={4}>
           <Recommendations />
