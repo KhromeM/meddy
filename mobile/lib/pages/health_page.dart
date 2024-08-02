@@ -317,7 +317,7 @@ class _HealthPageState extends State<HealthPage>
       children: [
         MainBackground(),
         BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Scaffold(
             backgroundColor: Colors.transparent,
             appBar: BacknavAppBar(),
