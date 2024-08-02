@@ -3,6 +3,7 @@ import { Box, Flex, Text, Image } from "@chakra-ui/react";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import InitialView from "./InitialView";
+import MeddyIcon from "./MeddyIcon.jsx";
 import { useAuth } from "../firebase/AuthService.jsx";
 import { chatLLMStreamWS } from "../server/sendMessage.js";
 import WSConnection from "../utils/WSConnection";
