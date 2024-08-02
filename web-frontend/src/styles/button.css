@@ -1,32 +1,129 @@
+.back-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.back-icon {
+  position: relative;
+  transition: transform 0.5s ease-in-out;
+}
+
+.back-button:hover .back-icon {
+  animation: moveArrowBack 1s;
+}
+
+@keyframes moveArrowBack {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  51% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
 .download-button {
-    position: relative;
-    overflow: hidden;
+  position: relative;
+  overflow: hidden;
+}
+
+.download-icon {
+  position: relative;
+  transition: transform 0.5s ease-in-out;
+}
+
+.download-button:hover .download-icon {
+  animation: moveArrow 1s;
+}
+
+@keyframes moveArrow {
+  0% {
+    transform: translateX(0);
   }
-  
-  .download-icon {
-    position: relative;
-    transition: transform 0.5s ease-in-out;
+  50% {
+    transform: translateX(100%);
+    opacity: 0;
   }
-  
-  .download-button:hover .download-icon {
-    animation: moveArrow 1s ;
+  51% {
+    transform: translateX(-100%);
+    opacity: 0;
   }
-  
-  @keyframes moveArrow {
-    0% {
-      transform: translateX(0);
-    }
-    50% {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    51% {
-      transform: translateX(-100%);
-      opacity: 0;
-    }
-    100% {
-      transform: translateX(0);
-      opacity: 1;
-    }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
   }
-  
+}
+
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.custom-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 25px;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  color: #333;
+  background-color: white;
+  border: 2px solid #333;
+  border-radius: 25px;
+  cursor: pointer;
+  overflow: visible;
+  transition: all 0.3s ease;
+}
+
+.custom-button::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  background-image: conic-gradient(from var(--angle), transparent 80%, #f86665);
+  border-radius: inherit;
+  z-index: -1;
+  animation: rotate 4s linear infinite;
+}
+
+.custom-button::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  background: inherit;
+  border-radius: inherit;
+  z-index: -1;
+  filter: blur(1.5rem);
+  opacity: 0.5;
+}
+
+/* .custom-button:hover {
+          transform: scale(1.05);
+      } */
+
+.custom-button img {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-left: 10px;
+}
+
+@keyframes rotate {
+  to {
+    --angle: 360deg;
+  }
+}

@@ -2,7 +2,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:meddymobile/pages/chat_page.dart';
-
+import 'package:meddymobile/utils/languages.dart';
+import 'package:provider/provider.dart';
 class Boxes extends StatelessWidget {
   final List<String> texts;
   final List<String>? images;
@@ -44,6 +45,8 @@ class Boxes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Consumer<LanguageProvider>(
+    builder: (context, languageProvider, child) {
     return Expanded(
       child: MasonryGridView.count(
         scrollDirection: Axis.horizontal,
@@ -54,7 +57,7 @@ class Boxes extends StatelessWidget {
         itemCount: texts.length,
         itemBuilder: (context, index) {
           return GestureDetector(
-              onTap: () => onBoxTap(context, texts[index]),
+              onTap: () => onBoxTap(context, languageProvider.translate(texts[index])),
               child: Container(
                 width: index.isEven ? 200 : 170,
                 height: Random().nextInt(100) + 50,
@@ -87,7 +90,7 @@ class Boxes extends StatelessWidget {
                       child: Padding(
                         padding: EdgeInsets.all(12.0),
                         child: Text(
-                          texts[index],
+                          languageProvider.translate(texts[index]),
                           style: TextStyle(
                             color: const Color.fromARGB(
                                 255, 0, 0, 0),
@@ -104,6 +107,6 @@ class Boxes extends StatelessWidget {
               ));
         },
       ),
-    );
+    );},);
   }
 }

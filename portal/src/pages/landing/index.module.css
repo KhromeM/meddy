@@ -1,6 +1,6 @@
 .outer {
   overflow: hidden;
-  background-color: #FEF9EF;
+  background-color: #fef9ef;
 }
 
 .inner {
@@ -24,9 +24,7 @@
 
 .title {
   color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
-  font-family:
-    Greycliff CF,
-    theme.fontFamily;
+  font-family: Greycliff CF, theme.fontFamily;
   font-size: 56px;
   line-height: 1.2;
   font-weight: 600;
@@ -51,7 +49,10 @@
 .heroImage3,
 .heroImage4 {
   position: absolute;
-  border-radius: 50%;
+  border-radius: 10%;
+  border-color: var(--mantine-color-secondary-1);
+  border-style: double;
+  border-width: 7px;
   object-fit: cover;
 }
 
@@ -98,12 +99,19 @@
 }
 
 .featureSection {
+  display: flex;
   justify-content: flex-end;
-  padding-top: 0;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 0;
+  margin: 50px 0;
 }
-
+.featureContainer {
+  width: 60%; /* Adjust as needed */
+  max-width: 800px; /* Adjust as needed */
+}
 .featureBox {
-  background: var(--mantine-primary-color-light);
+  background: var(--mantine-color-secondary-5);
   border-radius: var(--mantine-radius-xl);
   padding: 2.25rem;
   width: 512px;
