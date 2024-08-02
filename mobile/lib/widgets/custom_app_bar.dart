@@ -255,6 +255,7 @@ Widget _buildHighContrastToggle(StateSetter setModalState) {
   },
   );
 }
+
   Widget _buildLanguageSelector(StateSetter bottomSheetSetState) {
     return Consumer<LanguageProvider>(
       builder: (context, languageProvider, child) {
