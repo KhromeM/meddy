@@ -77,6 +77,7 @@ export const Hero = ({ login }) => {
                 <Heading
                   as="h1"
                   fontSize={{ base: "4xl", md: "5xl", lg: "5xl" }}
+                  fontWeight="900"
                   lineHeight="1.2"
                   letterSpacing="-0.02em"
                 >
