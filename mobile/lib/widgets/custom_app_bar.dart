@@ -4,11 +4,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:meddymobile/pages/chat_page.dart';
 import 'package:meddymobile/pages/health_page.dart';
 import 'package:meddymobile/pages/reminder_page.dart';
-import 'package:meddymobile/providers/chat_provider.dart'; // Ensure you import the ChatProvider
+import 'package:meddymobile/providers/chat_provider.dart';
 import 'package:meddymobile/utils/app_colors.dart';
 import 'package:meddymobile/services/auth_service.dart';
 import 'package:meddymobile/pages/signin_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:meddymobile/utils/languages.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   @override
@@ -23,6 +24,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   String _firstName = 'User';
   String? _profileImageUrl;
   String _currentLanguage = 'English';
+
   @override
   void initState() {
     super.initState();
@@ -51,91 +53,101 @@ class _CustomAppBarState extends State<CustomAppBar> {
     }
   }
 
-Future<void> _showBottomSheet(BuildContext context) async {
-  return showModalBottomSheet(
-    context: context,
-    backgroundColor: Colors.white,
-    isScrollControlled: true,
-    builder: (context) => Container(
-      height: MediaQuery.of(context).size.height * 0.6,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+  Future<void> _showBottomSheet(BuildContext context) async {
+    return showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setModalState) {
+            return Container(
+              height: MediaQuery.of(context).size.height * 0.6,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildGreetingText(),
+                    SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: _buildSquareButton(
+                            'Reminders',
+                            () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const ReminderPage()),
+                              );
+                            },
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                        Expanded(
+                          child: _buildSquareButton(
+                            'Health',
+                            () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const ProfilePage()),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    _buildLanguageSelector(setModalState),
+                    Spacer(),
+                    _buildLogoutButton(context),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildGreetingText() {
+    return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildGreetingText(),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: _buildSquareButton(
-                    'Reminders',
-                    () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ReminderPage()),
-                      );
-                    },
+                Text(
+                  'Hi, $_firstName',
+                  style: TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(width: 20),
-                Expanded(
-                  child: _buildSquareButton(
-                    'Health',
-                    () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ProfilePage()),
-                      );
-                    },
+                SizedBox(height: 8),
+                Text(
+                  languageProvider.translate('how_may_i_assist'),
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.grey[600],
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 20),
-            _buildLanguageSelector(setState),
-            Spacer(),
-            _buildLogoutButton(context),
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
-  Widget _buildGreetingText() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Hi, $_firstName',
-              style: TextStyle(
-                fontSize: 36,
-                fontWeight: FontWeight.bold,
+            if (_profileImageUrl != null)
+              CircleAvatar(
+                radius: 30,
+                backgroundImage: NetworkImage(_profileImageUrl!),
               ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'How may I assist you today?',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.grey[600],
-              ),
-            ),
           ],
-        ),
-        if (_profileImageUrl != null)
-          CircleAvatar(
-            radius: 30,
-            backgroundImage: NetworkImage(_profileImageUrl!),
-          ),
-      ],
+        );
+      },
     );
   }
 
@@ -154,8 +166,7 @@ Future<void> _showBottomSheet(BuildContext context) async {
       child: Align(
         alignment: Alignment.bottomLeft,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-              15, 8.0, 8.0, 10), // Increase the bottom padding
+          padding: const EdgeInsets.fromLTRB(15, 8.0, 8.0, 10),
           child: Text(
             text,
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
@@ -197,6 +208,37 @@ Future<void> _showBottomSheet(BuildContext context) async {
     );
   }
 
+  Widget _buildLanguageSelector(StateSetter bottomSheetSetState) {
+    return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
+        return GestureDetector(
+          child: Container(
+            width: 80,
+            height: 80,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Image.asset(
+                  languageProvider.currentLanguage == 'en'
+                      ? 'assets/images/us-flag.png'
+                      : 'assets/images/spanish-flag.png',
+                  width: 60,
+                  height: 60,
+                  fit: BoxFit.contain,
+                ),
+              ],
+            ),
+          ),
+          onTap: () {
+            languageProvider.changeLanguage();
+            bottomSheetSetState(() {}); // Force bottom sheet to rebuild
+            setState(() {}); // Force CustomAppBar to rebuild
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -207,8 +249,7 @@ Future<void> _showBottomSheet(BuildContext context) async {
           _showBottomSheet(context);
         },
         child: Padding(
-          padding:
-              const EdgeInsets.only(left: 14.0, top: 0, bottom: 0, right: 0),
+          padding: const EdgeInsets.only(left: 14.0, top: 0, bottom: 0, right: 0),
           child: SvgPicture.asset(
             'assets/images/logo_image.svg',
             fit: BoxFit.contain,
@@ -254,36 +295,4 @@ Future<void> _showBottomSheet(BuildContext context) async {
       ],
     );
   }
-Widget _buildLanguageSelector(StateSetter bottomSheetSetState) {
-  return StatefulBuilder(
-    builder: (BuildContext context, StateSetter setState) {
-      return GestureDetector(
-        child: Container(
-          width: 80,
-          height: 80,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Image.asset(
-                _currentLanguage == 'English' 
-                  ? 'assets/images/us-flag.png'
-                  : 'assets/images/spanish-flag.png',
-                width: 60,
-                height: 60,
-                fit: BoxFit.contain,
-              ),
-            ],
-          ),
-        ),
-        onTap: () {
-          setState(() {
-            _currentLanguage = _currentLanguage == 'English' ? 'Español' : 'English';
-          });
-          bottomSheetSetState(() {}); // Force bottom sheet to rebuild
-          print(_currentLanguage);
-        },
-      );
-    },
-  );
-}
 }
