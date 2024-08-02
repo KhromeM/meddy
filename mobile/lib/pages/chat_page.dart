@@ -48,6 +48,8 @@ class _ChatPageState extends State<ChatPage> {
   ValueNotifier<bool> _isTypingNotifier = ValueNotifier(false);
   bool _isSendingImage = false;
 
+  Map<String, dynamic>? _messageResult;
+
   @override
   void initState() {
     super.initState();
@@ -137,7 +139,7 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _addMessageToChatHistory(String source, String text, String reqId,
-      {String? imageID}) {
+      {String? imageID, Map<String, dynamic>? result}) {
     Message newMessage = Message(
       messageId: reqId,
       userId: "DEVELOPER",
@@ -145,6 +147,7 @@ class _ChatPageState extends State<ChatPage> {
       imageID: imageID,
       text: text,
       time: DateTime.now(),
+      result: result,
     );
     Provider.of<ChatProvider>(context, listen: false).addMessage(newMessage);
     setState(() {
@@ -154,14 +157,16 @@ class _ChatPageState extends State<ChatPage> {
     _scrollToBottom();
   }
 
-  void _updateCurrentMessageChunk(String text, String reqId) {
+  void _updateCurrentMessageChunk(String text, String reqId,
+      {Map<String, dynamic>? result}) {
     Provider.of<ChatProvider>(context, listen: false)
-        .updateMessage(reqId, text);
+        .updateMessage(reqId, text, result: result);
     int index = _chatHistory.indexWhere((msg) => msg.messageId == reqId);
     if (index == -1) return;
 
     setState(() {
-      _chatHistory[index] = _chatHistory[index].copyWith(text: text);
+      _chatHistory[index] =
+          _chatHistory[index].copyWith(text: text, result: result);
     });
     _scrollToBottom();
   }
@@ -231,20 +236,25 @@ class _ChatPageState extends State<ChatPage> {
   void _handleChatResponse(dynamic message) {
     final String reqId = message["reqId"] + "_llm";
     final String text = message['data'];
+    final Map<String, dynamic>? result = message['result'];
 
+    if (result != null) {
+      _messageResult = result;
+    }
     setState(() {
       if (!_messageBuffer.containsKey(reqId)) {
         _messageBuffer[reqId] = [];
-        _addMessageToChatHistory("llm", "", reqId);
+        _addMessageToChatHistory("llm", "", reqId, result: _messageResult);
       }
       _messageBuffer[reqId]!.add(text);
 
       String fullMessage = _messageBuffer[reqId]!.join("");
-      _updateCurrentMessageChunk(fullMessage, reqId);
+      _updateCurrentMessageChunk(fullMessage, reqId, result: _messageResult);
 
       if (message['isComplete'] ?? false) {
         _messageBuffer.remove(reqId);
         _isGenerating = false;
+        _messageResult = null;
       }
     });
   }

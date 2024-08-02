@@ -5,33 +5,26 @@ import { LandingPage } from "./components/LandingPage";
 import Chat from "./components/Chat.jsx";
 import "./styles/chat.css";
 import { AuthProvider } from "./firebase/AuthService.jsx";
-import Navbar from "./components/Navbar.jsx";
 import customTheme from "./theme";
-import ReactFluidCursor from "./components/ReactFluidCursor/ReactFluidCursor.jsx";
+import { EVI } from "./components/EVI.jsx";
+import { Team } from "./components/Team.jsx";
+import { Contact } from "./components/contact.jsx";
+import { AboutUsPage } from "./components/about.jsx";
+import PrivacyPolicy from "./components/PrivacyPolicy.jsx";
+
 function App() {
 	return (
 		<ChakraProvider theme={customTheme}>
 			<Router>
 				<AuthProvider>
-					{/* <ReactFluidCursor /> */}
-
 					<Routes>
-						<Route
-							path="/"
-							element={
-								<>
-									<LandingPage />{" "}
-								</>
-							}
-						/>
-						<Route
-							path="/chat"
-							element={
-								<>
-									<Chat />
-								</>
-							}
-						/>
+						<Route path="/" element={<LandingPage />} />
+						<Route path="/chat" element={<Chat />} />
+						<Route path="/EVI" element={<EVI />} />
+						<Route path="/team" element={<Team />} />
+						<Route path="/contact" element={<Contact />} />
+						<Route path="/about" element={<AboutUsPage />} />
+						<Route path="/privacy" element={<PrivacyPolicy />} />
 					</Routes>
 				</AuthProvider>
 			</Router>

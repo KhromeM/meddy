@@ -12,22 +12,18 @@ const Navbar = () => {
 		}
 	};
 	return (
-		<Box bg="teal.500" px={4} py={2}>
-			<Flex alignItems="center">
-				<Spacer />
+    <Box bg="teal.500" px={4} py={2}>
+      <Flex alignItems="center">
+        <Spacer />
 
-				{user && (
-					<Button colorScheme="teal" variant="outline" mr={4}>
-						<Avatar name={user.displayName} src={user.photoURL} />
-					</Button>
-				)}
+        {user && <Avatar name={user.displayName} src={user.photoURL} mr={4} />}
 
-				<Button colorScheme="teal" variant="solid" onClick={handleAuth}>
-					{user ? "Logout" : "Login"}
-				</Button>
-			</Flex>
-		</Box>
-	);
+        <Button colorScheme="teal" variant="solid" onClick={handleAuth}>
+          {user ? "Logout" : "Login"}
+        </Button>
+      </Flex>
+    </Box>
+  );
 };
 
 export default Navbar;

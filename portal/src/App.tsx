@@ -9,6 +9,7 @@ import { Loading } from './components/Loading';
 import { RegisterPage } from './pages/RegisterPage';
 import { SignInPage } from './pages/SignInPage';
 import { LandingPage } from './pages/landing';
+import { AboutUsPage } from './pages/landing/AboutUs';
 
 export function App(): JSX.Element | null {
   const medplum = useMedplum();
@@ -21,6 +22,7 @@ export function App(): JSX.Element | null {
     return (
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="aboutus" element={<AboutUsPage />} />
         <Route path="signin" element={<SignInPage />} />
         <Route path="register" element={<RegisterPage />} />
         <Route path="*" element={<Navigate replace to="/" />} />
@@ -29,7 +31,7 @@ export function App(): JSX.Element | null {
   }
 
   return (
-    <AppShell header={{ height: 80 }}>
+    <AppShell header={{ height: 100 }}>
       <Header />
       <AppShell.Main>
         <ErrorBoundary>
