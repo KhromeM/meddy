@@ -13,41 +13,6 @@ import { Link as RouterLink } from "react-router-dom";
 import Navbar from "./Navbar";
 import "../../styles/button.css";
 import CardsInterface from "../CardsInterface";
-<<<<<<< HEAD
-import * as THREE from "three";
-import { setupThreeJSScene } from "./threejsBackground";
-
-const ThreeJSBackground = ({ hexColor }) => {
-  const mountRef = useRef(null);
-
-  useEffect(() => {
-    let cleanup;
-    if (mountRef.current) {
-      cleanup = setupThreeJSScene(mountRef, hexColor);
-    }
-    return () => {
-      if (cleanup) cleanup();
-    };
-  }, [hexColor]);
-
-  return (
-    <Box
-      ref={mountRef}
-      position="absolute"
-      top="0"
-      left="0"
-      w="100%"
-      h="100%"
-      zIndex="-1"
-      pointerEvents="none"
-    />
-  );
-};
-
-export const Hero = ({ login }) => {
-  useEffect(() => {}, []);
-
-=======
 import { Gradient } from "./Gradient"; // Import the Gradient class
 import "../../styles/gradient.css"; // Import the gradient CSS
 
@@ -74,7 +39,6 @@ export const Hero = ({ login }) => {
     };
   }, []);
 
->>>>>>> aa5cbfa (gradeint)
   return (
     <>
       <Box
@@ -84,15 +48,11 @@ export const Hero = ({ login }) => {
         overflow="hidden"
         bg="transparent"
       >
-<<<<<<< HEAD
-        <ThreeJSBackground hexColor={0xffeae5} />
-=======
         <canvas
           id="gradient-canvas"
           data-js-darken-top
           data-transition-in
         ></canvas>
->>>>>>> aa5cbfa (gradeint)
         <Navbar />
         <Box display="flex" justifyContent="center">
           <Box
@@ -117,7 +77,6 @@ export const Hero = ({ login }) => {
                 <Heading
                   as="h1"
                   fontSize={{ base: "4xl", md: "5xl", lg: "5xl" }}
-                  fontWeight="900"
                   lineHeight="1.2"
                   letterSpacing="-0.02em"
                 >
@@ -153,19 +112,11 @@ export const Hero = ({ login }) => {
                   >
                     Download App
                   </Button>
-<<<<<<< HEAD
-                  <button
-                    onClick={() => {
-                      window.location.href = "/chat";
-                    }}
-                    className="custom-button"
-=======
                   <Button
                     onClick={() => {
                       window.location.href = "/chat";
                     }}
                     className="download-button"
->>>>>>> aa5cbfa (gradeint)
                     rightIcon={
                       <Image
                         src="/assets/svg-1.svg"
@@ -174,16 +125,10 @@ export const Hero = ({ login }) => {
                         className="download-icon"
                       />
                     }
-<<<<<<< HEAD
-                  >
-                    Try on Web
-                  </button>
-=======
                     variant="outline"
                   >
                     Try on Web
                   </Button>
->>>>>>> aa5cbfa (gradeint)
                 </HStack>
               </VStack>
             </Box>
