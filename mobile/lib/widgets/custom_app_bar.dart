@@ -115,13 +115,25 @@ class _CustomAppBarState extends State<CustomAppBar> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Hi, $_firstName',
+                Row(
+                  children: [
+                    Text(
+                  languageProvider.translate('hello'),
                   style: TextStyle(
                     fontSize: 36,
                     fontWeight: FontWeight.bold,
+                    ),
                   ),
+                  Text(
+                  ', $_firstName',
+                  style: TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
                 ),
+               
                 SizedBox(height: 8),
                 Text(
                   languageProvider.translate('how_may_i_assist'),
@@ -144,31 +156,36 @@ class _CustomAppBarState extends State<CustomAppBar> {
   }
 
   Widget _buildSquareButton(String text, VoidCallback onPressed) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: lightPurple,
-        foregroundColor: Colors.black,
-        padding: EdgeInsets.only(top: 130),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(25),
-        ),
-        elevation: 0,
-      ),
-      child: Align(
-        alignment: Alignment.bottomLeft,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(15, 8.0, 8.0, 10),
-          child: Text(
-            text,
-            style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+    return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
+        return ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: lightPurple,
+            foregroundColor: Colors.black,
+            padding: EdgeInsets.only(top: 130),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(25),
+            ),
+            elevation: 0,
           ),
-        ),
-      ),
-    );
-  }
-
+          child: Align(
+            alignment: Alignment.bottomLeft,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(15, 8.0, 8.0, 10),
+              child: Text(
+                languageProvider.translate(text),
+                style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+        );
+  },
+  );
+}
   Widget _buildLogoutButton(BuildContext context) {
+    return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
     return SizedBox(
       width: double.infinity,
       child: MouseRegion(
@@ -191,15 +208,16 @@ class _CustomAppBarState extends State<CustomAppBar> {
           ),
           child: Center(
             child: Text(
-              'Logout',
+              languageProvider.translate('logout'),
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
             ),
           ),
         ),
       ),
     );
-  }
-
+  },
+  );
+}
   Widget _buildLanguageSelector(StateSetter bottomSheetSetState) {
     return Consumer<LanguageProvider>(
       builder: (context, languageProvider, child) {
