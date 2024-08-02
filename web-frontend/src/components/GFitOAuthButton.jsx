@@ -8,8 +8,8 @@ const GFitOAuthButton = () => {
 	const { user } = useAuth();
 
 	const giveGFitOauth = useGoogleLogin({
-		ux_mode: "redirect",
-		redirect_uri: "http://localhost:5173/chat",
+		// ux_mode: "redirect",
+		redirect_uri: "http://localhost:5173/google-fit-callback",
 		flow: "auth-code",
 		scope,
 		onSuccess: async (codeResponse) => {
