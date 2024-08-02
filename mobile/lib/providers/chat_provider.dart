@@ -11,6 +11,9 @@ class ChatProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
 
   Future<void> loadChatHistory() async {
+    _isLoading = true;
+    notifyListeners();
+
     try {
       List<Message> chatHistory = await _chatService.getChatHistory();
       _messages = chatHistory;
@@ -23,16 +26,19 @@ class ChatProvider with ChangeNotifier {
   }
 
   void addMessage(Message message) {
-    _messages.add(message);
-    notifyListeners();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _messages.add(message);
+      notifyListeners();
+    });
   }
 
-  void updateMessage(String messageId, String text,
-      {Map<String, dynamic>? result}) {
-    int index = _messages.indexWhere((msg) => msg.messageId == messageId);
-    if (index != -1) {
-      _messages[index] = _messages[index].copyWith(text: text, result: result);
-      notifyListeners();
-    }
+  void updateMessage(String messageId, String text) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      int index = _messages.indexWhere((msg) => msg.messageId == messageId);
+      if (index != -1) {
+        _messages[index] = _messages[index].copyWith(text: text);
+        notifyListeners();
+      }
+    });
   }
 }
