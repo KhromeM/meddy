@@ -7,6 +7,13 @@ import {
   Button,
   Image,
   HStack,
+  Box,
+  VStack,
+  Heading,
+  Text,
+  Button,
+  Image,
+  HStack,
 } from "@chakra-ui/react";
 import { images } from "../../../assets/images";
 import { Link as RouterLink } from "react-router-dom";

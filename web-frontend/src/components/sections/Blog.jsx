@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  VStack,
-  Heading,
-  Box,
-  Image,
-  Text,
-  Button,
-} from "@chakra-ui/react";
+import { VStack, Heading, Box, Image, Text, Button } from "@chakra-ui/react";
 import "../../styles/BlogPosts.css";
 import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";
@@ -19,12 +12,17 @@ const BlogPost = ({ title, date, image }) => (
     overflow="hidden"
     // minWidth="220px" // Ensure fixed width for each blog post
     // maxWidth="220px"
-	height={'100%'}
+    height={"100%"}
   >
-	<Box height={'400px'}>
-		<Image borderRadius="lg" objectFit={'cover'} height={'100%'} src={image} alt={title} />
-
-	</Box>
+    <Box height={"400px"}>
+      <Image
+        borderRadius="lg"
+        objectFit={"cover"}
+        height={"100%"}
+        src={image}
+        alt={title}
+      />
+    </Box>
     <Box p={4}>
       <Heading size="md" mb={2}>
         {title}
@@ -44,8 +42,8 @@ const Blog = () => {
       nav: true,
       autoplay: true,
       autoplayHoverPause: true,
-	  autoplayTimeout: 2100,
-	  smartSpeed: 600,
+      autoplayTimeout: 2100,
+      smartSpeed: 600,
       responsive: {
         0: {
           items: 1,
@@ -68,7 +66,7 @@ const Blog = () => {
           <BlogPost
             title="Who is Meddy?"
             date="Apr 18, 2024"
-            image="/assets/gfd1mhkys4v2qt6dyfzb-1@2x.png"
+            image="/assets/meddy.png"
           />
           <BlogPost
             title="Meddy-human symbiosis"
@@ -85,7 +83,11 @@ const Blog = () => {
       <Button
         alignSelf="center"
         rightIcon={
-          <Image src="/assets/svg-9.svg" boxSize="1.5rem" alt="Learn more icon" />
+          <Image
+            src="/assets/svg-9.svg"
+            boxSize="1.5rem"
+            alt="Learn more icon"
+          />
         }
       >
         Learn more about our research

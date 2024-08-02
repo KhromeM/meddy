@@ -1,85 +1,54 @@
 import React from "react";
-import {
-	Box,
-	VStack,
-	Text,
-	Input,
-	Button,
-	Flex,
-	SimpleGrid,
-	Link,
-	useColorModeValue,
-} from "@chakra-ui/react";
+import { Box, VStack, Text, Link, SimpleGrid, useColorModeValue } from "@chakra-ui/react";
 
 export const Footer = () => {
-	const bg = useColorModeValue("gray.50", "gray.800");
-	const color = useColorModeValue("gray.700", "gray.200");
+  const bg = useColorModeValue("gray.50", "gray.800");
+  const color = useColorModeValue("gray.700", "gray.200");
 
-	return (
-		<Box as="footer" bg={bg} py={12} borderTop="1px" borderColor="gray.200">
-			<VStack spacing={8} maxW="container.xl" mx="auto" px={4}>
-				<Box h="1px" bg="darkslategray.200" w="full" />
+  return (
+    <Box as="footer" bg={bg} py={12} borderTop="1px" borderColor="gray.200">
+      <VStack spacing={8} maxW="container.xl" mx="auto" px={4}>
+        <SimpleGrid columns={{ base: 1, md: 4 }} spacing={8} w="full">
+          <VStack align="start">
+            <Text fontWeight="bold" color={color}>Medplum</Text>
+            <Box display="flex" flexDirection="row" alignItems="center">
+              <img src="/assets/soc.png" alt="AICPA SOC" style={{ width: "50px", marginRight: "10px" }} />
+              <img src="/assets/hipaa.png" alt="HIPAA Compliant" style={{ width: "100px" }} />
+            </Box>
+          </VStack>
 
-				<SimpleGrid columns={{ base: 1, md: 2 }} spacing={8} w="full">
-					<VStack align="start" spacing={4}>
-						<Text fontSize="2xl" fontWeight="bold" color={color}>
-							Stay Updated
-						</Text>
-						<Text fontSize="md" color={color}>
-							Subscribe to our newsletter for the latest updates on our products and services.
-						</Text>
-					</VStack>
+          <VStack align="start">
+            <Text fontWeight="bold" color={color}>Developers</Text>
+            <Link href="/getting-started" color={color}>Getting started</Link>
+            <Link href="/documentation" color={color}>Documentation</Link>
+            <Link href="/search" color={color}>Search</Link>
+          </VStack>
 
-					<Flex w="full" justify="end">
-						<Input
-							placeholder="Enter your email"
-							bg="white"
-							mr={2}
-							borderRadius="md"
-							_focus={{ borderColor: "blue.500" }}
-						/>
-						<Button colorScheme="blue" borderRadius="md">
-							Subscribe
-						</Button>
-					</Flex>
-				</SimpleGrid>
+          <VStack align="start">
+            <Text fontWeight="bold" color={color}>Community</Text>
+            <Link href="/case-studies" color={color}>Case Studies</Link>
+            <Link href="/discord" color={color}>Discord</Link>
+            <Link href="/storybook" color={color}>Storybook</Link>
+            <Link href="https://github.com/KhromeM/meddy" color={color}>GitHub</Link>
+          </VStack>
 
-				<SimpleGrid columns={{ base: 1, md: 4 }} spacing={8} w="full">
-					<VStack align="start">
-						<Text fontWeight="bold" color={color}>Products</Text>
-						<Link href="/evi" color={color}>Empathic Voice Interface (EVI)</Link>
-						<Link href="/expression-api" color={color}>Expression Measurement API</Link>
-						<Link href="/custom-model-api" color={color}>Custom Model API</Link>
-						<Link href="/pricing" color={color}>Pricing</Link>
-					</VStack>
+          <VStack align="start">
+            <Text fontWeight="bold" color={color}>Company</Text>
+            <Link href="/about" color={color}>About us</Link>
+            <Link href="/security" color={color}>Security</Link>
+            <Link href="/terms-of-service" color={color}>Terms of Service</Link>
+            <Link href="/privacy-policy" color={color}>Privacy Policy</Link>
+            <Link href="/pricing" color={color}>Pricing</Link>
+            <Link href="/enterprise" color={color}>Enterprise</Link>
+            <Link href="/careers" color={color}>Careers</Link>
+            <Link href="/blog" color={color}>Blog</Link>
+          </VStack>
+        </SimpleGrid>
 
-					<VStack align="start">
-						<Text fontWeight="bold" color={color}>Research</Text>
-						<Link href="/our-research" color={color}>Our Research</Link>
-					</VStack>
-
-					<VStack align="start">
-						<Text fontWeight="bold" color={color}>Team</Text>
-						<Link href="/about" color={color}>About</Link>
-						<Link href="/contact" color={color}>Contact</Link>
-					</VStack>
-
-					<VStack align="start">
-						<Text fontWeight="bold" color={color}>Other</Text>
-						<Link href="/documentation" color={color}>Documentation</Link>
-						<Link href="/terms" color={color}>Terms & Conditions</Link>
-						<Link href="/privacy" color={color}>Privacy Policy</Link>
-						<Link href="/hippa" color={color}>HIPAA</Link>
-					</VStack>
-				</SimpleGrid>
-
-				<Flex justify="space-between" w="full" direction={{ base: 'column', md: 'row' }} align="center">
-					<Text color={color}>© Meddy AI Inc, 2024. All rights reserved</Text>
-					<Link href="/contact" color="blue.500">CONTACT US →</Link>
-				</Flex>
-			</VStack>
-		</Box>
-	);
+        <Text color={color}>Copyright © 2024 Meddy, Inc.</Text>
+      </VStack>
+    </Box>
+  );
 };
 
 export default Footer;

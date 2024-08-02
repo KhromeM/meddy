@@ -9,7 +9,7 @@ const MessageInput = ({ onSend, inProgress, toggleAudio, audioMode }) => {
 
 	const handleSend = useCallback(() => {
 		if (text.trim() && !inProgress) {
-			onSend({ text: text.trim(), isUser: true });
+			onSend(text.trim());
 			setText("");
 		}
 	}, [text, inProgress, onSend]);
