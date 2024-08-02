@@ -94,5 +94,9 @@ CREATE TABLE Conditions (
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
+CREATE TABLE Credentials (
+    UserID VARCHAR(255) PRIMARY KEY REFERENCES Users(UserID),
+    GFitToken TEXT
+);
 -- repeat for the test db   
 CREATE DATABASE meddysql_test;

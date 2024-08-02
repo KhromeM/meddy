@@ -2,6 +2,8 @@ import dotenv from "dotenv";
 dotenv.config();
 const port = 8000;
 const isTestEnv = process.env.NODE_ENV === "test";
+// const redirectUrl = "https://www.trymeddy.com/google-fit-callback"
+const redirectUrl = "http:/localhost:5173/google-fit-callback";
 
 export default {
 	port: isTestEnv ? port + 1 : port,
@@ -16,4 +18,7 @@ export default {
 	DEEPGRAM_API_KEY: process.env.DEEPGRAM_API_KEY,
 	MEDPLUM_CLIENT_ID: process.env.MEDPLUM_CLIENT_ID,
 	MEDPLUM_CLIENT_SECRET: process.env.MEDPLUM_CLIENT_SECRET,
+	GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+	GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+	GOOGLE_REDIRECT_URI: redirectUrl,
 };

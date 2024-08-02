@@ -1,5 +1,6 @@
 import { Box, Button, Flex, Spacer, Avatar } from "@chakra-ui/react";
 import { useAuth } from "../firebase/AuthService.jsx";
+import GFitOAuthButton from "./GFitOAuthButton.jsx";
 
 const Navbar = () => {
 	const { user, login, logout } = useAuth();
@@ -21,7 +22,7 @@ const Navbar = () => {
 						<Avatar name={user.displayName} src={user.photoURL} />
 					</Button>
 				)}
-
+				<GFitOAuthButton />
 				<Button colorScheme="teal" variant="solid" onClick={handleAuth}>
 					{user ? "Logout" : "Login"}
 				</Button>
