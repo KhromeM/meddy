@@ -13,24 +13,23 @@ import { AboutUsPage } from "./components/about.jsx";
 import PrivacyPolicy from "./components/PrivacyPolicy.jsx";
 
 function App() {
-  return (
-    <ChakraProvider theme={customTheme}>
-      <Router>
-        <AuthProvider>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/chat" element={<Chat />} />
-            <Route path="/EVI" element={<EVI />} />
-            <Route path="/team" element={<Team />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/about" element={<AboutUsPage />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-
-          </Routes>
-        </AuthProvider>
-      </Router>
-    </ChakraProvider>
-  );
-
+	return (
+		<ChakraProvider theme={customTheme}>
+			<Router>
+				<AuthProvider>
+					<Routes>
+						<Route path="/" element={<LandingPage />} />
+						<Route path="/chat" element={<Chat />} />
+						<Route path="/EVI" element={<EVI />} />
+						<Route path="/team" element={<Team />} />
+						<Route path="/contact" element={<Contact />} />
+						<Route path="/about" element={<AboutUsPage />} />
+						<Route path="/privacy" element={<PrivacyPolicy />} />
+					</Routes>
+				</AuthProvider>
+			</Router>
+		</ChakraProvider>
+	);
+}
 
 export default App;
