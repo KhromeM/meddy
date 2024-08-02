@@ -52,27 +52,27 @@ import { Gradient } from "./Gradient"; // Import the Gradient class
 import "../../styles/gradient.css"; // Import the gradient CSS
 
 export const Hero = ({ login }) => {
-  useEffect(() => {
-    const gradient = new Gradient();
-    gradient.initGradient("#gradient-canvas");
+	useEffect(() => {
+		const gradient = new Gradient();
+		gradient.initGradient("#gradient-canvas");
 
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const maxScroll = 400;
-      const opacity = Math.max(1 - scrollPosition / maxScroll, 0);
+		const handleScroll = () => {
+			const scrollPosition = window.scrollY;
+			const maxScroll = 400;
+			const opacity = Math.max(1 - scrollPosition / maxScroll, 0);
 
-      const canvas = document.querySelector("#gradient-canvas");
-      if (canvas) {
-        canvas.style.opacity = opacity;
-      }
-    };
+			const canvas = document.querySelector("#gradient-canvas");
+			if (canvas) {
+				canvas.style.opacity = opacity;
+			}
+		};
 
-    window.addEventListener("scroll", handleScroll);
+		window.addEventListener("scroll", handleScroll);
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+		return () => {
+			window.removeEventListener("scroll", handleScroll);
+		};
+	}, []);
 
 >>>>>>> aa5cbfa (gradeint)
   return (
