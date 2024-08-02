@@ -1,18 +1,19 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
-	Box,
-	VStack,
-	Heading,
-	Text,
-	Button,
-	Image,
-	HStack,
+  Box,
+  VStack,
+  Heading,
+  Text,
+  Button,
+  Image,
+  HStack,
 } from "@chakra-ui/react";
 import { images } from "../../../assets/images";
 import { Link as RouterLink } from "react-router-dom";
 import Navbar from "./Navbar";
 import "../../styles/button.css";
 import CardsInterface from "../CardsInterface";
+<<<<<<< HEAD
 import * as THREE from "three";
 import { setupThreeJSScene } from "./threejsBackground";
 
@@ -46,6 +47,34 @@ const ThreeJSBackground = ({ hexColor }) => {
 export const Hero = ({ login }) => {
   useEffect(() => {}, []);
 
+=======
+import { Gradient } from "./Gradient"; // Import the Gradient class
+import "../../styles/gradient.css"; // Import the gradient CSS
+
+export const Hero = ({ login }) => {
+  useEffect(() => {
+    const gradient = new Gradient();
+    gradient.initGradient("#gradient-canvas");
+
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      const maxScroll = 400;
+      const opacity = Math.max(1 - scrollPosition / maxScroll, 0);
+
+      const canvas = document.querySelector("#gradient-canvas");
+      if (canvas) {
+        canvas.style.opacity = opacity;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+>>>>>>> aa5cbfa (gradeint)
   return (
     <>
       <Box
@@ -55,7 +84,15 @@ export const Hero = ({ login }) => {
         overflow="hidden"
         bg="transparent"
       >
+<<<<<<< HEAD
         <ThreeJSBackground hexColor={0xffeae5} />
+=======
+        <canvas
+          id="gradient-canvas"
+          data-js-darken-top
+          data-transition-in
+        ></canvas>
+>>>>>>> aa5cbfa (gradeint)
         <Navbar />
         <Box display="flex" justifyContent="center">
           <Box
@@ -115,11 +152,19 @@ export const Hero = ({ login }) => {
                   >
                     Download App
                   </Button>
+<<<<<<< HEAD
                   <button
                     onClick={() => {
                       window.location.href = "/chat";
                     }}
                     className="custom-button"
+=======
+                  <Button
+                    onClick={() => {
+                      window.location.href = "/chat";
+                    }}
+                    className="download-button"
+>>>>>>> aa5cbfa (gradeint)
                     rightIcon={
                       <Image
                         src="/assets/svg-1.svg"
@@ -128,9 +173,16 @@ export const Hero = ({ login }) => {
                         className="download-icon"
                       />
                     }
+<<<<<<< HEAD
                   >
                     Try on Web
                   </button>
+=======
+                    variant="outline"
+                  >
+                    Try on Web
+                  </Button>
+>>>>>>> aa5cbfa (gradeint)
                 </HStack>
               </VStack>
             </Box>
