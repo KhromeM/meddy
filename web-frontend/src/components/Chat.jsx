@@ -1,11 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Text, Image } from "@chakra-ui/react";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import InitialView from "./InitialView";
 import { useAuth } from "../firebase/AuthService.jsx";
 import { chatLLMStreamWS } from "../server/sendMessage.js";
-import MeddyIcon from "./MeddyIcon.jsx";
 import WSConnection from "../utils/WSConnection";
 import AudioService from "../utils/AudioService";
 import Navbar from "./Navbar.jsx";

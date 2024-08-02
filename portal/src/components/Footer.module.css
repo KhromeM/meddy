@@ -1,10 +1,9 @@
 .footer {
-  background: #FEF9EF;
+  background: #fef9ef;
 }
 
 .inner {
-  background: #FEF9EF; 
+  background: #fef9ef;
   border-top: 1px solid var(--mantine-color-gray-2);
-  padding: var(--mantine-spacing-xl);
   text-align: center;
 }

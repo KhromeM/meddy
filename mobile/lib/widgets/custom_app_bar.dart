@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:meddymobile/pages/chat_page.dart';
 import 'package:meddymobile/pages/health_page.dart';
 import 'package:meddymobile/pages/reminder_page.dart';
+import 'package:meddymobile/providers/chat_provider.dart'; // Ensure you import the ChatProvider
 import 'package:meddymobile/utils/app_colors.dart';
 import 'package:meddymobile/services/auth_service.dart';
 import 'package:meddymobile/pages/signin_page.dart';
@@ -55,7 +57,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
       backgroundColor: Colors.white,
       isScrollControlled: true,
       builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.5,
+        height: MediaQuery.of(context).size.height * 0.6,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
           child: Column(
@@ -216,7 +218,13 @@ class _CustomAppBarState extends State<CustomAppBar> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const ChatPage()),
+              MaterialPageRoute(
+                builder: (context) =>
+                    Provider.of<ChatProvider>(context, listen: false).isLoading
+                        ? Scaffold(
+                            body: Center(child: CircularProgressIndicator()))
+                        : ChatPage(),
+              ),
             );
           },
           child: Padding(

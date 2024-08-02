@@ -5,6 +5,7 @@ class Message {
   final String? imageID;
   final String text;
   final DateTime time;
+  final Map<String, dynamic>? result;
 
   Message({
     required this.messageId,
@@ -13,6 +14,7 @@ class Message {
     this.imageID,
     required this.text,
     required this.time,
+    this.result,
   });
 
   factory Message.fromJson(Map<String, dynamic> json) {
@@ -45,6 +47,7 @@ class Message {
     String? imageID,
     String? text,
     DateTime? time,
+    Map<String, dynamic>? result,
   }) {
     return Message(
       messageId: messageId ?? this.messageId,
@@ -53,6 +56,7 @@ class Message {
       imageID: imageID ?? this.imageID,
       text: text ?? this.text,
       time: time ?? this.time,
+      result: result ?? this.result,
     );
   }
 }

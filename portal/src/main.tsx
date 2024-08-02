@@ -1,5 +1,4 @@
-
-import {  MantineProvider, MantineTheme, createTheme } from '@mantine/core';
+import { MantineProvider, MantineTheme, createTheme } from '@mantine/core';
 import '@mantine/core/styles.css';
 import { Notifications } from '@mantine/notifications';
 import '@mantine/notifications/styles.css';
@@ -9,7 +8,7 @@ import '@medplum/react/styles.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import { App } from './App'; 
+import { App } from './App';
 
 const medplum = new MedplumClient({
   // To run FooMedical locally, you can set the baseURL in this constructor
@@ -20,10 +19,43 @@ const medplum = new MedplumClient({
 const theme = createTheme({
   colors: {
     // Custom colors for primary (blue) and secondary (cyan)
-    primary: ['#FFB55D', '#FFB55D', '#FFB55D', '#FFB55D', '#FFB55D', '#FFB55D', '#FFB55D', '#FFB55D', '#FFB55D', '#FFB55D'],
-    secondary: ['#FEF9EF', '#FEF9EF', '#FEF9EF', '#FEF9EF', '#FEF9EF', '#FEF9EF', '#FEF9EF', '#FEF9EF', '#FEF9EF', '#FEF9EF'],
+    primary: [
+      '#a489e0',
+      '#a489e0',
+      '#a489e0',
+      '#a489e0',
+      '#a489e0',
+      '#a489e0',
+      '#a489e0',
+      '#a489e0',
+      '#a489e0',
+      '#a489e0',
+    ],
+    secondary: [
+      '#FEF9EF',
+      '#FFB55D',
+      '#FFBF70',
+      '#FFC983',
+      '#FFD396',
+      '#FFDDA9',
+      '#FFE7BC',
+      '#caeb45',
+      '#FEF9EF',
+      '#FEF9EF',
+    ],
     // Background colors
-    background: ['#ffffff', '#f8f9fa', '#e9ecef', '#dee2e6', '#ced4da', '#adb5bd', '#6c757d', '#495057', '#343a40', '#212529'],
+    background: [
+      '#ffffff',
+      '#f8f9fa',
+      '#e9ecef',
+      '#dee2e6',
+      '#ced4da',
+      '#adb5bd',
+      '#6c757d',
+      '#495057',
+      '#343a40',
+      '#212529',
+    ],
   },
   primaryColor: 'primary',
   primaryShade: 5,
@@ -39,8 +71,8 @@ const theme = createTheme({
       defaultProps: {
         size: 1200,
       },
-    }, 
-  }, 
+    },
+  },
 });
 
 const root = createRoot(document.getElementById('root') as HTMLElement);

@@ -1,6 +1,8 @@
 import React from "react";
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Text, Flex } from "@chakra-ui/react";
 import ReactMarkdown from "react-markdown";
+import { CheckCircleIcon, WarningIcon } from "@chakra-ui/icons";
+import { useAuth } from "../firebase/AuthService";
 
 const Message = ({ message, isStreaming }) => {
   const { text, source, isAudio } = message;
@@ -84,6 +86,7 @@ const Message = ({ message, isStreaming }) => {
       )}
     </Box>
   );
+
 };
 
 export default Message;
