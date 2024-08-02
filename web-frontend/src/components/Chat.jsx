@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Box, Flex, Text, Image } from "@chakra-ui/react";
+import { Box, Flex, Text, Container } from "@chakra-ui/react";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import InitialView from "./InitialView";
@@ -205,35 +205,65 @@ const Chat = () => {
   };
 
   return (
-    <Flex direction="column" h="100vh" bg="fef9ef">
+    <Flex direction="column" h="100vh" bg="#fef9ef">
       <Navbar />
-      {messages.length === 0 ? (
-        <Box flex={1} overflowY="auto" px={4} py={2}>
-          <Flex justify="center" mb={8}>
-            <Flex>
-              <MeddyIcon boxSize="5rem" color="#843a06" />
-              <Text textColor="#843a06" textAlign="center">
-                {audioMode ? "Listening..." : ""}
-              </Text>
-            </Flex>
-          </Flex>
-          <InitialView />
+      <Flex flex={1} direction="column" overflow="hidden">
+        <Box flex={1} overflowY="auto">
+          {messages.length === 0 ? (
+            <Box px={4} py={2}>
+              <Flex justify="center" mb={8}>
+                <Flex>
+                  <MeddyIcon boxSize="5rem" color="#843a06" />
+                  <Text textColor="#843a06" textAlign="center">
+                    {audioMode ? "Listening..." : ""}
+                  </Text>
+                </Flex>
+              </Flex>
+              <InitialView />
+            </Box>
+          ) : (
+            <Container maxW="container.xl" py={4} px={4}>
+              <Box
+                bg="white"
+                borderRadius="xl"
+                boxShadow="xl"
+                h="full"
+                overflow="hidden"
+                display="flex"
+                flexDirection="column"
+              >
+                <Box flex={1} overflowY="auto" p={6}>
+                  <MessageList
+                    messages={messages}
+                    messagesEndRef={messagesEndRef}
+                    inProgress={inProgress}
+                  />
+                </Box>
+              </Box>
+            </Container>
+          )}
         </Box>
-      ) : (
-        <Box flex={1} overflowY="auto" px={4} py={2}>
-          <MessageList
-            messages={messages}
-            messagesEndRef={messagesEndRef}
-            inProgress={inProgress}
-          />
+        <Box
+          borderTop="1px"
+          borderColor="gray.200"
+          p={4}
+          bg={messages.length > 0 ? "white" : "transparent"}
+          boxShadow={
+            messages.length > 0 ? "0 -2px 10px rgba(0,0,0,0.05)" : "none"
+          }
+        >
+          <Container
+            maxW="container.md"
+          >
+            <MessageInput
+              onSend={sendMessage}
+              inProgress={inProgress}
+              toggleAudio={toggleAudio}
+              audioMode={audioMode}
+            />
+          </Container>
         </Box>
-      )}
-      <MessageInput
-        onSend={sendMessage}
-        inProgress={inProgress}
-        toggleAudio={toggleAudio}
-        audioMode={audioMode}
-      />
+      </Flex>
     </Flex>
   );
 };
