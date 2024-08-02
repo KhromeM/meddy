@@ -10,16 +10,10 @@ import {
 import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
-import "./endorsements.css"; // Import your CSS file
+import "./Endorsements.css"; // Import your CSS file
 
 const Endorsement = ({ text, name }) => (
-  <Box
-    borderWidth={1}
-    borderRadius="lg"
-    overflow="hidden"
-    p={4}
-    height="100%"
-  >
+  <Box borderWidth={1} borderRadius="lg" overflow="hidden" p={4} height="100%">
     <Text fontSize="md" mb={4}>
       "{text}"
     </Text>
@@ -75,7 +69,11 @@ export const Endorsements = () => {
       <Button
         alignSelf="center"
         rightIcon={
-          <Image src="/assets/svg-9.svg" boxSize="1.5rem" alt="Learn more icon" />
+          <Image
+            src="/assets/svg-9.svg"
+            boxSize="1.5rem"
+            alt="Learn more icon"
+          />
         }
       >
         Learn more about our success stories
