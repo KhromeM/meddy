@@ -8,6 +8,7 @@ const MessageInput = ({ onSend, inProgress, toggleAudio, audioMode,onUpload }) =
   const [text, setText] = useState("");
   const [imageName, setimageName] = useState("");
   const fileInputRef = useRef(null);
+  const toast = useToast()
   
 
     const handleSend = useCallback(() => {
@@ -53,6 +54,7 @@ const MessageInput = ({ onSend, inProgress, toggleAudio, audioMode,onUpload }) =
           status: "error",
           duration: 5000,
           isClosable: true,
+          position:"top"
         });
       }
     },

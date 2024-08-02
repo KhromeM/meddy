@@ -23,8 +23,9 @@ export const getImage = async (req, res) => {
 		await fs.access(imagePath);
 		const data = await fs.readFile(imagePath);
 		const contentType = getContentType(image);
+		const base64Data = `data:${contentType};base64,${(data).toString('base64')}`
 		res.contentType(contentType);
-		res.send(data);
+		res.send(base64Data);
 	} catch (error) {
 		if (error.code === "ENOENT") {
 			res.status(404).send("Image not found");

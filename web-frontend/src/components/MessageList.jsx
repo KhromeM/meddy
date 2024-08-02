@@ -2,7 +2,7 @@ import React from "react";
 import { VStack } from "@chakra-ui/react";
 import Message from "./Message";
 
-const MessageList = ({ messages, messagesEndRef, inProgress }) => {
+const MessageList = ({ messages, messagesEndRef, inProgress,image }) => {
   return (
     <VStack spacing={4} align="stretch">
       {messages.map((msg, index) => (
@@ -10,6 +10,7 @@ const MessageList = ({ messages, messagesEndRef, inProgress }) => {
           key={msg.messageId}
           message={msg}
           isStreaming={index === messages.length - 1 && inProgress}
+          image={image}
         />
       ))}
       <div ref={messagesEndRef} />

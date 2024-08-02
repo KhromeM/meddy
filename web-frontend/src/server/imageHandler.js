@@ -28,10 +28,7 @@ export const uploadImage = async (file, user) => {
             },
           }
         );
-        console.log(response, "response Img upload");
-
-        const imageName = response;
-        resolve(imageName);
+        resolve(response);
       } catch (error) {
         console.error(
           "Error uploading image:",
@@ -40,5 +37,33 @@ export const uploadImage = async (file, user) => {
         reject(error);
       }
     };
+  });
+};
+
+export const getImage = (file, user) => {
+  const token = user?.stsTokenManager?.accessToken;
+  const userid = user?.uid;
+  const fileName = file?.name;
+  const baseUrl = "http://localhost:8000/api";
+  return new Promise((resolve, reject) => {
+    try {
+      const response = axios.get(
+        `${baseUrl}/image?image=${fileName}&userId=${userid}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "idToken": token
+          },
+        }
+      );
+      debugger
+      resolve(response);
+    } catch (error) {
+      console.error(
+        "Error retriving image:",
+        error.response?.data?.message || error.message
+      );
+      reject(error);
+    }
   });
 };
