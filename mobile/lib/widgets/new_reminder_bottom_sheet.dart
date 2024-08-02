@@ -31,10 +31,9 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
     return Column(
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text('Date: '),
-            SizedBox(width: 60),
             ElevatedButton(
               onPressed: () {
                 setState(() {
@@ -87,10 +86,9 @@ class TimePickerWidget extends StatelessWidget {
         Container(
           padding: EdgeInsets.symmetric(vertical: 10),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('Time: '),
-              SizedBox(width: 60),
               ElevatedButton(
                 onPressed: () async {
                   final TimeOfDay? pickedTime = await showTimePicker(
@@ -107,7 +105,6 @@ class TimePickerWidget extends StatelessWidget {
             ),
                 child: Text('${selectedTime.format(context)}'),
               ),
-              SizedBox(width: 10),
             ],
           ),
         ),
@@ -194,10 +191,9 @@ class _AddReminderBottomSheetState extends State<AddReminderBottomSheet> {
             Divider(),
             SizedBox(height: 12),
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Repeat: '),
-                SizedBox(width: 60),
                 ElevatedButton(
                   onPressed: () => _showRepeatOptionsDialog(context),
                   style: ElevatedButton.styleFrom(

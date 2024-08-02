@@ -22,7 +22,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   final AuthService _authService = AuthService();
   String _firstName = 'User';
   String? _profileImageUrl;
-
+  String _currentLanguage = 'English';
   @override
   void initState() {
     super.initState();
@@ -252,4 +252,36 @@ class _CustomAppBarState extends State<CustomAppBar> {
       ],
     );
   }
+Widget _buildLanguageSelector(StateSetter bottomSheetSetState) {
+  return StatefulBuilder(
+    builder: (BuildContext context, StateSetter setState) {
+      return GestureDetector(
+        child: Container(
+          width: 80,
+          height: 80,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Image.asset(
+                _currentLanguage == 'English' 
+                  ? 'assets/images/us-flag.png'
+                  : 'assets/images/spanish-flag.png',
+                width: 60,
+                height: 60,
+                fit: BoxFit.contain,
+              ),
+            ],
+          ),
+        ),
+        onTap: () {
+          setState(() {
+            _currentLanguage = _currentLanguage == 'English' ? 'Español' : 'English';
+          });
+          bottomSheetSetState(() {}); // Force bottom sheet to rebuild
+          print(_currentLanguage);
+        },
+      );
+    },
+  );
+}
 }
