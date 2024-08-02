@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:meddymobile/utils/app_colors.dart';
-
+import 'package:meddymobile/utils/languages.dart';
+import 'package:provider/provider.dart';
 class DatePickerWidget extends StatefulWidget {
   final DateTime initialDate;
   final Function(DateTime) onDateChanged;
@@ -28,46 +29,49 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+    return Consumer<LanguageProvider>(
+    builder: (context, languageProvider, child) {
+        return Column(
           children: [
-            Text('Date: '),
-            SizedBox(width: 60),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _showDatePicker = !_showDatePicker;
-                });
-              },
-              style: ElevatedButton.styleFrom(
-              backgroundColor: lightPurple, 
-              foregroundColor: Colors.black, 
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(languageProvider.translate('date')),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _showDatePicker = !_showDatePicker;
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                  backgroundColor: lightPurple, 
+                  foregroundColor: Colors.black, 
+                ),
+                  child: Text('${DateFormat.yMd().format(selectedDate)}'),
+                ),
+              ],
             ),
-              child: Text('${DateFormat.yMd().format(selectedDate)}'),
-            ),
+            if (_showDatePicker)
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: CalendarDatePicker(
+                  initialDate: selectedDate,
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2101),
+                  onDateChanged: (DateTime date) {
+                    setState(() {
+                      selectedDate = date;
+                      _showDatePicker = false;
+                    });
+                    widget.onDateChanged(date);
+                  },
+                ),
+              ),
           ],
-        ),
-        if (_showDatePicker)
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 10),
-            child: CalendarDatePicker(
-              initialDate: selectedDate,
-              firstDate: DateTime(2000),
-              lastDate: DateTime(2101),
-              onDateChanged: (DateTime date) {
-                setState(() {
-                  selectedDate = date;
-                  _showDatePicker = false;
-                });
-                widget.onDateChanged(date);
-              },
-            ),
-          ),
-      ],
-    );
+        );
   }
+    );}
+
 }
 
 class TimePickerWidget extends StatelessWidget {
@@ -82,15 +86,16 @@ class TimePickerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Consumer<LanguageProvider>(
+    builder: (context, languageProvider, child) {
     return Column(
       children: [
         Container(
           padding: EdgeInsets.symmetric(vertical: 10),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Time: '),
-              SizedBox(width: 60),
+              Text(languageProvider.translate('time')),
               ElevatedButton(
                 onPressed: () async {
                   final TimeOfDay? pickedTime = await showTimePicker(
@@ -107,14 +112,13 @@ class TimePickerWidget extends StatelessWidget {
             ),
                 child: Text('${selectedTime.format(context)}'),
               ),
-              SizedBox(width: 10),
             ],
           ),
         ),
         
       ],
     );
-  }
+  },);}
 }
 
 class AddReminderBottomSheet extends StatefulWidget {
@@ -130,10 +134,11 @@ class _AddReminderBottomSheetState extends State<AddReminderBottomSheet> {
   DateTime reminderDate = DateTime.now();
   TimeOfDay reminderTime = TimeOfDay.now();
   bool _showDatePicker = false;
-  String _repeatOption = 'Never';
-
+  String _repeatOption = 'never';
   @override
   Widget build(BuildContext context) {
+    return Consumer<LanguageProvider>(
+    builder: (context, languageProvider, child) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.85,
       child: Padding(
@@ -146,7 +151,7 @@ class _AddReminderBottomSheetState extends State<AddReminderBottomSheet> {
               children: [
                 TextButton(
                   onPressed: () => _showDiscardChangesDialog(context),
-                  child: Text('Cancel'),
+                  child: Text(languageProvider.translate('cancel')),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -157,7 +162,7 @@ class _AddReminderBottomSheetState extends State<AddReminderBottomSheet> {
                     backgroundColor: orangeAccent,
                     foregroundColor: Colors.white,
                   ),
-                  child: Text('Apply'),
+                  child: Text(languageProvider.translate('apply')),
                 ),
               ],
             ),
@@ -165,9 +170,9 @@ class _AddReminderBottomSheetState extends State<AddReminderBottomSheet> {
             Divider(),
             SizedBox(height: 12),
             TextFormField(
-              initialValue: 'New Reminder',
+              initialValue: languageProvider.translate('new_reminder'),
               decoration: InputDecoration(
-                labelText: 'Reminder Title',
+                labelText: languageProvider.translate('reminder_title'),
               ),
             ),
             SizedBox(height: 12),
@@ -194,48 +199,50 @@ class _AddReminderBottomSheetState extends State<AddReminderBottomSheet> {
             Divider(),
             SizedBox(height: 12),
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Repeat: '),
-                SizedBox(width: 60),
+                Text(languageProvider.translate('repeat')),
                 ElevatedButton(
                   onPressed: () => _showRepeatOptionsDialog(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: lightPurple,
                     foregroundColor: Colors.black,
                   ),
-                  child: Text(_repeatOption),
+                  child: Text(languageProvider.translate(_repeatOption)),
                 ),
               ],
             ),
           ],
         ),
       ),
-    );
+    );},);
   }
 
 
   void _showDiscardChangesDialog(BuildContext context) {
+    
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        return Consumer<LanguageProvider>(
+        builder: (context, languageProvider, child) {
         return AlertDialog(
-          title: Text('Discard Changes?'),
-          content: Text('Are you sure you want to discard changes?'),
+          title: Text(languageProvider.translate('discard_changes_q')),
+          content: Text(languageProvider.translate('are_you_sure')),
           actions: [
             TextButton(
-              child: Text('Cancel'),
+              child: Text(languageProvider.translate('cancel')),
               onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              child: Text('Discard Changes', style: TextStyle(color: Colors.red)),
+              child: Text(languageProvider.translate('discard_changes'), style: TextStyle(color: Colors.red)),
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
             ),
           ],
-        );
+        );},);
       },
     );
   }
@@ -244,30 +251,32 @@ class _AddReminderBottomSheetState extends State<AddReminderBottomSheet> {
     final String? selectedOption = await showDialog<String>(
       context: context,
       builder: (BuildContext context) {
+        return Consumer<LanguageProvider>(
+        builder: (context, languageProvider, child) {
         return AlertDialog(
-          title: Text('Repeat Options'),
+          title: Text(languageProvider.translate('repeat_options')),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                title: Text('Daily'),
-                onTap: () => Navigator.of(context).pop('Daily'),
+                title: Text(languageProvider.translate('daily')),
+                onTap: () => Navigator.of(context).pop(languageProvider.translate('daily')),
               ),
               ListTile(
-                title: Text('Weekends'),
-                onTap: () => Navigator.of(context).pop('Weekends'),
+                title: Text(languageProvider.translate('weekends')),
+                onTap: () => Navigator.of(context).pop(languageProvider.translate('weekends')),
               ),
               ListTile(
-                title: Text('Weekdays'),
-                onTap: () => Navigator.of(context).pop('Weekdays'),
+                title: Text(languageProvider.translate('weekdays')),
+                onTap: () => Navigator.of(context).pop(languageProvider.translate('weekdays')),
               ),
               ListTile(
-                title: Text('Never'),
-                onTap: () => Navigator.of(context).pop('Never'),
+                title: Text(languageProvider.translate('never')),
+                onTap: () => Navigator.of(context).pop(languageProvider.translate('never')),
               ),
             ],
           ),
-        );
+        );},);
       },
     );
     if (selectedOption != null) {
