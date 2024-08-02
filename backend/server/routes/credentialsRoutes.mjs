@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { saveGFitToken } from "../controllers/credentialsController.mjs";
+import { saveGFitCode } from "../controllers/credentialsController.mjs";
 
 const router = Router();
 
-router.post("/gfit-token", saveGFitToken);
+router.post("/gfit-code", saveGFitCode);
 
 export default router;

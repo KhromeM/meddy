@@ -1,13 +1,11 @@
 import db from "../../db/db.mjs";
-import { getClient } from "../../utils/googleAuth.mjs";
+import { getToken } from "../../utils/googleAuth.mjs";
 
-export const saveGFitToken = async (req, res) => {
+export const saveGFitCode = async (req, res) => {
 	const { code } = req.body;
 	const userId = req._dbUser.userid;
-	console.log("GOT CODE: ", code);
-	const client = getClient();
 	try {
-		const { tokens } = await client.getToken(code);
+		const tokens = await getToken(code);
 		console.log(tokens);
 		const credential = await db.saveGFitToken(userId, tokens.access_token);
 		res.status(200).json({ status: "success", data: { credential } });
