@@ -22,7 +22,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   final AuthService _authService = AuthService();
   String _firstName = 'User';
   String? _profileImageUrl;
-
+  String _currentLanguage = 'English';
   @override
   void initState() {
     super.initState();
@@ -51,58 +51,60 @@ class _CustomAppBarState extends State<CustomAppBar> {
     }
   }
 
-  Future<void> _showBottomSheet(BuildContext context) async {
-    return showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-      isScrollControlled: true,
-      builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.6,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildGreetingText(),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: _buildSquareButton(
-                      'Reminders',
-                      () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ReminderPage()),
-                        );
-                      },
-                    ),
+Future<void> _showBottomSheet(BuildContext context) async {
+  return showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.white,
+    isScrollControlled: true,
+    builder: (context) => Container(
+      height: MediaQuery.of(context).size.height * 0.6,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildGreetingText(),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: _buildSquareButton(
+                    'Reminders',
+                    () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ReminderPage()),
+                      );
+                    },
                   ),
-                  SizedBox(width: 20),
-                  Expanded(
-                    child: _buildSquareButton(
-                      'Health',
-                      () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ProfilePage()),
-                        );
-                      },
-                    ),
+                ),
+                SizedBox(width: 20),
+                Expanded(
+                  child: _buildSquareButton(
+                    'Health',
+                    () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ProfilePage()),
+                      );
+                    },
                   ),
-                ],
-              ),
-              Spacer(),
-              _buildLogoutButton(context),
-            ],
-          ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            _buildLanguageSelector(setState),
+            Spacer(),
+            _buildLogoutButton(context),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildGreetingText() {
     return Row(
@@ -252,4 +254,36 @@ class _CustomAppBarState extends State<CustomAppBar> {
       ],
     );
   }
+Widget _buildLanguageSelector(StateSetter bottomSheetSetState) {
+  return StatefulBuilder(
+    builder: (BuildContext context, StateSetter setState) {
+      return GestureDetector(
+        child: Container(
+          width: 80,
+          height: 80,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Image.asset(
+                _currentLanguage == 'English' 
+                  ? 'assets/images/us-flag.png'
+                  : 'assets/images/spanish-flag.png',
+                width: 60,
+                height: 60,
+                fit: BoxFit.contain,
+              ),
+            ],
+          ),
+        ),
+        onTap: () {
+          setState(() {
+            _currentLanguage = _currentLanguage == 'English' ? 'Español' : 'English';
+          });
+          bottomSheetSetState(() {}); // Force bottom sheet to rebuild
+          print(_currentLanguage);
+        },
+      );
+    },
+  );
+}
 }
