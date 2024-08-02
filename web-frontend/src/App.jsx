@@ -10,6 +10,7 @@ import { EVI } from "./components/EVI.jsx";
 import { Contact } from "./components/Contact.jsx";
 import { AboutUsPage } from "./components/about.jsx";
 import PrivacyPolicy from "./components/PrivacyPolicy.jsx";
+import Recommendations from "./components/Recommendations.jsx";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/about" element={<AboutUsPage />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/recommendations" element={<Recommendations />} />
           </Routes>
         </AuthProvider>
       </Router>
