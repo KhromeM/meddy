@@ -32,11 +32,13 @@ class ChatProvider with ChangeNotifier {
     });
   }
 
-  void updateMessage(String messageId, String text) {
+  void updateMessage(String messageId, String text,
+      {Map<String, dynamic>? result}) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       int index = _messages.indexWhere((msg) => msg.messageId == messageId);
       if (index != -1) {
-        _messages[index] = _messages[index].copyWith(text: text);
+        _messages[index] =
+            _messages[index].copyWith(text: text, result: result);
         notifyListeners();
       }
     });
