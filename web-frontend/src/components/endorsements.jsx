@@ -3,40 +3,33 @@ import {
   VStack,
   Heading,
   Box,
-  Image,
   Text,
   Button,
+  Image, // Import Image from Chakra UI
 } from "@chakra-ui/react";
-import "../../styles/BlogPosts.css";
 import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
+import "./endorsements.css"; // Import your CSS file
 
-const BlogPost = ({ title, date, image }) => (
+const Endorsement = ({ text, name }) => (
   <Box
     borderWidth={1}
     borderRadius="lg"
     overflow="hidden"
-    // minWidth="220px" // Ensure fixed width for each blog post
-    // maxWidth="220px"
-	height={'100%'}
+    p={4}
+    height="100%"
   >
-	<Box height={'400px'}>
-		<Image borderRadius="lg" objectFit={'cover'} height={'100%'} src={image} alt={title} />
-
-	</Box>
-    <Box p={4}>
-      <Heading size="md" mb={2}>
-        {title}
-      </Heading>
-      <Text fontSize="sm" color="gray.500" mb={4}>
-        {date}
-      </Text>
-    </Box>
+    <Text fontSize="md" mb={4}>
+      "{text}"
+    </Text>
+    <Text fontSize="sm" color="gray.500">
+      - {name}
+    </Text>
   </Box>
 );
 
-const Blog = () => {
+export const Endorsements = () => {
   const [state, setState] = useState({
     options: {
       loop: true,
@@ -44,8 +37,8 @@ const Blog = () => {
       nav: true,
       autoplay: true,
       autoplayHoverPause: true,
-	  autoplayTimeout: 2100,
-	  smartSpeed: 600,
+      autoplayTimeout: 2100,
+      smartSpeed: 600,
       responsive: {
         0: {
           items: 1,
@@ -62,23 +55,20 @@ const Blog = () => {
 
   return (
     <VStack spacing={8} align="stretch">
-      <Heading textAlign="center">Latest Updates</Heading>
+      <Heading textAlign="center">What Doctors Have Say:</Heading>
       <Box className="scrolling-container">
         <OwlCarousel {...state.options} className="owl-theme">
-          <BlogPost
-            title="Who is Meddy?"
-            date="Apr 18, 2024"
-            image="/assets/meddy.png"
+          <Endorsement
+            text="This app will revolutionize the way we help our patients. It's a game-changer!"
+            name="Joe Doe "
           />
-          <BlogPost
-            title="Meddy-human symbiosis"
-            date="Feb 9, 2024"
-            image="/assets/mnkbvkebhngvvgeb2r74-1@2x.png"
+          <Endorsement
+            text="Incredible experience, highly recommend."
+            name="Jane Smith"
           />
-          <BlogPost
-            title="Take the Meddy path through life"
-            date="Feb 21, 2024"
-            image="/assets/tucagxrxrfpn2ojse68i-2@2x.png"
+          <Endorsement
+            text="Absolutely fantastic, will use again!"
+            name="Michael Johnson"
           />
         </OwlCarousel>
       </Box>
@@ -88,10 +78,8 @@ const Blog = () => {
           <Image src="/assets/svg-9.svg" boxSize="1.5rem" alt="Learn more icon" />
         }
       >
-        Learn more about our research
+        Learn more about our success stories
       </Button>
     </VStack>
   );
 };
-
-export default Blog;
