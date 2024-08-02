@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Box, Flex, Text, Image } from "@chakra-ui/react";
+import { Box, Flex, Text, Container } from "@chakra-ui/react";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import InitialView from "./InitialView";
