@@ -11,6 +11,8 @@ const GFitOAuthButton = () => {
 		// ux_mode: "redirect",
 		redirect_uri: "http://localhost:5173/google-fit-callback",
 		flow: "auth-code",
+		clientId:
+			"136111862564-u0anpbd6voife3pl7vno9lgnfd5t9kqe.apps.googleusercontent.com",
 		scope,
 		onSuccess: async (codeResponse) => {
 			const code = codeResponse.code;
