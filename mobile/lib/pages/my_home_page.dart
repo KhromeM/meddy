@@ -107,14 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
               SizedBox(height: 100),
             ],
           ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: highContrastMode?.toggleHighContrastMode,
-            child: Icon(
-              highContrastMode?.isHighContrast == true
-                  ? Icons.brightness_7
-                  : Icons.brightness_3,
-            ),
-          ),
+
         ),
       ],
     );
