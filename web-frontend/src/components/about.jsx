@@ -84,7 +84,7 @@ const teamMembers = [
     name: "Shashank datta Bezgam",
     title: "Web Developer",
     linkedIn: "https://www.linkedin.com/in/shashankdatta/",
-    gitHub: "#",
+    gitHub: "https://github.com/shashankdatta",
     profilePic: "shashank.jpeg",
   },
   {
@@ -399,6 +399,8 @@ export const AboutUsPage = () => {
                         href={member.linkedIn}
                         size="sm"
                         colorScheme="linkedin"
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
                         LinkedIn
                       </Button>
@@ -408,6 +410,8 @@ export const AboutUsPage = () => {
                           href={member.gitHub}
                           size="sm"
                           colorScheme="gray"
+                          target="_blank"
+                          rel="noopener noreferrer"
                         >
                           GitHub
                         </Button>
