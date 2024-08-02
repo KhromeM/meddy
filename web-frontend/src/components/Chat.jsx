@@ -9,6 +9,8 @@ import WSConnection from "../utils/WSConnection";
 import AudioService from "../utils/AudioService";
 import Navbar from "./Navbar.jsx";
 import { v4 as uuidv4 } from "uuid";
+import MeddyIcon from "./MeddyIcon.jsx";
+import { uploadImage } from "../server/uploadFile.js";
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -19,7 +21,6 @@ const Chat = () => {
   const messagesEndRef = useRef(null);
   const wsConnectionRef = useRef(null);
   const audioServiceRef = useRef(null);
-
   const setupWebSocket = async () => {
     if (user && !wsConnectionRef.current) {
       console.log("CONNECTING WS");
@@ -166,10 +167,10 @@ const Chat = () => {
     console.log("Messages updated:", messages);
   }, [messages]);
 
-  const addMessageToChatHistory = (source, text, reqId) => {
+  const addMessageToChatHistory = (source, text, reqId, imageUrl = null) => {
     setMessages((prev) => [
       ...prev,
-      { messageId: reqId, source, text, time: new Date() },
+      { messageId: reqId, source, text, imageUrl, time: new Date() },
     ]);
   };
 
@@ -184,13 +185,24 @@ const Chat = () => {
   };
 
   const sendMessage = async (message) => {
+    const text = message.text;
     const reqId = uuidv4();
-    addMessageToChatHistory("user", message, reqId + "_user");
+    addMessageToChatHistory("user", text, reqId + "_user");
     setInProgress(true);
 
     wsConnectionRef.current.send({
       type: "chat",
-      data: { text: message, reqId },
+      data: { text: text, reqId, image: message?.imageName },
+    });
+  };
+
+  const uploadFile = async (file) => {
+    const reqId = uuidv4();
+    uploadImage(file, user).then((response) => {
+      if (response.status === 200) {
+        console.log("response", response);
+       
+      }
     });
   };
 
@@ -229,6 +241,7 @@ const Chat = () => {
       )}
       <MessageInput
         onSend={sendMessage}
+        onUpload={uploadFile}
         inProgress={inProgress}
         toggleAudio={toggleAudio}
         audioMode={audioMode}
