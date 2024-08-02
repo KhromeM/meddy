@@ -13,7 +13,7 @@ import {
   Icon,
 } from "@chakra-ui/react";
 import { FaHeartbeat, FaAppleAlt, FaRunning, FaPills } from "react-icons/fa";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Gradient } from "./Gradient"; // Import the Gradient class
 import "../styles/gradient.css"; // Import the gradient CSS
 
