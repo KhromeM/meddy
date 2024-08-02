@@ -38,7 +38,7 @@ export const Hero = ({ login }) => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
+  
   return (
     <>
       <Box
