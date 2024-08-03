@@ -12,263 +12,280 @@ import Navbar from "./Navbar.jsx";
 import { v4 as uuidv4 } from "uuid";
 
 const Chat = () => {
-	const [messages, setMessages] = useState([]);
-	const [audioMode, setAudioMode] = useState(false);
-	const [inProgress, setInProgress] = useState(false);
-	const [messageBuffer, setMessageBuffer] = useState({});
-	const { user } = useAuth();
-	const messagesEndRef = useRef(null);
-	const wsConnectionRef = useRef(null);
-	const audioServiceRef = useRef(null);
-	let _currResult = useRef(null);
+  const [messages, setMessages] = useState([]);
+  const [audioMode, setAudioMode] = useState(false);
+  const [inProgress, setInProgress] = useState(false);
+  const { user } = useAuth();
+  const messagesEndRef = useRef(null);
+  const wsConnectionRef = useRef(null);
+  const audioServiceRef = useRef(null);
 
-	const setupWebSocket = async () => {
-		if (user && !wsConnectionRef.current) {
-			console.log("CONNECTING WS");
-			const wsConnection = new WSConnection();
-			await wsConnection.connect();
-			const idToken = await user.getIdToken(false);
-			await wsConnection.authenticate(idToken);
-			wsConnectionRef.current = wsConnection;
-			audioServiceRef.current = new AudioService(
-				wsConnection,
-				handleAudioResponse
-			);
-			console.log("WebSocket connected and authenticated");
+  const setupWebSocket = async () => {
+    if (user && !wsConnectionRef.current) {
+      console.log("CONNECTING WS");
+      const wsConnection = new WSConnection();
+      await wsConnection.connect();
+      const idToken = await user.getIdToken(false);
+      await wsConnection.authenticate(idToken);
+      wsConnectionRef.current = wsConnection;
+      audioServiceRef.current = new AudioService(
+        wsConnection,
+        handleAudioResponse
+      );
+      console.log("WebSocket connected and authenticated");
 
-			wsConnection.setHandler("chat_response", handleChatResponse);
-			wsConnection.setHandler("partial_transcript", handleTranscription);
-			wsConnection.setHandler("audio_3", (message) => {
-				if (message.audio) {
-					audioServiceRef.current.addToQueue(
-						3,
-						message.audio,
-						message.isComplete
-					);
-				}
-			});
-			wsConnection.setHandler("audio_1", (message) => {
-				if (message.audio) {
-					audioServiceRef.current.addToQueue(
-						1,
-						message.audio,
-						message.isComplete
-					);
-				}
-			});
-		}
-	};
+      wsConnection.setHandler("chat_response", handleChatResponse);
+      wsConnection.setHandler("partial_transcript", handleTranscription);
+      wsConnection.setHandler("audio_3", (message) => {
+        if (message.audio) {
+          audioServiceRef.current.addToQueue(
+            3,
+            message.audio,
+            message.isComplete
+          );
+        }
+      });
+      wsConnection.setHandler("audio_1", (message) => {
+        if (message.audio) {
+          audioServiceRef.current.addToQueue(
+            1,
+            message.audio,
+            message.isComplete
+          );
+        }
+      });
+    }
+  };
 
-	useEffect(() => {
-		setupWebSocket().catch(console.error);
-		return () => {
-			if (wsConnectionRef.current) {
-				wsConnectionRef.current.close();
-				wsConnectionRef.current = null;
-			}
-		};
-	}, [user]);
+  useEffect(() => {
+    setupWebSocket().catch(console.error);
+    return () => {
+      if (wsConnectionRef.current) {
+        wsConnectionRef.current.close();
+        wsConnectionRef.current = null;
+      }
+    };
+  }, [user]);
 
-	const scrollToBottom = () => {
-		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-	};
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
-	useEffect(() => {
-		scrollToBottom();
-	}, [messages]);
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
-	const handleChatResponse = ({ reqId, data, result, isComplete }) => {
-		reqId += "_llm";
-		setMessageBuffer((prev) => {
-			const updatedBuffer = { ...prev };
-			if (!updatedBuffer[reqId]) {
-				addMessageToChatHistory("llm", "", reqId);
-				updatedBuffer[reqId] = [];
-			}
-			updatedBuffer[reqId] = [...updatedBuffer[reqId], data];
+  const handleChatResponse = (message) => {
+    const reqId = message.reqId + "_llm";
+    const text = message.data;
 
-			const fullMessage = updatedBuffer[reqId].join("");
-			updateCurrentMessageChunk(fullMessage, reqId, result);
+    setMessages((prevMessages) => {
+      const lastLLMMessageIndex = prevMessages.findLastIndex(
+        (msg) => msg.source === "llm" && msg.messageId === reqId
+      );
 
-			return updatedBuffer;
-		});
+      if (lastLLMMessageIndex !== -1) {
+        const updatedMessages = [...prevMessages];
+        updatedMessages[lastLLMMessageIndex] = {
+          ...updatedMessages[lastLLMMessageIndex],
+          text: (updatedMessages[lastLLMMessageIndex].text || "") + text,
+          isComplete: message.isComplete,
+        };
+        return updatedMessages;
+      } else {
+        return [
+          ...prevMessages,
+          {
+            messageId: reqId,
+            source: "llm",
+            text: text,
+            time: new Date(),
+            isComplete: message.isComplete,
+          },
+        ];
+      }
+    });
 
-		if (isComplete) {
-			setMessageBuffer((prev) => {
-				const { [reqId]: _, ...rest } = prev;
-				return rest;
-			});
-			setInProgress(false);
-			_currResult.current = null;
-		}
-	};
+    if (message.isComplete) {
+      setInProgress(false);
+    }
+  };
 
-	const handleTranscription = (message) => {
-		const reqId = message.reqId + "_user";
-		const text = message.data;
+  const handleTranscription = (message) => {
+    const reqId = message.reqId + "_user";
+    const text = message.data;
 
-		setMessageBuffer((prev) => {
-			const updatedBuffer = { ...prev };
-			if (!updatedBuffer[reqId]) {
-				addMessageToChatHistory("user", text, reqId);
-				updatedBuffer[reqId] = [text];
-			} else {
-				updatedBuffer[reqId] = [...updatedBuffer[reqId], text];
-				const fullMessage = updatedBuffer[reqId].join(" ");
-				updateCurrentMessageChunk(fullMessage, reqId);
-			}
-			return updatedBuffer;
-		});
+    setMessages((prevMessages) => {
+      const lastUserMessageIndex = prevMessages.findLastIndex(
+        (msg) => msg.source === "user" && msg.messageId === reqId
+      );
 
-		if (message.isComplete) {
-			setMessageBuffer((prev) => {
-				const { [reqId]: _, ...rest } = prev;
-				return rest;
-			});
-		}
-	};
+      if (lastUserMessageIndex !== -1) {
+        // Update existing transcription
+        const updatedMessages = [...prevMessages];
+        updatedMessages[lastUserMessageIndex] = {
+          ...updatedMessages[lastUserMessageIndex],
+          text: text,
+          isComplete: message.isComplete,
+        };
+        return updatedMessages;
+      } else {
+        // Create new transcription message
+        return [
+          ...prevMessages,
+          {
+            messageId: reqId,
+            source: "user",
+            text: text,
+            isAudio: true,
+            time: new Date(),
+            isComplete: message.isComplete,
+          },
+        ];
+      }
+    });
+  };
 
-	const handleAudioResponse = (audioChunk, queueNumber, isComplete) => {
-		setMessages((prevMessages) => {
-			const lastMessage = prevMessages[prevMessages.length - 1];
-			if (
-				lastMessage &&
-				lastMessage.source === "llm" &&
-				lastMessage.isAudio &&
-				lastMessage.queueNumber === queueNumber
-			) {
-				const updatedMessages = [...prevMessages];
-				updatedMessages[updatedMessages.length - 1] = {
-					...lastMessage,
-					audioChunks: [...(lastMessage.audioChunks || []), audioChunk],
-					isComplete: isComplete,
-				};
-				return updatedMessages;
-			} else if (audioChunk) {
-				// Only want to create a new message if there's actual audio content
-				return [
-					...prevMessages,
-					{
-						messageId: uuidv4(),
-						source: "llm",
-						isAudio: true,
-						audioChunks: [audioChunk],
-						queueNumber: queueNumber,
-						isComplete: isComplete,
-						time: new Date(),
-					},
-				];
-			}
-			return prevMessages;
-		});
-	};
+  const handleAudioResponse = (audioChunk, queueNumber, isComplete) => {
+    setMessages((prevMessages) => {
+      const lastLLMMessageIndex = prevMessages.findLastIndex(
+        (msg) => msg.source === "llm" && msg.queueNumber === queueNumber
+      );
 
-	useEffect(() => {
-		console.log("Messages updated:", messages);
-	}, [messages]);
+      if (lastLLMMessageIndex !== -1) {
+        const updatedMessages = [...prevMessages];
+        const lastLLMMessage = updatedMessages[lastLLMMessageIndex];
 
-	const addMessageToChatHistory = (source, text, reqId) => {
-		setMessages((prev) => [
-			...prev,
-			{ messageId: reqId, source, text, time: new Date() },
-		]);
-	};
+        updatedMessages[lastLLMMessageIndex] = {
+          ...lastLLMMessage,
+          audioChunks: [...(lastLLMMessage.audioChunks || []), audioChunk],
+          isAudio: true,
+          queueNumber: queueNumber,
+          isComplete: isComplete,
+        };
 
-	const updateCurrentMessageChunk = (text, reqId, result) => {
-		_currResult.current = result || _currResult.current;
-		setMessages((prevMessages) => {
-			const index = prevMessages.findIndex((msg) => msg.messageId === reqId);
-			if (index === -1) return prevMessages;
-			const updatedMessages = [...prevMessages];
-			updatedMessages[index] = {
-				...updatedMessages[index],
-				text: text || "",
-				result: updatedMessages[index].result || _currResult.current,
-			};
-			return updatedMessages;
-		});
-	};
+        return updatedMessages;
+      } else {
+        return [
+          ...prevMessages,
+          {
+            messageId: uuidv4(),
+            source: "llm",
+            text: "",
+            isAudio: true,
+            audioChunks: [audioChunk],
+            queueNumber: queueNumber,
+            isComplete: isComplete,
+            time: new Date(),
+          },
+        ];
+      }
+    });
+  };
 
-	const sendMessage = async (message) => {
-		const reqId = uuidv4();
-		addMessageToChatHistory("user", message, reqId + "_user");
-		setInProgress(true);
+  useEffect(() => {
+    console.log("Messages updated:", messages);
+  }, [messages]);
 
-		wsConnectionRef.current.send({
-			type: "chat",
-			data: { text: message, reqId },
-		});
-	};
+  const addMessageToChatHistory = (source, text, reqId) => {
+    setMessages((prev) => [
+      ...prev,
+      { messageId: reqId, source, text, time: new Date() },
+    ]);
+  };
 
-	const toggleAudio = async () => {
-		if (audioMode) {
-			await audioServiceRef.current.stopRecording();
-		} else {
-			await audioServiceRef.current.startRecording();
-		}
-		setAudioMode(!audioMode);
-	};
+  const updateCurrentMessageChunk = (text, reqId) => {
+    setMessages((prevMessages) => {
+      const index = prevMessages.findIndex((msg) => msg.messageId === reqId);
+      if (index === -1) return prevMessages;
+      const updatedMessages = [...prevMessages];
+      updatedMessages[index] = { ...updatedMessages[index], text: text || "" };
+      return updatedMessages;
+    });
+  };
 
-	return (
-		<Flex direction="column" h="100vh" bg="#fef9ef">
-			<Navbar />
-			<Flex flex={1} direction="column" overflow="hidden">
-				<Box flex={1} overflowY="auto">
-					{messages.length === 0 ? (
-						<Box px={4} py={2}>
-							<Flex justify="center" mb={8}>
-								<Flex>
-									<MeddyIcon boxSize="5rem" color="#843a06" />
-									<Text textColor="#843a06" textAlign="center">
-										{audioMode ? "Listening..." : ""}
-									</Text>
-								</Flex>
-							</Flex>
-							<InitialView />
-						</Box>
-					) : (
-						<Container maxW="container.xl" py={4} px={4}>
-							<Box
-								bg="white"
-								borderRadius="xl"
-								boxShadow="xl"
-								h="full"
-								overflow="hidden"
-								display="flex"
-								flexDirection="column"
-							>
-								<Box flex={1} overflowY="auto" p={6}>
-									<MessageList
-										messages={messages}
-										messagesEndRef={messagesEndRef}
-										inProgress={inProgress}
-									/>
-								</Box>
-							</Box>
-						</Container>
-					)}
-				</Box>
-				<Box
-					borderTop="1px"
-					borderColor="gray.200"
-					p={4}
-					bg={messages.length > 0 ? "white" : "transparent"}
-					boxShadow={
-						messages.length > 0 ? "0 -2px 10px rgba(0,0,0,0.05)" : "none"
-					}
-				>
-					<Container maxW="container.md">
-						<MessageInput
-							onSend={sendMessage}
-							inProgress={inProgress}
-							toggleAudio={toggleAudio}
-							audioMode={audioMode}
-						/>
-					</Container>
-				</Box>
-			</Flex>
-		</Flex>
-	);
+  const sendMessage = async (message) => {
+    const reqId = uuidv4();
+    addMessageToChatHistory("user", message, reqId + "_user");
+    setInProgress(true);
+
+    wsConnectionRef.current.send({
+      type: "chat",
+      data: { text: message, reqId },
+    });
+  };
+
+  const toggleAudio = async () => {
+    if (audioMode) {
+      await audioServiceRef.current.stopRecording();
+    } else {
+      await audioServiceRef.current.startRecording();
+    }
+    setAudioMode(!audioMode);
+  };
+
+  return (
+    <Flex direction="column" h="100vh" bg="#fef9ef">
+      <Navbar />
+      <Flex flex={1} direction="column" overflow="hidden">
+        <Box flex={1} overflowY="auto">
+          {messages.length === 0 ? (
+            <Box px={4} py={2}>
+              <Flex justify="center" mb={8}>
+                <Flex>
+                  <MeddyIcon boxSize="5rem" color="#843a06" />
+                  <Text textColor="#843a06" textAlign="center">
+                    {audioMode ? "Listening..." : ""}
+                  </Text>
+                </Flex>
+              </Flex>
+              <InitialView />
+            </Box>
+          ) : (
+            <Container maxW="container.xl" py={4} px={4}>
+              <Box
+                bg="white"
+                borderRadius="xl"
+                boxShadow="xl"
+                h="full"
+                overflow="hidden"
+                display="flex"
+                flexDirection="column"
+              >
+                <Box flex={1} overflowY="auto" p={6}>
+                  <MessageList
+                    messages={messages}
+                    messagesEndRef={messagesEndRef}
+                    inProgress={inProgress}
+                  />
+                </Box>
+              </Box>
+            </Container>
+          )}
+        </Box>
+        <Box
+          borderTop="1px"
+          borderColor="gray.200"
+          p={4}
+          bg={messages.length > 0 ? "white" : "transparent"}
+          boxShadow={
+            messages.length > 0 ? "0 -2px 10px rgba(0,0,0,0.05)" : "none"
+          }
+        >
+          <Container
+            maxW="container.md"
+          >
+            <MessageInput
+              onSend={sendMessage}
+              inProgress={inProgress}
+              toggleAudio={toggleAudio}
+              audioMode={audioMode}
+            />
+          </Container>
+        </Box>
+      </Flex>
+    </Flex>
+  );
 };
 
 export default Chat;
