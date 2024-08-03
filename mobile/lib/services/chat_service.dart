@@ -7,18 +7,16 @@ import 'package:path/path.dart' as path;
 
 class ChatService {
   static const String baseUrl = 'https://trymeddy.com/api';
-  // 'http://localhost:8000/api';
+  // static const String baseUrl = 'http://localhost:8000/api';
 
   Future<List<Message>> getChatHistory() async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/chat'), headers: {
         "idToken": "dev",
       });
-      List<dynamic> chatHistory =
-          jsonDecode(response.body)['chatHistory'];
-      var messages = chatHistory
-          .map((message) => Message.fromJson(message))
-          .toList();
+      List<dynamic> chatHistory = jsonDecode(response.body)['chatHistory'];
+      var messages =
+          chatHistory.map((message) => Message.fromJson(message)).toList();
       return messages;
     } catch (e) {
       print(e.toString());

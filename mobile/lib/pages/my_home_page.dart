@@ -20,14 +20,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<String> texts = [
-    'How does sunlight improve my mental health?',
-    'What are the best foods to eat for heart health?',
-    'How can I improve my sleep quality?',
-    'How does stress affect the immune system?',
-    "What's the recommended daily water intake?",
-    'What are common causes of frequent headaches?',
-    'Can you suggest ways to boost my energy levels?',
-    'How does meditation impact overall health?',
+    'box1',
+    'box2',
+    'box3',
+    'box4',
+    "box5",
+    'box6',
+    'box7',
+    'box8',
   ];
 
   late WSConnection wsConnection;
@@ -107,14 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
               SizedBox(height: 100),
             ],
           ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: highContrastMode?.toggleHighContrastMode,
-            child: Icon(
-              highContrastMode?.isHighContrast == true
-                  ? Icons.brightness_7
-                  : Icons.brightness_3,
-            ),
-          ),
+
         ),
       ],
     );

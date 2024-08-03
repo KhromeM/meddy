@@ -4,7 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'utils/my_app_state.dart';
 import 'widgets/my_app.dart';
 import 'providers/chat_provider.dart'; // Make sure to import ChatProvider
-
+import 'package:meddymobile/utils/languages.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -16,6 +16,7 @@ class MyAppRoot extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => LanguageProvider()),
         ChangeNotifierProvider(create: (context) => MyAppState()),
         ChangeNotifierProvider(
             create: (context) => ChatProvider()), // Add ChatProvider

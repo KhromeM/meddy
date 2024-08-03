@@ -1,69 +1,54 @@
 import React from "react";
-import {
-	Box,
-	VStack,
-	Text,
-	Input,
-	Button,
-	Flex,
-	SimpleGrid,
-} from "@chakra-ui/react";
+import { Box, VStack, Text, Link, SimpleGrid, useColorModeValue } from "@chakra-ui/react";
 
-export const Footer = () => (
-	<Box as="footer" bg="gray.100" py={8}>
-		<VStack spacing={8} maxW="container.xl" mx="auto" px={4}>
-			<Box h="1px" bg="darkslategray.100" w="full" />
+export const Footer = () => {
+  const bg = useColorModeValue("gray.50", "gray.800");
+  const color = useColorModeValue("gray.700", "gray.200");
 
-			<SimpleGrid columns={{ base: 1, md: 2 }} spacing={8} w="full">
-				<VStack align="start" spacing={4}>
-					<Text fontSize="2xl" fontWeight="light">
-						Sign up for our newsletter
-					</Text>
-					<Text>
-						Sign up for our newsletter to hear our latest product releases.
-					</Text>
-				</VStack>
+  return (
+    <Box as="footer" bg={bg} py={12} borderTop="1px" borderColor="gray.200">
+      <VStack spacing={8} maxW="container.xl" mx="auto" px={4}>
+        <SimpleGrid columns={{ base: 1, md: 4 }} spacing={8} w="full">
+          <VStack align="start">
+            <Text fontWeight="bold" color={color}>Medplum</Text>
+            <Box display="flex" flexDirection="row" alignItems="center">
+              <img src="/assets/soc.png" alt="AICPA SOC" style={{ width: "50px", marginRight: "10px" }} />
+              <img src="/assets/hipaa.png" alt="HIPAA Compliant" style={{ width: "100px" }} />
+            </Box>
+          </VStack>
 
-				<Flex>
-					<Input placeholder="Enter email for updates" bg="white" mr={2} />
-					<Button colorScheme="blackAlpha">→</Button>
-				</Flex>
-			</SimpleGrid>
+          <VStack align="start">
+            <Text fontWeight="bold" color={color}>Developers</Text>
+            <Link href="/getting-started" color={color}>Getting started</Link>
+            <Link href="/documentation" color={color}>Documentation</Link>
+            <Link href="/search" color={color}>Search</Link>
+          </VStack>
 
-			<SimpleGrid columns={{ base: 1, md: 4 }} spacing={8} w="full">
-				<VStack align="start">
-					<Text fontWeight="bold">Products</Text>
-					<Text>Overview</Text>
-					<Text>Empathic Voice Interface (EVI)</Text>
-					<Text>Expression Measurement API</Text>
-					<Text>Custom Model API</Text>
-					<Text>Pricing</Text>
-				</VStack>
+          <VStack align="start">
+            <Text fontWeight="bold" color={color}>Community</Text>
+            <Link href="/case-studies" color={color}>Case Studies</Link>
+            <Link href="/discord" color={color}>Discord</Link>
+            <Link href="/storybook" color={color}>Storybook</Link>
+            <Link href="https://github.com/KhromeM/meddy" color={color}>GitHub</Link>
+          </VStack>
 
-				<VStack align="start">
-					<Text fontWeight="bold">Research</Text>
-					<Text>Our Research</Text>
-				</VStack>
+          <VStack align="start">
+            <Text fontWeight="bold" color={color}>Company</Text>
+            <Link href="/about" color={color}>About us</Link>
+            <Link href="/security" color={color}>Security</Link>
+            <Link href="/terms-of-service" color={color}>Terms of Service</Link>
+            <Link href="/privacy-policy" color={color}>Privacy Policy</Link>
+            <Link href="/pricing" color={color}>Pricing</Link>
+            <Link href="/enterprise" color={color}>Enterprise</Link>
+            <Link href="/careers" color={color}>Careers</Link>
+            <Link href="/blog" color={color}>Blog</Link>
+          </VStack>
+        </SimpleGrid>
 
-				<VStack align="start">
-					<Text fontWeight="bold">Team</Text>
-					<Text>About</Text>
-					<Text>Contact</Text>
-				</VStack>
+        <Text color={color}>Copyright © 2024 Meddy, Inc.</Text>
+      </VStack>
+    </Box>
+  );
+};
 
-				<VStack align="start">
-					<Text fontWeight="bold">Other</Text>
-					<Text>Documentation</Text>
-					<Text>Terms & Conditions</Text>
-					<Text>Privacy Policy</Text>
-					<Text>HIPPA</Text>
-				</VStack>
-			</SimpleGrid>
-
-			<Flex justify="space-between" w="full">
-				<Text>© Meddy AI Inc, 2024. All rights reserved</Text>
-				<Text>CONTACT US →</Text>
-			</Flex>
-		</VStack>
-	</Box>
-);
+export default Footer;
