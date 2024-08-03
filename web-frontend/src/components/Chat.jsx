@@ -97,7 +97,7 @@ const Chat = () => {
     });
 
     if (isComplete) {
-      setImage(null); //clear image after llm response
+      // setImage(null); //clear image after llm response
       setMessageBuffer((prev) => {
         const { [reqId]: _, ...rest } = prev;
         return rest;
@@ -171,8 +171,6 @@ const Chat = () => {
     console.log("Messages updated:", messages);
   }, [messages]);
 
-  
-
   const addMessageToChatHistory = (source, text, reqId, imageUrl = null) => {
     setMessages((prev) => [
       ...prev,
@@ -207,14 +205,13 @@ const Chat = () => {
   };
 
   const uploadFile = async (file) => {
-    uploadImage(file, user).then(async (response) => {
-      if (response.status === 200) {
-        imageUploadResponse(file);
-      }
-    });
+    const response = await uploadImage(file, user);
+    if (response.status === 200) {
+      imageUploadResponse(file);
+    }
   };
 
-  const imageUploadResponse = (file) => {
+  const imageUploadResponse = async (file) => {
     toast({
       title: "Success",
       description: "Image uploaded successfully",
@@ -223,11 +220,10 @@ const Chat = () => {
       isClosable: true,
       position: "top",
     });
-    getImage(file, user).then((response) => {
-      if (response.status == 200) {
-        setImage(response.data);
-      }
-    });
+    const response = await getImage(file, user);
+    if (response.status == 200) {
+      setImage(response.data);
+    }
   };
   const toggleAudio = async () => {
     if (audioMode) {
