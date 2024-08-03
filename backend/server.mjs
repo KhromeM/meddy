@@ -16,6 +16,7 @@ import loggerMiddleware from "./server/middleware/loggerMiddleware.mjs";
 import userMiddleware from "./server/middleware/userMiddleware.mjs";
 import errorHandler from "./server/middleware/errorHandler.mjs";
 import { setupErrorHandlers } from "./extra/errorHandlers.mjs";
+import credentialsRoutes from "./server/routes/credentialsRoutes.mjs";
 
 setupErrorHandlers();
 
@@ -39,6 +40,7 @@ app.use("/api/doctor", doctorRoutes);
 app.use("/api/info", infoRoutes);
 app.use("/api/medplum", medplumRoutes);
 app.use("/api/image", imageRoutes);
+app.use("/api/credentials", credentialsRoutes);
 
 app.use(errorHandler);
 

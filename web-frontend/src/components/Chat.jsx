@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Box, Flex, Text, Container } from "@chakra-ui/react";
+import { Box, Flex, Text, Container, useToast } from "@chakra-ui/react";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import InitialView from "./InitialView";
@@ -9,15 +9,21 @@ import WSConnection from "../utils/WSConnection";
 import AudioService from "../utils/AudioService";
 import Navbar from "./Navbar.jsx";
 import { v4 as uuidv4 } from "uuid";
+import { uploadImage, getImage } from "../server/imageHandler.js";
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [audioMode, setAudioMode] = useState(false);
   const [inProgress, setInProgress] = useState(false);
+  const [messageBuffer, setMessageBuffer] = useState({});
+  const [image, setImage] = useState(null);
+  const [imageUploaded, setImageUploaded] = useState();
   const { user } = useAuth();
   const messagesEndRef = useRef(null);
   const wsConnectionRef = useRef(null);
   const audioServiceRef = useRef(null);
+  let _currResult = useRef(null);
+  const toast = useToast();
 
   const setupWebSocket = async () => {
     if (user && !wsConnectionRef.current) {
@@ -114,35 +120,25 @@ const Chat = () => {
     const reqId = message.reqId + "_user";
     const text = message.data;
 
-    setMessages((prevMessages) => {
-      const lastUserMessageIndex = prevMessages.findLastIndex(
-        (msg) => msg.source === "user" && msg.messageId === reqId
-      );
-
-      if (lastUserMessageIndex !== -1) {
-        // Update existing transcription
-        const updatedMessages = [...prevMessages];
-        updatedMessages[lastUserMessageIndex] = {
-          ...updatedMessages[lastUserMessageIndex],
-          text: text,
-          isComplete: message.isComplete,
-        };
-        return updatedMessages;
+    setMessageBuffer((prev) => {
+      const updatedBuffer = { ...prev };
+      if (!updatedBuffer[reqId]) {
+        addMessageToChatHistory("user", text, reqId);
+        updatedBuffer[reqId] = [text];
       } else {
-        // Create new transcription message
-        return [
-          ...prevMessages,
-          {
-            messageId: reqId,
-            source: "user",
-            text: text,
-            isAudio: true,
-            time: new Date(),
-            isComplete: message.isComplete,
-          },
-        ];
+        updatedBuffer[reqId] = [...updatedBuffer[reqId], text];
+        const fullMessage = updatedBuffer[reqId].join(" ");
+        updateCurrentMessageChunk(fullMessage, reqId);
       }
+      return updatedBuffer;
     });
+
+    if (message.isComplete) {
+      setMessageBuffer((prev) => {
+        const { [reqId]: _, ...rest } = prev;
+        return rest;
+      });
+    }
   };
 
   const handleAudioResponse = (audioChunk, queueNumber, isComplete) => {
@@ -186,24 +182,50 @@ const Chat = () => {
     console.log("Messages updated:", messages);
   }, [messages]);
 
-  const addMessageToChatHistory = (source, text, reqId) => {
+  const addMessageToChatHistory = (source, text, reqId, imageUrl = null) => {
     setMessages((prev) => [
       ...prev,
-      { messageId: reqId, source, text, time: new Date() },
+      { messageId: reqId, source, text, imageUrl, time: new Date() },
     ]);
   };
-
-  const sendMessage = async (message) => {
-    const reqId = uuidv4();
-    addMessageToChatHistory("user", message, reqId + "_user");
-    setInProgress(true);
-
-    wsConnectionRef.current.send({
-      type: "chat",
-      data: { text: message, reqId },
+  const updateCurrentMessageChunk = (text, reqId) => {
+    setMessages((prevMessages) => {
+      const index = prevMessages.findIndex((msg) => msg.messageId === reqId);
+      if (index === -1) return prevMessages;
+      const updatedMessages = [...prevMessages];
+      updatedMessages[index] = { ...updatedMessages[index], text: text || "" };
+      return updatedMessages;
     });
   };
 
+  const sendMessage = async (message) => {
+    const text = message.text;
+    const reqId = uuidv4();
+    const imageRef = message.imageName ? image : "";
+    addMessageToChatHistory("user", text, reqId + "_user", imageRef);
+    setInProgress(true);
+    setImageUploaded(null);
+
+    wsConnectionRef.current.send({
+      type: "chat",
+      data: { text: text, reqId, image: message?.imageName },
+    });
+  };
+
+  const uploadFile = async (file) => {
+    const response = await uploadImage(file, user);
+    if (response.status === 200) {
+      imageUploadResponse(file);
+    }
+  };
+
+  const imageUploadResponse = async (file) => {
+    const response = await getImage(file, user);
+    if (response.status == 200) {
+      setImage(response.data);
+      setImageUploaded(response.data);
+    }
+  };
   const toggleAudio = async () => {
     if (audioMode) {
       await audioServiceRef.current.stopRecording();
@@ -214,7 +236,7 @@ const Chat = () => {
   };
 
   return (
-    <Flex direction="column" h="100vh" bg="#fef9ef">
+    <Flex direction="column" h="100vh" bg="fef9ef">
       <Navbar />
       <Flex flex={1} direction="column" overflow="hidden">
         <Box flex={1} overflowY="auto">
@@ -261,14 +283,15 @@ const Chat = () => {
             messages.length > 0 ? "0 -2px 10px rgba(0,0,0,0.05)" : "none"
           }
         >
-          <Container
-            maxW="container.md"
-          >
+          <Container maxW="container.md">
             <MessageInput
               onSend={sendMessage}
+              onUpload={uploadFile}
+              handleDeleteImage={() => setImageUploaded(null)}
               inProgress={inProgress}
               toggleAudio={toggleAudio}
               audioMode={audioMode}
+              imageUploaded={imageUploaded}
             />
           </Container>
         </Box>

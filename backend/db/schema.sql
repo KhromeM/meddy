@@ -94,5 +94,15 @@ CREATE TABLE Conditions (
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
+CREATE TABLE Credentials (
+    UserID VARCHAR(255),
+    ProviderName VARCHAR(50),
+    AccessToken TEXT,
+    RefreshToken TEXT,
+    Scope TEXT,
+    TokenType VARCHAR(50),
+    ExpiryDate TIMESTAMP,
+    PRIMARY KEY (UserID, ProviderName)
+);
 -- repeat for the test db   
 CREATE DATABASE meddysql_test;

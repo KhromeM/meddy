@@ -1,9 +1,7 @@
-const isProd = import.meta.env.PROD;
-
-let wsURL = isProd ? "wss://www.trymeddy.com/api/" : "ws://localhost:8000/api";
+import { serverUrl } from "./Info";
+let wsURL = serverUrl.ws;
 // wsURL = "wss://www.trymeddy.com/api/";
 // wsURL = "ws://localhost:8000/api";
-console.log(wsURL, "wsURL");
 
 class WSConnection {
 	constructor() {

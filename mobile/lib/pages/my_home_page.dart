@@ -107,14 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
               SizedBox(height: 100),
             ],
           ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: highContrastMode?.toggleHighContrastMode,
-            child: Icon(
-              highContrastMode?.isHighContrast == true
-                  ? Icons.brightness_7
-                  : Icons.brightness_3,
-            ),
-          ),
+
         ),
       ],
     );
@@ -125,10 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
       context: context,
       barrierDismissible: true,
       builder: (context) {
-        return Material(
-          color: Theme.of(context).colorScheme.surface,
-          child: MicPage(),
-        );
+        return MicPage();
       },
     );
   }
