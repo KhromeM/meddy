@@ -22,11 +22,7 @@ const data = [
 const LineGraph = () => {
   return (
     <LineChart width={400} height={250} data={data}>
-      <CartesianGrid stroke="#f5f5f5" />
-      <XAxis dataKey="name" />
-      <YAxis />
       <Tooltip />
-      <Legend />
       <Line
         type="monotone"
         dataKey="value"

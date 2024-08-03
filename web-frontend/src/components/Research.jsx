@@ -1,16 +1,15 @@
 import React from "react";
 import { Grid, GridItem } from "@chakra-ui/react";
 import Card from "./ResearchComponents/Card";
-import smiley from "./ResearchComponents/smiley.webp";
-import greenhex from "./ResearchComponents/green_hex.png";
-import gray from "./ResearchComponents/dark_gray_background.png";
 import LineGraph from "./ResearchComponents/graphs/LineGraph";
+import BloodPressureChart from "./ResearchComponents/graphs/BloodPressureChart";
+import ActivityChart from "./ResearchComponents/graphs/ActivityChart";
 const Research = () => {
   return (
     <Grid
       templateAreas={{
         base: `"header" "main" "footer"`,
-        md: `"biomarkers biomarkers biologicalAge" 
+        md: `"sample bloodpressure activity" 
              "physicalHealth range biomarkersDetails" 
              "physicalHealth range chat"`,
       }}
@@ -20,8 +19,14 @@ const Research = () => {
       p={4}
       height="100vh"
     >
-      <GridItem area="biomarkers">
+      <GridItem area="sample">
         <Card title="Sample Line Chart" graph={<LineGraph />} />
+      </GridItem>
+      <GridItem area="bloodpressure">
+        <Card title="Blood Pressure" graph={<BloodPressureChart />} />
+      </GridItem>
+      <GridItem area="activity">
+        <Card title="Activity" graph={<ActivityChart />} />
       </GridItem>
     </Grid>
   );
