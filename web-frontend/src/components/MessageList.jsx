@@ -10,7 +10,6 @@ const MessageList = ({ messages, messagesEndRef, inProgress,image }) => {
           key={msg.messageId}
           message={msg}
           isStreaming={index === messages.length - 1 && inProgress}
-          image={image}
         />
       ))}
       <div ref={messagesEndRef} />

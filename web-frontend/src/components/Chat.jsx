@@ -18,6 +18,7 @@ const Chat = () => {
   const [inProgress, setInProgress] = useState(false);
   const [messageBuffer, setMessageBuffer] = useState({});
   const [image, setImage] = useState(null);
+  const [imageUploaded, setImageUploaded] = useState(null);
   const { user } = useAuth();
   const messagesEndRef = useRef(null);
   const wsConnectionRef = useRef(null);
@@ -110,7 +111,7 @@ const Chat = () => {
   const handleTranscription = (message) => {
     const reqId = message.reqId + "_user";
     const text = message.data;
-
+  
     setMessageBuffer((prev) => {
       const updatedBuffer = { ...prev };
       if (!updatedBuffer[reqId]) {
@@ -195,8 +196,10 @@ const Chat = () => {
   const sendMessage = async (message) => {
     const text = message.text;
     const reqId = uuidv4();
-    addMessageToChatHistory("user", text, reqId + "_user", image);
+    const imageRef = message.imageName? image : ''
+    addMessageToChatHistory("user", text, reqId + "_user", imageRef);
     setInProgress(true);
+    setImageUploaded(false);
 
     wsConnectionRef.current.send({
       type: "chat",
@@ -208,6 +211,7 @@ const Chat = () => {
     const response = await uploadImage(file, user);
     if (response.status === 200) {
       imageUploadResponse(file);
+      setImageUploaded(true);
     }
   };
 
@@ -255,7 +259,6 @@ const Chat = () => {
             messages={messages}
             messagesEndRef={messagesEndRef}
             inProgress={inProgress}
-            image={image}
           />
         </Box>
       )}
@@ -265,6 +268,7 @@ const Chat = () => {
         inProgress={inProgress}
         toggleAudio={toggleAudio}
         audioMode={audioMode}
+        imageUploaded={imageUploaded}
       />
     </Flex>
   );

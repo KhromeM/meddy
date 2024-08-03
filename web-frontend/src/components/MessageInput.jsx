@@ -1,24 +1,29 @@
 import React, { useState, useCallback, useRef } from "react";
-import { Flex, Input, IconButton, useToast } from "@chakra-ui/react";
+import { Flex, Input, IconButton, useToast, Box,Text } from "@chakra-ui/react";
 import { FaMicrophone, FaAngleRight, FaRegStopCircle } from "react-icons/fa";
 import { VscSend } from "react-icons/vsc";
-import { GoPaperclip } from "react-icons/go";
+import { GoPaperclip,GoFile } from "react-icons/go";
 
-const MessageInput = ({ onSend, inProgress, toggleAudio, audioMode,onUpload }) => {
+const MessageInput = ({
+  onSend,
+  inProgress,
+  toggleAudio,
+  audioMode,
+  onUpload,
+  imageUploaded,
+}) => {
   const [text, setText] = useState("");
   const [imageName, setimageName] = useState("");
   const fileInputRef = useRef(null);
-  const toast = useToast()
-  
+  const toast = useToast();
 
-    const handleSend = useCallback(() => {
-      if (text.trim() && !inProgress) {
-        onSend({text:text.trim(),imageName});
-        setText("");
-        setimageName("");
-      }
-    }, [text, inProgress, onSend]);
-
+  const handleSend = useCallback(() => {
+    if (text.trim() && !inProgress) {
+      onSend({ text: text.trim(), imageName });
+      setText("");
+      setimageName("");
+    }
+  }, [text, inProgress, onSend]);
 
   const handleKeyPress = useCallback(
     (e) => {
@@ -30,16 +35,15 @@ const MessageInput = ({ onSend, inProgress, toggleAudio, audioMode,onUpload }) =
     [handleSend]
   );
 
-  const handleUpload =
-    useCallback(() => {
-      if (fileInputRef.current.files.length) {
-        const file = fileInputRef.current.files[0];
-        onUpload(file);
-        fileInputRef.current.value = null;
-      }
-    }, [onUpload]);
+  const handleUpload = useCallback(() => {
+    if (fileInputRef.current.files.length) {
+      const file = fileInputRef.current.files[0];
+      onUpload(file);
+      fileInputRef.current.value = null;
+    }
+  }, [onUpload]);
 
- const handleFileUpload = useCallback(
+  const handleFileUpload = useCallback(
     (event) => {
       const file = event.target.files[0];
       if (file && file.type.startsWith("image/")) {
@@ -54,7 +58,7 @@ const MessageInput = ({ onSend, inProgress, toggleAudio, audioMode,onUpload }) =
           status: "error",
           duration: 5000,
           isClosable: true,
-          position:"top"
+          position: "top",
         });
       }
     },
@@ -82,6 +86,7 @@ const MessageInput = ({ onSend, inProgress, toggleAudio, audioMode,onUpload }) =
         width={"100%"}
         px={4}
         mr={2}
+        position="relative"
       >
         <IconButton
           _hover={{ background: "transparent" }}
@@ -90,7 +95,27 @@ const MessageInput = ({ onSend, inProgress, toggleAudio, audioMode,onUpload }) =
           onClick={handleClipClick}
           aria-label="upload file"
           size="xl"
-        />
+        />{" "}
+        {imageUploaded && (
+          <Box
+            position="absolute"
+            top="-12"
+            left="0"
+            mt={2}
+            p={2}
+            bg="gray.700"
+            color="white"
+            borderRadius="md"
+            boxShadow="md"
+            display="flex"
+            alignItems="center"
+            fontSize="sm"
+            w={{base:'100%',md:'fit-content'}}
+          >
+            <GoFile style={{ marginRight: "8px" }} />
+            <Text isTruncated>{imageName}</Text>
+          </Box>
+        )}
         <Input
           type="file"
           ref={fileInputRef}

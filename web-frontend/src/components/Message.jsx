@@ -4,8 +4,8 @@ import ReactMarkdown from "react-markdown";
 import { CheckCircleIcon, WarningIcon } from "@chakra-ui/icons";
 import { useAuth } from "../firebase/AuthService";
 
-const Message = ({ message, isStreaming ,image}) => {
-  const { text, source, isAudio, result } = message; 
+const Message = ({ message, isStreaming }) => {
+  const { text, source, isAudio, result, imageUrl } = message;
   const isUser = source === "user";
   const { user } = useAuth();
   let userName = user?.displayName || "You";
@@ -42,32 +42,29 @@ const Message = ({ message, isStreaming ,image}) => {
         result ? (result.success ? "green.200" : "red.200") : "#843a06"
       }
     >
-      <Flex alignItems="center"  mb={2}>
+      <Flex alignItems="center" mb={2}>
         {getIcon()}
         <Text ml={2} fontWeight="bold">
           {isUser ? userName : "Meddy"}
         </Text>
-       
       </Flex>
       {isAudio ? (
         <Text fontStyle="italic">{text}</Text>
       ) : (
         <ReactMarkdown components={markdownComponents}>{text}</ReactMarkdown>
-		
       )}
-	  
+
       {isStreaming && (
         <Text as="span" animation="blink 1s infinite">
           ...
         </Text>
       )}
-	   {isUser && image ? (
-          <Box boxSize="sm"mt={8}>
-            <Image w={'100%'} h={'100%'} src={image} alt="Image" />
-          </Box>
-        ) : null}
+      {isUser && imageUrl ? (
+        <Box h={"100%"} maxHeight={"400px"} maxWidth={"400px"} mt={4}>
+          <Image w={"100%"} h={"100%"} src={imageUrl} alt="Image" />
+        </Box>
+      ) : null}
     </Box>
-	
   );
 };
 
