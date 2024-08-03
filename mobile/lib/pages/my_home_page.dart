@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:meddymobile/providers/chat_provider.dart';
 import 'package:meddymobile/utils/app_colors.dart';
 import 'package:meddymobile/widgets/boxes.dart';
 import 'package:meddymobile/widgets/high_contrast_mode.dart';
 import 'package:meddymobile/widgets/main_background.dart';
 import 'package:meddymobile/widgets/mic_page.dart';
 import 'package:meddymobile/widgets/custom_app_bar.dart';
+import 'package:meddymobile/utils/ws_connection.dart';
+import 'package:meddymobile/services/player_service.dart';
+import 'package:meddymobile/services/recorder_service.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -15,46 +20,49 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<String> texts = [
-    'How does sunlight improve my mental health?',
-    // 'How can I fix my circadian rhythm?',
-    'What are the best foods to eat for heart health?',
-    // 'Can you explain the symptoms of diabetes?',
-    // 'How often should I exercise for optimal health?',
-    // 'What are natural remedies for reducing anxiety?',
-    'How can I improve my sleep quality?',
-    // 'What are the early signs of vitamin D deficiency?',
-    'How does stress affect the immune system?',
-    "What's the recommended daily water intake?",
-    // 'Are there any exercises to relieve lower back pain?',
-    // 'How can I naturally lower my blood pressure?',
-    'What are common causes of frequent headaches?',
-    'Can you suggest ways to boost my energy levels?',
-    'How does meditation impact overall health?',
+    'box1',
+    'box2',
+    'box3',
+    'box4',
+    "box5",
+    'box6',
+    'box7',
+    'box8',
   ];
 
-  // use temporary assets locally or comment out
-  // final List<String> images = [
-  //   'assets/image1.jpg',
-  //   'assets/image2.jpg',
-  //   'assets/image3.jpg',
-  //   'assets/image4.jpg',
-  //   'assets/image5.jpg',
-  //   'assets/image6.jpg',
-  //   'assets/image7.jpg',
-  //   'assets/image8.jpg',
-  //   'assets/image9.jpg',
-  //   'assets/image10.jpg',
-  //   'assets/image11.jpg',
-  //   'assets/image12.jpg',
-  //   'assets/image13.jpg',
-  //   'assets/image14.jpg',
-  //   'assets/image15.jpg',
-  //   'assets/image16.jpg',
-  //   'assets/image17.jpg',
-  //   'assets/image18.jpg',
-  //   'assets/image19.jpg',
-  //   'assets/image20.jpg'
-  // ];
+  late WSConnection wsConnection;
+  late PlayerService playerService;
+  late RecorderService recorderService;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize WebSocket connection and services
+    wsConnection = WSConnection();
+    playerService = PlayerService(wsConnection);
+    recorderService = RecorderService(wsConnection);
+
+    // Connect to WebSocket
+    wsConnection.connect();
+
+    // Load chat history on init
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (Provider.of<ChatProvider>(context, listen: false).messages.isEmpty) {
+        print('Loading chat history in MyHomePage...');
+        Provider.of<ChatProvider>(context, listen: false).loadChatHistory();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // Dispose services
+    wsConnection.disconnect();
+    playerService.dispose();
+    recorderService.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,19 +100,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               SizedBox(height: 20),
-              // add images here or comment out next line if working on android emu
               Boxes(
                 texts: texts,
-                isHighContrast:
-                    highContrastMode?.isHighContrast ??
-                        false,
-              ), // images: null),
+                isHighContrast: highContrastMode?.isHighContrast ?? false,
+              ),
               SizedBox(height: 100),
             ],
           ),
           floatingActionButton: FloatingActionButton(
-            onPressed:
-                highContrastMode?.toggleHighContrastMode,
+            onPressed: highContrastMode?.toggleHighContrastMode,
             child: Icon(
               highContrastMode?.isHighContrast == true
                   ? Icons.brightness_7
@@ -119,8 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _showMic() {
     showDialog(
       context: context,
-      barrierDismissible:
-          true, // prevent closing the dialog
+      barrierDismissible: true,
       builder: (context) {
         return Material(
           color: Theme.of(context).colorScheme.surface,

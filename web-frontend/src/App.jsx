@@ -6,46 +6,31 @@ import Chat from "./components/Chat.jsx";
 import Research from "./components/Research.jsx";
 import "./styles/chat.css";
 import { AuthProvider } from "./firebase/AuthService.jsx";
-import Navbar from "./components/Navbar.jsx";
 import customTheme from "./theme";
-import ReactFluidCursor from "./components/ReactFluidCursor/ReactFluidCursor.jsx";
-function App() {
-	return (
-		<ChakraProvider theme={customTheme}>
-			<Router>
-				<AuthProvider>
-					{/* <ReactFluidCursor /> */}
+import { EVI } from "./components/EVI.jsx";
+import { Contact } from "./components/Contact.jsx";
+import { AboutUsPage } from "./components/about.jsx";
+import PrivacyPolicy from "./components/PrivacyPolicy.jsx";
+import Recommendations from "./components/Recommendations.jsx";
 
-					<Routes>
-						<Route
-							path="/"
-							element={
-								<>
-									<LandingPage />{" "}
-								</>
-							}
-						/>
-						<Route
-							path="/chat"
-							element={
-								<>
-									<Chat />
-								</>
-							}
-						/>
-						<Route
-							path="/research"
-							element={
-								<>
-									<Research />
-								</>
-							}
-						/>
-					</Routes>
-				</AuthProvider>
-			</Router>
-		</ChakraProvider>
-	);
+function App() {
+  return (
+    <ChakraProvider theme={customTheme}>
+      <Router>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/chat" element={<Chat />} />
+            <Route path="/EVI" element={<EVI />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/about" element={<AboutUsPage />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/recommendations" element={<Recommendations />} />
+          </Routes>
+        </AuthProvider>
+      </Router>
+    </ChakraProvider>
+  );
 }
 
 export default App;

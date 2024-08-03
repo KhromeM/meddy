@@ -2,6 +2,7 @@ import { pool } from "./dbConfig.mjs";
 import { getUserById } from "./dbUser.mjs";
 import { getUserAppointments } from "./dbAppointments.mjs";
 import { getRecentMessagesByUserId } from "./dbMessages.mjs";
+import { retrieveCleanedPatientDetailsFromEpic } from "../server/controllers/medplumController.mjs";
 
 // Medications Methods
 export const createMedication = (userId, name, dosage) => {
@@ -301,6 +302,12 @@ export const getUserInfo = async (userId) => {
 		const reminders = await getUserReminders(userId);
 		const appointments = await getUserAppointments(userId);
 		const chatHistory = await getRecentMessagesByUserId(userId, 5);
+		let medplumInfo = {};
+
+		// Get medplum information
+		if (user.patientid) {
+			medplumInfo = await retrieveCleanedPatientDetailsFromEpic(user.patientid);
+		}
 
 		return {
 			user: {
@@ -310,6 +317,7 @@ export const getUserInfo = async (userId) => {
 				email: user.email,
 				language: user.language,
 				phone: user.phone,
+				patientid: user.patientid,
 			},
 			chathistory: chatHistory.map((message) => ({
 				role: message.source.toLowerCase(),
@@ -334,6 +342,7 @@ export const getUserInfo = async (userId) => {
 				hoursuntilrepeat: rem.hoursuntilrepeat,
 				time: rem.time,
 			})),
+			medplumInfo: medplumInfo,
 		};
 	} catch (error) {
 		console.error("Error getting user info:", error);

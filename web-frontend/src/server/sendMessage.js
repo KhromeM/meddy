@@ -17,19 +17,20 @@ export const chatLLMStreamWS = async (
 		return;
 	}
 
-	const requestId = uuidv4();
+	const reqId = uuidv4();
 	console.log("Sending message:", message);
 
 	wsConnection.send({
 		type: "chat",
 		data: {
 			text: message.text,
-			requestId,
+			reqId,
 		},
 	});
 
 	wsConnection.setHandler("chat_response", (response) => {
-		onChunk(response.data);
+		if (response.reqId != reqId) return;
+		onChunk(response);
 		if (response.isComplete) {
 			onComplete();
 		}

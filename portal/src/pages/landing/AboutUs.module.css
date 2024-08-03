@@ -1,0 +1,30 @@
+.outer {
+  overflow: hidden;
+  background-color: #fef9ef;
+}
+
+.title {
+  color: var(--mantine-color-secondary-7);
+  font-family: Greycliff CF, theme.fontFamily;
+  font-size: 56px;
+  line-height: 1.2;
+  font-weight: 600;
+
+  @mixin smaller-than $mantine-breakpoint-xs {
+    font-size: 28px;
+  }
+}
+
+.hero {
+  position: relative;
+  background-image: url('/assets/aboutusPage/aboutus.jpg');
+  background-size: cover;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  margin: 1rem 0;
+  border-radius: 1%;
+}

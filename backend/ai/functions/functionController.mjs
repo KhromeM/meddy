@@ -1,82 +1,99 @@
 import { getUserById, updateUser } from "../../db/dbUser.mjs";
-import {
-	createMedication,
-	createReminder,
-	deleteReminder,
-	getUserMedications,
-	deleteMedication,
-	getUserReminders,
-} from "../../db/dbInfo.mjs";
+import { createMedication, createReminder, deleteReminder, deleteMedication } from "../../db/dbInfo.mjs";
 import {
 	createAppointment,
-	deleteAppointment,
-	getAppointmentById,
 	updateAppointment,
-	getUserAppointments,
-} from "../../db/dbAppointments.mjs";
+	deleteAppointment,
+} from "../../server/controllers/medplumController.mjs";
+import { summarizeAppointmentFromChatHistory } from "../../utils/saveAppointments.mjs";
 
-export const executeLLMFunction = async (text) => {
+
+export const executeLLMFunction = async (rspObj) => {
 	try {
-		// Parse input
-		text = text.replace(/\\n/g, "").replace(/\\/g, "").replace(/\t/g, "");
-		console.log(text);
-		const parsedText = JSON.parse(text);
-		const functionName = parsedText.function;
-		const params = parsedText.params;
+		const functionName = rspObj.function;
+		const params = rspObj.params;
+		let user, appointment, response;
 
-		// Execute function with given parameters
-		let user, appointment;
 		switch (functionName) {
+			case "LLMDisplayInformation":
+				return params.information;
 			case "LLMDidNotUnderstand":
-				return params.response;
+				return {
+					function: functionName,
+					response: params.response,
+					success: false,
+				};
 			case "LLMCannotDo":
-				return params.response;
+				return {
+					function: functionName,
+					response: params.response,
+					success: false,
+				};
 			case "LLMUpdateUserName":
 				user = await getUserById(params.userId);
 				user.name = params.newName;
 				await updateUser(user);
-				return `Your name has been sucessfully updated to ${params.newName}!`;
+				response =
+					params.response ||
+					`Your name has been successfully updated to ${params.newName}!`;
+				break;
+
 			case "LLMUpdateUserPhone":
 				user = await getUserById(params.userId);
 				user.phone = params.newPhoneNumber;
 				await updateUser(user);
-				return `Your phone number has been sucessfully updated to ${params.newPhoneNumber}!`;
+				response =
+					params.response ||
+					`Your phone number has been successfully updated to ${params.newPhoneNumber}!`;
+				break;
+
 			case "LLMUpdateUserAddress":
 				user = await getUserById(params.userId);
 				user.address = params.newAddress;
 				await updateUser(user);
-				return `Your address has been sucessfully updated to ${params.newAddress}!`;
+				response =
+					params.response ||
+					`Your address has been successfully updated to ${params.newAddress}!`;
+				break;
+
 			case "LLMUpdateUserEmail":
 				user = await getUserById(params.userId);
 				user.email = params.newEmail;
 				await updateUser(user);
-				return `Your email has been sucessfully updated to ${params.newEmail}!`;
+				response =
+					params.response ||
+					`Your email has been successfully updated to ${params.newEmail}!`;
+				break;
+
 			case "LLMUpdateUserLanguagePreference":
 				user = await getUserById(params.userId);
 				user.language = params.language;
 				await updateUser(user);
-				return `Your language preference has been sucessfully updated to ${params.language}!`;
+				response =
+					params.response ||
+					`Your language preference has been successfully updated to ${params.language}!`;
+				break;
 			case "LLMGetMedicationList":
-				const medications = await getUserMedications(params.userId);
-
-				if (medications.length === 0) {
-					return `You have no medications.`;
-				}
-
-				const medicationList = medications.map((med) => `${med.name} (${med.dosage})`).join(", ");
-				return `Here are your current medications: ${medicationList}.`;
+				response = params.response;
+				break;
 			case "LLMAddMedication":
-				await createMedication(params.userId, params.medicationName, params.dosage);
-				return `Your medication ${params.medicationName} has been added successfully!`;
+				await createMedication(
+					params.userId,
+					params.medicationName,
+					params.dosage
+				);
+				response =
+					params.response ||
+					`Your medication ${params.medicationName} has been added successfully!`;
+				break;
 			case "LLMDeleteMedication":
 				await deleteMedication(params.medicationId);
-				return `The medication has been deleted successfully.`;
+				response =
+					params.response || `The medication has been deleted successfully.`;
+				break;
 			case "LLMShowMedicationReminderList":
-				const reminders = await getUserReminders(params.userId);
-				const reminderList = reminders
-					.map((rem) => `${rem.medicationname} at ${rem.time}`)
-					.join(", ");
-				return `Here are your medication reminders: ${reminderList}.`;
+				response = params.response;
+				break;
 			case "LLMSetMedicationReminder":
 				await createReminder(
 					params.userId,
@@ -84,36 +101,18 @@ export const executeLLMFunction = async (text) => {
 					params.hoursUntilRepeat,
 					params.time
 				);
-				return `A reminder has been set for your medication ${params.medicationName}!`;
+				response =
+					params.response ||
+					`A reminder has been set for your medication ${params.medicationName}!`;
+				break;
 			case "LLMDeleteMedicationReminder":
 				await deleteReminder(params.reminderId);
-				return `The reminder has been deleted successfully!`;
+				response =
+					params.response || `The reminder has been deleted successfully!`;
+				break;
 			case "LLMGetAppointmentList":
-				const appointments = await getUserAppointments(params.userId);
-
-				if (appointments.length === 0) {
-					return `You have no upcoming appointments.`;
-				}
-
-				const appointmentList = appointments
-					.map((apt) => {
-						const date = new Date(apt.date);
-						const options = {
-							weekday: "short",
-							year: "numeric",
-							month: "short",
-							day: "numeric",
-							hour: "2-digit",
-							minute: "2-digit",
-							second: "2-digit",
-							timeZone: "UTC",
-							hour12: true,
-						};
-						const formattedDate = date.toLocaleString("en-US", options).replace(",", "");
-						return `${apt.description} on ${formattedDate}`;
-					})
-					.join(", ");
-				return `Here are your upcoming appointments: ${appointmentList}.`;
+				response = params.response;
+				break;
 			case "LLMScheduleAppointment":
 				await createAppointment(
 					params.dateTime,
@@ -123,31 +122,46 @@ export const executeLLMFunction = async (text) => {
 					params.userId,
 					params.doctorId
 				);
-				return `Your appointment has been scheduled successfully!`;
+				response =
+					params.response ||
+					`Your appointment has been scheduled successfully!`;
+				break;
 			case "LLMCancelAppointment":
 				await deleteAppointment(params.appointmentId);
-				return `The appointment has been cancelled successfully.`;
+				response =
+					params.response || `The appointment has been cancelled successfully.`;
+				break;
 			case "LLMRescheduleAppointment":
-				appointment = await getAppointmentById(params.appointmentId);
-				appointment.date = params.newDateTime;
 				await updateAppointment(
-					appointment.appointmentid,
-					appointment.date,
-					appointment.transcript,
-					appointment.transcriptsummary,
-					appointment.description,
-					appointment.userid,
-					appointment.doctorid
+					params.appointmentId,
+					params.appointmentStartTime,
+					params.appointmentEndTime,
+					params.description
 				);
-				return `The appointment has been rescheduled successfully`;
+				response =
+					params.response ||
+					`The appointment has been rescheduled successfully`;
+				break;
+			case "LLMSaveAppointment":
+				user = await getUserById(params.userId);
+				response = await summarizeAppointmentFromChatHistory(user);
+				break;
 			case "LLMGenerateSummaryForAppointment":
 				appointment = await getAppointmentById(params.appointmentId);
-				return appointment.transcriptsummary;
+				response = appointment.transcriptsummary;
+				break;
 			default:
 				throw new Error(`Function ${functionName} not found`);
 		}
+
+		return { function: functionName, response, success: true };
 	} catch (err) {
-		console.error(err);
-		return `Error in LLM function calling: ${err.message}`;
+		console.log(`Error in LLM function calling:`, err);
+		console.log("Response that caused an error: ", JSON.stringify(rspObj));
+		return {
+			function: "unknown",
+			response: "Sorry, something went wrong! 😬",
+			success: false,
+		};
 	}
 };

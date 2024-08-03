@@ -106,7 +106,7 @@ export function HomePage(): JSX.Element {
   const profileName = profile.name ? formatHumanName(profile.name[0]) : '';
 
   return (
-    <Box bg="gray.0"> 
+    <Box bg="gray.0">
       <div className={classes.hero}>
         <Overlay
           gradient="linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.4) 40%)"
