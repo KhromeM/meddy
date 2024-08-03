@@ -1,8 +1,16 @@
 import React, { useState, useCallback, useRef } from "react";
-import { Flex, Input, IconButton, useToast, Box,Text } from "@chakra-ui/react";
-import { FaMicrophone, FaAngleRight, FaRegStopCircle } from "react-icons/fa";
+import {
+  Flex,
+  Input,
+  IconButton,
+  useToast,
+  Box,
+  Text,
+  Image,
+} from "@chakra-ui/react";
+import { FaMicrophone, FaRegStopCircle } from "react-icons/fa";
 import { VscSend } from "react-icons/vsc";
-import { GoPaperclip,GoFile } from "react-icons/go";
+import { GoPaperclip, GoX } from "react-icons/go";
 
 const MessageInput = ({
   onSend,
@@ -11,6 +19,7 @@ const MessageInput = ({
   audioMode,
   onUpload,
   imageUploaded,
+  handleDeleteImage,
 }) => {
   const [text, setText] = useState("");
   const [imageName, setimageName] = useState("");
@@ -67,6 +76,10 @@ const MessageInput = ({
   const handleClipClick = () => {
     fileInputRef.current.click();
   };
+  const handleRemoveImage = useCallback(() => {
+    setimageName("");
+    handleDeleteImage();
+  }, [handleDeleteImage]);
 
   return (
     <Flex
@@ -75,70 +88,88 @@ const MessageInput = ({
       minW={{ base: "80%", md: "60%", lg: "800px" }}
       maxW={{ base: "100%", md: "80%", lg: "1280px" }}
       mx={"auto"}
+      align={"center"}
     >
       <Flex
         flex={1}
         borderWidth={1}
         borderColor="#843A05"
-        borderRadius="full"
+        borderRadius={imageUploaded ? "2xl" : "full"}
+        flexDirection={"column"}
         bg="white"
-        align="center"
+        align="start"
         width={"100%"}
         px={4}
         mr={2}
-        position="relative"
       >
-        <IconButton
-          _hover={{ background: "transparent" }}
-          bg={"transparent"}
-          icon={<GoPaperclip />}
-          onClick={handleClipClick}
-          aria-label="upload file"
-          size="xl"
-        />{" "}
         {imageUploaded && (
           <Box
-            position="absolute"
-            top="-12"
-            left="0"
             mt={2}
             p={2}
-            bg="gray.700"
             color="white"
             borderRadius="md"
-            boxShadow="md"
             display="flex"
             alignItems="center"
             fontSize="sm"
-            w={{base:'100%',md:'fit-content'}}
+            position={"relative"}
+            w={{ base: "100px", md: "100px" }}
           >
-            <GoFile style={{ marginRight: "8px" }} />
+            <IconButton
+              _hover={{ background: "rgba(0, 0, 0, 0.5)" }}
+              bg="rgba(0, 0, 0, 0.2)"
+              icon={<GoX />}
+              onClick={handleRemoveImage}
+              aria-label="remove image"
+              size="xs"
+              position="absolute"
+              top={1}
+              right={-6}
+            />
+            <Image
+              maxHeight={"100px"}
+              objectFit={"contain"}
+              w={"100%"}
+              h={"100%"}
+              src={imageUploaded}
+              alt="Image"
+            />
             <Text isTruncated>{imageName}</Text>
           </Box>
         )}
-        <Input
-          type="file"
-          ref={fileInputRef}
-          style={{ display: "none" }}
-          onChange={handleFileUpload}
-        />
-        <Input
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          onKeyPress={handleKeyPress}
-          placeholder="Type message..."
-          border="none"
-          _focus={{ boxShadow: "none" }}
-        />
-        <IconButton
-          _hover={{ background: "transparent" }}
-          bg={"transparent"}
-          icon={<VscSend />}
-          onClick={handleSend}
-          isDisabled={inProgress || !text.trim()}
-          aria-label="Send message"
-          size="lg"
-        />
+        <Flex flex={1} align="center" width={"100%"} borderWidth={0}>
+          <IconButton
+            _hover={{ background: "transparent" }}
+            bg={"transparent"}
+            icon={<GoPaperclip />}
+            onClick={handleClipClick}
+            aria-label="upload file"
+            size="xl"
+          />
+          <Input
+            accept={"image/*"}
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleFileUpload}
+          />
+          <Input
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Type message..."
+            border="none"
+            _focus={{ boxShadow: "none" }}
+          />
+          <IconButton
+            _hover={{ background: "transparent" }}
+            bg={"transparent"}
+            icon={<VscSend />}
+            onClick={handleSend}
+            isDisabled={inProgress || !text.trim()}
+            aria-label="Send message"
+            size="lg"
+          />
+        </Flex>
       </Flex>
       <IconButton
         icon={audioMode ? <FaRegStopCircle /> : <FaMicrophone />}
