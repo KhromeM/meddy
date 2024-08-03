@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { ChevronDownIcon, CloseIcon } from "@chakra-ui/icons";
 
-const Navbar = () => {
+export const Navbar = () => {
 	const [showAnnouncement, setShowAnnouncement] = useState(true);
 	const isMobile = useBreakpointValue({ base: true, md: false });
 
@@ -65,7 +65,7 @@ const Navbar = () => {
 				<Flex alignItems="center">
 					<Image src="/assets/meddyLogo.png" alt="Meddy Logo" h="30px" />
 					<Text fontSize="xl" fontWeight="bold" ml={2}>
-						Meddy
+						<Link href="/">Meddy</Link>
 					</Text>
 				</Flex>
 
@@ -99,11 +99,10 @@ const Navbar = () => {
 							ABOUT
 						</MenuButton>
 						<MenuList>
-							<MenuItem>About Us</MenuItem>
+							<MenuItem><Link href="/about">About us</Link></MenuItem>
 							<MenuItem>Careers</MenuItem>
 						</MenuList>
 					</Menu>
-					<Link href="/team">THE TEAM</Link>
 				</HStack>
 
 				{/* Try on Web Button */}
