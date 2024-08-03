@@ -1,5 +1,6 @@
 import axios from "axios";
 
+const baseUrl = "http://localhost:8000/api";
 const readFileAsBase64 = (file) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -18,7 +19,6 @@ const readFileAsBase64 = (file) => {
 export const uploadImage = async (file, user) => {
   const token = user?.stsTokenManager?.accessToken;
   const userid = user?.uid;
-  const baseUrl = "http://localhost:8000/api";
   const base64data = await readFileAsBase64(file);
   const payload = {
     image: {
@@ -51,10 +51,10 @@ export const getImage = (file, user) => {
   const token = user?.stsTokenManager?.accessToken;
   const userid = user?.uid;
   const fileName = file?.name;
-  const baseUrl = "http://localhost:8000/api";
+
   try {
     const response = axios.get(
-      `${baseUrl}/image?image=${fileName}&userId=${userid}`,
+      `${baseUrl}/image/base64?image=${fileName}&userId=${userid}`,
       {
         headers: {
           "Content-Type": "application/json",
