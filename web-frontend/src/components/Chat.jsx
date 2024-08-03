@@ -81,37 +81,46 @@ const Chat = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleChatResponse = ({ reqId, data, result, isComplete }) => {
-    reqId += "_llm";
-    setMessageBuffer((prev) => {
-      const updatedBuffer = { ...prev };
-      if (!updatedBuffer[reqId]) {
-        addMessageToChatHistory("llm", "", reqId);
-        updatedBuffer[reqId] = [];
+  const handleChatResponse = (message) => {
+    const reqId = message.reqId + "_llm";
+    const text = message.data;
+
+    setMessages((prevMessages) => {
+      const lastLLMMessageIndex = prevMessages.findLastIndex(
+        (msg) => msg.source === "llm" && msg.messageId === reqId
+      );
+
+      if (lastLLMMessageIndex !== -1) {
+        const updatedMessages = [...prevMessages];
+        updatedMessages[lastLLMMessageIndex] = {
+          ...updatedMessages[lastLLMMessageIndex],
+          text: (updatedMessages[lastLLMMessageIndex].text || "") + text,
+          isComplete: message.isComplete,
+        };
+        return updatedMessages;
+      } else {
+        return [
+          ...prevMessages,
+          {
+            messageId: reqId,
+            source: "llm",
+            text: text,
+            time: new Date(),
+            isComplete: message.isComplete,
+          },
+        ];
       }
-      updatedBuffer[reqId] = [...updatedBuffer[reqId], data];
-
-      const fullMessage = updatedBuffer[reqId].join("");
-      updateCurrentMessageChunk(fullMessage, reqId, result);
-
-      return updatedBuffer;
     });
 
-    if (isComplete) {
-      // setImage(null); //clear image after llm response
-      setMessageBuffer((prev) => {
-        const { [reqId]: _, ...rest } = prev;
-        return rest;
-      });
+    if (message.isComplete) {
       setInProgress(false);
-      _currResult.current = null;
     }
   };
 
   const handleTranscription = (message) => {
     const reqId = message.reqId + "_user";
     const text = message.data;
-  
+
     setMessageBuffer((prev) => {
       const updatedBuffer = { ...prev };
       if (!updatedBuffer[reqId]) {
@@ -135,27 +144,30 @@ const Chat = () => {
 
   const handleAudioResponse = (audioChunk, queueNumber, isComplete) => {
     setMessages((prevMessages) => {
-      const lastMessage = prevMessages[prevMessages.length - 1];
-      if (
-        lastMessage &&
-        lastMessage.source === "llm" &&
-        lastMessage.isAudio &&
-        lastMessage.queueNumber === queueNumber
-      ) {
+      const lastLLMMessageIndex = prevMessages.findLastIndex(
+        (msg) => msg.source === "llm" && msg.queueNumber === queueNumber
+      );
+
+      if (lastLLMMessageIndex !== -1) {
         const updatedMessages = [...prevMessages];
-        updatedMessages[updatedMessages.length - 1] = {
-          ...lastMessage,
-          audioChunks: [...(lastMessage.audioChunks || []), audioChunk],
+        const lastLLMMessage = updatedMessages[lastLLMMessageIndex];
+
+        updatedMessages[lastLLMMessageIndex] = {
+          ...lastLLMMessage,
+          audioChunks: [...(lastLLMMessage.audioChunks || []), audioChunk],
+          isAudio: true,
+          queueNumber: queueNumber,
           isComplete: isComplete,
         };
+
         return updatedMessages;
-      } else if (audioChunk) {
-        // Only want to create a new message if there's actual audio content
+      } else {
         return [
           ...prevMessages,
           {
             messageId: uuidv4(),
             source: "llm",
+            text: "",
             isAudio: true,
             audioChunks: [audioChunk],
             queueNumber: queueNumber,
@@ -164,7 +176,6 @@ const Chat = () => {
           },
         ];
       }
-      return prevMessages;
     });
   };
 
@@ -178,17 +189,12 @@ const Chat = () => {
       { messageId: reqId, source, text, imageUrl, time: new Date() },
     ]);
   };
-  const updateCurrentMessageChunk = (text, reqId, result) => {
-    _currResult.current = result || _currResult.current;
+  const updateCurrentMessageChunk = (text, reqId) => {
     setMessages((prevMessages) => {
       const index = prevMessages.findIndex((msg) => msg.messageId === reqId);
       if (index === -1) return prevMessages;
       const updatedMessages = [...prevMessages];
-      updatedMessages[index] = {
-        ...updatedMessages[index],
-        text: text || "",
-        result: updatedMessages[index].result || _currResult.current,
-      };
+      updatedMessages[index] = { ...updatedMessages[index], text: text || "" };
       return updatedMessages;
     });
   };
@@ -196,7 +202,7 @@ const Chat = () => {
   const sendMessage = async (message) => {
     const text = message.text;
     const reqId = uuidv4();
-    const imageRef = message.imageName? image : ''
+    const imageRef = message.imageName ? image : "";
     addMessageToChatHistory("user", text, reqId + "_user", imageRef);
     setInProgress(true);
     setImageUploaded(false);
@@ -241,35 +247,63 @@ const Chat = () => {
   return (
     <Flex direction="column" h="100vh" bg="fef9ef">
       <Navbar />
-      {messages.length === 0 ? (
-        <Box flex={1} overflowY="auto" px={4} py={2}>
-          <Flex justify="center" mb={8}>
-            <Flex>
-              <MeddyIcon boxSize="5rem" color="#843a06" />
-              <Text textColor="#843a06" textAlign="center">
-                {audioMode ? "Listening..." : ""}
-              </Text>
-            </Flex>
-          </Flex>
-          <InitialView />
+      <Flex flex={1} direction="column" overflow="hidden">
+        <Box flex={1} overflowY="auto">
+          {messages.length === 0 ? (
+            <Box px={4} py={2}>
+              <Flex justify="center" mb={8}>
+                <Flex>
+                  <MeddyIcon boxSize="5rem" color="#843a06" />
+                  <Text textColor="#843a06" textAlign="center">
+                    {audioMode ? "Listening..." : ""}
+                  </Text>
+                </Flex>
+              </Flex>
+              <InitialView />
+            </Box>
+          ) : (
+            <Container maxW="container.xl" py={4} px={4}>
+              <Box
+                bg="white"
+                borderRadius="xl"
+                boxShadow="xl"
+                h="full"
+                overflow="hidden"
+                display="flex"
+                flexDirection="column"
+              >
+                <Box flex={1} overflowY="auto" p={6}>
+                  <MessageList
+                    messages={messages}
+                    messagesEndRef={messagesEndRef}
+                    inProgress={inProgress}
+                  />
+                </Box>
+              </Box>
+            </Container>
+          )}
         </Box>
-      ) : (
-        <Box flex={1} overflowY="auto" px={4} py={2}>
-          <MessageList
-            messages={messages}
-            messagesEndRef={messagesEndRef}
-            inProgress={inProgress}
-          />
+        <Box
+          borderTop="1px"
+          borderColor="gray.200"
+          p={4}
+          bg={messages.length > 0 ? "white" : "transparent"}
+          boxShadow={
+            messages.length > 0 ? "0 -2px 10px rgba(0,0,0,0.05)" : "none"
+          }
+        >
+          <Container maxW="container.md">
+            <MessageInput
+              onSend={sendMessage}
+              onUpload={uploadFile}
+              inProgress={inProgress}
+              toggleAudio={toggleAudio}
+              audioMode={audioMode}
+              imageUploaded={imageUploaded}
+            />
+          </Container>
         </Box>
-      )}
-      <MessageInput
-        onSend={sendMessage}
-        onUpload={uploadFile}
-        inProgress={inProgress}
-        toggleAudio={toggleAudio}
-        audioMode={audioMode}
-        imageUploaded={imageUploaded}
-      />
+      </Flex>
     </Flex>
   );
 };

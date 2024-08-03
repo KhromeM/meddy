@@ -10,7 +10,7 @@ import 'package:meddymobile/services/auth_service.dart';
 import 'package:meddymobile/pages/signin_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:meddymobile/utils/languages.dart';
-
+import 'package:meddymobile/widgets/high_contrast_mode.dart';
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   @override
   _CustomAppBarState createState() => _CustomAppBarState();
@@ -101,7 +101,13 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       ],
                     ),
                     SizedBox(height: 20),
-                    _buildLanguageSelector(setModalState),
+                    Row(
+                      children: [
+                        _buildLanguageSelector(setModalState),
+                        SizedBox(width: 12),
+                        _buildHighContrastToggle(setModalState)
+                        ]
+                    ),
                     Spacer(),
                     _buildLogoutButton(context),
                   ],
@@ -113,7 +119,44 @@ class _CustomAppBarState extends State<CustomAppBar> {
       },
     );
   }
-
+Widget _buildHighContrastToggle(StateSetter setModalState) {
+  return Consumer<LanguageProvider>(
+    builder: (context, languageProvider, child) {
+      final highContrastMode = HighContrastMode.of(context);
+      return FloatingActionButton(
+        onPressed: highContrastMode?.toggleHighContrastMode,
+        backgroundColor: highContrastMode?.isHighContrast == true ? Colors.black : lightGreen,
+        elevation: 0,
+        child: SizedBox(
+          width: 50, // Adjust this value to control the icon's container size
+          height: 50, // Adjust this value to control the icon's container size
+          child: Icon(
+            Icons.accessibility_new,
+            color: highContrastMode?.isHighContrast == true ? Colors.white : Colors.black,
+            size: 40, // You can make this even larger now
+          ),
+        ),
+      );
+      // Row(
+      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //   children: [
+      //     Text(
+      //       languageProvider.translate('high_contrast_mode'),
+      //       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+      //     ),
+      //     Switch(
+      //       value: highContrastMode?.isHighContrast ?? false,
+      //       onChanged: (value) {
+      //         highContrastMode?.toggleHighContrastMode();
+      //         setModalState(() {}); // Force bottom sheet to rebuild
+      //         setState(() {}); // Force CustomAppBar to rebuild
+      //       },
+      //     ),
+      //   ],
+      // );
+    },
+  );
+}
   Widget _buildGreetingText() {
     return Consumer<LanguageProvider>(
       builder: (context, languageProvider, child) {

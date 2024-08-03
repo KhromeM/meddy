@@ -6,7 +6,8 @@ import { Features } from "./sections/Features";
 import { Testimonial } from "./sections/Testimonial";
 import Blog from "./sections/Blog";
 import { Footer } from "./sections/Footer";
-import Recommendations from "./sections/Recommendations";
+import { Endorsements } from "./endorsements.jsx";
+import Recommendations from "./Recommendations.jsx";
 
 export const LandingPage = () => {
   const { login } = useAuth();
@@ -30,7 +31,7 @@ export const LandingPage = () => {
         </Container>
 
         <Container maxW="container.xl" px={4}>
-          <Recommendations />
+          <Endorsements />
         </Container>
 
         <Footer />
