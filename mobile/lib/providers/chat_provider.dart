@@ -11,9 +11,6 @@ class ChatProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
 
   Future<void> loadChatHistory() async {
-    _isLoading = true;
-    notifyListeners();
-
     try {
       List<Message> chatHistory = await _chatService.getChatHistory();
       _messages = chatHistory;
@@ -21,13 +18,15 @@ class ChatProvider with ChangeNotifier {
       print('Failed to load chat history: $e');
     } finally {
       _isLoading = false;
-      notifyListeners();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        notifyListeners();
+      });
     }
   }
 
   void addMessage(Message message) {
+    _messages.add(message);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _messages.add(message);
       notifyListeners();
     });
   }
