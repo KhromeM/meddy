@@ -258,5 +258,5 @@ export const updateAppointment = async (appointmentId, startDate, endDate, descr
 
 export const deleteAppointment = async (appointmentId) => {
 	const response = await medplum.deleteResource("Appointment", appointmentId);
-	console.log(response);
+	return response;
 };

@@ -27,6 +27,7 @@ const structure = z.object({
         appointmentId: z.string().optional(),
         startDate: z.string().optional(),
         endDate: z.string().optional(),
+        information: z.string().optional()
     })
 })
 
@@ -36,7 +37,7 @@ Response format:
 IMPORTANT: 
 - Always provide your response in this exact JSON structure without any additional characters.
 - All text intended for the user must be in the "response" field under "params".
-- Only include the params that are required for the specific function you're calling. Leave out any params that aren't needed.
+- Only include the params that are required for the specific function you're calling. Leave out any params that aren't needed or leave them as an empty string.
 - The "userId" should always be included in the params for any function that requires it.
 - Today's date is ${new Date().toISOString().split("T")[0]}
 
