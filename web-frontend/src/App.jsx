@@ -26,6 +26,7 @@ function App() {
             <Route path="/about" element={<AboutUsPage />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/recommendations" element={<Recommendations />} />
+            <Route path="/research" element={<Research />} />
           </Routes>
         </AuthProvider>
       </Router>
