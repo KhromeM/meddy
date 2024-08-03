@@ -118,10 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
       context: context,
       barrierDismissible: true,
       builder: (context) {
-        return Material(
-          color: Theme.of(context).colorScheme.surface,
-          child: MicPage(),
-        );
+        return MicPage();
       },
     );
   }
