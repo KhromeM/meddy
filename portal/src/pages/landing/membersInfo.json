@@ -1,0 +1,93 @@
+[
+  {
+    "name": "Za Mustafa ",
+    "role": ["Team Leader", "Web Dev"],
+    "image": "/assets/aboutusPage/zaza.jpg",
+    "linkedin": "https://linkedin.com/in/khromem/",
+    "github": "https://github.com/reshma-khilnani"
+  },
+  {
+    "name": "William Chan",
+    "role": ["Product Manager"],
+    "image": "/assets/aboutusPage/zaza.jpg",
+    "linkedin": "https://linkedin.com/in/william-chan-3bb674194/",
+    "github": "https://github.com/reshma-khilnani"
+  },
+  {
+    "name": "Nahi Khan",
+    "role": ["Flutter Dev"],
+    "image": "/assets/aboutusPage/zaza.jpg",
+    "linkedin": "https://linkedin.com/in/nahi-khan/",
+    "github": "https://github.com/reshma-khilnani"
+  },
+  {
+    "name": "Varvara Mirono",
+    "role": ["Web Dev"],
+    "image": "/assets/aboutusPage/zaza.jpg",
+    "linkedin": "https://linkedin.com/in/varvara-mironov-55180426a/",
+    "github": "https://github.com/reshma-khilnani"
+  },
+  {
+    "name": "Shashank datta Bezgam",
+    "role": ["Web Dev"],
+    "image": "/assets/aboutusPage/zaza.jpg",
+    "linkedin": "https://linkedin.com/in/shashankdatta/",
+    "github": "https://github.com/reshma-khilnani"
+  },
+  {
+    "name": "Fourat Rachid",
+    "role": ["Flutter Dev"],
+    "image": "/assets/aboutusPage/zaza.jpg",
+    "linkedin": "https://linkedin.com/in/fouratrachid/",
+    "github": "https://github.com/reshma-khilnani"
+  },
+  {
+    "name": "Duy Doan",
+    "role": ["Flutter Dev"],
+    "image": "/assets/aboutusPage/zaza.jpg",
+    "linkedin": "https://linkedin.com/in/duy-doan-5936672a4/",
+    "github": "https://github.com/reshma-khilnani"
+  },
+  {
+    "name": "Brian Lin",
+    "role": ["Flutter Dev"],
+    "image": "/assets/aboutusPage/zaza.jpg",
+    "linkedin": "https://linkedin.com/in/brian-lin2001/",
+    "github": "https://github.com/reshma-khilnani"
+  },
+  {
+    "name": "Aditya Udyavar",
+    "role": ["Backend Dev"],
+    "image": "/assets/aboutusPage/zaza.jpg",
+    "linkedin": "https://linkedin.com/in/aditya-udyavar/",
+    "github": "https://github.com/reshma-khilnani"
+  },
+  {
+    "name": "Kin Pong (Isaac)",
+    "role": ["Flutter Dev"],
+    "image": "/assets/aboutusPage/zaza.jpg",
+    "linkedin": "https://linkedin.com/in/kin-pong-to-26535824b/",
+    "github": "https://github.com/reshma-khilnani"
+  },
+  {
+    "name": "Osaf Ali",
+    "role": ["Web  Dev"],
+    "image": "/assets/aboutusPage/zaza.jpg",
+    "linkedin": "https://linkedin.com/in/osaf-ali/",
+    "github": "https://github.com/reshma-khilnani"
+  },
+  {
+    "name": "Muzzammil Nawab",
+    "role": ["Backend Dev"],
+    "image": "/assets/aboutusPage/zaza.jpg",
+    "linkedin": "https://linkedin.com/in/alinawb/",
+    "github": "https://github.com/reshma-khilnani"
+  },
+  {
+    "name": "Sean Munjal",
+    "role": ["Backend Dev"],
+    "image": "/assets/aboutusPage/zaza.jpg",
+    "linkedin": "https://linkedin.com/in/seanmunjal/",
+    "github": "https://github.com/reshma-khilnani"
+  }
+]

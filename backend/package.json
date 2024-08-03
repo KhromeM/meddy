@@ -5,7 +5,8 @@
 	"main": "server.mjs",
 	"scripts": {
 		"start": "node --no-deprecation server.mjs",
-		"test": "NODE_ENV=test mocha 'tests/*.mjs' 'tests/*/*.mjs'"
+		"test": "NODE_ENV=test mocha 'tests/*.mjs' 'tests/*/*.mjs'",
+		"dev": "nodemon server.mjs"
 	},
 	"author": "",
 	"license": "ISC",
@@ -50,5 +51,8 @@
 	},
 	"optionalDependencies": {
 		"bufferutil": "^4.0.8"
+	},
+	"devDependencies": {
+		"nodemon": "^3.1.4"
 	}
 }

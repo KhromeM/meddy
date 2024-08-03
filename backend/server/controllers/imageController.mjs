@@ -7,56 +7,86 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export const getImage = async (req, res) => {
-	const user = req._dbUser;
-	const image = req.query.image;
+  const user = req._dbUser;
+  const image = req.query.image;
 
-	if (!image) {
-		return res.status(400).send("Image parameter is required");
-	}
+  if (!image) {
+    return res.status(400).send("Image parameter is required");
+  }
 
-	const imagePath = path.resolve(
-		__dirname,
-		`../../uploads/${user.userid}/${image}`
-	);
+  const imagePath = path.resolve(
+    __dirname,
+    `../../uploads/${user.userid}/${image}`
+  );
 
-	try {
-		await fs.access(imagePath);
-		const data = await fs.readFile(imagePath);
-		const contentType = getContentType(image);
-		res.contentType(contentType);
-		res.send(data);
-	} catch (error) {
-		if (error.code === "ENOENT") {
-			res.status(404).send("Image not found");
-		} else {
-			console.error("Error reading image:", error);
-			res.status(500).send("Error retrieving image");
-		}
-	}
+  try {
+    await fs.access(imagePath);
+    const data = await fs.readFile(imagePath);
+    const contentType = getContentType(image);
+    res.contentType(contentType);
+    res.send(data);
+  } catch (error) {
+    if (error.code === "ENOENT") {
+      res.status(404).send("Image not found");
+    } else {
+      console.error("Error reading image:", error);
+      res.status(500).send("Error retrieving image");
+    }
+  }
+};
+
+export const getBase64Image = async (req, res) => {
+  const user = req._dbUser;
+  const image = req.query.image;
+
+  if (!image) {
+    return res.status(400).send("Image parameter is required");
+  }
+
+  const imagePath = path.resolve(
+    __dirname,
+    `../../uploads/${user.userid}/${image}`
+  );
+
+  try {
+    await fs.access(imagePath);
+    const data = await fs.readFile(imagePath);
+    const contentType = getContentType(image);
+    const base64Data = `data:${contentType};base64,${data.toString("base64")}`;
+    res.contentType(contentType);
+    res.send(base64Data);
+  } catch (error) {
+    if (error.code === "ENOENT") {
+      res.status(404).send("Image not found");
+    } else {
+      console.error("Error reading image:", error);
+      res.status(500).send("Error retrieving image");
+    }
+  }
 };
 
 export const setImage = async (req, res) => {
-	const user = req._dbUser;
-	const image = req.body?.image;
+  const user = req._dbUser;
+  const image = req.body?.image;
 
-	if (!image || !image.name) {
-		return res.status(400).send("No image was uploaded.");
-	}
+  if (!image || !image.name) {
+    return res.status(400).send("No image was uploaded.");
+  }
 
-	const uploadPath = path.resolve(
-		__dirname,
-		`../../uploads/${user.userid}/${image.name}`
-	);
-	const buffer = Buffer.from(image.data, "base64");
-	try {
-		await fs.mkdir(path.dirname(uploadPath), { recursive: true });
-		await fs.writeFile(uploadPath, buffer);
-		res.status(200).json({
-			message: "File uploaded successfully",
-			success: true,
-		});
-	} catch (error) {
-		console.error("Error saving image:", error);
-		res.status(500).send("Error uploading file");
-	}
+  const uploadPath = path.resolve(
+    __dirname,
+    `../../uploads/${user.userid}/${image.name}`
+  );
+  const buffer = Buffer.from(image.data, "base64");
+  try {
+    await fs.mkdir(path.dirname(uploadPath), { recursive: true });
+    await fs.writeFile(uploadPath, buffer);
+    res.status(200).json({
+      message: "File uploaded successfully",
+      success: true,
+    });
+  } catch (error) {
+    console.error("Error saving image:", error);
+    res.status(500).send("Error uploading file");
+  }
 };
