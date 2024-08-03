@@ -18,7 +18,7 @@ const Chat = () => {
   const [inProgress, setInProgress] = useState(false);
   const [messageBuffer, setMessageBuffer] = useState({});
   const [image, setImage] = useState(null);
-  const [imageUploaded, setImageUploaded] = useState(null);
+  const [imageUploaded, setImageUploaded] = useState();
   const { user } = useAuth();
   const messagesEndRef = useRef(null);
   const wsConnectionRef = useRef(null);
@@ -205,7 +205,7 @@ const Chat = () => {
     const imageRef = message.imageName ? image : "";
     addMessageToChatHistory("user", text, reqId + "_user", imageRef);
     setInProgress(true);
-    setImageUploaded(false);
+    setImageUploaded(null);
 
     wsConnectionRef.current.send({
       type: "chat",
@@ -217,22 +217,14 @@ const Chat = () => {
     const response = await uploadImage(file, user);
     if (response.status === 200) {
       imageUploadResponse(file);
-      setImageUploaded(true);
     }
   };
 
   const imageUploadResponse = async (file) => {
-    toast({
-      title: "Success",
-      description: "Image uploaded successfully",
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-      position: "top",
-    });
     const response = await getImage(file, user);
     if (response.status == 200) {
       setImage(response.data);
+      setImageUploaded(response.data);
     }
   };
   const toggleAudio = async () => {
@@ -296,6 +288,7 @@ const Chat = () => {
             <MessageInput
               onSend={sendMessage}
               onUpload={uploadFile}
+              handleDeleteImage={() => setImageUploaded(null)}
               inProgress={inProgress}
               toggleAudio={toggleAudio}
               audioMode={audioMode}
