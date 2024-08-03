@@ -18,20 +18,26 @@ class ChatProvider with ChangeNotifier {
       print('Failed to load chat history: $e');
     } finally {
       _isLoading = false;
-      notifyListeners();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        notifyListeners();
+      });
     }
   }
 
   void addMessage(Message message) {
     _messages.add(message);
-    notifyListeners();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
   }
 
   void updateMessage(String messageId, String text) {
-    int index = _messages.indexWhere((msg) => msg.messageId == messageId);
-    if (index != -1) {
-      _messages[index] = _messages[index].copyWith(text: text);
-      notifyListeners();
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      int index = _messages.indexWhere((msg) => msg.messageId == messageId);
+      if (index != -1) {
+        _messages[index] = _messages[index].copyWith(text: text);
+        notifyListeners();
+      }
+    });
   }
 }
