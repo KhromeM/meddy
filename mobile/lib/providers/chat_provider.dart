@@ -21,7 +21,9 @@ class ChatProvider with ChangeNotifier {
       print('Failed to load chat history: $e');
     } finally {
       _isLoading = false;
-      notifyListeners();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        notifyListeners();
+      });
     }
   }
 
