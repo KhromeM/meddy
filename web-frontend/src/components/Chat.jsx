@@ -5,7 +5,6 @@ import MessageInput from "./MessageInput";
 import InitialView from "./InitialView";
 import MeddyIcon from "./MeddyIcon.jsx";
 import { useAuth } from "../firebase/AuthService.jsx";
-import { chatLLMStreamWS } from "../server/sendMessage.js";
 import WSConnection from "../utils/WSConnection";
 import AudioService from "../utils/AudioService";
 import Navbar from "./Navbar.jsx";
@@ -15,7 +14,6 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [audioMode, setAudioMode] = useState(false);
   const [inProgress, setInProgress] = useState(false);
-  const [messageBuffer, setMessageBuffer] = useState({});
   const { user } = useAuth();
   const messagesEndRef = useRef(null);
   const wsConnectionRef = useRef(null);
@@ -193,16 +191,6 @@ const Chat = () => {
       ...prev,
       { messageId: reqId, source, text, time: new Date() },
     ]);
-  };
-
-  const updateCurrentMessageChunk = (text, reqId) => {
-    setMessages((prevMessages) => {
-      const index = prevMessages.findIndex((msg) => msg.messageId === reqId);
-      if (index === -1) return prevMessages;
-      const updatedMessages = [...prevMessages];
-      updatedMessages[index] = { ...updatedMessages[index], text: text || "" };
-      return updatedMessages;
-    });
   };
 
   const sendMessage = async (message) => {
