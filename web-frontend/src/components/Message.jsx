@@ -5,12 +5,18 @@ import { CheckCircleIcon, WarningIcon } from "@chakra-ui/icons";
 import { useAuth } from "../firebase/AuthService";
 
 const Message = ({ message, isStreaming }) => {
-	const { text, isUser, result } = message;
+	const { text, source, isAudio, result } = message;
+	console.log(message);
+	const isUser = source === "user";
 	const { user } = useAuth();
 	let userName = user?.displayName || "You";
 	userName = userName.split(" ")[0];
 
-	// console.log(message);
+	//this is sean trying to debug the empty chat box underneath the chat message displaying the audio
+	if (!text && !isAudio) {
+		return null;
+	}
+
 	const getBackgroundColor = () => {
 		if (!result) return isUser ? "white" : "#fff2e4";
 		return result.success ? "green.50" : "red.50";
@@ -43,7 +49,11 @@ const Message = ({ message, isStreaming }) => {
 					{isUser ? userName : "Meddy"}
 				</Text>
 			</Flex>
-			<ReactMarkdown components={markDownComponents}>{text}</ReactMarkdown>
+			{isAudio ? (
+				<Text fontStyle="italic">{text}</Text>
+			) : (
+				<ReactMarkdown components={markdownComponents}>{text}</ReactMarkdown>
+			)}
 			{isStreaming && (
 				<Text as="span" animation="blink 1s infinite">
 					...
@@ -55,7 +65,7 @@ const Message = ({ message, isStreaming }) => {
 
 export default Message;
 
-const markDownComponents = {
+const markdownComponents = {
 	p: ({ children }) => <Text whiteSpace="pre-wrap">{children}</Text>,
 	h1: ({ children }) => (
 		<Text fontSize="2xl" fontWeight="bold">

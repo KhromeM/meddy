@@ -58,7 +58,6 @@ export const getChatResponse = async (
 	mode = 0
 ) => {
 	if (chatHistory[0].source == "llm") chatHistory.shift(); // gemini doesnt like the first message to be from an llm
-
 	let data = sampleData1;
 	if (mode == 1) {
 		data = await getUserInfo(user.userid);
