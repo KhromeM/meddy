@@ -52,15 +52,13 @@ class SpinningLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ValueNotifier<double> effectiveSpeedNotifier =
-        speedNotifier ??
-            ValueNotifier<double>(initialSpeed);
-    final controller = AnimationSpeedController('Rotate',
-        speedMultiplier: initialSpeed);
+        speedNotifier ?? ValueNotifier<double>(initialSpeed);
+    final controller =
+        AnimationSpeedController('Rotate', speedMultiplier: initialSpeed);
 
     // Listen to changes in the effectiveSpeedNotifier and update the controller
     effectiveSpeedNotifier.addListener(() {
-      controller.speedMultiplier =
-          effectiveSpeedNotifier.value;
+      controller.speedMultiplier = effectiveSpeedNotifier.value;
     });
 
     return SizedBox(
@@ -68,7 +66,7 @@ class SpinningLogo extends StatelessWidget {
       height: height,
       child: RiveAnimation.asset(
         !isVary
-            ? 'assets/animations/meddy_logo.riv'
+            ? 'assets/animations/meddy_logo_regular.riv'
             : 'assets/animations/meddy_logo_speedvary.riv',
         controllers: [controller],
       ),

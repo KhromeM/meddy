@@ -16,6 +16,7 @@ import 'dart:async';
 import 'package:uuid/uuid.dart';
 import 'package:image/image.dart' as img;
 import 'package:meddymobile/widgets/backnav_app_bar.dart';
+import 'package:meddymobile/widgets/listening_notifier.dart'; // Import the new widget
 
 class ChatPage extends StatefulWidget {
   final String? initialPrompt;
@@ -360,6 +361,8 @@ class _ChatPageState extends State<ChatPage> {
                           onPressed: _stopGenerationVisually,
                         ),
                       ),
+                    if (_isRecording)
+                      ListeningNotifier(), // Show the ListeningNotifier when recording
                   ],
                 ),
               ),
