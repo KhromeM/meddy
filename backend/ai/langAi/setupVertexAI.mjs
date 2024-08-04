@@ -1,11 +1,17 @@
 import fs from "fs";
 import CONFIG from "../../config.mjs";
-import { HarmBlockThreshold, HarmCategory, VertexAI } from "@google-cloud/vertexai";
+import {
+	HarmBlockThreshold,
+	HarmCategory,
+	VertexAI,
+} from "@google-cloud/vertexai";
 import { getUserInfo } from "../../db/dbInfo.mjs";
 import { createFunctionCallingSystemPrompt } from "../prompts/functionCallingPrompt.mjs";
 
 // Set up Vertex
-const googleAuthCreds = JSON.parse(fs.readFileSync(CONFIG.GOOGLE_APPLICATION_CREDENTIALS));
+const googleAuthCreds = JSON.parse(
+	fs.readFileSync(CONFIG.GOOGLE_APPLICATION_CREDENTIALS)
+);
 const project = googleAuthCreds.project_id;
 const location = "us-central1";
 const textModel = "gemini-1.5-pro";
@@ -17,7 +23,8 @@ const responseSchema = {
 	properties: {
 		thoughts: {
 			type: "string",
-			description: "The AI's analysis and reasoning about the user's request or the current situation.",
+			description:
+				"The AI's analysis and reasoning about the user's request or the current situation.",
 		},
 		function: {
 			type: "string",
@@ -44,7 +51,8 @@ const responseSchema = {
 				},
 				newName: {
 					type: "string",
-					description: "The updated name for the user. Used in LLMUpdateUserName function.",
+					description:
+						"The updated name for the user. Used in LLMUpdateUserName function.",
 				},
 				newPhoneNumber: {
 					type: "string",
@@ -53,7 +61,8 @@ const responseSchema = {
 				},
 				newAddress: {
 					type: "string",
-					description: "The updated address for the user. Used in LLMUpdateUserAddress function.",
+					description:
+						"The updated address for the user. Used in LLMUpdateUserAddress function.",
 				},
 				newEmail: {
 					type: "string",
@@ -153,23 +162,40 @@ const responseSchema = {
 	required: ["thoughts", "function", "params"],
 };
 
-// Instantiate Gemini model
-const generativeModel = vertexAI.getGenerativeModel({
-	model: textModel,
-	safetySettings: [
-		{
-			category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-			threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+export const getModel = (schema = responseSchema) => {
+	return vertexAI.getGenerativeModel({
+		model: textModel,
+		safetySettings: [
+			{
+				category: "HARM_CATEGORY_HARASSMENT",
+				threshold: "BLOCK_ONLY_HIGH",
+			},
+			{
+				category: "HARM_CATEGORY_HATE_SPEECH",
+				threshold: "BLOCK_ONLY_HIGH",
+			},
+			{
+				category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+				threshold: "BLOCK_ONLY_HIGH",
+			},
+			{
+				category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+				threshold: "BLOCK_ONLY_HIGH",
+			},
+		],
+		generationConfig: {
+			maxOutputTokens: 8192,
+			responseMimeType: "application/json",
+			responseSchema: schema,
 		},
-	],
-	generationConfig: {
-		maxOutputTokens: 8192,
-		responseMimeType: "application/json",
-		responseSchema: responseSchema,
-	},
-});
+	});
+};
 
-export async function getStructuredVertexResponse(user, chatHistory) {
+export async function getStructuredVertexResponse(
+	user,
+	chatHistory,
+	schema = responseSchema
+) {
 	// Set up prompt and chat history
 	const data = await getUserInfo(user.userid);
 	const prompt = createFunctionCallingSystemPrompt(data);
@@ -185,7 +211,10 @@ export async function getStructuredVertexResponse(user, chatHistory) {
 			parts: [{ text: prompt }],
 		},
 	};
+	const generativeModel = getModel(schema);
 	const result = await generativeModel.generateContent(request);
-	const response = JSON.parse(result.response.candidates[0].content.parts[0].text);
+	const response = JSON.parse(
+		result.response.candidates[0].content.parts[0].text
+	);
 	return response;
 }
