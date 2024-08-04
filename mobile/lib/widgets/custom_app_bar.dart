@@ -44,8 +44,14 @@ class _CustomAppBarState extends State<CustomAppBar> {
   Future<void> _logout(BuildContext context) async {
     try {
       await _authService.signOut();
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const SignInPage()),
+      Navigator.of(context).pushAndRemoveUntil(
+        PageRouteBuilder(
+          pageBuilder: (context, animation1, animation2) => const SignInPage(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+        (Route<dynamic> route) =>
+            false, // This removes all the routes in the stack
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -63,7 +69,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setModalState) {
             return Container(
-              height: MediaQuery.of(context).size.height * 0.6,
+              height: MediaQuery.of(context).size.height * 0.65,
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
