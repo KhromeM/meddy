@@ -43,11 +43,9 @@ class _ReminderPageState extends State<ReminderPage> {
       setState(() {
         _reminders = appointments
             .map((app) => {
-                  'id':
-                      app['id'], // Add this line to include the appointment ID
                   'date': DateTime.parse(app['date']),
                   'time': TimeOfDay.fromDateTime(DateTime.parse(app['date'])),
-                  'repeatDays': 'Never',
+                  'repeatDays': app['repeatDays'] ?? 'Never',
                 })
             .toList();
       });
@@ -57,16 +55,22 @@ class _ReminderPageState extends State<ReminderPage> {
     }
   }
 
-  void _addReminder(DateTime date, TimeOfDay time, String repeatOption) async {
+  void _addReminder(DateTime date, TimeOfDay time) async {
     final service = AppointmentService();
     try {
-      final userId = "DEVELOPER"; // Get the actual user ID
       await service.createAppointment(
-        date: DateFormat('yyyy-MM-ddTHH:mm:ss').format(date),
-        userId: userId,
+        date: DateFormat('yyyy-MM-dd').format(date),
+        userId: 'userId', // Replace with actual user ID
+        doctorId: 'doctorId', // Replace with actual doctor ID
       );
-      // Fetch updated appointments after adding
-      _fetchAppointments();
+      // Update UI
+      setState(() {
+        _reminders.add({
+          'date': date,
+          'time': time,
+          'repeatDays': _repeatOption,
+        });
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Reminder added!'),
@@ -98,14 +102,13 @@ class _ReminderPageState extends State<ReminderPage> {
       String appointmentId, DateTime date, TimeOfDay time) async {
     final service = AppointmentService();
     try {
-      final userId = "DEVELOPER"; // Get the actual user ID
       await service.updateAppointment(
         appointmentId: appointmentId,
-        date: DateFormat('yyyy-MM-ddTHH:mm:ss').format(date),
-        userId: userId,
+        date: DateFormat('yyyy-MM-dd').format(date),
+        userId: 'userId', // Replace with actual user ID
+        doctorId: 'doctorId', // Replace with actual doctor ID
       );
-      // Fetch updated appointments after updating
-      _fetchAppointments();
+      // Update UI if needed
     } catch (e) {
       // Handle error
       print(e);
@@ -115,7 +118,6 @@ class _ReminderPageState extends State<ReminderPage> {
   void _updateSelectedDate(DateTime date) {
     setState(() {
       _selectedDate = date;
-      _fetchAppointments(); // Fetch appointments for the selected date
     });
   }
 
@@ -127,7 +129,10 @@ class _ReminderPageState extends State<ReminderPage> {
       builder: (BuildContext context) {
         return AddReminderBottomSheet(
           onAddReminder: (DateTime date, TimeOfDay time, String repeatOption) {
-            _addReminder(date, time, repeatOption);
+            _addReminder(date, time);
+            setState(() {
+              _repeatOption = repeatOption;
+            });
           },
         );
       },
@@ -172,6 +177,7 @@ class _ReminderPageState extends State<ReminderPage> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Consumer<LanguageProvider>(
       builder: (context, languageProvider, child) {
@@ -196,7 +202,10 @@ class _ReminderPageState extends State<ReminderPage> {
             MainBackground(),
             Scaffold(
               backgroundColor: Colors.transparent,
-              appBar: BacknavAppBar(),
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                forceMaterialTransparency: true,
+              ),
               body: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
