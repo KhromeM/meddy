@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class AppointmentService {
-  final String baseUrl =
-      'https://trymeddy.com/api'; // Replace with your backend URL
+  final String baseUrl = 'https://trymeddy.com/api'; 
 
   // Create Appointment
   Future<Map<String, dynamic>> createAppointment({
@@ -11,34 +10,35 @@ class AppointmentService {
     String? transcript,
     String? transcriptSummary,
     String? description,
-    required String userId,
-    required String doctorId,
+    required String? userId
   }) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/appointments'),
-      headers: {'Content-Type': 'application/json'},
+      Uri.parse('$baseUrl/info/reminder'),
+      headers: {'Content-Type': 'application/json', 'idToken': 'dev'},
       body: jsonEncode({
         'date': date,
         'transcript': transcript,
         'transcriptSummary': transcriptSummary,
         'description': description,
         'userId': userId,
-        'doctorId': doctorId,
       }),
     );
     return _handleResponse(response);
   }
 
   // Get All Appointments
-  Future<List<dynamic>> getAllAppointments() async {
-    final response = await http.get(Uri.parse('$baseUrl/appointments'));
+  Future<Map<String, dynamic>> getAllAppointments() async {
+    final response = await http.get(Uri.parse('$baseUrl/info/reminder'),
+    headers:{ 
+    'idToken': 'dev'});
     return _handleResponse(response);
+    
   }
 
   // Get Appointment by ID
   Future<Map<String, dynamic>> getAppointmentById(String appointmentId) async {
     final response =
-        await http.get(Uri.parse('$baseUrl/appointments/$appointmentId'));
+        await http.get(Uri.parse('$baseUrl/appointment/$appointmentId'));
     return _handleResponse(response);
   }
 
@@ -49,7 +49,7 @@ class AppointmentService {
     String? transcriptSummary,
   }) async {
     final response = await http.put(
-      Uri.parse('$baseUrl/appointments/$appointmentId/transcript'),
+      Uri.parse('$baseUrl/appointment/$appointmentId/transcript'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'transcript': transcript,
@@ -70,7 +70,7 @@ class AppointmentService {
     required String doctorId,
   }) async {
     final response = await http.put(
-      Uri.parse('$baseUrl/appointments/$appointmentId'),
+      Uri.parse('$baseUrl/appointment/$appointmentId'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'date': date,
@@ -87,14 +87,14 @@ class AppointmentService {
   // Delete Appointment
   Future<void> deleteAppointment(String appointmentId) async {
     final response =
-        await http.delete(Uri.parse('$baseUrl/appointments/$appointmentId'));
+        await http.delete(Uri.parse('$baseUrl/appointment/$appointmentId'));
     _handleResponse(response);
   }
 
   // Get Appointments by Date
   Future<List<dynamic>> getAppointmentsByDate(String date) async {
     final response =
-        await http.get(Uri.parse('$baseUrl/appointments/date/$date'));
+        await http.get(Uri.parse('$baseUrl/appointment/date/$date'));
     return _handleResponse(response);
   }
 
