@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'dart:typed_data'; // Add this import
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:meddymobile/models/message.dart';
@@ -16,6 +16,8 @@ import 'dart:async';
 import 'package:uuid/uuid.dart';
 import 'package:image/image.dart' as img;
 import 'package:meddymobile/widgets/backnav_app_bar.dart';
+import 'package:intl/intl.dart';
+import 'package:meddymobile/services/appointment_service.dart';
 
 class ChatPage extends StatefulWidget {
   final String? initialPrompt;
@@ -257,6 +259,10 @@ class _ChatPageState extends State<ChatPage> {
         _messageResult = null;
       }
     });
+
+    if (result != null && result.containsKey('date')) {
+      _handleReminderCreation(result);
+    }
   }
 
   void _handleTranscription(dynamic message) {
@@ -314,6 +320,53 @@ class _ChatPageState extends State<ChatPage> {
       if (!_isRecording) {
         _playerService.stopPlayback();
       }
+    }
+  }
+
+  Future<void> _handleReminderCreation(Map<String, dynamic> result) async {
+    final appointmentService = AppointmentService();
+    try {
+      final dateText = result['date'] as String;
+      final parsedDate = appointmentService.parseDateTime(dateText);
+      if (parsedDate != null) {
+        final date = parsedDate['date'] as DateTime;
+        final userId = 'DEVELOPER'; // Replace with actual user ID
+
+        final response = await appointmentService.createAppointment(
+          date: DateFormat('yyyy-MM-ddTHH:mm:ss').format(date),
+          userId: userId,
+        );
+
+        if (response['success'] == true) {
+          // Notify the user of success
+          _addMessageToChatHistory(
+              "llm", "Reminder set successfully!", _uuid.v4(),
+              result: {'success': true});
+        } else {
+          // Notify the user of failure
+          _addMessageToChatHistory(
+              "llm",
+              "I'm unable to set the reminder due to an error. Please try again.",
+              _uuid.v4(),
+              result: {'success': false});
+        }
+
+        print("Appointment created for $dateText");
+      } else {
+        print("Failed to parse date from text: $dateText");
+        _addMessageToChatHistory(
+            "llm",
+            "I'm unable to set the reminder due to invalid date format. Please provide a valid date.",
+            _uuid.v4(),
+            result: {'success': false});
+      }
+    } catch (e) {
+      print("Error creating appointment: $e");
+      _addMessageToChatHistory(
+          "llm",
+          "I'm unable to set the reminder due to an error. Please try again.",
+          _uuid.v4(),
+          result: {'success': false});
     }
   }
 

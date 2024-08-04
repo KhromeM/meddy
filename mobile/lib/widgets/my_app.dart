@@ -7,8 +7,7 @@ import '../pages/my_home_page.dart';
 // Define the normal theme
 final ThemeData normalTheme = ThemeData(
   useMaterial3: true,
-  colorScheme:
-      ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+  colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
   fontFamily: 'Nunito',
 );
 
@@ -21,10 +20,8 @@ final ThemeData highContrastTheme = ThemeData(
   ),
   scaffoldBackgroundColor: Colors.black,
   textTheme: TextTheme(
-    bodyLarge: TextStyle(
-        color: Colors.white), // bodyText1 -> bodyLarge
-    bodyMedium: TextStyle(
-        color: Colors.white70), // bodyText2 -> bodyMedium
+    bodyLarge: TextStyle(color: Colors.white), // bodyText1 -> bodyLarge
+    bodyMedium: TextStyle(color: Colors.white70), // bodyText2 -> bodyMedium
   ),
   buttonTheme: ButtonThemeData(
     buttonColor: Colors.black,
@@ -57,15 +54,13 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.deepOrange),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
           fontFamily: 'Nunito',
         ),
         home: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
-            if (snapshot.connectionState ==
-                ConnectionState.waiting) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return CircularProgressIndicator(); // Show a loading indicator while waiting for auth state
             } else if (snapshot.hasData) {
               return MyHomePage();

@@ -48,4 +48,9 @@ class AuthService {
     final user = _auth.currentUser;
     return user?.photoURL;
   }
+
+  Future<String?> getAuthToken() async {
+    final user = _auth.currentUser;
+    return user != null ? await user.getIdToken() : null;
+  }
 }
