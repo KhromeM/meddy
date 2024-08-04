@@ -69,8 +69,8 @@ export default function Footer(props) {
           </Link>
         </ListItem>
         <ListItem>
-          <Link color="gray.400" href="trymeddy.com">
-            License
+          <Link color="gray.400" href="https://trymeddy.com/">
+            trymeddy
           </Link>
         </ListItem>
       </List>

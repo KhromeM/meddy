@@ -108,7 +108,7 @@ const SidebarContent = ({ logoText, routes }) => {
                   <Icon>{prop.icon}</Icon>
                 ) : (
                   <IconBox
-                    bg="teal.300" // Changes the color of the icons on sidebar
+                    bg="orange.200" // Changes the color of the icons on sidebar
                     color="white"
                     h="30px"
                     w="30px"
@@ -158,7 +158,7 @@ const SidebarContent = ({ logoText, routes }) => {
                 ) : (
                   <IconBox
                     bg={inactiveBg}
-                    color="teal.300"
+                    color="orange.200"
                     h="30px"
                     w="30px"
                     me="12px"

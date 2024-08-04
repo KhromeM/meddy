@@ -120,14 +120,14 @@ export default function Dashboard(props) {
       >
         <Portal>
           {/* Navbar for Meddy */}
-          {/* <AdminNavbar
+          <AdminNavbar
             onOpen={onOpen}
             logoText={"MEDDY UI DASHBOARD"}
             brandText={getActiveRoute(routes)}
             secondary={getActiveNavbar(routes)}
             fixed={fixed}
             {...rest}
-          /> */}
+          />
         </Portal>
         {/* MAIN CONTENT MEDDY */}
         {getRoute() ? (

@@ -14,15 +14,8 @@ import AdminNavbarLinks from "./AdminNavbarLinks";
 
 export default function AdminNavbar(props) {
   const [scrolled, setScrolled] = useState(false);
-  const {
-    variant,
-    children,
-    fixed,
-    secondary,
-    brandText,
-    onOpen,
-    ...rest
-  } = props;
+  const { variant, children, fixed, secondary, brandText, onOpen, ...rest } =
+    props;
 
   // Here are all the props that may change depending on navbar's type or state.(secondary, variant, scrolled)
   let mainText = useColorModeValue("gray.700", "gray.200");
@@ -69,14 +62,13 @@ export default function AdminNavbar(props) {
   };
   window.addEventListener("scroll", changeNavbar);
   return (
-    
     <Flex
       position={navbarPosition}
       boxShadow={navbarShadow}
       bg={navbarBg}
       borderColor={navbarBorder}
-      filter={navbarFilter}
-      backdropFilter={navbarBackdrop}
+      // filter={navbarFilter}
+      // backdropFilter={navbarBackdrop}
       borderWidth="1.5px"
       borderStyle="solid"
       transitionDelay="0s, 0s, 0s, 0s"
