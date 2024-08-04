@@ -5,7 +5,6 @@ import MessageInput from "./MessageInput";
 import InitialView from "./InitialView";
 import MeddyIcon from "./MeddyIcon.jsx";
 import { useAuth } from "../firebase/AuthService.jsx";
-import { chatLLMStreamWS } from "../server/sendMessage.js";
 import WSConnection from "../utils/WSConnection";
 import AudioService from "../utils/AudioService";
 import Navbar from "./Navbar.jsx";

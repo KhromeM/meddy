@@ -25,7 +25,7 @@ class _AnimatedStopButtonState extends State<AnimatedStopButton>
         children: [
           JumpingDots(
             color: Colors.black,
-            radius: 10,
+            radius: 8,
             numberOfDots: 3,
           ),
           SizedBox(width: 8),
