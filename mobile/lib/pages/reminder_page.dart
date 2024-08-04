@@ -8,6 +8,8 @@ import 'package:meddymobile/services/appointment_service.dart';
 import 'package:meddymobile/widgets/new_reminder_bottom_sheet.dart';
 import 'package:meddymobile/utils/languages.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class ReminderPage extends StatefulWidget {
   const ReminderPage({super.key});
@@ -16,7 +18,7 @@ class ReminderPage extends StatefulWidget {
   _ReminderPageState createState() => _ReminderPageState();
 }
 
-class _ReminderPageState extends State<ReminderPage> {
+class _ReminderPageState extends State<ReminderPage> { 
   final AuthService _authService = AuthService();
   late String _firstName;
   List<Map<String, dynamic>> _reminders = [];
@@ -25,6 +27,7 @@ class _ReminderPageState extends State<ReminderPage> {
   bool _showDatePicker = false;
   bool _showTimePicker = false;
   String _repeatOption = 'Never';
+  final String baseUrl = 'https://trymeddy.com/api'; 
 
   @override
   void initState() {
@@ -35,20 +38,25 @@ class _ReminderPageState extends State<ReminderPage> {
 
   void _fetchAppointments() async {
     final service = AppointmentService();
+    String? user = await _authService.getIdToken();
+
     try {
-      final appointments = await service.getAppointmentsByDate(
-        DateFormat('yyyy-MM-dd').format(_selectedDate),
-      );
-      // Update _reminders with fetched appointments
-      setState(() {
-        _reminders = appointments
-            .map((app) => {
-                  'date': DateTime.parse(app['date']),
-                  'time': TimeOfDay.fromDateTime(DateTime.parse(app['date'])),
-                  'repeatDays': app['repeatDays'] ?? 'Never',
-                })
-            .toList();
-      });
+
+      //final reminder = await service.createAppointment(date: '2024-08-03', userId: user);
+    //   final response = await http.post(
+    //   Uri.parse('$baseUrl/info/reminder'),
+    //   headers: {'Content-Type': 'application/json', 'idToken': 'dev'},
+    //   body: jsonEncode({
+    //     'date': '2024-08-03',
+    //     'userId': user,
+    //   }),
+    // );
+
+
+      final appointments = await service.getAllAppointments();
+    print(appointments);
+    print('success');
+    
     } catch (e) {
       // Handle error
       print(e);
@@ -57,28 +65,37 @@ class _ReminderPageState extends State<ReminderPage> {
 
   void _addReminder(DateTime date, TimeOfDay time) async {
     final service = AppointmentService();
+    String? user = await _authService.getIdToken();
+
     try {
-      await service.createAppointment(
+      // await service.createAppointment(
+      //   date: DateFormat('yyyy-MM-dd').format(date),
+      //   userId: 'userId', // Replace with actual user ID
+      // );
+      // // Update UI
+      // setState(() {
+      //   _reminders.add({
+      //     'date': date,
+      //     'time': time,
+      //     'repeatDays': _repeatOption,
+      //   });
+      // });
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text('Reminder added!'),
+      //     behavior: SnackBarBehavior.floating,
+      //     margin: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      //   ),
+      // );
+      final response = await http.post(
+      Uri.parse('$baseUrl/info/reminder'),
+      headers: {'Content-Type': 'application/json', 'idToken': 'dev'},
+      body: jsonEncode({
         date: DateFormat('yyyy-MM-dd').format(date),
-        userId: 'userId', // Replace with actual user ID
-        doctorId: 'doctorId', // Replace with actual doctor ID
-      );
-      // Update UI
-      setState(() {
-        _reminders.add({
-          'date': date,
-          'time': time,
-          'repeatDays': _repeatOption,
-        });
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Reminder added!'),
-          behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        ),
-      );
+        'userId': user, 
+      }),
+    );
     } catch (e) {
       // Handle error
       print(e);
