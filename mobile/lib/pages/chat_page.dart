@@ -332,6 +332,12 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        forceMaterialTransparency: true,
+        elevation: 0,
+      ),
       body: Stack(
         children: [
           Column(
@@ -521,12 +527,6 @@ class _ChatPageState extends State<ChatPage> {
                 ),
               ),
             ],
-          ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: BacknavAppBar(), // Positioned on top of the chat content
           ),
         ],
       ),

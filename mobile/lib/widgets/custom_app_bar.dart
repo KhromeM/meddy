@@ -11,6 +11,7 @@ import 'package:meddymobile/pages/signin_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:meddymobile/utils/languages.dart';
 import 'package:meddymobile/widgets/high_contrast_mode.dart';
+
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   @override
   _CustomAppBarState createState() => _CustomAppBarState();
@@ -43,8 +44,14 @@ class _CustomAppBarState extends State<CustomAppBar> {
   Future<void> _logout(BuildContext context) async {
     try {
       await _authService.signOut();
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const SignInPage()),
+      Navigator.of(context).pushAndRemoveUntil(
+        PageRouteBuilder(
+          pageBuilder: (context, animation1, animation2) => const SignInPage(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+        (Route<dynamic> route) =>
+            false, // This removes all the routes in the stack
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -64,7 +71,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
             return Container(
               height: MediaQuery.of(context).size.height * 0.65,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -101,13 +109,11 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       ],
                     ),
                     SizedBox(height: 20),
-                    Row(
-                      children: [
-                        _buildLanguageSelector(setModalState),
-                        SizedBox(width: 12),
-                        _buildHighContrastToggle(setModalState)
-                        ]
-                    ),
+                    Row(children: [
+                      _buildLanguageSelector(setModalState),
+                      SizedBox(width: 12),
+                      _buildHighContrastToggle(setModalState)
+                    ]),
                     Spacer(),
                     _buildLogoutButton(context),
                   ],
@@ -119,44 +125,51 @@ class _CustomAppBarState extends State<CustomAppBar> {
       },
     );
   }
-Widget _buildHighContrastToggle(StateSetter setModalState) {
-  return Consumer<LanguageProvider>(
-    builder: (context, languageProvider, child) {
-      final highContrastMode = HighContrastMode.of(context);
-      return FloatingActionButton(
-        onPressed: highContrastMode?.toggleHighContrastMode,
-        backgroundColor: highContrastMode?.isHighContrast == true ? Colors.black : lightGreen,
-        elevation: 0,
-        child: SizedBox(
-          width: 50, // Adjust this value to control the icon's container size
-          height: 50, // Adjust this value to control the icon's container size
-          child: Icon(
-            Icons.accessibility_new,
-            color: highContrastMode?.isHighContrast == true ? Colors.white : Colors.black,
-            size: 40, // You can make this even larger now
+
+  Widget _buildHighContrastToggle(StateSetter setModalState) {
+    return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
+        final highContrastMode = HighContrastMode.of(context);
+        return FloatingActionButton(
+          onPressed: highContrastMode?.toggleHighContrastMode,
+          backgroundColor: highContrastMode?.isHighContrast == true
+              ? Colors.black
+              : lightGreen,
+          elevation: 0,
+          child: SizedBox(
+            width: 50, // Adjust this value to control the icon's container size
+            height:
+                50, // Adjust this value to control the icon's container size
+            child: Icon(
+              Icons.accessibility_new,
+              color: highContrastMode?.isHighContrast == true
+                  ? Colors.white
+                  : Colors.black,
+              size: 40, // You can make this even larger now
+            ),
           ),
-        ),
-      );
-      // Row(
-      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //   children: [
-      //     Text(
-      //       languageProvider.translate('high_contrast_mode'),
-      //       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-      //     ),
-      //     Switch(
-      //       value: highContrastMode?.isHighContrast ?? false,
-      //       onChanged: (value) {
-      //         highContrastMode?.toggleHighContrastMode();
-      //         setModalState(() {}); // Force bottom sheet to rebuild
-      //         setState(() {}); // Force CustomAppBar to rebuild
-      //       },
-      //     ),
-      //   ],
-      // );
-    },
-  );
-}
+        );
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //   children: [
+        //     Text(
+        //       languageProvider.translate('high_contrast_mode'),
+        //       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+        //     ),
+        //     Switch(
+        //       value: highContrastMode?.isHighContrast ?? false,
+        //       onChanged: (value) {
+        //         highContrastMode?.toggleHighContrastMode();
+        //         setModalState(() {}); // Force bottom sheet to rebuild
+        //         setState(() {}); // Force CustomAppBar to rebuild
+        //       },
+        //     ),
+        //   ],
+        // );
+      },
+    );
+  }
+
   Widget _buildGreetingText() {
     return Consumer<LanguageProvider>(
       builder: (context, languageProvider, child) {
@@ -169,22 +182,21 @@ Widget _buildHighContrastToggle(StateSetter setModalState) {
                 Row(
                   children: [
                     Text(
-                  languageProvider.translate('hello'),
-                  style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
+                      languageProvider.translate('hello'),
+                      style: TextStyle(
+                        fontSize: 36,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  Text(
-                  ', $_firstName',
-                  style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
+                    Text(
+                      ', $_firstName',
+                      style: TextStyle(
+                        fontSize: 36,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
                 ),
-               
                 SizedBox(height: 8),
                 Text(
                   languageProvider.translate('how_may_i_assist'),
@@ -231,44 +243,46 @@ Widget _buildHighContrastToggle(StateSetter setModalState) {
             ),
           ),
         );
-  },
-  );
-}
+      },
+    );
+  }
+
   Widget _buildLogoutButton(BuildContext context) {
     return Consumer<LanguageProvider>(
       builder: (context, languageProvider, child) {
-    return SizedBox(
-      width: double.infinity,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: ElevatedButton(
-          onPressed: () => _logout(context),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
-            padding: EdgeInsets.symmetric(vertical: 20),
-            alignment: Alignment.centerLeft,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-              side: BorderSide(
-                color: Colors.black,
-                width: 3,
+        return SizedBox(
+          width: double.infinity,
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: ElevatedButton(
+              onPressed: () => _logout(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(vertical: 20),
+                alignment: Alignment.centerLeft,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  side: BorderSide(
+                    color: Colors.black,
+                    width: 3,
+                  ),
+                ),
+                elevation: 0,
+              ),
+              child: Center(
+                child: Text(
+                  languageProvider.translate('logout'),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                ),
               ),
             ),
-            elevation: 0,
           ),
-          child: Center(
-            child: Text(
-              languageProvider.translate('logout'),
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-            ),
-          ),
-        ),
-      ),
+        );
+      },
     );
-  },
-  );
-}
+  }
+
   Widget _buildLanguageSelector(StateSetter bottomSheetSetState) {
     return Consumer<LanguageProvider>(
       builder: (context, languageProvider, child) {
@@ -310,7 +324,8 @@ Widget _buildHighContrastToggle(StateSetter setModalState) {
           _showBottomSheet(context);
         },
         child: Padding(
-          padding: const EdgeInsets.only(left: 14.0, top: 0, bottom: 0, right: 0),
+          padding:
+              const EdgeInsets.only(left: 14.0, top: 0, bottom: 0, right: 0),
           child: SvgPicture.asset(
             'assets/images/logo_image.svg',
             fit: BoxFit.contain,
