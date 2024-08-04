@@ -62,7 +62,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setModalState) {
             return Container(
-              height: MediaQuery.of(context).size.height * 0.6,
+              height: MediaQuery.of(context).size.height * 0.65,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                 child: Column(
