@@ -36,10 +36,10 @@ function App() {
             <Route path="/about" component={AboutUsPage} />
             <Route path="/privacy" component={PrivacyPolicy} />
             <Route path="/health" component={Health} />
+            {/* @ Meddy team. This is where the new UI layout with the side navigation bar is. /dashboard */}
+            {/* PATHS ARE IN src/routes.jsx . Not hard to figure out. */}
             <Route path={`/dashboard`} component={AdminLayout} />
-            {/* <Route path="/dashboard" component={Dashboard} />{" "} */}
-            {/* <Route path="/voicemode" component={VoiceMode} />{" "} */}
-            {/* Fixed duplicate path */}
+            {/*  */}
             {/* <Route path="/team" component={Team} /> */}
           </Switch>
         </AuthProvider>

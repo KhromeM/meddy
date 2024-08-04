@@ -28,7 +28,7 @@ export function SidebarHelp(props) {
       <Text fontSize="xs" color="white" mb="10px">
         Please click below
       </Text>
-      <Link w="100%" href="https:/trymeddy.com">
+      <Link w="100%" href="/">
         <Button
           fontSize="10px"
           fontWeight="bold"

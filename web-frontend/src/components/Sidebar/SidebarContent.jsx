@@ -183,7 +183,7 @@ const SidebarContent = ({ logoText, routes }) => {
     <>
       <Box pt={"25px"} mb="12px">
         <Link
-          href={`https://trymeddy.com/`} // go to landing
+          href={`/`} // go to landing
           // target="_blank"
           display="flex"
           lineHeight="100%"
