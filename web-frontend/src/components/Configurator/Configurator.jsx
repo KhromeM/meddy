@@ -53,7 +53,7 @@ export default function Configurator(props) {
           <DrawerHeader pt="24px" px="24px">
             <DrawerCloseButton />
             <Text fontSize="xl" fontWeight="bold" mt="16px">
-              Purity UI Configurator
+              trymeddy.com Configurator
             </Text>
             <Text fontSize="md" mb="16px">
               See your dashboard options.
@@ -142,11 +142,7 @@ export default function Configurator(props) {
                   Choose between 2 different sidenav types.
                 </Text>
                 <Box>
-                  <Link
-                    href="https://www.creative-tim.com/product/purity-ui-dashboard"
-                    w="100%"
-                    mb="16px"
-                  >
+                  <Link href="trymeddy.com" w="100%" mb="16px">
                     <Button
                       w="100%"
                       mb="16px"
@@ -159,10 +155,7 @@ export default function Configurator(props) {
                       Free Download
                     </Button>
                   </Link>
-                  <Link
-                    href="https://demos.creative-tim.com/docs-purity-ui-dashboard/"
-                    w="100%"
-                  >
+                  <Link href="trymeddy.com" w="100%">
                     <Button
                       w="100%"
                       bg={secondaryButtonBg}
@@ -189,10 +182,7 @@ export default function Configurator(props) {
                     Thank you for sharing!
                   </Text>
                   <Flex justifyContent="center" alignContent="center">
-                    <Link
-                      isExternal="true"
-                      href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.creative-tim.com%2Fproduct%2Fpurity-ui-dashboard&text=Check%20Purity%20UI%20Dashboard%20made%20by%20%40CreativeTim%20and%20%40simmmple_web%20%23webdesign%20%23dashboard%20%23chakra"
-                    >
+                    <Link isExternal="true" href="trymeddy.com">
                       <Button
                         colorScheme="twitter"
                         leftIcon={<FaTwitter />}
@@ -201,10 +191,7 @@ export default function Configurator(props) {
                         <Text>Tweet</Text>
                       </Button>
                     </Link>
-                    <Link
-                      isExternal="true"
-                      href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.creative-tim.com%2Fproduct%2Fpurity-ui-dashboard"
-                    >
+                    <Link isExternal="true" href="trymeddy.com">
                       <Button colorScheme="facebook" leftIcon={<FaFacebook />}>
                         <Text>Share</Text>
                       </Button>

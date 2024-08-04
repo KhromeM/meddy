@@ -27,22 +27,12 @@ export default function Footer(props) {
         mb={{ base: "20px", xl: "0px" }}
       >
         &copy; {1900 + new Date().getYear()},{" "}
-        <Text as="span">
-          Made with ❤️ by 
-        </Text>
-        <Link
-          color="teal.400"
-          href="https://www.trymeddy.com"
-          target="_blank"
-        >
+        <Text as="span">Made with ❤️ by</Text>
+        <Link color="teal.400" href="https://www.trymeddy.com" target="_blank">
           Meddy
         </Link>
         &
-        <Link
-          color="teal.400"
-          href="https://www.trymeddy.com"
-          target="_blank"
-        >
+        <Link color="teal.400" href="https://www.trymeddy.com" target="_blank">
           Meddy
         </Link>
         for a better web
@@ -55,7 +45,7 @@ export default function Footer(props) {
           }}
         >
           <Link color="gray.400" href="https://www.trymeddy.com">
-          trymeddy
+            trymeddy
           </Link>
         </ListItem>
         <ListItem
@@ -65,7 +55,7 @@ export default function Footer(props) {
           }}
         >
           <Link color="gray.400" href="https://www.trymeddy.com">
-          trymeddy
+            trymeddy
           </Link>
         </ListItem>
         <ListItem
@@ -74,18 +64,12 @@ export default function Footer(props) {
             md: "44px",
           }}
         >
-          <Link
-            color="gray.400"
-            href="https://trymeddy.com/"
-          >
+          <Link color="gray.400" href="https://trymeddy.com/">
             trymeddy
           </Link>
         </ListItem>
         <ListItem>
-          <Link
-            color="gray.400"
-            href="https://www.creative-tim.com/license"
-          >
+          <Link color="gray.400" href="trymeddy.com">
             License
           </Link>
         </ListItem>

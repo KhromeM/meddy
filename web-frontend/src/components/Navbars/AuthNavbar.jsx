@@ -184,7 +184,7 @@ export default function AuthNavbar(props) {
           />
         </Box>
         {linksAuth}
-        <Link href="https://creative-tim.com/product/purity-ui-dashboard">
+        <Link href="https://trymeddy.com">
           <Button
             bg={bgButton}
             color={colorButton}
