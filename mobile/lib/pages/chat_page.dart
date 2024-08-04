@@ -348,7 +348,7 @@ class _ChatPageState extends State<ChatPage> {
                           ),
                     if (_isGenerating)
                       Positioned(
-                        bottom: 60,
+                        bottom: 0,
                         left: 12,
                         child: AnimatedStopButton(
                           onPressed: _stopGenerationVisually,
