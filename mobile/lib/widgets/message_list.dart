@@ -5,6 +5,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:meddymobile/models/message.dart';
 import 'package:meddymobile/widgets/high_contrast_mode.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class MessageList extends StatelessWidget {
   final List<Message> messages;
@@ -67,7 +68,16 @@ class MessageList extends StatelessWidget {
                     future: fetchImage(message.imageID!),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
+                        return ClipRRect(
+                            borderRadius: BorderRadius.circular(16.0),
+                            child: Skeletonizer(
+                              child: Container(
+                                width: 100,
+                                height: 130,
+                                color: Color.fromARGB(255, 18, 8, 8),
+                              ),
+                            ),
+                          );
                       } else if (snapshot.hasError) {
                         return Text('Error loading image');
                       } else if (snapshot.hasData) {
