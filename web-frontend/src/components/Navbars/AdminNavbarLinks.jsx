@@ -51,7 +51,7 @@ export default function HeaderLinks(props) {
       alignItems="center"
       flexDirection="row"
     >
-      <InputGroup
+      {/* <InputGroup
         cursor="pointer"
         bg={inputBg}
         borderRadius="15px"
@@ -92,8 +92,8 @@ export default function HeaderLinks(props) {
           placeholder="Type here..."
           borderRadius="inherit"
         />
-      </InputGroup>
-      <NavLink to="/auth/signin">
+      </InputGroup> */}
+      {/* <NavLink to="/auth/signin">
         <Button
           ms="0px"
           px="0px"
@@ -117,7 +117,7 @@ export default function HeaderLinks(props) {
         >
           <Text display={{ sm: "none", md: "flex" }}>Sign In</Text>
         </Button>
-      </NavLink>
+      </NavLink> */}
       <SidebarResponsive
         logoText={props.logoText}
         secondary={props.secondary}
@@ -125,6 +125,7 @@ export default function HeaderLinks(props) {
         // logo={logo}
         {...rest}
       />
+      {/* MEDDY SETTINGS ICON   */}
       <SettingsIcon
         cursor="pointer"
         ms={{ base: "16px", xl: "0px" }}
@@ -132,10 +133,10 @@ export default function HeaderLinks(props) {
         ref={settingsRef}
         onClick={props.onOpen}
         color={navbarIcon}
-        w="18px"
-        h="18px"
+        w="32px"
+        h="32px"
       />
-      <Menu>
+      {/* <Menu>
         <MenuButton>
           <BellIcon color={navbarIcon} w="18px" h="18px" />
         </MenuButton>
@@ -170,7 +171,7 @@ export default function HeaderLinks(props) {
             </MenuItem>
           </Flex>
         </MenuList>
-      </Menu>
+      </Menu> */}
     </Flex>
   );
 }

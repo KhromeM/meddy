@@ -23,7 +23,7 @@ export function SidebarHelp(props) {
       w="100%"
     >
       <IconBox width="35px" h="35px" bg="white" mb="auto">
-        <QuestionIcon color="gray.300" h="18px" w="18px" />
+        <QuestionIcon color="orange.300" h="18px" w="18px" />
       </IconBox>
       <Text
         fontSize="sm"
@@ -40,7 +40,7 @@ export function SidebarHelp(props) {
         mb="10px"
         textShadow="0 0 2px #000"
       >
-        Please click below
+        {/* Please click below */}
       </Text>
       <Link w="100%" href="/">
         <Button
