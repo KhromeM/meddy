@@ -12,7 +12,6 @@ class HealthPage extends StatefulWidget {
 
 class _HealthPageState extends State<HealthPage>
     with SingleTickerProviderStateMixin {
-
   Widget _buildStyledCard(Widget child) {
     return Container(
       decoration: BoxDecoration(
@@ -320,7 +319,10 @@ class _HealthPageState extends State<HealthPage>
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Scaffold(
             backgroundColor: Colors.transparent,
-            appBar: BacknavAppBar(),
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              forceMaterialTransparency: true,
+            ),
             body: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
