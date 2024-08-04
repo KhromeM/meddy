@@ -28,79 +28,56 @@ class _ReminderPageState extends State<ReminderPage> {
   bool _showTimePicker = false;
   String _repeatOption = 'Never';
   final String baseUrl = 'https://trymeddy.com/api'; 
-
+  late Future<void> _appointmentsFuture = new Future<void>(() => ());
+  Map<String, dynamic> _appointments = Map();
   @override
   void initState() {
     super.initState();
     _firstName = _authService.getFirstName() ?? 'User';
-    _fetchAppointments();
+    _appointmentsFuture = _fetchAppointments();
+  }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _refreshAppointments();
   }
 
-  void _fetchAppointments() async {
+  Future<void> _fetchAppointments() async {
     final service = AppointmentService();
     String? user = await _authService.getIdToken();
 
     try {
-
-      //final reminder = await service.createAppointment(date: '2024-08-03', userId: user);
-    //   final response = await http.post(
-    //   Uri.parse('$baseUrl/info/reminder'),
-    //   headers: {'Content-Type': 'application/json', 'idToken': 'dev'},
-    //   body: jsonEncode({
-    //     'date': '2024-08-03',
-    //     'userId': user,
-    //   }),
-    // );
-
-
-      final appointments = await service.getAllAppointments();
-    print(appointments);
-    print('success');
-    
+      _appointments = await service.getAllAppointments();
+      setState(() {}); // Trigger a rebuild after fetching
     } catch (e) {
-      // Handle error
       print(e);
     }
   }
-
+Future<void> _refreshAppointments() async {
+  setState(() {
+    _appointmentsFuture = _fetchAppointments();
+  });
+  return _appointmentsFuture;
+}
   void _addReminder(DateTime date, TimeOfDay time) async {
     final service = AppointmentService();
     String? user = await _authService.getIdToken();
 
     try {
-      // await service.createAppointment(
-      //   date: DateFormat('yyyy-MM-dd').format(date),
-      //   userId: 'userId', // Replace with actual user ID
-      // );
-      // // Update UI
-      // setState(() {
-      //   _reminders.add({
-      //     'date': date,
-      //     'time': time,
-      //     'repeatDays': _repeatOption,
-      //   });
-      // });
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(
-      //     content: Text('Reminder added!'),
-      //     behavior: SnackBarBehavior.floating,
-      //     margin: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-      //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      //   ),
-      // );
       final response = await http.post(
-      Uri.parse('$baseUrl/info/reminder'),
-      headers: {'Content-Type': 'application/json', 'idToken': 'dev'},
-      body: jsonEncode({
-        date: DateFormat('yyyy-MM-dd').format(date),
-        'userId': user, 
-      }),
-    );
+        Uri.parse('$baseUrl/info/reminder'),
+        headers: {'Content-Type': 'application/json', 'idToken': 'dev'},
+        body: jsonEncode({
+          'date': DateFormat('yyyy-MM-dd').format(date),
+          'userId': user, 
+        }),
+      );
+      _refreshAppointments(); // Refresh after adding
     } catch (e) {
-      // Handle error
       print(e);
     }
   }
+
 
   void _removeReminder(int index) async {
     final service = AppointmentService();
@@ -192,144 +169,118 @@ class _ReminderPageState extends State<ReminderPage> {
     }
     return dateCards;
   }
-
+ List<Widget> _buildReminders() {
+    List<Widget> reminderCards = [];
+    _appointments.forEach((key, value) {
+      for (var reminder in value) {
+        String fullTime = reminder['time'];
+        int? repeat = reminder['hoursuntilrepeat'];
+        String repeat_text = repeat == 24 || repeat == null ? 'Once a day' : 'Every $repeat hours';
+        reminderCards.add(Card(
+          color: lightGreen,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  reminder['medicationname'],
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+                SizedBox(width: 20),
+                Text(
+                  fullTime.substring(0, fullTime.length - 3),
+                  style: TextStyle(fontSize: 18, color: Colors.black),
+                ),
+                SizedBox(width: 20),
+                Text(
+                  repeat_text,
+                  style: TextStyle(fontSize: 18, color: Colors.black),
+                ),
+              ],
+            ),
+          ),
+        ));
+      }
+    });
+    return reminderCards;
+  }
   @override
   @override
   Widget build(BuildContext context) {
     return Consumer<LanguageProvider>(
       builder: (context, languageProvider, child) {
-        DateTime today = DateTime.now();
-        List<Map<String, dynamic>> todaysReminders = _reminders
-            .where((reminder) =>
-                reminder['date'].year == _selectedDate.year &&
-                reminder['date'].month == _selectedDate.month &&
-                reminder['date'].day == _selectedDate.day)
-            .toList();
-
-        List<Map<String, dynamic>> futureReminders = _reminders
-            .where((reminder) =>
-                reminder['date'].isAfter(_selectedDate) ||
-                (reminder['date'].year == _selectedDate.year &&
-                    reminder['date'].month == _selectedDate.month &&
-                    reminder['date'].day > _selectedDate.day))
-            .toList();
-
         return Stack(
           children: [
             MainBackground(),
             Scaffold(
               backgroundColor: Colors.transparent,
-              appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                forceMaterialTransparency: true,
-              ),
-              body: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            languageProvider.translate('reminders'),
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
+              appBar: BacknavAppBar(),
+              body: RefreshIndicator(
+                onRefresh: _refreshAppointments,
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              languageProvider.translate('reminders'),
+                              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                             ),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.calendar_today, size: 24.0),
-                            onPressed: () async {
-                              DateTime? selectedDate = await showDatePicker(
-                                context: context,
-                                initialDate: _selectedDate,
-                                firstDate: DateTime(2000),
-                                lastDate: DateTime(2101),
+                            IconButton(
+                              icon: Icon(Icons.calendar_today, size: 24.0),
+                              onPressed: () async {
+                                DateTime? selectedDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: _selectedDate,
+                                  firstDate: DateTime(2000),
+                                  lastDate: DateTime(2101),
+                                );
+                                if (selectedDate != null) {
+                                  _updateSelectedDate(selectedDate);
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        Row(children: _buildDateCards()),
+                        SizedBox(height: 10),
+                        Text(
+                          languageProvider.translate('upcoming_reminders'),
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 10),
+                        FutureBuilder(
+                          future: _appointmentsFuture,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else {
+                              return Column(
+                                children: _appointments.isNotEmpty
+                                    ? _buildReminders()
+                                    : [Text(languageProvider.translate('no_reminders'), style: TextStyle(color: Colors.grey))],
                               );
-                              if (selectedDate != null) {
-                                _updateSelectedDate(selectedDate);
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      Row(
-                        children: _buildDateCards(),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        languageProvider.translate('today_reminders'),
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                            }
+                          },
                         ),
-                      ),
-                      SizedBox(height: 10),
-                      if (todaysReminders.isNotEmpty) ...[
-                        ...todaysReminders.map((reminder) {
-                          return ListTile(
-                            title: Text(
-                              '${languageProvider.translate('reminder')} ${DateFormat.jm().format(DateTime(
-                                reminder['date'].year,
-                                reminder['date'].month,
-                                reminder['date'].day,
-                                reminder['time'].hour,
-                                reminder['time'].minute,
-                              ))}',
-                              style: TextStyle(color: Colors.blue),
-                            ),
-                            trailing: IconButton(
-                              icon: Icon(Icons.delete, color: Colors.red),
-                              onPressed: () =>
-                                  _removeReminder(_reminders.indexOf(reminder)),
-                            ),
-                          );
-                        }).toList(),
-                      ] else ...[
-                        Text(languageProvider.translate('no_reminders'),
-                            style: TextStyle(color: Colors.grey)),
                       ],
-                      SizedBox(height: 20),
-                      Text(
-                        languageProvider.translate('upcoming_reminders'),
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      if (futureReminders.isNotEmpty) ...[
-                        ...futureReminders.map((reminder) {
-                          return ListTile(
-                            title: Text(
-                              '${languageProvider.translate('reminder')} ${DateFormat.yMMMd().format(reminder['date'])} ${reminder['time'].format(context)}',
-                              style: TextStyle(color: Colors.blue),
-                            ),
-                            trailing: IconButton(
-                              icon: Icon(Icons.delete, color: Colors.red),
-                              onPressed: () =>
-                                  _removeReminder(_reminders.indexOf(reminder)),
-                            ),
-                          );
-                        }).toList(),
-                      ] else ...[
-                        Text(languageProvider.translate('no_reminders'),
-                            style: TextStyle(color: Colors.grey)),
-                      ],
-                    ],
+                    ),
                   ),
                 ),
               ),
               floatingActionButton: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   backgroundColor: orangeAccent,
                 ),
                 onPressed: _showAddReminderBottomSheet,
@@ -338,10 +289,7 @@ class _ReminderPageState extends State<ReminderPage> {
                   children: [
                     Icon(Icons.add_circle_outline, color: Colors.white),
                     SizedBox(width: 8),
-                    Text(
-                      languageProvider.translate('reminder'),
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    Text(languageProvider.translate('reminder'), style: TextStyle(color: Colors.white)),
                   ],
                 ),
               ),
