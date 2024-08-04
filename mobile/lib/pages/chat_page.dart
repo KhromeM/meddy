@@ -16,6 +16,7 @@ import 'dart:async';
 import 'package:uuid/uuid.dart';
 import 'package:image/image.dart' as img;
 import 'package:meddymobile/widgets/backnav_app_bar.dart';
+import 'package:meddymobile/widgets/listening_notifier.dart'; // Import the new widget
 
 class ChatPage extends StatefulWidget {
   final String? initialPrompt;
@@ -332,6 +333,12 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        forceMaterialTransparency: true,
+        elevation: 0,
+      ),
       body: Stack(
         children: [
           Column(
@@ -348,12 +355,14 @@ class _ChatPageState extends State<ChatPage> {
                           ),
                     if (_isGenerating)
                       Positioned(
-                        bottom: 60,
+                        bottom: 0,
                         left: 12,
                         child: AnimatedStopButton(
                           onPressed: _stopGenerationVisually,
                         ),
                       ),
+                    if (_isRecording)
+                      ListeningNotifier(), // Show the ListeningNotifier when recording
                   ],
                 ),
               ),
@@ -455,6 +464,8 @@ class _ChatPageState extends State<ChatPage> {
                               Expanded(
                                 child: TextField(
                                   controller: _textEditingController,
+                                  maxLines: null,
+                                  minLines: 1,
                                   decoration: InputDecoration(
                                     hintText: 'Type your message...',
                                     border: InputBorder.none,
@@ -521,12 +532,6 @@ class _ChatPageState extends State<ChatPage> {
                 ),
               ),
             ],
-          ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: BacknavAppBar(), // Positioned on top of the chat content
           ),
         ],
       ),

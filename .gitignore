@@ -25,7 +25,7 @@ patient2.json
 .history
 .svn/
 migrate_working_dir/
-
+*.json
 # IntelliJ related
 *.iml
 *.ipr

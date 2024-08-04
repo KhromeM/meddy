@@ -14,6 +14,7 @@ import PrivacyPolicy from "./components/PrivacyPolicy.jsx";
 import Recommendations from "./components/Recommendations.jsx";
 import Health from "./components/Health.jsx";
 
+
 function App() {
   return (
     <ChakraProvider theme={customTheme}>
