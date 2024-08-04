@@ -1,0 +1,11 @@
+.fade-enter {
+  opacity: 0;
+  /* Meddy adjust this  */
+  z-index: 1;
+}
+
+.fade-enter.fade-enter-active {
+  opacity: 1;
+  transition: opacity 550ms ease-in;
+  /* Meddy adjust this  */
+}
