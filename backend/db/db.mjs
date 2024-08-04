@@ -40,6 +40,14 @@ import {
 } from "./dbInfo.mjs";
 
 import { getCredentials, saveCredentials } from "./dbCredentials.mjs";
+import {
+	createMedicalRecord,
+	getMedicalRecordsByUserId,
+	getMedicalRecordById,
+	deleteMedicalRecord,
+	getTotalMedicalRecordsByUserId,
+	copyMedicalRecords,
+} from "./dbMedicalRecords.mjs";
 
 export default {
 	createUser,
@@ -85,4 +93,10 @@ export default {
 	deleteCondition,
 	saveCredentials,
 	getCredentials,
+	createMedicalRecord,
+	getMedicalRecordsByUserId,
+	getMedicalRecordById,
+	deleteMedicalRecord,
+	getTotalMedicalRecordsByUserId,
+	copyMedicalRecords,
 };

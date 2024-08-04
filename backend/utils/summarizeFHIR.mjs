@@ -371,22 +371,21 @@ const responseSchema = {
 	],
 };
 
-export const summarizeFHIR = async (user) => {
+export const summarizeFHIR = async (user, data) => {
 	if (!user) {
 		user = { userid: "DEVELOPER" };
 	}
-	let data;
-	try {
-		const jsonPath = path.resolve(
-			__dirname,
-			`../uploads/${user.userid}/ehr2.json`
-		);
-		data = await fs.promises.readFile(jsonPath, "utf-8");
-	} catch (err) {
-		console.error("Error reading patient ehr:", err);
-	}
+	// let data;
+	// try {
+	// 	const jsonPath = path.resolve(
+	// 		__dirname,
+	// 		`../uploads/${user.userid}/ehr2.json`
+	// 	);
+	// 	data = await fs.promises.readFile(jsonPath, "utf-8");
+	// } catch (err) {
+	// 	console.error("Error reading patient ehr:", err);
+	// }
 	console.log("Word count: ", data.split(" ").length * 1.5);
-	//get data
 	const chatHistory = [
 		{
 			role: "user",
