@@ -56,6 +56,7 @@ dependencies:
   path: ^1.9.0
   sound_stream: ^0.4.0
   fl_chart: ^0.68.0
+  skeletonizer: ^1.4.2
   # comment the following line  out for android users
   # sound_stream: ^0.3.0
 dev_dependencies:

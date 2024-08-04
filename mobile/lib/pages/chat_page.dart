@@ -461,6 +461,8 @@ class _ChatPageState extends State<ChatPage> {
                               Expanded(
                                 child: TextField(
                                   controller: _textEditingController,
+                                  maxLines: null,
+                                  minLines: 1,
                                   decoration: InputDecoration(
                                     hintText: 'Type your message...',
                                     border: InputBorder.none,
