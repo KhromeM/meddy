@@ -6,7 +6,6 @@ import 'package:meddymobile/models/health_category.dart';
 import 'package:meddymobile/widgets/main_background.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
-// Simulated data fetched from Health.jsx
 List<HealthCategory> healthCategories = [
   HealthCategory(
     name: 'Metabolic Health',
@@ -54,7 +53,7 @@ class _HealthPageState extends State<HealthPage> {
     return Container(
       decoration: BoxDecoration(
         color: Color.fromRGBO(254, 249, 239,
-            0.7), // Light background color with some transparency
+            0.7),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: Colors.black.withOpacity(0.1),
@@ -474,7 +473,7 @@ class _HealthPageState extends State<HealthPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Health Summary',
+                      showActivityStatus ? 'Health Actvity' : 'Health Summary',
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
