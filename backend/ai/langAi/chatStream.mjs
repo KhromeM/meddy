@@ -40,7 +40,7 @@ export const chatStreamProvider = async (
 ) => {
 	if (chatHistory[0].source == "llm") chatHistory.shift(); // gemini doesnt like the first message to be from an llm
 
-	const systemMessage = getSystemMessage(user, data, mode);
+	const systemMessage = await getSystemMessage(user, data, mode);
 	// console.log(systemMessage, mode);
 	let messages = [
 		new SystemMessage(systemMessage),
@@ -107,7 +107,7 @@ export const jsonChatResponse = async (
 	if (mode == 1) {
 		data = await getUserInfo(user.userid);
 	}
-	const systemMessage = getSystemMessage(user, data, mode);
+	const systemMessage = await getSystemMessage(user, data, mode);
 	let messages = [
 		new SystemMessage(systemMessage),
 		...chatHistory.map((message) => {
@@ -171,10 +171,10 @@ function processMessage(user, message) {
 	return { content };
 }
 
-function getSystemMessage(user, data, mode = 0) {
+async function getSystemMessage(user, data, mode = 0) {
 	switch (mode) {
 		case 0:
-			return createDefaultSystemPrompt(user.name);
+			return createDefaultSystemPrompt(user);
 		case 1:
 			return createFunctionCallingSystemPrompt(data);
 		case 2:
