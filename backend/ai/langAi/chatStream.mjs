@@ -13,7 +13,6 @@ import {
 import CONFIG from "../../config.mjs";
 import { createDefaultSystemPrompt } from "../prompts/default.mjs";
 import { createStallResponsePrompt } from "../prompts/stallResponse.mjs";
-import { createFHIRSummarizerPrompt } from "../prompts/summarizeRecords.mjs";
 import {
 	createFunctionCallingSystemPrompt,
 	createSaveAppointmentPrompt,
@@ -184,8 +183,6 @@ function getSystemMessage(user, data, mode = 0) {
 			return createSaveAppointmentPrompt();
 		case 5:
 			return "You are a top tier researcher. Do your best work. This is an extremly important research task. Finding the truth is of paramount importance, a person's life may be on the line.";
-		case 6:
-			return createFHIRSummarizerPrompt();
 		default:
 			return "";
 	}
