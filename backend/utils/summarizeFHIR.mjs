@@ -24,17 +24,20 @@ const healthCategories = [
 ];
 
 export const summarizeFHIR = async (user, data) => {
-	///////////////////////////////////////
-	try {
-		const jsonPath = path.resolve(
-			__dirname,
-			`../uploads/${user.userid}/ehr/ehr.json`
-		);
-		data = await fs.promises.readFile(jsonPath, "utf-8");
-	} catch (err) {
-		console.error("Error reading patient ehr:", err);
+	// ///////////////////////////////////////
+	if (!data) {
+		return;
+		try {
+			const jsonPath = path.resolve(
+				__dirname,
+				`../uploads/${user.userid}/ehr/ehr.json`
+			);
+			data = await fs.promises.readFile(jsonPath, "utf-8");
+		} catch (err) {
+			console.error("Error reading patient ehr:", err);
+		}
 	}
-	///////// ////////////////////////////
+	// //////////////////////////////////////
 	const chatHistory = [
 		{
 			role: "user",
