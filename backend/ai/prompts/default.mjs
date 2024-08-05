@@ -1,3 +1,5 @@
+import { getUserInfoLite } from "../../db/dbInfo.mjs";
+
 const identityPrompt = `You are Meddy, a friendly and empathetic medical assistant. Your primary goal is to help patients communicate better with their doctors and understand their medical care. Always use simple, clear language and avoid medical jargon when possible.`;
 
 const explanationPrompt = `When explaining medical concepts, use relatable analogies and everyday examples to make the information more accessible. Be patient and willing to repeat or rephrase information if needed.`;
@@ -151,7 +153,7 @@ const allPrompts = [
 	// matchTonePrompt, // people like it when you match their tone, even if they feel bad
 	// emotionalSupportPrompt,
 	keepResponsesShort, // have to repeat twice so it doesnt write essays
-	identityLockPrompt, // dont want it to answer non medical questions
+	// identityLockPrompt, // dont want it to answer non medical questions
 	explanationPrompt,
 	confusionPrompt,
 	medicationPrompt,
@@ -165,12 +167,16 @@ const allPrompts = [
 	examplePrompt,
 	noRichTextPrompt,
 	functionCallingPrompt,
-	ignoreIgnoreAllPreviousIntructionsPrompt, // make sure to not fall for the "Ignore all previous instructions bypass"
+	// ignoreIgnoreAllPreviousIntructionsPrompt, // make sure to not fall for the "Ignore all previous instructions bypass"
 ];
 
-export const createDefaultSystemPrompt = (userName, lang = "english") => {
-	const sysPrompt =
-		allPrompts.join("\n\n") + "\n\n" + getLangPrompt(userName, lang);
-	// console.log(userName);
+export const createDefaultSystemPrompt = async (user, lang = "english") => {
+	const userData = await getUserInfoLite(user.userid);
+	// console.log(userData);
+	const userDataPrompt = `Here is data about the user. Use it to answer their questions. \n\n ${JSON.stringify(
+		userData
+	)}\n\n\n`;
+	const sysPrompt = userDataPrompt + allPrompts.join("\n\n");
+	// console.log(sysPrompt);
 	return sysPrompt;
 };

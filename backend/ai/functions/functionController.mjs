@@ -1,5 +1,10 @@
 import { getUserById, updateUser } from "../../db/dbUser.mjs";
-import { createMedication, createReminder, deleteReminder, deleteMedication } from "../../db/dbInfo.mjs";
+import {
+	createMedication,
+	createReminder,
+	deleteReminder,
+	deleteMedication,
+} from "../../db/dbInfo.mjs";
 import {
 	createAppointment,
 	updateAppointment,
@@ -15,7 +20,7 @@ export const executeLLMFunction = async (rspObj) => {
 
 		switch (functionName) {
 			case "LLMDisplayInformation":
-				return params.information;
+				return params.response;
 			case "LLMDidNotUnderstand":
 				return {
 					function: functionName,
@@ -32,7 +37,9 @@ export const executeLLMFunction = async (rspObj) => {
 				user = await getUserById(params.userId);
 				user.name = params.newName;
 				await updateUser(user);
-				response = params.response || `Your name has been successfully updated to ${params.newName}!`;
+				response =
+					params.response ||
+					`Your name has been successfully updated to ${params.newName}!`;
 				break;
 
 			case "LLMUpdateUserPhone":
@@ -49,7 +56,8 @@ export const executeLLMFunction = async (rspObj) => {
 				user.address = params.newAddress;
 				await updateUser(user);
 				response =
-					params.response || `Your address has been successfully updated to ${params.newAddress}!`;
+					params.response ||
+					`Your address has been successfully updated to ${params.newAddress}!`;
 				break;
 
 			case "LLMUpdateUserEmail":
@@ -57,7 +65,8 @@ export const executeLLMFunction = async (rspObj) => {
 				user.email = params.newEmail;
 				await updateUser(user);
 				response =
-					params.response || `Your email has been successfully updated to ${params.newEmail}!`;
+					params.response ||
+					`Your email has been successfully updated to ${params.newEmail}!`;
 				break;
 
 			case "LLMUpdateUserLanguagePreference":
@@ -72,14 +81,19 @@ export const executeLLMFunction = async (rspObj) => {
 				response = params.response;
 				break;
 			case "LLMAddMedication":
-				await createMedication(params.userId, params.medicationName, params.dosage);
+				await createMedication(
+					params.userId,
+					params.medicationName,
+					params.dosage
+				);
 				response =
 					params.response ||
 					`Your medication ${params.medicationName} has been added successfully!`;
 				break;
 			case "LLMDeleteMedication":
 				await deleteMedication(params.medicationId);
-				response = params.response || `The medication has been deleted successfully.`;
+				response =
+					params.response || `The medication has been deleted successfully.`;
 				break;
 			case "LLMShowMedicationReminderList":
 				response = params.response;
@@ -97,7 +111,8 @@ export const executeLLMFunction = async (rspObj) => {
 				break;
 			case "LLMDeleteMedicationReminder":
 				await deleteReminder(params.reminderId);
-				response = params.response || `The reminder has been deleted successfully!`;
+				response =
+					params.response || `The reminder has been deleted successfully!`;
 				break;
 			case "LLMGetAppointmentList":
 				response = params.response;
@@ -111,11 +126,14 @@ export const executeLLMFunction = async (rspObj) => {
 					description: params.description,
 				};
 				await createAppointment(params.patientId, appointment);
-				response = params.response || `Your appointment has been scheduled successfully!`;
+				response =
+					params.response ||
+					`Your appointment has been scheduled successfully!`;
 				break;
 			case "LLMCancelAppointment":
 				await deleteAppointment(params.appointmentId);
-				response = params.response || `The appointment has been cancelled successfully.`;
+				response =
+					params.response || `The appointment has been cancelled successfully.`;
 				break;
 			case "LLMRescheduleAppointment":
 				await updateAppointment(
@@ -124,7 +142,9 @@ export const executeLLMFunction = async (rspObj) => {
 					params.appointmentEndTime,
 					params.description
 				);
-				response = params.response || `The appointment has been rescheduled successfully`;
+				response =
+					params.response ||
+					`The appointment has been rescheduled successfully`;
 				break;
 			case "LLMSaveAppointment":
 				user = await getUserById(params.userId);
