@@ -38,7 +38,7 @@ class _ChatPageState extends State<ChatPage> {
   bool _isRecording = false;
   bool _isLoading = true;
   bool _isGenerating = false;
-  bool _isPlayingAudio = false;
+
   Timer? _debounceTimer;
   Timer? _completionTimer;
   String? _previewImagePath;
@@ -235,7 +235,6 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _handleChatResponse(dynamic message) {
-    if (!_isGenerating) return;
     final String reqId = message["reqId"] + "_llm";
     final String text = message['data'];
     final Map<String, dynamic>? result = message['result'];
@@ -293,13 +292,6 @@ class _ChatPageState extends State<ChatPage> {
     });
   }
 
-  void _stopAudioPlayback() {
-    _playerService.stopPlayback();
-    setState(() {
-      _isPlayingAudio = false;
-    });
-  }
-
   void _sendInitialPrompt(String prompt) {
     _textEditingController.text = prompt;
     _sendMessage();
@@ -312,9 +304,6 @@ class _ChatPageState extends State<ChatPage> {
         _isRecording = false;
       });
       _playerService.playQueuedAudio();
-      setState(() {
-        _isPlayingAudio = true;
-      });
     } else {
       bool isRecording = await _recorderService.toggleRecording();
       setState(() {
@@ -370,16 +359,6 @@ class _ChatPageState extends State<ChatPage> {
                         left: 12,
                         child: AnimatedStopButton(
                           onPressed: _stopGenerationVisually,
-                          isAudio: false,
-                        ),
-                      ),
-                    if (_isPlayingAudio)
-                      Positioned(
-                        bottom: 0,
-                        left: 12,
-                        child: AnimatedStopButton(
-                          onPressed: _stopAudioPlayback,
-                          isAudio: true,
                         ),
                       ),
                     if (_isRecording)
