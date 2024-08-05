@@ -92,8 +92,9 @@ export const summarizeFHIR = async (user, data) => {
 
 	combinedResponse.summary = summary;
 
-	console.log(JSON.stringify(combinedResponse));
+	// console.log(JSON.stringify(combinedResponse));
 	db.createMedicalRecord(user.userid, combinedResponse);
+	console.log("Medical record created for user: ", user.name);
 	return combinedResponse;
 };
 
