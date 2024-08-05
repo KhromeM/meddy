@@ -17,9 +17,11 @@ import Dashboard from "./layouts/Admin";
 import VoiceMode from "./views/Dashboard/MeddyVoiceMode";
 
 import AdminLayout from "./layouts/Admin";
+import ChatWidget from "./components/ChatWidget.jsx";
+// import RecommendationsMB from "./components/Recommendations.jsx";
 
 function App() {
-  return (
+   return (
     <ChakraProvider theme={customTheme}>
       <Router>
         <AuthProvider>
@@ -42,6 +44,7 @@ function App() {
             {/*  */}
             {/* <Route path="/team" component={Team} /> */}
           </Switch>
+          <ChatWidget />
         </AuthProvider>
       </Router>
     </ChakraProvider>
