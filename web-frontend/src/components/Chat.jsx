@@ -10,6 +10,7 @@ import AudioService from "../utils/AudioService";
 import Navbar from "./Navbar.jsx";
 import { v4 as uuidv4 } from "uuid";
 import { uploadImage, getImage } from "../server/imageHandler.js";
+import { getChatHistory } from "../server/sendMessage.js";
 
 const Chat = () => {
 	const [messages, setMessages] = useState([]);
@@ -62,8 +63,12 @@ const Chat = () => {
 			});
 		}
 	};
-
+	const chatHistory = async () => {
+		const chatHistory = await getChatHistory(user) || []; 
+		setMessages(chatHistory);
+	}
 	useEffect(() => {
+		chatHistory();
 		setupWebSocket().catch(console.error);
 		return () => {
 			if (wsConnectionRef.current) {
