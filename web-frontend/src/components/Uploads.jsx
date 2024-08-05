@@ -34,6 +34,7 @@ const Uploads = () => {
 	const [selectedFile, setSelectedFile] = useState(null);
 	const [fileContent, setFileContent] = useState("");
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [isDragging, setIsDragging] = useState(false);
 	const toast = useToast();
 
 	useEffect(() => {
@@ -125,13 +126,44 @@ const Uploads = () => {
 		});
 	};
 
+	const handleDragOver = (event) => {
+		event.preventDefault();
+		setIsDragging(true);
+	};
+
+	const handleDragLeave = () => {
+		setIsDragging(false);
+	};
+
+	const handleDrop = (event) => {
+		event.preventDefault();
+		setIsDragging(false);
+		const file = event.dataTransfer.files[0];
+		handleUpload({ target: { files: [file] } });
+	};
+
 	return (
 		<Container maxW="container.md" py={8}>
 			<VStack spacing={4} align="stretch">
 				<Heading as="h1" size="xl">
-					Health Data Uploads
+					Your Health Data
 				</Heading>
-				<Box>
+				<Text>
+					Please upload your health data in JSON, TXT, MD, or XML format. The maximum file size is
+					5MB.
+				</Text>
+				<Box
+					border="2px"
+					borderColor={isDragging ? "blue.300" : "gray.200"}
+					borderRadius="md"
+					p={4}
+					onDragOver={handleDragOver}
+					onDragLeave={handleDragLeave}
+					onDrop={handleDrop}
+					textAlign="center"
+					cursor="pointer"
+					backgroundColor={isDragging ? "blue.50" : "transparent"}
+				>
 					<input
 						type="file"
 						id="file-upload"
@@ -147,6 +179,7 @@ const Uploads = () => {
 					>
 						Upload Health Data
 					</Button>
+					<Text mt={2}>or drag and drop your file here</Text>
 				</Box>
 				{isLoading ? (
 					<Text>Loading files...</Text>
