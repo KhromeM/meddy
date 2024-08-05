@@ -23,14 +23,14 @@ Provide a detailed analysis including:
       - name: The most important ("gold standard") test for {HEALTH_CATEGORY}
       - result: Your result for this gold standard test
       - range: The normal range for the gold standard test
-      - recommendation: A specific recommendation for optimizing the gold standard test result
+      - recommendation: A specific recommendation for how the patient can improve the result of the gold standard test
 
    b) Secondary Tests:
       For each secondary test (typically two), provide:
       - name: Name of the secondary test for {HEALTH_CATEGORY}
       - result: Your result for this secondary test
       - range: The normal range for this secondary test
-      - recommendation: A specific recommendation for optimizing this secondary test result
+      - recommendation: A specific recommendation for how the patient can improve the result of the secondary test
 
 6. Action Plan:
    a) Short-Term: List of short-term actions to improve {HEALTH_CATEGORY}
@@ -47,9 +47,9 @@ Important considerations:
 - Base scores and recommendations on established medical guidelines and best practices for {HEALTH_CATEGORY}.
 - Do not mention the source or format of the input data. This report is for you and should focus solely on your health information related to {HEALTH_CATEGORY}.
 
-The goal is to provide a comprehensive yet structured overview that would be useful for both healthcare professionals and you to quickly understand your {HEALTH_CATEGORY} situation, including specific areas of concern or strength within this health category.
+The goal is to provide a comprehensive yet structured overview that would be useful for both healthcare professionals and you to quickly understand a patient's {HEALTH_CATEGORY} situation, including specific areas of concern or strength within this health category.
 
-Be as optimistic as possible while still providing accurate information.
+Be as optimistic as possible while still providing accurate information. Please use the examples to guide your output format, tone and style.
 
 Examples:
 
