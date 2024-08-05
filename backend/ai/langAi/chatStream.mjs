@@ -28,8 +28,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 let defaultModel = CONFIG.TEST
-	? vertexAIModel
-	: vertexAIModel || anthropicModel || vertexAIModel || openAIModel;
+	? openAIModel
+	: openAIModel || anthropicModel || vertexAIModel || openAIModel;
 
 export const chatStreamProvider = async (
 	chatHistory,
