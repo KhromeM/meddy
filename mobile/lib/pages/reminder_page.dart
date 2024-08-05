@@ -79,13 +79,14 @@ Future<void> _refreshAppointments() async {
   }
 
 
-  void _removeReminder(int index) async {
+  void _removeReminder(int id) async {
     final service = AppointmentService();
     try {
-      await service.deleteAppointment(_reminders[index]['id']);
-      setState(() {
-        _reminders.removeAt(index);
-      });
+
+      final response = await http.delete(Uri.parse('$baseUrl/info/reminder/$id'),
+                              headers: {'idToken': 'dev'});
+      setState(() {});
+      print(response.body);
     } catch (e) {
       // Handle error
       print(e);
@@ -175,32 +176,44 @@ Future<void> _refreshAppointments() async {
       for (var reminder in value) {
         String fullTime = reminder['time'];
         int? repeat = reminder['hoursuntilrepeat'];
-        String repeat_text = repeat == 24 || repeat == null ? 'Once a day' : 'Every $repeat hours';
-        reminderCards.add(Card(
+        String repeat_text = repeat == 24 || repeat == null ? 'Once a day' : 'Every $repeat hs';
+        reminderCards.add(
+          Card(
           color: lightGreen,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  reminder['medicationname'],
-                  style: TextStyle(fontSize: 20, color: Colors.black),
+                Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      reminder['medicationname'],
+                      style: TextStyle(fontSize: 20, color: Colors.black),
+                    ),
+                    SizedBox(width: 15),
+                    Text(
+                      fullTime.substring(0, fullTime.length - 3),
+                      style: TextStyle(fontSize: 18, color: Colors.black),
+                    ),
+                    SizedBox(width: 15),
+                    Text(
+                      repeat_text,
+                      style: TextStyle(fontSize: 18, color: Colors.black),
+                    ),
+                  ],
+              ),
+              IconButton( 
+                icon: Icon(Icons.delete, color: Colors.red),
+                onPressed: () => {
+                  print(reminder['reminderid']),
+                  _removeReminder(reminder['reminderid']), 
+                  _fetchAppointments()}
                 ),
-                SizedBox(width: 20),
-                Text(
-                  fullTime.substring(0, fullTime.length - 3),
-                  style: TextStyle(fontSize: 18, color: Colors.black),
-                ),
-                SizedBox(width: 20),
-                Text(
-                  repeat_text,
-                  style: TextStyle(fontSize: 18, color: Colors.black),
-                ),
-              ],
-            ),
+            ]
           ),
-        ));
+        )));
       }
     });
     return reminderCards;
