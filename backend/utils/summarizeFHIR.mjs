@@ -24,10 +24,7 @@ const healthCategories = [
 ];
 
 export const summarizeFHIR = async (user, data) => {
-	if (!user) {
-		user = { userid: "DEVELOPER" };
-	}
-
+	///////////////////////////////////////
 	try {
 		const jsonPath = path.resolve(
 			__dirname,
@@ -37,7 +34,7 @@ export const summarizeFHIR = async (user, data) => {
 	} catch (err) {
 		console.error("Error reading patient ehr:", err);
 	}
-
+	///////// ////////////////////////////
 	const chatHistory = [
 		{
 			role: "user",
@@ -98,10 +95,6 @@ export const summarizeFHIR = async (user, data) => {
 };
 
 export const createTotalSummary = async (user) => {
-	if (!user) {
-		user = { userid: "DEVELOPER" };
-	}
-
 	try {
 		const records = await db.getMedicalRecordsByUserId(user.userid);
 		let totalRecord = records.find((record) => record.isTotal);
@@ -178,7 +171,7 @@ export const createTotalSummary = async (user) => {
 	}
 };
 
-// summarizeFHIR();
-createTotalSummary({ userid: "DEVELOPER" });
+// summarizeFHIR({ userid: "DEVELOPER" });
+// createTotalSummary({ userid: "DEVELOPER" });
 // const records = await db.getMedicalRecordsByUserId("DEVELOPER");
 // console.log(records);
