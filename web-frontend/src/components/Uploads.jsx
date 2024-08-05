@@ -21,11 +21,13 @@ import {
 } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/icons";
 import { IoCloudUpload, IoTrashBin, IoDocumentText } from "react-icons/io5";
+import { useAuth } from "../firebase/AuthService.jsx";
 import { serverUrl } from "../utils/Info";
 
 const allowedFormats = [".json", ".txt", ".md", ".xml"];
 
 const Uploads = () => {
+	const { user } = useAuth();
 	const [files, setFiles] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState(null);
@@ -42,8 +44,10 @@ const Uploads = () => {
 		setIsLoading(true);
 		setError(null);
 		try {
+			const idToken = (await user?.getIdToken(false)) || dev;
+			console.log(idToken);
 			const response = await axios.get(`${serverUrl.http}/file/health`, {
-				headers: { idToken: "dev" },
+				headers: { idToken: idToken },
 			});
 			setFiles(Array.isArray(response.data.files) ? response.data.files : []);
 		} catch (err) {
@@ -70,11 +74,12 @@ const Uploads = () => {
 		}
 
 		try {
+			const idToken = (await user?.getIdToken(false)) || dev;
 			const formData = new FormData();
 			formData.append("file", file);
 
 			await axios.post(`${serverUrl.http}/file/health`, formData, {
-				headers: { "Content-Type": "multipart/form-data", idToken: "dev" },
+				headers: { "Content-Type": "multipart/form-data", idToken: idToken },
 			});
 			fetchFiles();
 			showToast("File uploaded successfully", "success");
@@ -85,8 +90,9 @@ const Uploads = () => {
 
 	const handleDelete = async (filename) => {
 		try {
+			const idToken = (await user?.getIdToken(false)) || dev;
 			await axios.delete(`${serverUrl.http}/file/health/${filename}`, {
-				headers: { idToken: "dev" },
+				headers: { idToken: idToken },
 			});
 			fetchFiles();
 			showToast("File deleted successfully", "success");
@@ -97,8 +103,9 @@ const Uploads = () => {
 
 	const handleFileClick = async (filename) => {
 		try {
+			const idToken = (await user?.getIdToken(false)) || dev;
 			const response = await axios.get(`${serverUrl.http}/file/health/${filename}`, {
-				headers: { idToken: "dev" },
+				headers: { idToken: idToken },
 			});
 			console.log(response.data.content);
 			setSelectedFile(filename);
@@ -114,7 +121,7 @@ const Uploads = () => {
 			title: message,
 			status: status,
 			duration: 3000,
-			isClosable: true,
+			isClosable: false,
 		});
 	};
 
