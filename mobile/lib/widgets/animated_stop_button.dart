@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:jumping_dot/jumping_dot.dart';
 
-class AnimatedStopButton extends StatelessWidget {
+class AnimatedStopButton extends StatefulWidget {
   final VoidCallback onPressed;
-  final bool isAudio;
+  const AnimatedStopButton({super.key, required this.onPressed});
 
-  const AnimatedStopButton({
-    Key? key,
-    required this.onPressed,
-    this.isAudio = false,
-  }) : super(key: key);
+  @override
+  _AnimatedStopButtonState createState() => _AnimatedStopButtonState();
+}
+
+class _AnimatedStopButtonState extends State<AnimatedStopButton>
+    with SingleTickerProviderStateMixin {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +37,7 @@ class AnimatedStopButton extends StatelessWidget {
 
   Widget _buildButton() {
     return ElevatedButton(
-      onPressed: onPressed,
+      onPressed: widget.onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.orange,
         shape: RoundedRectangleBorder(
@@ -50,11 +55,11 @@ class AnimatedStopButton extends StatelessWidget {
               shape: BoxShape.circle,
               color: Colors.black,
             ),
-            child: Icon(Icons.stop, size: 15, color: Colors.orange),
+            child: Icon(Icons.circle, size: 15, color: Colors.orange),
           ),
           SizedBox(width: 8),
           Text(
-            isAudio ? 'Stop speaking' : 'Stop generating',
+            'Stop generating',
             style: TextStyle(
                 color: Colors.black, fontWeight: FontWeight.w700, fontSize: 12),
           ),
