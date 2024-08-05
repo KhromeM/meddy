@@ -2,8 +2,10 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:meddymobile/models/message.dart';
 import 'package:meddymobile/widgets/high_contrast_mode.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class MessageList extends StatelessWidget {
   final List<Message> messages;
@@ -19,6 +21,9 @@ class MessageList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final highContrastMode = HighContrastMode.of(context);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final userMessageWidth = screenWidth * 2 / 3;
+    final llmMessageWidth = screenWidth * 4 / 5;
 
     return ListView.builder(
       controller: scrollController,
@@ -46,38 +51,39 @@ class MessageList extends StatelessWidget {
             iconColor = Colors.red;
           }
         } else {
-          messageColor = isUser
-              ? Color.fromRGBO(255, 254, 251, 1)
-              : Color.fromRGBO(255, 242, 228, 1);
+          messageColor = Color.fromRGBO(255, 242, 228, 1);
           textColor = Colors.black;
         }
 
         return Align(
           alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Container(
-              key: ValueKey(message.messageId),
-              decoration: BoxDecoration(
-                color: messageColor,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
-              margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (message.imageID != null)
-                    FutureBuilder<Uint8List?>(
-                      future: fetchImage(message.imageID!),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          return Text('Error loading image');
-                        } else if (snapshot.hasData) {
-                          return GestureDetector(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: Column(
+              crossAxisAlignment:
+                  isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              children: [
+                if (message.imageID != null)
+                  FutureBuilder<Uint8List?>(
+                    future: fetchImage(message.imageID!),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return ClipRRect(
+                            borderRadius: BorderRadius.circular(16.0),
+                            child: Skeletonizer(
+                              child: Container(
+                                width: 100,
+                                height: 130,
+                                color: Color.fromARGB(255, 18, 8, 8),
+                              ),
+                            ),
+                          );
+                      } else if (snapshot.hasError) {
+                        return Text('Error loading image');
+                      } else if (snapshot.hasData) {
+                        return Padding(
+                          padding: EdgeInsets.only(right: isUser ? 10.0 : 0),
+                          child: GestureDetector(
                             onTap: () {
                               showDialog(
                                 context: context,
@@ -122,29 +128,67 @@ class MessageList extends StatelessWidget {
                                 gaplessPlayback: true,
                               ),
                             ),
-                          );
-                        } else {
-                          return Text('Image not available');
-                        }
-                      },
-                    ),
-                  if (message.text.isNotEmpty)
-                    MarkdownBody(
-                      data: message.text,
-                      styleSheet: MarkdownStyleSheet(
-                        p: TextStyle(color: textColor),
+                          ),
+                        );
+                      } else {
+                        return Text('Image not available');
+                      }
+                    },
+                  ),
+                Row(
+                  mainAxisAlignment:
+                      isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (!isUser)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 8.0, right: 8.0, top: 10),
+                        child: SvgPicture.asset(
+                          'assets/images/logo_image.svg',
+                          width: 24, // Adjust the width as needed
+                          height: 24, // Adjust the height as needed
+                        ),
+                      ),
+                    Container(
+                      key: ValueKey(message.messageId),
+                      constraints: BoxConstraints(
+                          maxWidth: isUser
+                              ? userMessageWidth
+                              : llmMessageWidth - 32), // Subtract padding
+                      padding: EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 15.0), // user chat boxes
+                      margin: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                      decoration: isUser
+                          ? BoxDecoration(
+                              color: messageColor,
+                              borderRadius: BorderRadius.circular(20),
+                            )
+                          : null,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (message.text.isNotEmpty)
+                            MarkdownBody(
+                              data: message.text,
+                              styleSheet: MarkdownStyleSheet(
+                                p: TextStyle(color: textColor),
+                              ),
+                            ),
+                          if (resultIcon != null)
+                            Padding(
+                              padding: EdgeInsets.only(top: 8.0),
+                              child: Icon(
+                                resultIcon,
+                                color: iconColor,
+                              ),
+                            ),
+                        ],
                       ),
                     ),
-                  if (resultIcon != null)
-                    Padding(
-                      padding: EdgeInsets.only(top: 8.0),
-                      child: Icon(
-                        resultIcon,
-                        color: iconColor,
-                      ),
-                    ),
-                ],
-              ),
+                  ],
+                ),
+              ],
             ),
           ),
         );

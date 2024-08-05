@@ -1,10 +1,18 @@
-import { HumanMessage, SystemMessage, AIMessage } from "@langchain/core/messages";
+import {
+	HumanMessage,
+	SystemMessage,
+	AIMessage,
+} from "@langchain/core/messages";
 import { StringOutputParser } from "@langchain/core/output_parsers";
-import { vertexAIModel, groqModel, anthropicModel, openAIModel } from "./model.mjs";
+import {
+	vertexAIModel,
+	groqModel,
+	anthropicModel,
+	openAIModel,
+} from "./model.mjs";
 import CONFIG from "../../config.mjs";
 import { createDefaultSystemPrompt } from "../prompts/default.mjs";
 import { createStallResponsePrompt } from "../prompts/stallResponse.mjs";
-
 import {
 	createFunctionCallingSystemPrompt,
 	createSaveAppointmentPrompt,
@@ -19,7 +27,9 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-let defaultModel = CONFIG.TEST ? openAIModel : openAIModel || anthropicModel || vertexAIModel || openAIModel;
+let defaultModel = CONFIG.TEST
+	? openAIModel
+	: openAIModel || anthropicModel || vertexAIModel || openAIModel;
 
 export const chatStreamProvider = async (
 	chatHistory,
@@ -30,7 +40,7 @@ export const chatStreamProvider = async (
 ) => {
 	if (chatHistory[0].source == "llm") chatHistory.shift(); // gemini doesnt like the first message to be from an llm
 
-	const systemMessage = getSystemMessage(user, data, mode);
+	const systemMessage = await getSystemMessage(user, data, mode);
 	// console.log(systemMessage, mode);
 	let messages = [
 		new SystemMessage(systemMessage),
@@ -63,7 +73,13 @@ export const getChatResponse = async (
 		data = await getUserInfo(user.userid);
 	}
 
-	const chatStream = await chatStreamProvider(chatHistory, user, model, mode, data);
+	const chatStream = await chatStreamProvider(
+		chatHistory,
+		user,
+		model,
+		mode,
+		data
+	);
 	const resp = [];
 	for await (const chunk of chatStream) {
 		resp.push(chunk);
@@ -91,7 +107,7 @@ export const jsonChatResponse = async (
 	if (mode == 1) {
 		data = await getUserInfo(user.userid);
 	}
-	const systemMessage = getSystemMessage(user, data, mode);
+	const systemMessage = await getSystemMessage(user, data, mode);
 	let messages = [
 		new SystemMessage(systemMessage),
 		...chatHistory.map((message) => {
@@ -131,7 +147,10 @@ function processMessage(user, message) {
 
 	if (message.image) {
 		try {
-			const imagePath = path.resolve(__dirname, `../../uploads/${user.userid}/${message.image}`);
+			const imagePath = path.resolve(
+				__dirname,
+				`../../uploads/${user.userid}/${message.image}`
+			);
 
 			const img = fs.readFileSync(imagePath);
 			const type = getContentType(message.image);
@@ -152,10 +171,10 @@ function processMessage(user, message) {
 	return { content };
 }
 
-function getSystemMessage(user, data, mode = 0) {
+async function getSystemMessage(user, data, mode = 0) {
 	switch (mode) {
 		case 0:
-			return createDefaultSystemPrompt(user.name);
+			return createDefaultSystemPrompt(user);
 		case 1:
 			return createFunctionCallingSystemPrompt(data);
 		case 2:

@@ -94,5 +94,31 @@ CREATE TABLE Conditions (
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
+CREATE TABLE Credentials (
+    UserID VARCHAR(255),
+    ProviderName VARCHAR(50),
+    AccessToken TEXT,
+    RefreshToken TEXT,
+    Scope TEXT,
+    TokenType VARCHAR(50),
+    ExpiryDate TIMESTAMP,
+    PRIMARY KEY (UserID, ProviderName)
+);
+
+CREATE TABLE MedicalRecords (
+    RecordID SERIAL PRIMARY KEY,
+    UserID VARCHAR(255) REFERENCES Users(UserID),
+    Summary TEXT,
+    MetabolicHealth JSONB,
+    HeartHealth JSONB,
+    GutHealth JSONB,
+    BrainHealth JSONB,
+    ImmuneSystem JSONB,
+    MusculoskeletalHealth JSONB,
+    HormonalProfile JSONB,
+    IsTotal BOOLEAN,
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 -- repeat for the test db   
 CREATE DATABASE meddysql_test;

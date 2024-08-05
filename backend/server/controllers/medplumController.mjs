@@ -3,27 +3,59 @@ import { MedplumClient, createReference } from "@medplum/core";
 import { getEpicPatient } from "./epicController.mjs";
 import CONFIG from "../../config.mjs";
 const medplum = new MedplumClient();
-await medplum.startClientLogin(CONFIG.MEDPLUM_CLIENT_ID, CONFIG.MEDPLUM_CLIENT_SECRET);
+await medplum.startClientLogin(
+	CONFIG.MEDPLUM_CLIENT_ID,
+	CONFIG.MEDPLUM_CLIENT_SECRET
+);
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export const getPatientDetails = async (req, res) => {
 	try {
-		const patientDetails = await retrieveCleanedPatientDetailsFromEpic(req.params.patientId);
+		const patientId = req.params.patientId;
+		const patientDetails = await retrieveCleanedPatientDetailsFromEpic(
+			patientId
+		);
 		res.status(200).json(patientDetails);
+		try {
+			const user = req._dbUser;
+			const jsonPath = path.resolve(
+				__dirname,
+				`../../uploads/${user.userid}/ehr.json`
+			);
+			await fs.promises.writeFile(jsonPath, JSON.stringify(patientDetails));
+		} catch (err) {
+			console.error("Error writing patient details to file:", err);
+		}
 	} catch (err) {
 		console.error("Error fetching patient details:", err);
-		res.status(500).json({ status: "fail", message: "Failed to fetch patient details" });
+		res
+			.status(500)
+			.json({ status: "fail", message: "Failed to fetch patient details" });
 	}
 };
 
 export const retrieveCleanedPatientDetailsFromEpic = async (patientId) => {
 	// Retrieve the patient from Epic
 	const epicClient = await getEpicPatient(medplum, patientId);
-	const medplumPatient = await medplum.searchResources("Patient", `identifier=${patientId}`);
+	const medplumPatient = await medplum.searchResources(
+		"Patient",
+		`identifier=${patientId}`
+	);
 	const medplumId = medplumPatient[0].id;
 
 	// Retrieve the patient's medical data from Epic and store it in Medplum
 	const resourceTypes = ["DiagnosticReport", "MedicationRequest", "Procedure"];
-	await retreiveExternalResources(epicClient, medplum, patientId, medplumPatient, resourceTypes);
+	await retreiveExternalResources(
+		epicClient,
+		medplum,
+		patientId,
+		medplumPatient,
+		resourceTypes
+	);
 
 	// Retrieve and parse patient details from Medplum
 	const patientInfo = await medplum.readPatientEverything(medplumId);
@@ -40,14 +72,23 @@ export const retrieveCleanedPatientDetailsFromEpic = async (patientId) => {
 	return parsedInfo;
 };
 
-async function retreiveExternalResources(client, medplum, patientId, medplumPatient, resourceTypes) {
+async function retreiveExternalResources(
+	client,
+	medplum,
+	patientId,
+	medplumPatient,
+	resourceTypes
+) {
 	for (const resourceType of resourceTypes) {
 		const resources = await client.search(resourceType, `patient=${patientId}`);
 		for (const entry of resources.entry) {
 			const resource = entry.resource;
 			if (!resource.identifier) continue;
 			resource.subject = createReference(medplumPatient[0]);
-			await medplum.createResourceIfNoneExist(resource, `identifier=${resource.identifier[0].value}`);
+			await medplum.createResourceIfNoneExist(
+				resource,
+				`identifier=${resource.identifier[0].value}`
+			);
 		}
 	}
 }
@@ -92,7 +133,8 @@ function parseFHIRResponse(patientInfo) {
 		// Process resource-specific fields
 		switch (resourceType) {
 			case "Patient":
-				processedResource.name = resource.name[0].given.join(" ") + " " + resource.name[0].family;
+				processedResource.name =
+					resource.name[0].given.join(" ") + " " + resource.name[0].family;
 				processedResource.gender = resource.gender;
 				processedResource.birthDate = resource.birthDate;
 				processedResource.address =
@@ -106,7 +148,9 @@ function parseFHIRResponse(patientInfo) {
 				if (resource.extension) {
 					resource.extension.forEach((ext) => {
 						if (ext.url.includes("us-core-race")) {
-							processedResource.race = ext.extension.find((e) => e.url === "text").valueString;
+							processedResource.race = ext.extension.find(
+								(e) => e.url === "text"
+							).valueString;
 						} else if (ext.url.includes("us-core-ethnicity")) {
 							processedResource.ethnicity = ext.extension.find(
 								(e) => e.url === "text"
@@ -118,9 +162,11 @@ function parseFHIRResponse(patientInfo) {
 				}
 				break;
 			case "RelatedPerson":
-				processedResource.name = resource.name[0].given.join(" ") + " " + resource.name[0].family;
+				processedResource.name =
+					resource.name[0].given.join(" ") + " " + resource.name[0].family;
 				if (resource.relationship && resource.relationship.length > 0) {
-					processedResource.relation = resource.relationship[0].coding[0].display;
+					processedResource.relation =
+						resource.relationship[0].coding[0].display;
 				}
 				break;
 			case "Observation":
@@ -148,7 +194,8 @@ function parseFHIRResponse(patientInfo) {
 			case "Condition":
 				processedResource.onsetDate = resource.onsetDateTime;
 				processedResource.abatementDate = resource.abatementDateTime;
-				processedResource.clinicalStatus = resource.clinicalStatus.coding[0].code;
+				processedResource.clinicalStatus =
+					resource.clinicalStatus.coding[0].code;
 				break;
 			case "Encounter":
 				processedResource.class = resource.class.code;
@@ -167,7 +214,10 @@ function parseFHIRResponse(patientInfo) {
 			case "MedicationRequest":
 				processedResource.status = resource.status;
 				processedResource.intent = resource.intent;
-				if (resource.medicationReference && resource.medicationReference.display) {
+				if (
+					resource.medicationReference &&
+					resource.medicationReference.display
+				) {
 					processedResource.medication = resource.medicationReference.display;
 				}
 				if (
@@ -175,7 +225,8 @@ function parseFHIRResponse(patientInfo) {
 					resource.dosageInstruction[0] &&
 					resource.dosageInstruction[0].text
 				) {
-					processedResource.dosageInstructions = resource.dosageInstruction[0].text;
+					processedResource.dosageInstructions =
+						resource.dosageInstruction[0].text;
 				}
 				if (resource.requester) {
 					processedResource.prescribingDoctor = resource.requester.display;
@@ -200,7 +251,9 @@ function parseFHIRResponse(patientInfo) {
 					}));
 				}
 				if (resource.addresses) {
-					processedResource.addresses = resource.addresses.map((addr) => addr.reference);
+					processedResource.addresses = resource.addresses.map(
+						(addr) => addr.reference
+					);
 				}
 				break;
 			case "DiagnosticReport":
@@ -226,7 +279,8 @@ function parseFHIRResponse(patientInfo) {
 		}
 
 		if (resource.location) {
-			processedResource.location = resource.location.display || resource.location[0].location.display;
+			processedResource.location =
+				resource.location.display || resource.location[0].location.display;
 		}
 
 		result.resourceTypes[resourceType].push(processedResource);
@@ -236,7 +290,10 @@ function parseFHIRResponse(patientInfo) {
 }
 
 export const createAppointment = async (patientId, appointment) => {
-	const medplumPatient = await medplum.searchResources("Patient", `identifier=${patientId}`);
+	const medplumPatient = await medplum.searchResources(
+		"Patient",
+		`identifier=${patientId}`
+	);
 	appointment.participant = [
 		{
 			actor: createReference(medplumPatient[0]),
@@ -247,7 +304,12 @@ export const createAppointment = async (patientId, appointment) => {
 	return appointment;
 };
 
-export const updateAppointment = async (appointmentId, startDate, endDate, description) => {
+export const updateAppointment = async (
+	appointmentId,
+	startDate,
+	endDate,
+	description
+) => {
 	const appointment = await medplum.readResource("Appointment", appointmentId);
 	appointment.start = startDate;
 	appointment.end = endDate;
@@ -258,5 +320,5 @@ export const updateAppointment = async (appointmentId, startDate, endDate, descr
 
 export const deleteAppointment = async (appointmentId) => {
 	const response = await medplum.deleteResource("Appointment", appointmentId);
-	console.log(response);
+	return response;
 };

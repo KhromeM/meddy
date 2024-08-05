@@ -39,6 +39,16 @@ import {
 	deleteCondition,
 } from "./dbInfo.mjs";
 
+import { getCredentials, saveCredentials } from "./dbCredentials.mjs";
+import {
+	createMedicalRecord,
+	getMedicalRecordsByUserId,
+	getMedicalRecordById,
+	deleteMedicalRecord,
+	getTotalMedicalRecordsByUserId,
+	copyMedicalRecords,
+} from "./dbMedicalRecords.mjs";
+
 export default {
 	createUser,
 	getUserById,
@@ -81,4 +91,12 @@ export default {
 	getConditionById,
 	updateCondition,
 	deleteCondition,
+	saveCredentials,
+	getCredentials,
+	createMedicalRecord,
+	getMedicalRecordsByUserId,
+	getMedicalRecordById,
+	deleteMedicalRecord,
+	getTotalMedicalRecordsByUserId,
+	copyMedicalRecords,
 };

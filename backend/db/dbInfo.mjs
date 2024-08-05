@@ -3,10 +3,12 @@ import { getUserById } from "./dbUser.mjs";
 import { getUserAppointments } from "./dbAppointments.mjs";
 import { getRecentMessagesByUserId } from "./dbMessages.mjs";
 import { retrieveCleanedPatientDetailsFromEpic } from "../server/controllers/medplumController.mjs";
+import { getMedicalRecordsByUserId } from "./dbMedicalRecords.mjs";
 
 // Medications Methods
 export const createMedication = (userId, name, dosage) => {
-	const query = "INSERT INTO Medications (UserID, Name, Dosage) VALUES ($1, $2, $3) RETURNING *";
+	const query =
+		"INSERT INTO Medications (UserID, Name, Dosage) VALUES ($1, $2, $3) RETURNING *";
 	const values = [userId, name, dosage];
 	return pool
 		.query(query, values)
@@ -78,7 +80,12 @@ export const deleteMedication = (medicationId) => {
 };
 
 // Reminders Methods
-export const createReminder = (userId, medicationName, hoursUntilRepeat, time) => {
+export const createReminder = (
+	userId,
+	medicationName,
+	hoursUntilRepeat,
+	time
+) => {
 	const query =
 		"INSERT INTO Reminders (UserID, MedicationName, HoursUntilRepeat, Time) VALUES ($1, $2, $3, $4) RETURNING *";
 	const values = [userId, medicationName, hoursUntilRepeat, time];
@@ -126,7 +133,13 @@ export const getReminderById = (reminderId) => {
 		});
 };
 
-export const updateReminder = (reminderId, userId, medicationName, hoursUntilRepeat, time) => {
+export const updateReminder = (
+	reminderId,
+	userId,
+	medicationName,
+	hoursUntilRepeat,
+	time
+) => {
 	const query =
 		"UPDATE Reminders SET UserID = $1, MedicationName = $2, HoursUntilRepeat = $3, Time = $4 WHERE ReminderID = $5 RETURNING *";
 	const values = [userId, medicationName, hoursUntilRepeat, time, reminderId];
@@ -153,7 +166,8 @@ export const deleteReminder = (reminderId) => {
 
 // Allergies Methods
 export const createAllergy = (userId, name) => {
-	const query = "INSERT INTO Allergies (UserID, Name) VALUES ($1, $2) RETURNING *";
+	const query =
+		"INSERT INTO Allergies (UserID, Name) VALUES ($1, $2) RETURNING *";
 	const values = [userId, name];
 	return pool
 		.query(query, values)
@@ -200,7 +214,8 @@ export const getAllergyById = (allergyId) => {
 };
 
 export const updateAllergy = (allergyId, userId, name) => {
-	const query = "UPDATE Allergies SET UserID = $1, Name = $2 WHERE AllergyID = $3 RETURNING *";
+	const query =
+		"UPDATE Allergies SET UserID = $1, Name = $2 WHERE AllergyID = $3 RETURNING *";
 	const values = [userId, name, allergyId];
 	return pool
 		.query(query, values)
@@ -225,7 +240,8 @@ export const deleteAllergy = (allergyId) => {
 
 // Conditions Methods
 export const createCondition = (userId, name) => {
-	const query = "INSERT INTO Conditions (UserID, Name) VALUES ($1, $2) RETURNING *";
+	const query =
+		"INSERT INTO Conditions (UserID, Name) VALUES ($1, $2) RETURNING *";
 	const values = [userId, name];
 	return pool
 		.query(query, values)
@@ -272,7 +288,8 @@ export const getConditionById = (conditionId) => {
 };
 
 export const updateCondition = (conditionId, userId, name) => {
-	const query = "UPDATE Conditions SET UserID = $1, Name = $2 WHERE ConditionID = $3 RETURNING *";
+	const query =
+		"UPDATE Conditions SET UserID = $1, Name = $2 WHERE ConditionID = $3 RETURNING *";
 	const values = [userId, name, conditionId];
 	return pool
 		.query(query, values)
@@ -294,7 +311,52 @@ export const deleteCondition = (conditionId) => {
 			throw err;
 		});
 };
+// lets not go bankrupt here
+export const getUserInfoLite = async (userId) => {
+	try {
+		const user = await getUserById(userId);
+		const medications = await getUserMedications(userId);
+		const reminders = await getUserReminders(userId);
+		const appointments = await getUserAppointments(userId);
+		const medicalRecords = await getMedicalRecordsByUserId(userId);
 
+		return {
+			user: {
+				userid: user.userid,
+				name: user.name,
+				address: user.address,
+				email: user.email,
+				language: user.language,
+				phone: user.phone,
+				patientid: user.patientid,
+			},
+			medications: medications.map((med) => ({
+				id: med.medicationid,
+				name: med.name,
+				dosage: med.dosage,
+			})),
+			appointments: appointments.map((apt) => ({
+				id: apt.appointmentid,
+				doctorid: apt.doctorid,
+				date: apt.date,
+				transcriptsummary: apt.transcriptsummary,
+			})),
+			reminders: reminders.map((rem) => ({
+				id: rem.reminderid,
+				medicationname: rem.medicationname,
+				hoursuntilrepeat: rem.hoursuntilrepeat,
+				time: rem.time,
+			})),
+			medicalRecords: medicalRecords.map((record) => {
+				if (record.isTotal) return record;
+				return record.summary;
+			}),
+		};
+	} catch (error) {
+		console.error("Error getting user info:", error);
+		throw error;
+	}
+};
 export const getUserInfo = async (userId) => {
 	try {
 		const user = await getUserById(userId);
@@ -302,12 +364,13 @@ export const getUserInfo = async (userId) => {
 		const reminders = await getUserReminders(userId);
 		const appointments = await getUserAppointments(userId);
 		const chatHistory = await getRecentMessagesByUserId(userId, 5);
+		const medicalRecords = await getMedicalRecordsByUserId(userId);
 		let medplumInfo = {};
 
 		// Get medplum information
-		if (user.patientid) {
-			medplumInfo = await retrieveCleanedPatientDetailsFromEpic(user.patientid);
-		}
+		// if (user.patientid) {
+		// 	medplumInfo = await retrieveCleanedPatientDetailsFromEpic(user.patientid);
+		// }
 
 		return {
 			user: {
@@ -342,7 +405,8 @@ export const getUserInfo = async (userId) => {
 				hoursuntilrepeat: rem.hoursuntilrepeat,
 				time: rem.time,
 			})),
-			medplumInfo: medplumInfo,
+			// medplumInfo: medplumInfo,
+			medicalRecords,
 		};
 	} catch (error) {
 		console.error("Error getting user info:", error);

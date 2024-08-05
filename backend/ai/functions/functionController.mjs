@@ -1,12 +1,16 @@
 import { getUserById, updateUser } from "../../db/dbUser.mjs";
-import { createMedication, createReminder, deleteReminder, deleteMedication } from "../../db/dbInfo.mjs";
+import {
+	createMedication,
+	createReminder,
+	deleteReminder,
+	deleteMedication,
+} from "../../db/dbInfo.mjs";
 import {
 	createAppointment,
 	updateAppointment,
 	deleteAppointment,
 } from "../../server/controllers/medplumController.mjs";
 import { summarizeAppointmentFromChatHistory } from "../../utils/saveAppointments.mjs";
-
 
 export const executeLLMFunction = async (rspObj) => {
 	try {
@@ -16,7 +20,7 @@ export const executeLLMFunction = async (rspObj) => {
 
 		switch (functionName) {
 			case "LLMDisplayInformation":
-				return params.information;
+				return params.response;
 			case "LLMDidNotUnderstand":
 				return {
 					function: functionName,
@@ -114,14 +118,14 @@ export const executeLLMFunction = async (rspObj) => {
 				response = params.response;
 				break;
 			case "LLMScheduleAppointment":
-				await createAppointment(
-					params.dateTime,
-					"",
-					"",
-					params.description,
-					params.userId,
-					params.doctorId
-				);
+				const appointment = {
+					resourceType: "Appointment",
+					status: "booked",
+					start: params.appointmentStartTime,
+					end: params.appointmentEndTime,
+					description: params.description,
+				};
+				await createAppointment(params.patientId, appointment);
 				response =
 					params.response ||
 					`Your appointment has been scheduled successfully!`;

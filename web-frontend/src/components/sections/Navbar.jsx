@@ -112,7 +112,7 @@ export const Navbar = () => {
           variant="outline"
           borderRadius="full"
           onClick={() => {
-            window.location.href = "/chat";
+            window.location.href = "dashboard/chat";
           }}
         >
           TRY ON WEB →

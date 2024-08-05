@@ -48,4 +48,8 @@ class AuthService {
     final user = _auth.currentUser;
     return user?.photoURL;
   }
+  Future<String?> getIdToken() async {
+    final user = FirebaseAuth.instance.currentUser;
+    return await user?.getIdToken();
+  }
 }

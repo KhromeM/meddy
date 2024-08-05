@@ -5,6 +5,7 @@ package-lock.json
 backend/ai/audio/genAudio/*.mp3
 backend/ai/audio/genAudio/**/*.mp3
 backend/uploads/patient*
+backend/uploads/*/ehr
 web-frontend/package-lock.json
 web-frontend/dist/
 **/genAudio/*
@@ -25,7 +26,7 @@ patient2.json
 .history
 .svn/
 migrate_working_dir/
-
+*.json
 # IntelliJ related
 *.iml
 *.ipr
