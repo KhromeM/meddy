@@ -35,12 +35,12 @@ export const chatStreamProvider = async (
 	chatHistory,
 	user,
 	model = defaultModel,
-	mode,
+	mode = 0,
 	data = sampleData1 // dummy data
 ) => {
 	if (chatHistory[0].source == "llm") chatHistory.shift(); // gemini doesnt like the first message to be from an llm
 	const systemMessage = await getSystemMessage(user, data, mode);
-	console.log("Sys message length: ", systemMessage.length);
+	console.log("Sys message length: ", systemMessage.length, "mode :", mode);
 	let messages = [
 		...chatHistory.slice(0, -1).map((message) => {
 			if (message.source == "user") {
