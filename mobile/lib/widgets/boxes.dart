@@ -65,8 +65,7 @@ class Boxes extends StatelessWidget {
             padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width * 0.03),
             crossAxisCount: 1,
-            mainAxisSpacing: MediaQuery.of(context).size.width * 0.03,
-            crossAxisSpacing: MediaQuery.of(context).size.width * 0.03,
+            mainAxisSpacing: MediaQuery.of(context).size.width * 0.06,
             itemCount: texts.length,
             itemBuilder: (context, index) {
               Color boxColor = isHighContrast
@@ -82,7 +81,7 @@ class Boxes extends StatelessWidget {
                     child: Container(
                       width: MediaQuery.of(context).size.width * 0.45,
                       decoration: BoxDecoration(
-                        color: boxColor.withOpacity(0.7),
+                        color: boxColor.withOpacity(1),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: Colors.black.withOpacity(0.1),

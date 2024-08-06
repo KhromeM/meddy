@@ -77,10 +77,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Stack(
       children: [
-        //MainBackground(),
+        MainBackground(),
         Scaffold(
           extendBodyBehindAppBar: true,
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
           appBar: CustomAppBar(),
           body: Column(
             children: [
@@ -198,33 +198,46 @@ class _MyHomePageState extends State<MyHomePage> {
                       color: const Color.fromARGB(255, 71, 71, 71)),
                 )
               ]),
-              SizedBox(height: 15),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              SizedBox(height: 5),
+              Stack(
+                alignment: Alignment.center,
                 children: [
                   Container(
-                    width: 100,
-                    height: 100,
+                    height: 120,
+                    width: MediaQuery.of(context).size.width * 0.6,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Color.fromRGBO(254, 249, 239, 1),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child:
-                          Center(child: Image.asset('assets/images/epic.png')),
+                      borderRadius: BorderRadius.circular(20),
+                      color: Color.fromRGBO(248, 210, 173, 1),
                     ),
                   ),
-                  SizedBox(width: 10),
-                  Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Color.fromRGBO(254, 249, 239, 1),
-                    ),
-                    child: Center(
-                        child: Image.asset('assets/images/googlefit.png')),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: Colors.white,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Center(
+                              child: Image.asset('assets/images/epic.png')),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: Colors.white,
+                        ),
+                        child: Center(
+                            child: Image.asset('assets/images/googlefit.png')),
+                      ),
+                    ],
                   ),
                 ],
               )

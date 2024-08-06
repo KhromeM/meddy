@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meddymobile/services/auth_service.dart';
 import 'package:meddymobile/widgets/main_background.dart';
-import 'package:meddymobile/widgets/backnav_app_bar.dart';
 import 'package:meddymobile/utils/app_colors.dart';
 import 'package:intl/intl.dart';
 import 'package:meddymobile/services/appointment_service.dart';
@@ -18,7 +17,7 @@ class ReminderPage extends StatefulWidget {
   _ReminderPageState createState() => _ReminderPageState();
 }
 
-class _ReminderPageState extends State<ReminderPage> { 
+class _ReminderPageState extends State<ReminderPage> {
   final AuthService _authService = AuthService();
   late String _firstName;
   List<Map<String, dynamic>> _reminders = [];
@@ -27,7 +26,7 @@ class _ReminderPageState extends State<ReminderPage> {
   bool _showDatePicker = false;
   bool _showTimePicker = false;
   String _repeatOption = 'Never';
-  final String baseUrl = 'https://trymeddy.com/api'; 
+  final String baseUrl = 'https://trymeddy.com/api';
   late Future<void> _appointmentsFuture = new Future<void>(() => ());
   Map<String, dynamic> _appointments = Map();
   @override
@@ -36,6 +35,7 @@ class _ReminderPageState extends State<ReminderPage> {
     _firstName = _authService.getFirstName() ?? 'User';
     _appointmentsFuture = _fetchAppointments();
   }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -53,12 +53,14 @@ class _ReminderPageState extends State<ReminderPage> {
       print(e);
     }
   }
-Future<void> _refreshAppointments() async {
-  setState(() {
-    _appointmentsFuture = _fetchAppointments();
-  });
-  return _appointmentsFuture;
-}
+
+  Future<void> _refreshAppointments() async {
+    setState(() {
+      _appointmentsFuture = _fetchAppointments();
+    });
+    return _appointmentsFuture;
+  }
+
   void _addReminder(DateTime date, TimeOfDay time) async {
     final service = AppointmentService();
     String? user = await _authService.getIdToken();
@@ -69,7 +71,7 @@ Future<void> _refreshAppointments() async {
         headers: {'Content-Type': 'application/json', 'idToken': 'dev'},
         body: jsonEncode({
           'date': DateFormat('yyyy-MM-dd').format(date),
-          'userId': user, 
+          'userId': user,
         }),
       );
       _refreshAppointments(); // Refresh after adding
@@ -78,13 +80,12 @@ Future<void> _refreshAppointments() async {
     }
   }
 
-
   void _removeReminder(int id) async {
     final service = AppointmentService();
     try {
-
-      final response = await http.delete(Uri.parse('$baseUrl/info/reminder/$id'),
-                              headers: {'idToken': 'dev'});
+      final response = await http.delete(
+          Uri.parse('$baseUrl/info/reminder/$id'),
+          headers: {'idToken': 'dev'});
       setState(() {});
       print(response.body);
     } catch (e) {
@@ -170,54 +171,55 @@ Future<void> _refreshAppointments() async {
     }
     return dateCards;
   }
- List<Widget> _buildReminders() {
+
+  List<Widget> _buildReminders() {
     List<Widget> reminderCards = [];
     _appointments.forEach((key, value) {
       for (var reminder in value) {
         String fullTime = reminder['time'];
         int? repeat = reminder['hoursuntilrepeat'];
-        String repeat_text = repeat == 24 || repeat == null ? 'Once a day' : 'Every $repeat hs';
-        reminderCards.add(
-          Card(
-          color: lightGreen,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+        String repeat_text =
+            repeat == 24 || repeat == null ? 'Once a day' : 'Every $repeat hs';
+        reminderCards.add(Card(
+            color: lightGreen,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text(
-                      reminder['medicationname'],
-                      style: TextStyle(fontSize: 20, color: Colors.black),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          reminder['medicationname'],
+                          style: TextStyle(fontSize: 20, color: Colors.black),
+                        ),
+                        SizedBox(width: 15),
+                        Text(
+                          fullTime.substring(0, fullTime.length - 3),
+                          style: TextStyle(fontSize: 18, color: Colors.black),
+                        ),
+                        SizedBox(width: 15),
+                        Text(
+                          repeat_text,
+                          style: TextStyle(fontSize: 18, color: Colors.black),
+                        ),
+                      ],
                     ),
-                    SizedBox(width: 15),
-                    Text(
-                      fullTime.substring(0, fullTime.length - 3),
-                      style: TextStyle(fontSize: 18, color: Colors.black),
-                    ),
-                    SizedBox(width: 15),
-                    Text(
-                      repeat_text,
-                      style: TextStyle(fontSize: 18, color: Colors.black),
-                    ),
-                  ],
-              ),
-              IconButton( 
-                icon: Icon(Icons.delete, color: Colors.red),
-                onPressed: () => {
-                  print(reminder['reminderid']),
-                  _removeReminder(reminder['reminderid']), 
-                  _fetchAppointments()}
-                ),
-            ]
-          ),
-        )));
+                    IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => {
+                              print(reminder['reminderid']),
+                              _removeReminder(reminder['reminderid']),
+                              _fetchAppointments()
+                            }),
+                  ]),
+            )));
       }
     });
     return reminderCards;
   }
+
   @override
   @override
   Widget build(BuildContext context) {
@@ -227,23 +229,29 @@ Future<void> _refreshAppointments() async {
           children: [
             MainBackground(),
             Scaffold(
+              extendBodyBehindAppBar: true,
               backgroundColor: Colors.transparent,
-              appBar: BacknavAppBar(),
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                forceMaterialTransparency: true,
+              ),
               body: RefreshIndicator(
                 onRefresh: _refreshAppointments,
                 child: SingleChildScrollView(
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 20),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.1),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               languageProvider.translate('reminders'),
-                              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.bold),
                             ),
                             IconButton(
                               icon: Icon(Icons.calendar_today, size: 24.0),
@@ -266,13 +274,15 @@ Future<void> _refreshAppointments() async {
                         SizedBox(height: 10),
                         Text(
                           languageProvider.translate('upcoming_reminders'),
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         SizedBox(height: 10),
                         FutureBuilder(
                           future: _appointmentsFuture,
                           builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
                               return CircularProgressIndicator();
                             } else if (snapshot.hasError) {
                               return Text('Error: ${snapshot.error}');
@@ -280,7 +290,13 @@ Future<void> _refreshAppointments() async {
                               return Column(
                                 children: _appointments.isNotEmpty
                                     ? _buildReminders()
-                                    : [Text(languageProvider.translate('no_reminders'), style: TextStyle(color: Colors.grey))],
+                                    : [
+                                        Text(
+                                            languageProvider
+                                                .translate('no_reminders'),
+                                            style:
+                                                TextStyle(color: Colors.grey))
+                                      ],
                               );
                             }
                           },
@@ -293,7 +309,8 @@ Future<void> _refreshAppointments() async {
               floatingActionButton: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
                   backgroundColor: orangeAccent,
                 ),
                 onPressed: _showAddReminderBottomSheet,
@@ -302,7 +319,8 @@ Future<void> _refreshAppointments() async {
                   children: [
                     Icon(Icons.add_circle_outline, color: Colors.white),
                     SizedBox(width: 8),
-                    Text(languageProvider.translate('reminder'), style: TextStyle(color: Colors.white)),
+                    Text(languageProvider.translate('reminder'),
+                        style: TextStyle(color: Colors.white)),
                   ],
                 ),
               ),
