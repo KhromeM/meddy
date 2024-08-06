@@ -16,8 +16,7 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [audioMode, setAudioMode] = useState(false);
   const [inProgress, setInProgress] = useState(false);
-  const [messageBuffer, setMessageBuffer] = useState({});
-  const [image, setImage] = useState(null);
+  const [messageBuffer, setMessageBuffer] = useState({}); 
   const [imageUploaded, setImageUploaded] = useState();
   const { user } = useAuth();
   const messagesEndRef = useRef(null);
@@ -65,20 +64,7 @@ const Chat = () => {
   };
   const chatHistory = async () => {
     const chatHistory = (await getChatHistory(user)) || [];
-    if (chatHistory.length > 0) getImagefromChatHistory(chatHistory);
-  };
-
-  const getImagefromChatHistory = async (chatHistory) => {
-    const data = chatHistory.map(async (msg) => {
-      if (msg.imageid) {
-        const response = await getImage({ name: msg.imageid }, user);
-        if (response.status == 200) {
-          msg.imageUrl = response.data;
-        }
-      }
-      return msg;
-    });
-    setMessages(await Promise.all(data));
+    if (chatHistory.length > 0) setMessages(chatHistory);
   };
 
   useEffect(() => {
@@ -202,10 +188,10 @@ const Chat = () => {
     console.log("Messages updated:", messages);
   }, [messages]);
 
-  const addMessageToChatHistory = (source, text, reqId, imageUrl = null) => {
+  const addMessageToChatHistory = (source, text, reqId, imageid = null) => {
     setMessages((prev) => [
       ...prev,
-      { messageId: reqId, source, text, imageUrl, time: new Date() },
+      { messageId: reqId, source, text, imageid, time: new Date() },
     ]);
   };
   const updateCurrentMessageChunk = (text, reqId) => {
@@ -221,8 +207,8 @@ const Chat = () => {
   const sendMessage = async (message) => {
     const text = message.text;
     const reqId = uuidv4();
-    const imageRef = message.imageName ? image : "";
-    addMessageToChatHistory("user", text, reqId + "_user", imageRef);
+	const imageid = message.imageName;
+    addMessageToChatHistory("user", text, reqId + "_user", imageid);
     setInProgress(true);
     setImageUploaded(null);
 
@@ -241,8 +227,7 @@ const Chat = () => {
 
   const imageUploadResponse = async (file) => {
     const response = await getImage(file, user);
-    if (response.status == 200) {
-      setImage(response.data);
+    if (response.status == 200) { 
       setImageUploaded(response.data);
     }
   };
