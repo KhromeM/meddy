@@ -45,12 +45,10 @@ export const chatLLMStreamWS = async (
 };
 
 export const getChatHistory = async (user) => {
-  const token = user?.stsTokenManager?.accessToken;
-  const userid = user?.uid; 
-
+  const token = user?.stsTokenManager?.accessToken; 
   try {
     const response =await axios.get(
-      `${serverUrl}/chat?userId=${userid}`,
+      `${serverUrl.http}/chat`,
       {
         headers: {
           "Content-Type": "application/json",
