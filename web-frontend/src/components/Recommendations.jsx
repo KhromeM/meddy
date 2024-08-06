@@ -1,4 +1,4 @@
-import { React, useRef } from "react";
+import { React, useRef, useState } from "react";
 import {
   VStack,
   Heading,
@@ -13,24 +13,98 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
   ModalCloseButton,
   useDisclosure,
   Divider,
+  Select,
+  Flex,
+  Tooltip,
 } from "@chakra-ui/react";
-import { FaHeartbeat, FaAppleAlt, FaRunning, FaPills } from "react-icons/fa";
 import { GiHealthIncrease } from "react-icons/gi";
+import { FaPills } from "react-icons/fa";
+import { TbLetterS, TbLetterL, TbTestPipe } from "react-icons/tb";
 
-const RecommendationsMB = () => {
+const ActionItem = ({ action, isLongTerm }) => (
+  <Tooltip
+    label={isLongTerm ? "Long Term" : "Short Term"}
+    placement="top-start"
+  >
+    <Box
+      borderWidth={1}
+      borderRadius="md"
+      p={3}
+      bg={isLongTerm ? "blue.50" : "green.50"}
+      borderColor={isLongTerm ? "blue.200" : "green.200"}
+    >
+      <Flex align="center">
+        <Icon
+          as={isLongTerm ? TbLetterL : TbLetterS}
+          color={isLongTerm ? "blue.500" : "green.500"}
+          boxSize={5}
+          mr={3}
+        />
+        <Text>{action}</Text>
+      </Flex>
+    </Box>
+  </Tooltip>
+);
+
+const TestDetails = ({ test, score }) => (
+  <Box mb={3}>
+    {/* <Progress
+      value={score}
+      colorScheme={score > 80 ? "green" : score > 60 ? "yellow" : "red"}
+      height="8px"
+      borderRadius="full"
+    /> */}
+    <Text mt={1} fontSize="sm" color="gray.600">
+      Result: {test.result}
+    </Text>
+    <Text mt={1} fontSize="sm" color="gray.600">
+      Normal Range: {test.range}
+    </Text>
+    <Box mt={4} borderWidth={1} borderRadius="md" p={4}>
+      <HStack>
+        <Icon as={FaPills} boxSize={7} color="blue.500" />
+        <Box>
+          <Text fontWeight="bold" mb={2}>
+            Suggestion
+          </Text>
+          <Text fontSize="sm">{test.recommendation}</Text>
+        </Box>
+      </HStack>
+    </Box>
+  </Box>
+);
+
+const RecommendationsMB = ({ medData }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
   const btnRef = useRef(null);
+  const [selectedTest, setSelectedTest] = useState("goldTest");
+
+  const tests = [
+    { value: "goldTest", label: medData.details.goldTest.name },
+    ...medData.details.secondaryTests.map((test, index) => ({
+      value: `secondaryTest${index}`,
+      label: test.name,
+    })),
+  ];
+
+  const getCurrentTest = () => {
+    if (selectedTest === "goldTest") {
+      return medData.details.goldTest;
+    } else {
+      const index = parseInt(selectedTest.replace("secondaryTest", ""));
+      return medData.details.secondaryTests[index];
+    }
+  };
+
   return (
     <>
       <Button
         p={3}
+        backgroundColor="red.100"
+        _hover={{ backgroundColor: "red.200" }}
         leftIcon={<Icon as={GiHealthIncrease} boxSize={7} color="red.500" />}
         onClick={onOpen}
         ref={btnRef}
@@ -45,12 +119,7 @@ const RecommendationsMB = () => {
         motionPreset="scale"
         isCentered
       >
-        <ModalOverlay
-          bg="none"
-          backdropFilter="auto"
-          // backdropInvert="80%"
-          backdropBlur="1px"
-        />
+        <ModalOverlay bg="none" backdropFilter="auto" backdropBlur="2px" />
         <ModalContent bg="none">
           <Box
             borderWidth={2}
@@ -63,65 +132,68 @@ const RecommendationsMB = () => {
           >
             <ModalCloseButton />
             <VStack alignItems="flex-end" spacing={5}>
-              {/* Main content */}
-              <Box flex={1}>
-                <Heading size="lg" mb={4}>
-                  Reduce Heart Disease Risk
+              <Box flex={1} width="100%">
+                <Heading align="center" size="lg" mb={4}>
+                  Improving {medData.name}
                 </Heading>
                 <Divider mb={4} />
-                <Text mb={4}>
-                  Heart disease is the #1 killer in the United States. The
-                  traditional approach to cardiovascular disease prevention is
-                  to intervene based on your 10-year risk of heart disease. This
-                  is problematic because it may lead to under- treatment of
-                  younger individuals. At Meddy, we prefer to look at members'
-                  30-year risk of heart disease, paying particular attention to
-                  the biomarkers apoB and Lp(a).
-                </Text>
-
-                <Box mb={6}>
-                  <HStack justify="space-between" mb={2}>
-                    <Text fontWeight="bold">Lipoprotein (a)</Text>
-                    <Text color="green.500">Optimal</Text>
-                  </HStack>
-                  <Progress
-                    value={20}
-                    colorScheme="green"
-                    height="8px"
-                    borderRadius="full"
-                  />
-                  <Text mt={1} fontSize="sm" color="gray.600">
-                    9 ng/mL
+                <HStack justify="space-between" mb={2}>
+                  {/* <Text fontWeight="bold">{test.name}</Text> */}
+                  <Text
+                    color={
+                      medData.score > 80
+                        ? "green.500"
+                        : medData.score > 60
+                        ? "yellow.500"
+                        : "red.500"
+                    }
+                  >
+                    {medData.score > 80
+                      ? "Optimal"
+                      : medData.score > 60
+                      ? "Fair"
+                      : "Needs Improvement"}
                   </Text>
-                </Box>
+                </HStack>
+                <Text mb={4}>{medData.generalRecommendation}</Text>
+
+                <Divider mb={4} />
+
+                <Flex align="center" justify="flex-start" mb={3}>
+                  <Icon as={TbTestPipe} boxSize={8} color="red.500" mr={2} />
+                  <Select
+                    value={selectedTest}
+                    onChange={(e) => setSelectedTest(e.target.value)}
+                    width="auto"
+                  >
+                    {tests.map((test) => (
+                      <option key={test.value} value={test.value}>
+                        {test.label}
+                      </option>
+                    ))}
+                  </Select>
+                </Flex>
+                <TestDetails test={getCurrentTest()} score={medData.score} />
 
                 <Heading size="md" mb={3}>
-                  To lower these biomarker levels you should:
+                  Recommended Actions:
                 </Heading>
-                <SimpleGrid columns={2} spacing={4}>
-                  {[
-                    "Eat the right fat: avoid trans & polyunsaturated fats; minimize saturated fat, prioritize monounsaturated fat",
-                    "Eat right: 1g protein per lb of bodyweight, eat few carbs, avoid seed oils",
-                    "Get the right micronutrients, especially magnesium, zinc, K, A, E, C, and B vitamins",
-                    "Take a select few supplements, where necessary",
-                  ].map((recommendation, index) => (
-                    <Box key={index} borderWidth={1} borderRadius="md" p={3}>
-                      <Text>{recommendation}</Text>
-                    </Box>
+                <SimpleGrid columns={2} spacing={4} width="100%">
+                  {medData.actionPlan.shortTerm.map((action, index) => (
+                    <ActionItem
+                      key={`short-${index}`}
+                      action={action}
+                      isLongTerm={false}
+                    />
+                  ))}
+                  {medData.actionPlan.longTerm.map((action, index) => (
+                    <ActionItem
+                      key={`long-${index}`}
+                      action={action}
+                      isLongTerm={true}
+                    />
                   ))}
                 </SimpleGrid>
-
-                <Box mt={6} borderWidth={1} borderRadius="md" p={4}>
-                  <HStack>
-                    <Icon as={FaPills} boxSize={6} color="blue.500" />
-                    <Box>
-                      <Text fontWeight="bold">Red yeast rice & CoQ10</Text>
-                      <Text fontSize="sm">
-                        Has been repeatedly shown to help lower lipid levels.
-                      </Text>
-                    </Box>
-                  </HStack>
-                </Box>
               </Box>
               <Button
                 onClick={onClose}
