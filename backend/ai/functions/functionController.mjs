@@ -14,26 +14,26 @@ import { summarizeAppointmentFromChatHistory } from "../../utils/saveAppointment
 
 export const executeLLMFunction = async (rspObj) => {
 	try {
-		const functionName = rspObj.function;
+		const functionName = rspObj?.function?.toLowerCase();
 		const params = rspObj.params;
 		let user, appointment, response;
 
 		switch (functionName) {
-			case "LLMDisplayInformation":
+			case "LLMDisplayInformation".toLowerCase():
 				return params.response;
-			case "LLMDidNotUnderstand":
+			case "LLMDidNotUnderstand".toLowerCase():
 				return {
 					function: functionName,
 					response: params.response,
 					success: false,
 				};
-			case "LLMCannotDo":
+			case "LLMCannotDo".toLowerCase():
 				return {
 					function: functionName,
 					response: params.response,
 					success: false,
 				};
-			case "LLMUpdateUserName":
+			case "LLMUpdateUserName".toLowerCase():
 				user = await getUserById(params.userId);
 				user.name = params.newName;
 				await updateUser(user);
@@ -42,7 +42,7 @@ export const executeLLMFunction = async (rspObj) => {
 					`Your name has been successfully updated to ${params.newName}!`;
 				break;
 
-			case "LLMUpdateUserPhone":
+			case "LLMUpdateUserPhone".toLowerCase():
 				user = await getUserById(params.userId);
 				user.phone = params.newPhoneNumber;
 				await updateUser(user);
@@ -51,7 +51,7 @@ export const executeLLMFunction = async (rspObj) => {
 					`Your phone number has been successfully updated to ${params.newPhoneNumber}!`;
 				break;
 
-			case "LLMUpdateUserAddress":
+			case "LLMUpdateUserAddress".toLowerCase():
 				user = await getUserById(params.userId);
 				user.address = params.newAddress;
 				await updateUser(user);
@@ -60,7 +60,7 @@ export const executeLLMFunction = async (rspObj) => {
 					`Your address has been successfully updated to ${params.newAddress}!`;
 				break;
 
-			case "LLMUpdateUserEmail":
+			case "LLMUpdateUserEmail".toLowerCase():
 				user = await getUserById(params.userId);
 				user.email = params.newEmail;
 				await updateUser(user);
@@ -69,7 +69,7 @@ export const executeLLMFunction = async (rspObj) => {
 					`Your email has been successfully updated to ${params.newEmail}!`;
 				break;
 
-			case "LLMUpdateUserLanguagePreference":
+			case "LLMUpdateUserLanguagePreference".toLowerCase():
 				user = await getUserById(params.userId);
 				user.language = params.language;
 				await updateUser(user);
@@ -77,10 +77,10 @@ export const executeLLMFunction = async (rspObj) => {
 					params.response ||
 					`Your language preference has been successfully updated to ${params.language}!`;
 				break;
-			case "LLMGetMedicationList":
+			case "LLMGetMedicationList".toLowerCase():
 				response = params.response;
 				break;
-			case "LLMAddMedication":
+			case "LLMAddMedication".toLowerCase():
 				await createMedication(
 					params.userId,
 					params.medicationName,
@@ -90,15 +90,15 @@ export const executeLLMFunction = async (rspObj) => {
 					params.response ||
 					`Your medication ${params.medicationName} has been added successfully!`;
 				break;
-			case "LLMDeleteMedication":
+			case "LLMDeleteMedication".toLowerCase():
 				await deleteMedication(params.medicationId);
 				response =
 					params.response || `The medication has been deleted successfully.`;
 				break;
-			case "LLMShowMedicationReminderList":
+			case "LLMShowMedicationReminderList".toLowerCase():
 				response = params.response;
 				break;
-			case "LLMSetMedicationReminder":
+			case "LLMSetMedicationReminder".toLowerCase():
 				await createReminder(
 					params.userId,
 					params.medicationName,
@@ -109,15 +109,15 @@ export const executeLLMFunction = async (rspObj) => {
 					params.response ||
 					`A reminder has been set for your medication ${params.medicationName}!`;
 				break;
-			case "LLMDeleteMedicationReminder":
+			case "LLMDeleteMedicationReminder".toLowerCase():
 				await deleteReminder(params.reminderId);
 				response =
 					params.response || `The reminder has been deleted successfully!`;
 				break;
-			case "LLMGetAppointmentList":
+			case "LLMGetAppointmentList".toLowerCase():
 				response = params.response;
 				break;
-			case "LLMScheduleAppointment":
+			case "LLMScheduleAppointment".toLowerCase():
 				const appointment = {
 					resourceType: "Appointment",
 					status: "booked",
@@ -130,12 +130,12 @@ export const executeLLMFunction = async (rspObj) => {
 					params.response ||
 					`Your appointment has been scheduled successfully!`;
 				break;
-			case "LLMCancelAppointment":
+			case "LLMCancelAppointment".toLowerCase():
 				await deleteAppointment(params.appointmentId);
 				response =
 					params.response || `The appointment has been cancelled successfully.`;
 				break;
-			case "LLMRescheduleAppointment":
+			case "LLMRescheduleAppointment".toLowerCase():
 				await updateAppointment(
 					params.appointmentId,
 					params.appointmentStartTime,
@@ -146,11 +146,11 @@ export const executeLLMFunction = async (rspObj) => {
 					params.response ||
 					`The appointment has been rescheduled successfully`;
 				break;
-			case "LLMSaveAppointment":
+			case "LLMSaveAppointment".toLowerCase():
 				user = await getUserById(params.userId);
 				response = await summarizeAppointmentFromChatHistory(user);
 				break;
-			case "LLMGenerateSummaryForAppointment":
+			case "LLMGenerateSummaryForAppointment".toLowerCase():
 				appointment = await getAppointmentById(params.appointmentId);
 				response = appointment.transcriptsummary;
 				break;
