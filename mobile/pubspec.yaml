@@ -60,6 +60,8 @@ dependencies:
   blur: ^4.0.0
   typewritertext: ^3.0.8
   smooth_page_indicator: ^1.2.0+3
+  siri_wave: ^2.0.0+1
+  aura_box: ^1.0.1
 
   # comment the following line  out for android users
   # sound_stream: ^0.3.0

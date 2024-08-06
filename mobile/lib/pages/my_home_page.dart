@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:meddymobile/services/auth_service.dart';
 import 'package:provider/provider.dart';
 import 'package:meddymobile/providers/chat_provider.dart';
-import 'package:meddymobile/utils/app_colors.dart';
 import 'package:meddymobile/widgets/boxes.dart';
 import 'package:meddymobile/widgets/high_contrast_mode.dart';
 import 'package:meddymobile/widgets/main_background.dart';
-import 'package:meddymobile/widgets/mic_page.dart';
+import 'package:meddymobile/pages/mic_page.dart';
 import 'package:meddymobile/widgets/custom_app_bar.dart';
 import 'package:meddymobile/utils/ws_connection.dart';
 import 'package:meddymobile/services/player_service.dart';
@@ -248,12 +246,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _showMic() {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (context) {
-        return MicPage();
-      },
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const MicPage()),
     );
   }
 }
