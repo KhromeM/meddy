@@ -11,7 +11,6 @@ import { EVI } from "./components/EVI.jsx";
 import { Contact } from "./components/Contact.jsx";
 import { AboutUsPage } from "./components/about.jsx";
 import PrivacyPolicy from "./components/PrivacyPolicy.jsx";
-import Recommendations from "./components/Recommendations.jsx";
 import Health from "./components/Health.jsx";
 import Dashboard from "./layouts/Admin";
 import VoiceMode from "./views/Dashboard/MeddyVoiceMode";
@@ -32,7 +31,6 @@ function App() {
             {/* Changed element to component */}
             {/* Commented out Chat and Recommendations */}
             <Route path="/chat" component={Chat} />
-            <Route path="/recommendations" component={Recommendations} />
             <Route path="/EVI" component={EVI} />
             <Route path="/contact" component={Contact} />
             <Route path="/about" component={AboutUsPage} />
