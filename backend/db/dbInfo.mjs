@@ -347,10 +347,10 @@ export const getUserInfoLite = async (userId) => {
 				hoursuntilrepeat: rem.hoursuntilrepeat,
 				time: rem.time,
 			})),
-			medicalRecords: medicalRecords.map((record) => {
-				if (record.isTotal) return record;
-				return record.summary;
-			}),
+			// medicalRecords: medicalRecords.map((record) => {
+			// 	if (record.isTotal) return record;
+			// 	return record.summary;
+			// }),
 		};
 	} catch (error) {
 		console.error("Error getting user info:", error);

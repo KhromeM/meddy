@@ -65,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void dispose() {
     // Dispose services
-    wsConnection.disconnect();
+    // wsConnection.disconnect();
     playerService.dispose();
     recorderService.dispose();
     super.dispose();
