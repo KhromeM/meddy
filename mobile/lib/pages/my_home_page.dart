@@ -77,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Stack(
       children: [
-        MainBackground(),
+        // MainBackground(),
         Scaffold(
           extendBodyBehindAppBar: true,
           backgroundColor: Colors.transparent,
@@ -191,7 +191,7 @@ class _MyHomePageState extends State<MyHomePage> {
               SizedBox(height: 15),
               Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                 Text(
-                  'Integrated with your favorite apps',
+                  'Integrate with your favorite apps',
                   style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,

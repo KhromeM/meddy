@@ -480,14 +480,14 @@ class _ChatPageState extends State<ChatPage> {
                               ),
                               IconButton(
                                 icon: Icon(Icons.camera_alt_rounded),
-                                color: Theme.of(context).primaryColor,
+                                color: Color.fromRGBO(0, 0, 0, 1),
                                 onPressed: () {
                                   _selectImageFromCamera();
                                 },
                               ),
                               IconButton(
                                 icon: Icon(Icons.image),
-                                color: Theme.of(context).primaryColor,
+                                color: Color.fromRGBO(0, 0, 0, 1),
                                 onPressed: () {
                                   _selectImageFromGallery();
                                 },
@@ -515,8 +515,8 @@ class _ChatPageState extends State<ChatPage> {
                                                       ? Icons
                                                           .arrow_forward_ios_rounded
                                                       : Icons.mic_rounded),
-                                              color: Theme.of(context)
-                                                  .primaryColor,
+                                              color:
+                                                  Color.fromRGBO(0, 0, 0, 1),
                                             ),
                                           ),
                                         );

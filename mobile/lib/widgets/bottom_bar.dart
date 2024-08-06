@@ -6,35 +6,39 @@ class BottomBar extends StatelessWidget {
   final PageController pageController;
 
   const BottomBar({
-    super.key,
+    Key? key,
     required this.currentIndex,
     required this.bottomNavigationBarItems,
     required this.pageController,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context),
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.122,
+        height: MediaQuery.of(context).size.height * .08,
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.5),
               spreadRadius: 3,
               blurRadius: 7,
-              offset: Offset(0, 2), // changes position of shadow
+              offset: Offset(0, 2), 
             ),
           ],
         ),
         child: BottomNavigationBar(
-          unselectedFontSize: 0,
-          selectedFontSize: 0,
-          iconSize: 30,
-          fixedColor: null,
           currentIndex: currentIndex,
-          items: bottomNavigationBarItems,
+          items: bottomNavigationBarItems
+              .map((item) => BottomNavigationBarItem(
+                    icon: Padding(
+                      padding: EdgeInsets.only(top: 0, bottom: 0),
+                      child: item.icon,
+                    ),
+                    label: '',
+                  ))
+              .toList(),
           type: BottomNavigationBarType.fixed,
           onTap: (index) {
             pageController.animateToPage(
@@ -43,6 +47,11 @@ class BottomBar extends StatelessWidget {
               curve: Curves.ease,
             );
           },
+          selectedItemColor: Theme.of(context).primaryColor,
+          unselectedItemColor: Colors.grey,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          iconSize: 30,
         ),
       ),
     );
