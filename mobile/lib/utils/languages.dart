@@ -30,11 +30,10 @@ final Map<String, Map<String, String>> languageMap = {
     'box2': 'What are the best foods to eat for heart health?',
     'box3': 'How can I improve my sleep quality?',
     'box4': 'How does stress affect the immune system?',
-    'box5': "What's the recommended daily water intake?",
+    'box5': "What's the recommended water intake?",
     'box6': 'What are common causes of frequent headaches?',
     'box7': 'Can you suggest ways to boost my energy levels?',
     'box8': 'How does meditation impact overall health?',
-
   },
   'es': {
     'hello': 'Hola',
@@ -69,7 +68,7 @@ final Map<String, Map<String, String>> languageMap = {
     'box6': '¿Cuáles son las causas comunes de dolores de cabeza frecuentes?',
     'box7': '¿Puedes sugerir formas de aumentar mis niveles de energía?',
     'box8': '¿Cómo impacta la meditación en la salud general?',
-  }, 
+  },
 };
 
 class Language {
