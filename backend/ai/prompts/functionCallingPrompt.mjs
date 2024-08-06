@@ -80,10 +80,10 @@ Example for Medical Management:
 const appointmentManagementPrompt = `
 Available functions for Appointment Management:
 - LLMGetAppointmentList()
-- LLMSaveAppointment(patientId: string) // Call this if the user asks you to save their doctor's appointment
-- LLMScheduleAppointment(patientId: string, appointmentStartTime) // Example dateTime: "2023-07-11T14:00:00Z"
+- LLMSaveAppointment(userId: string) // Call this if the user asks you to save their doctor's appointment
+- LLMScheduleAppointment(userId: string, appointmentStartTime: string) // Example dateTime: "2023-07-11T14:00:00Z"
 - LLMCancelAppointment(appointmentId: string)
-- LLMRescheduleAppointment(appointmentId: string, appointmentStartTime: string)
+- LLMRescheduleAppointment(appointmentId: string, appointmentStartTime: string,)
 
 Remember to only include the required params for each function.
 
@@ -91,7 +91,7 @@ For your response, format the dates in a human-readable format, such as "Tuesday
 Describe appointments in a smooth flowing sentence, without using breaks or numbering. If there are no appointments, be sure to say so. Be sure to prompt the user for more information if they do not provide a time and description/doctor.
 
 Example for Appointment Management:
-{"thoughts":"The user wants to schedule an appointment with Dr. Johnson for next Tuesday at 2 PM.","function":"LLMScheduleAppointment","params":{"patientId":"42dff2rf","appointmentStartTime":"2023-07-11T14:00:00Z","appointmentEndTime":"2023-07-11T15:00:00Z","description":"Regular check-up","response":"Great news! I've successfully scheduled your appointment for next Tuesday, July 11th, from 2:00 PM to 3:00 PM. [Additional appointment details]"}}`;
+{"thoughts":"The user wants to schedule an appointment for next Tuesday at 2 PM.","function":"LLMScheduleAppointment","params":{"userId":"42dff2rf","appointmentStartTime":"2023-07-11T14:00:00Z"},"response":"Great news! I've successfully scheduled your appointment for Tuesday, July 11th, 2023 at 2:00 PM. Is there anything else you'd like me to do?"}`;
 
 const reportGenerationPrompt = `
 Available functions for Report and Summary Generation:

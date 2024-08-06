@@ -5,12 +5,17 @@ import {
 	deleteReminder,
 	deleteMedication,
 } from "../../db/dbInfo.mjs";
+// import {
+// 	createAppointment,
+// 	updateAppointment,
+// 	deleteAppointment,
+// } from "../../server/controllers/medplumController.mjs";
+import { summarizeAppointmentFromChatHistory } from "../../utils/saveAppointments.mjs";
 import {
 	createAppointment,
 	updateAppointment,
 	deleteAppointment,
-} from "../../server/controllers/medplumController.mjs";
-import { summarizeAppointmentFromChatHistory } from "../../utils/saveAppointments.mjs";
+} from "../../db/dbAppointments.mjs";
 
 export const executeLLMFunction = async (rspObj) => {
 	try {
@@ -118,14 +123,8 @@ export const executeLLMFunction = async (rspObj) => {
 				response = params.response;
 				break;
 			case "LLMScheduleAppointment".toLowerCase():
-				const appointment = {
-					resourceType: "Appointment",
-					status: "booked",
-					start: params.appointmentStartTime,
-					end: params.appointmentStartTime,
-					description: "",
-				};
-				await createAppointment(params.patientId, appointment);
+				user = await getUserById(params.userId);
+				createAppointment(appointmentStartTime, "", "", "", user.userid);
 				response =
 					params.response ||
 					`Your appointment has been scheduled successfully!`;
@@ -138,9 +137,7 @@ export const executeLLMFunction = async (rspObj) => {
 			case "LLMRescheduleAppointment".toLowerCase():
 				await updateAppointment(
 					params.appointmentId,
-					params.appointmentStartTime,
-					params.appointmentEndTime,
-					params.description
+					params.appointmentStartTime
 				);
 				response =
 					params.response ||
