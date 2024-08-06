@@ -18,9 +18,9 @@ import {
   SimpleGrid,
   Divider,
 } from "@chakra-ui/react";
-import {Gradient} from "./Gradient";
-import "../styles/gradient.css";
-
+import { Gradient } from "../Gradient";
+import "../../styles/gradient.css";
+import Recommendations from "./Recommendations.jsx";
 
 const HealthSystemTab = ({ category, isSelected }) => {
   const bgColor = useColorModeValue(
@@ -85,35 +85,7 @@ const HealthSystemContent = ({ category }) => {
       </HStack>
       <Divider mb={6} />
       <VStack align="start" spacing={4}>
-        <Box>
-          <Heading size="md" mb={2}>
-            Gold Test
-          </Heading>
-          <Text>Name: {category.details?.goldTest?.name || "N/A"}</Text>
-          <Text>Result: {category.details?.goldTest?.result || "N/A"}</Text>
-          <Text>Range: {category.details?.goldTest?.range || "N/A"}</Text>
-        </Box>
-        <Box>
-          <Heading size="md" mb={2}>
-            Recommendations
-          </Heading>
-          <Text mb={4}>
-            Based on your {category.name.toLowerCase()} health score, here are
-            some recommendations to improve your health:
-          </Text>
-          <SimpleGrid columns={2} spacing={4}>
-            {[
-              "Maintain a balanced diet rich in nutrients",
-              "Engage in regular physical activity",
-              "Ensure adequate sleep and stress management",
-              "Consider specific supplements if recommended by a healthcare professional",
-            ].map((recommendation, index) => (
-              <Box key={index} borderWidth={1} borderRadius="md" p={3}>
-                <Text>{recommendation}</Text>
-              </Box>
-            ))}
-          </SimpleGrid>
-        </Box>
+        <Recommendations medData={category} />
       </VStack>
     </Box>
   );
@@ -128,11 +100,10 @@ const HealthPanel = () => {
   const borderColor = useColorModeValue("gray.200", "gray.600");
   const bgColor = useColorModeValue("white", "gray.800");
 
-   useEffect(() => {
-     const gradient = new Gradient();
-     gradient.initGradient("#gradient-canvas");
-
-   }, []);
+  useEffect(() => {
+    const gradient = new Gradient();
+    gradient.initGradient("#gradient-canvas");
+  }, []);
 
   useEffect(() => {
     const fetchHealthData = async () => {
@@ -179,7 +150,7 @@ const HealthPanel = () => {
         display="flex"
         justifyContent="center"
         alignItems="center"
-        height="100vh"
+        height="100%"
       >
         <Text>Error: {error}</Text>
       </Box>
@@ -199,9 +170,10 @@ const HealthPanel = () => {
   return (
     <Box
       position="relative"
-      minHeight="100vh"
+      minHeight="100%"
       w="full"
       overflow="hidden"
+      borderRadius="lg"
     >
       <canvas
         id="gradient-canvas"
@@ -216,9 +188,9 @@ const HealthPanel = () => {
           zIndex: -1,
         }}
       ></canvas>
-      <Container maxW="container.xl" py={12}>
-        <VStack spacing={8} align="stretch">
-          <Heading size="xl" textAlign="center" mb={6} color="white">
+      <Container maxW="container.xl" py={5}>
+        <VStack spacing={7} align="stretch">
+          <Heading size="xl" textAlign="center" mb={0} color="black">
             Your Health Summary
           </Heading>
           <Box
