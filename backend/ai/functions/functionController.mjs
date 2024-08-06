@@ -122,8 +122,8 @@ export const executeLLMFunction = async (rspObj) => {
 					resourceType: "Appointment",
 					status: "booked",
 					start: params.appointmentStartTime,
-					end: params.appointmentEndTime,
-					description: params.description,
+					end: params.appointmentStartTime,
+					description: "",
 				};
 				await createAppointment(params.patientId, appointment);
 				response =

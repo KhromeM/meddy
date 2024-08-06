@@ -81,9 +81,9 @@ const appointmentManagementPrompt = `
 Available functions for Appointment Management:
 - LLMGetAppointmentList()
 - LLMSaveAppointment(patientId: string) // Call this if the user asks you to save their doctor's appointment
-- LLMScheduleAppointment(patientId: string, appointmentStartTime, appointmentEndTime: string, description) // Example dateTime: "2023-07-11T14:00:00Z"
+- LLMScheduleAppointment(patientId: string, appointmentStartTime) // Example dateTime: "2023-07-11T14:00:00Z"
 - LLMCancelAppointment(appointmentId: string)
-- LLMRescheduleAppointment(appointmentId: string, appointmentStartTime: string, appointmentEndTime: string, description)
+- LLMRescheduleAppointment(appointmentId: string, appointmentStartTime: string)
 
 Remember to only include the required params for each function.
 

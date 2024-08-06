@@ -53,7 +53,7 @@ export const chatStreamProvider = async (
 	];
 	messages = cleanMessages(messages);
 	messages = [new SystemMessage(systemMessage), ...messages];
-	console.log(messages.map((m) => m.constructor));
+	// console.log(messages.map((m) => m.constructor));
 	// console.log(JSON.stringify(messages.slice(-1)));
 
 	const chain = model.pipe(new StringOutputParser());
