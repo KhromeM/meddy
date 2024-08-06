@@ -202,14 +202,14 @@ class _MyHomePageState extends State<MyHomePage> {
               Stack(
                 alignment: Alignment.center,
                 children: [
-                  Container(
+                  /*      Container(
                     height: 120,
                     width: MediaQuery.of(context).size.width * 0.6,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: Color.fromRGBO(248, 210, 173, 1),
                     ),
-                  ),
+                  ), */
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

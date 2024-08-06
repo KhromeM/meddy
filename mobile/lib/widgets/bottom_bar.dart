@@ -17,14 +17,14 @@ class BottomBar extends StatelessWidget {
     return Theme(
       data: Theme.of(context),
       child: Container(
-        height: MediaQuery.of(context).size.height * .08,
+        height: MediaQuery.of(context).size.height * .12,
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.5),
               spreadRadius: 3,
               blurRadius: 7,
-              offset: Offset(0, 2), 
+              offset: Offset(0, 2),
             ),
           ],
         ),

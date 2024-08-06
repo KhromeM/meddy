@@ -69,50 +69,32 @@ class _CustomAppBarState extends State<CustomAppBar> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setModalState) {
             return Container(
-              height: MediaQuery.of(context).size.height * 0.65,
+              height: MediaQuery.of(context).size.height * 0.4,
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildGreetingText(),
-                    SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: _buildSquareButton(
-                            'reminders',
-                            () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const ReminderPage()),
-                              );
-                            },
-                          ),
-                        ),
-                        SizedBox(width: 20),
-                        Expanded(
-                          child: _buildSquareButton(
-                            'health',
-                            () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HealthPage()),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 10),
                     Row(children: [
-                      _buildLanguageSelector(setModalState),
+                      Column(
+                        children: [
+                          _buildLanguageSelector(setModalState),
+                          Text('Language')
+                        ],
+                      ),
                       SizedBox(width: 12),
-                      _buildHighContrastToggle(setModalState)
+                      Column(
+                        children: [
+                          _buildHighContrastToggle(setModalState),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text('Contrast')
+                        ],
+                      )
                     ]),
                     Spacer(),
                     _buildLogoutButton(context),
@@ -130,22 +112,29 @@ class _CustomAppBarState extends State<CustomAppBar> {
     return Consumer<LanguageProvider>(
       builder: (context, languageProvider, child) {
         final highContrastMode = HighContrastMode.of(context);
-        return FloatingActionButton(
-          onPressed: highContrastMode?.toggleHighContrastMode,
-          backgroundColor: highContrastMode?.isHighContrast == true
-              ? Colors.black
-              : lightGreen,
-          elevation: 0,
-          child: SizedBox(
-            width: 50, // Adjust this value to control the icon's container size
-            height:
-                50, // Adjust this value to control the icon's container size
-            child: Icon(
-              Icons.accessibility_new,
+        return InkWell(
+          onTap: highContrastMode?.toggleHighContrastMode,
+          child: Container(
+            height: 70,
+            width: 70,
+            decoration: BoxDecoration(
               color: highContrastMode?.isHighContrast == true
-                  ? Colors.white
-                  : Colors.black,
-              size: 40, // You can make this even larger now
+                  ? Colors.black
+                  : lightGreen,
+              borderRadius: BorderRadius.circular(100),
+            ),
+            child: SizedBox(
+              width:
+                  50, // Adjust this value to control the icon's container size
+              height:
+                  50, // Adjust this value to control the icon's container size
+              child: Icon(
+                Icons.accessibility_new,
+                color: highContrastMode?.isHighContrast == true
+                    ? Colors.white
+                    : Colors.black,
+                size: 40, // You can make this even larger now
+              ),
             ),
           ),
         );
@@ -176,72 +165,25 @@ class _CustomAppBarState extends State<CustomAppBar> {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      languageProvider.translate('hello'),
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      ', $_firstName',
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+            Padding(
+              padding: const EdgeInsets.only(left: 15.0),
+              child: Text(
+                languageProvider.translate('Settings'),
+                style: TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold,
                 ),
-                SizedBox(height: 8),
-                Text(
-                  languageProvider.translate('how_may_i_assist'),
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
+              ),
             ),
             if (_profileImageUrl != null)
-              CircleAvatar(
-                radius: 30,
-                backgroundImage: NetworkImage(_profileImageUrl!),
+              Padding(
+                padding: const EdgeInsets.only(right: 15.0),
+                child: CircleAvatar(
+                  radius: 30,
+                  backgroundImage: NetworkImage(_profileImageUrl!),
+                ),
               ),
           ],
-        );
-      },
-    );
-  }
-
-  Widget _buildSquareButton(String text, VoidCallback onPressed) {
-    return Consumer<LanguageProvider>(
-      builder: (context, languageProvider, child) {
-        return ElevatedButton(
-          onPressed: onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: lightPurple,
-            foregroundColor: Colors.black,
-            padding: EdgeInsets.only(top: 130),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(25),
-            ),
-            elevation: 0,
-          ),
-          child: Align(
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(15, 8.0, 8.0, 10),
-              child: Text(
-                languageProvider.translate(text),
-                style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
-              ),
-            ),
-          ),
         );
       },
     );
