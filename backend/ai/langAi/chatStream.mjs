@@ -40,10 +40,8 @@ export const chatStreamProvider = async (
 ) => {
 	if (chatHistory[0].source == "llm") chatHistory.shift(); // gemini doesnt like the first message to be from an llm
 	const systemMessage = await getSystemMessage(user, data, mode);
-	// console.log(systemMessage);
 	console.log("Sys message length: ", systemMessage.length);
 	let messages = [
-		new SystemMessage(systemMessage),
 		...chatHistory.slice(0, -1).map((message) => {
 			if (message.source == "user") {
 				return new HumanMessage(message.text);
@@ -53,6 +51,7 @@ export const chatStreamProvider = async (
 		}),
 		new HumanMessage(processMessage(user, chatHistory[chatHistory.length - 1])),
 	];
+	messages = [new SystemMessage(systemMessage), ...messages];
 	messages = cleanMessages(messages);
 	// console.log(JSON.stringify(messages.slice(-1)));
 
@@ -126,15 +125,17 @@ function cleanMessages(messages) {
 	const clean = [];
 	let expectedType = HumanMessage;
 
-	for (let i = 1; i < messages.length; i++) {
+	for (let i = 0; i < messages.length; i++) {
 		const message = messages[i];
+		if (message.content.length == 0) continue; // no parts
 		if (message instanceof expectedType) {
-			if (message.content.length == 0) continue; // no parts
 			clean.push(message);
 			expectedType = expectedType === HumanMessage ? AIMessage : HumanMessage;
-		} else if (i != 1) {
-			clean.pop();
-			clean.push(message);
+		} else {
+			if (message instanceof HumanMessage) {
+				clean.pop();
+				clean.push(message);
+			}
 		}
 	}
 	return clean;
