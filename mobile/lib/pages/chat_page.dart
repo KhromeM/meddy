@@ -340,41 +340,44 @@ class _ChatPageState extends State<ChatPage> {
       ),
       body: Stack(
         children: [
-          Column(
-            children: [
-              Expanded(
-                child: Stack(
-                  children: [
-                    _isLoading
-                        ? Center(child: CircularProgressIndicator())
-                        : MessageList(
-                            messages: _chatHistory,
-                            scrollController: _scrollController,
-                            fetchImage: _fetchImage,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10.0, left: 15, right: 15),
+            child: Column(
+              children: [
+                Expanded(
+                  child: Stack(
+                    children: [
+                      _isLoading
+                          ? Center(child: CircularProgressIndicator())
+                          : MessageList(
+                              messages: _chatHistory,
+                              scrollController: _scrollController,
+                              fetchImage: _fetchImage,
+                            ),
+                      if (_isGenerating)
+                        Positioned(
+                          bottom: 0,
+                          left: 12,
+                          child: AnimatedStopButton(
+                            onPressed: _stopGenerationVisually,
                           ),
-                    if (_isGenerating)
-                      Positioned(
-                        bottom: 0,
-                        left: 12,
-                        child: AnimatedStopButton(
-                          onPressed: _stopGenerationVisually,
                         ),
-                      ),
-                    if (_isRecording)
-                      ListeningNotifier(), // Show the ListeningNotifier when recording
-                  ],
+                      if (_isRecording)
+                        ListeningNotifier(), // Show the ListeningNotifier when recording
+                    ],
+                  ),
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
-                child: Stack(
+                Stack(
                   children: [
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 5,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.black),
+                        border: Border.all(
+                            color: Theme.of(context).primaryColor, width: 1.5),
                       ),
                       child: Column(
                         children: [
@@ -460,65 +463,92 @@ class _ChatPageState extends State<ChatPage> {
                             ),
                           Row(
                             children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: _textEditingController,
-                                  maxLines: null,
-                                  minLines: 1,
-                                  decoration: InputDecoration(
-                                    hintText: 'Type your message...',
-                                    border: InputBorder.none,
-                                  ),
-                                  keyboardType: TextInputType.text,
-                                  onSubmitted: (text) {
-                                    if (text.isNotEmpty) {
-                                      _sendMessage();
-                                    }
-                                  },
-                                  enabled: !_isRecording,
+                              InkWell(
+                                onTap:
+                                    (_previewImagePath != null) && !_isRecording
+                                        ? _sendMessage
+                                        : _toggleAudio,
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.circle,
+                                      size: 40,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                    Icon(
+                                      _isRecording
+                                          ? Icons.stop
+                                          : (_previewImagePath != null
+                                              ? Icons.arrow_forward_ios_rounded
+                                              : Icons.mic_rounded),
+                                      color: Colors.white,
+                                    ),
+                                  ],
                                 ),
                               ),
-                              IconButton(
-                                icon: Icon(Icons.camera_alt_rounded),
-                                color: Color.fromRGBO(0, 0, 0, 1),
-                                onPressed: () {
-                                  _selectImageFromCamera();
-                                },
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.image),
-                                color: Color.fromRGBO(0, 0, 0, 1),
-                                onPressed: () {
-                                  _selectImageFromGallery();
-                                },
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: TextField(
+                                    controller: _textEditingController,
+                                    maxLines: null,
+                                    minLines: 1,
+                                    decoration: InputDecoration(
+                                      hintText: 'Type your message...',
+                                      border: InputBorder.none,
+                                    ),
+                                    keyboardType: TextInputType.text,
+                                    onSubmitted: (text) {
+                                      if (text.isNotEmpty) {
+                                        _sendMessage();
+                                      }
+                                    },
+                                    enabled: !_isRecording,
+                                  ),
+                                ),
                               ),
                               ValueListenableBuilder<bool>(
                                 valueListenable: _isTypingNotifier,
                                 builder: (context, isTyping, child) {
                                   return _isSendingImage
                                       ? CircularProgressIndicator()
-                                      : InkWell(
-                                          onTap: (isTyping ||
-                                                      _previewImagePath !=
-                                                          null) &&
-                                                  !_isRecording
-                                              ? _sendMessage
-                                              : _toggleAudio,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Icon(
-                                              _isRecording
-                                                  ? Icons.stop
-                                                  : (isTyping ||
-                                                          _previewImagePath !=
-                                                              null
-                                                      ? Icons
-                                                          .arrow_forward_ios_rounded
-                                                      : Icons.mic_rounded),
-                                              color:
-                                                  Color.fromRGBO(0, 0, 0, 1),
-                                            ),
-                                          ),
+                                      : Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            if (isTyping)
+                                              IconButton(
+                                                icon: Icon(
+                                                  Icons
+                                                      .arrow_forward_ios_rounded,
+                                                ),
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                                onPressed: _sendMessage,
+                                              )
+                                            else ...[
+                                              IconButton(
+                                                icon: Icon(
+                                                  Icons.photo_camera_outlined,
+                                                  size: 30,
+                                                ),
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                                onPressed:
+                                                    _selectImageFromCamera,
+                                              ),
+                                              IconButton(
+                                                icon: Icon(
+                                                  Icons.image_outlined,
+                                                  size: 30,
+                                                ),
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                                onPressed:
+                                                    _selectImageFromGallery,
+                                              ),
+                                            ],
+                                          ],
                                         );
                                 },
                               ),
@@ -529,8 +559,8 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                   ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
