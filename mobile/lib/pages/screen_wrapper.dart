@@ -83,20 +83,20 @@ class _ScreenWrapperState extends State<ScreenWrapper> {
               ReminderPage(),
             ],
           ),
-          /*  Positioned(
-            bottom: 10,
-            child: SmoothPageIndicator(
-              controller: _pageController,
-              count: _bottomNavigationBarItems.length,
-              effect: WormEffect(
-                dotHeight: 8.0,
-                dotWidth: 8.0,
-                spacing: 16.0,
-                dotColor: Colors.grey,
-                activeDotColor: Colors.purple,
-              ),
-            ),
-          ), */
+          // Positioned(
+          //   bottom: 10,
+          //   child: SmoothPageIndicator(
+          //     controller: _pageController,
+          //     count: _bottomNavigationBarItems.length,
+          //     effect: WormEffect(
+          //       dotHeight: 8.0,
+          //       dotWidth: 8.0,
+          //       spacing: 16.0,
+          //       dotColor: Colors.grey,
+          //       activeDotColor: Colors.purple,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
       bottomNavigationBar: BottomBar(
