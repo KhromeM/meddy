@@ -124,7 +124,7 @@ export const executeLLMFunction = async (rspObj) => {
 				break;
 			case "LLMScheduleAppointment".toLowerCase():
 				user = await getUserById(params.userId);
-				createAppointment(appointmentStartTime, "", "", "", user.userid);
+				createAppointment(params.appointmentStartTime, "", "", "", user.userid);
 				response =
 					params.response ||
 					`Your appointment has been scheduled successfully!`;
