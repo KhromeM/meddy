@@ -30,7 +30,7 @@ import {
 } from "react-icons/io5";
 import { RiHealthBookFill, RiUserVoiceFill } from "react-icons/ri";
 import Chat from "./components/Chat";
-import Health from "./components/Health";
+import Health from "./components/Health/Health.jsx";
 import Uploads from "./components/Uploads.jsx";
 
 var dashRoutes = [

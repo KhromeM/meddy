@@ -11,16 +11,15 @@ import { EVI } from "./components/EVI.jsx";
 import { Contact } from "./components/Contact.jsx";
 import { AboutUsPage } from "./components/about.jsx";
 import PrivacyPolicy from "./components/PrivacyPolicy.jsx";
-import Health from "./components/Health.jsx";
+import Health from "./components/Health/Health.jsx";
 import Dashboard from "./layouts/Admin";
 import VoiceMode from "./views/Dashboard/MeddyVoiceMode";
 
 import AdminLayout from "./layouts/Admin";
 import ChatWidget from "./components/ChatWidget.jsx";
-// import RecommendationsMB from "./components/Recommendations.jsx";
 
 function App() {
-   return (
+  return (
     <ChakraProvider theme={customTheme}>
       <Router>
         <AuthProvider>
