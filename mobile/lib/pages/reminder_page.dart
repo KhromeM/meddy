@@ -248,10 +248,13 @@ class _ReminderPageState extends State<ReminderPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              languageProvider.translate('reminders'),
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                languageProvider.translate('reminders'),
+                                style: TextStyle(
+                                    fontSize: 24, fontWeight: FontWeight.bold),
+                              ),
                             ),
                             IconButton(
                               icon: Icon(Icons.calendar_today, size: 24.0),
@@ -272,10 +275,13 @@ class _ReminderPageState extends State<ReminderPage> {
                         SizedBox(height: 10),
                         Row(children: _buildDateCards()),
                         SizedBox(height: 10),
-                        Text(
-                          languageProvider.translate('upcoming_reminders'),
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            languageProvider.translate('upcoming_reminders'),
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
                         ),
                         SizedBox(height: 10),
                         FutureBuilder(

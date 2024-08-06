@@ -83,7 +83,7 @@ class _ScreenWrapperState extends State<ScreenWrapper> {
               ReminderPage(),
             ],
           ),
-          Positioned(
+          /*  Positioned(
             bottom: 10,
             child: SmoothPageIndicator(
               controller: _pageController,
@@ -96,7 +96,7 @@ class _ScreenWrapperState extends State<ScreenWrapper> {
                 activeDotColor: Colors.purple,
               ),
             ),
-          ),
+          ), */
         ],
       ),
       bottomNavigationBar: BottomBar(
