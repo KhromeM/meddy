@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meddymobile/services/auth_service.dart';
 import 'package:meddymobile/widgets/main_background.dart';
-import 'package:meddymobile/widgets/backnav_app_bar.dart';
 import 'package:meddymobile/utils/app_colors.dart';
 import 'package:intl/intl.dart';
 import 'package:meddymobile/services/appointment_service.dart';
@@ -230,17 +229,22 @@ class _ReminderPageState extends State<ReminderPage> {
           children: [
             MainBackground(),
             Scaffold(
+              extendBodyBehindAppBar: true,
               backgroundColor: Colors.transparent,
-              appBar: BacknavAppBar(),
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                forceMaterialTransparency: true,
+              ),
               body: RefreshIndicator(
                 onRefresh: _refreshAppointments,
                 child: SingleChildScrollView(
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 20),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.1),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [

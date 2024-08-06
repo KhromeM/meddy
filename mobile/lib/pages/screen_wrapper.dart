@@ -4,6 +4,7 @@ import 'package:meddymobile/pages/health_page.dart';
 import 'package:meddymobile/pages/my_home_page.dart';
 import 'package:meddymobile/pages/reminder_page.dart';
 import 'package:meddymobile/widgets/bottom_bar.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 final _bottomNavigationBarItems = [
   const BottomNavigationBarItem(
@@ -64,30 +65,45 @@ class _ScreenWrapperState extends State<ScreenWrapper> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        extendBodyBehindAppBar: true,
-        body: Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            PageView(
+      extendBodyBehindAppBar: true,
+      body: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          PageView(
+            controller: _pageController,
+            onPageChanged: (newIndex) {
+              setState(() {
+                _currentIndex = newIndex;
+              });
+            },
+            children: [
+              const MyHomePage(),
+              ChatPage(),
+              HealthPage(),
+              ReminderPage(),
+            ],
+          ),
+          Positioned(
+            bottom: 10,
+            child: SmoothPageIndicator(
               controller: _pageController,
-              onPageChanged: (newIndex) {
-                setState(() {
-                  _currentIndex = newIndex;
-                });
-              },
-              children: [
-                const MyHomePage(),
-                ChatPage(),
-                HealthPage(),
-                ReminderPage(),
-              ],
+              count: _bottomNavigationBarItems.length,
+              effect: WormEffect(
+                dotHeight: 8.0,
+                dotWidth: 8.0,
+                spacing: 16.0,
+                dotColor: Colors.grey,
+                activeDotColor: Colors.purple,
+              ),
             ),
-          ],
-        ),
-        bottomNavigationBar: BottomBar(
-          bottomNavigationBarItems: _bottomNavigationBarItems,
-          currentIndex: _currentIndex,
-          pageController: _pageController,
-        ));
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomBar(
+        bottomNavigationBarItems: _bottomNavigationBarItems,
+        currentIndex: _currentIndex,
+        pageController: _pageController,
+      ),
+    );
   }
 }

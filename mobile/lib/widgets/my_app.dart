@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:meddymobile/pages/back_page.dart';
+import 'package:meddymobile/pages/screen_wrapper.dart';
 import 'package:meddymobile/pages/signin_page.dart';
 import 'package:meddymobile/widgets/high_contrast_mode.dart';
 import '../pages/my_home_page.dart';
