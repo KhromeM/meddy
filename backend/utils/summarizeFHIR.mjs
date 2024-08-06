@@ -101,6 +101,8 @@ export const summarizeFHIR = async (user, data) => {
 export const createTotalSummary = async (user) => {
 	try {
 		const records = await db.getMedicalRecordsByUserId(user.userid);
+		if (records?.length == 0) return null;
+
 		let totalRecord = records.find((record) => record.isTotal);
 
 		const strRecords = records.map((record) => JSON.stringify(record));

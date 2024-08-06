@@ -28,8 +28,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 let defaultModel = CONFIG.TEST
-	? openAIModel
-	: openAIModel || anthropicModel || vertexAIModel || openAIModel;
+	? vertexAIModel
+	: vertexAIModel || anthropicModel || vertexAIModel || openAIModel;
 
 export const chatStreamProvider = async (
 	chatHistory,
@@ -39,9 +39,9 @@ export const chatStreamProvider = async (
 	data = sampleData1 // dummy data
 ) => {
 	if (chatHistory[0].source == "llm") chatHistory.shift(); // gemini doesnt like the first message to be from an llm
-
 	const systemMessage = await getSystemMessage(user, data, mode);
-	// console.log(systemMessage, mode);
+	// console.log(systemMessage);
+	console.log("Sys message length: ", systemMessage.length);
 	let messages = [
 		new SystemMessage(systemMessage),
 		...chatHistory.slice(0, -1).map((message) => {
@@ -54,8 +54,7 @@ export const chatStreamProvider = async (
 		new HumanMessage(processMessage(user, chatHistory[chatHistory.length - 1])),
 	];
 	messages = cleanMessages(messages);
-	// console.log(messages.length);
-	// console.log(messages);
+	// console.log(JSON.stringify(messages.slice(-1)));
 
 	const chain = model.pipe(new StringOutputParser());
 	return await chain.stream(messages);
@@ -123,17 +122,20 @@ export const jsonChatResponse = async (
 	return await model.invoke(messages);
 };
 
-// Makes sure the same source is not sending a message twice in a row
-// Doing that causes an error with most llm providers
 function cleanMessages(messages) {
-	let prev = messages[0].constructor;
-	const clean = [messages[0]];
-	for (const message of messages) {
-		if (message instanceof prev) {
+	const clean = [];
+	let expectedType = HumanMessage;
+
+	for (let i = 1; i < messages.length; i++) {
+		const message = messages[i];
+		if (message instanceof expectedType) {
+			if (message.content.length == 0) continue; // no parts
+			clean.push(message);
+			expectedType = expectedType === HumanMessage ? AIMessage : HumanMessage;
+		} else if (i != 1) {
 			clean.pop();
+			clean.push(message);
 		}
-		prev = message.constructor;
-		clean.push(message);
 	}
 	return clean;
 }

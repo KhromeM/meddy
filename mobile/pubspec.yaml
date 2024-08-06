@@ -59,6 +59,7 @@ dependencies:
   skeletonizer: ^1.4.2
   blur: ^4.0.0
   typewritertext: ^3.0.8
+  smooth_page_indicator: ^1.2.0+3
 
   # comment the following line  out for android users
   # sound_stream: ^0.3.0

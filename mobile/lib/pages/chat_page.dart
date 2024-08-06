@@ -15,7 +15,6 @@ import 'package:path/path.dart' as path;
 import 'dart:async';
 import 'package:uuid/uuid.dart';
 import 'package:image/image.dart' as img;
-import 'package:meddymobile/widgets/backnav_app_bar.dart';
 import 'package:meddymobile/widgets/listening_notifier.dart'; // Import the new widget
 
 class ChatPage extends StatefulWidget {
@@ -481,14 +480,14 @@ class _ChatPageState extends State<ChatPage> {
                               ),
                               IconButton(
                                 icon: Icon(Icons.camera_alt_rounded),
-                                color: Theme.of(context).primaryColor,
+                                color: Color.fromRGBO(0, 0, 0, 1),
                                 onPressed: () {
                                   _selectImageFromCamera();
                                 },
                               ),
                               IconButton(
                                 icon: Icon(Icons.image),
-                                color: Theme.of(context).primaryColor,
+                                color: Color.fromRGBO(0, 0, 0, 1),
                                 onPressed: () {
                                   _selectImageFromGallery();
                                 },
@@ -516,8 +515,8 @@ class _ChatPageState extends State<ChatPage> {
                                                       ? Icons
                                                           .arrow_forward_ios_rounded
                                                       : Icons.mic_rounded),
-                                              color: Theme.of(context)
-                                                  .primaryColor,
+                                              color:
+                                                  Color.fromRGBO(0, 0, 0, 1),
                                             ),
                                           ),
                                         );

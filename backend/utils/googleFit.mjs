@@ -19,10 +19,10 @@ async function setupAuthenticatedClient(userId) {
 	}
 }
 
-async function fetchAndParseStepData(fitness) {
+export async function fetchAndParseStepData(fitness) {
 	try {
 		const endTime = new Date();
-		const startTime = new Date(endTime.getTime() - 7 * 24 * 60 * 60 * 1000); // 7 days ago
+		const startTime = new Date(endTime.getTime() - 7 * 24 * 60 * 60 * 1000 * 4); // 28 days ago
 
 		const response = await fitness.users.dataset.aggregate({
 			userId: "me",
@@ -53,10 +53,11 @@ async function fetchAndParseStepData(fitness) {
 		throw error;
 	}
 }
-async function fetchAndParseSleepData(fitness) {
+
+export async function fetchAndParseSleepData(fitness) {
 	try {
 		const endTime = new Date();
-		const startTime = new Date(endTime.getTime() - 7 * 24 * 60 * 60 * 1000); // 7 days ago
+		const startTime = new Date(endTime.getTime() - 7 * 24 * 60 * 60 * 1000 * 4); // 28 days ago
 		const sleepKey = {
 			1: "Awake",
 			2: "Sleep",
@@ -119,10 +120,10 @@ async function fetchAndParseSleepData(fitness) {
 	}
 }
 
-async function fetchAndParseHeartRateData(fitness) {
+export async function fetchAndParseHeartRateData(fitness) {
 	try {
 		const endTime = new Date();
-		const startTime = new Date(endTime.getTime() - 7 * 24 * 60 * 60 * 1000); // 7 days ago
+		const startTime = new Date(endTime.getTime() - 7 * 24 * 60 * 60 * 1000 * 4); // 28 days ago
 
 		const response = await fitness.users.dataset.aggregate({
 			userId: "me",
@@ -145,8 +146,13 @@ async function fetchAndParseHeartRateData(fitness) {
 			return { date, readings };
 		});
 
-		console.log(JSON.stringify(heartRateData));
-		return heartRateData;
+		const sortedHeartRate = heartRateData
+			.map((obj) => {
+				return obj.readings;
+			})
+			.flat()
+			.sort((a, b) => new Date(a.time) - new Date(b.time));
+		return sortedHeartRate;
 	} catch (error) {
 		console.error("Error fetching and parsing heart rate data:", error);
 		throw error;
@@ -156,14 +162,16 @@ async function fetchAndParseHeartRateData(fitness) {
 export async function fetchGoogleFitData(userId) {
 	try {
 		const fitness = await setupAuthenticatedClient(userId);
-		await fetchAndParseStepData(fitness);
-		await fetchAndParseSleepData(fitness);
-		await fetchAndParseHeartRateData(fitness);
-		return;
+		const data = {};
+		data.steps = await fetchAndParseStepData(fitness);
+		data.sleep = await fetchAndParseSleepData(fitness);
+		data.bpm = await fetchAndParseHeartRateData(fitness);
+		console.log(data);
+		return data;
 	} catch (error) {
 		console.error("Error in fetchGoogleFitData:", error);
-		throw error;
+		return null;
 	}
 }
 
-fetchGoogleFitData("c4VLVWO343bC2psxtOXnaITIi2t2");
+// fetchGoogleFitData("c4VLVWO343bC2psxtOXnaITIi2t2");

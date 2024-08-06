@@ -1,126 +1,201 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Container,
   VStack,
   Heading,
-  SimpleGrid,
   Text,
-  Button,
-  Progress,
-  Badge,
+  CircularProgress,
+  Spinner,
+  useColorModeValue,
+  CircularProgressLabel,
   HStack,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
+  SimpleGrid,
   Divider,
-  Spacer,
 } from "@chakra-ui/react";
 import { Gradient } from "./Gradient";
 import "../styles/gradient.css";
-import RecommendationsMB from "./Recommendations";
-import medicalRecord from "./MedicalRecord.json";
 
-const HealthCard = ({ category }) => {
+const HealthSystemTab = ({ category, isSelected }) => {
+  const bgColor = useColorModeValue(
+    isSelected ? "white" : "gray.100",
+    isSelected ? "gray.700" : "gray.600"
+  );
+  const borderColor = useColorModeValue(
+    isSelected ? "#FACC87" : "transparent",
+    isSelected ? "#FACC87" : "transparent"
+  );
+  const textColor = useColorModeValue("gray.800", "white");
+
   return (
-    <Box
-      bg="white"
-      p={6}
-      borderRadius="lg"
-      boxShadow="md"
-      _hover={{ transform: "scale(1.02)", transition: "transform 0.2s" }}
-      height="100%"
-      display="flex"
-      flexDirection="column"
+    <Tab
+      py={2}
+      px={4}
+      borderTopRadius="md"
+      bg={bgColor}
+      color={textColor}
+      fontWeight="medium"
+      fontSize="sm"
+      _selected={{
+        bg: bgColor,
+        color: textColor,
+        borderTop: "2px solid",
+        borderColor: borderColor,
+        borderBottom: "none",
+      }}
+      _hover={{ bg: isSelected ? bgColor : "gray.200" }}
+      transition="all 0.2s"
+      mr={1}
     >
-      <Heading align="center" size="md" mb={4} fontWeight="bold">
-        {category.name}
-      </Heading>
+      {category.name.split(" ")[0]}
+    </Tab>
+  );
+};
 
-      <VStack align="stretch" spacing={4} flex={1}>
-        <HStack justify="space-between">
-          <Text fontWeight="bold">Score:</Text>
-          <Badge
-            colorScheme={
-              category.score > 80
-                ? "green"
-                : category.score > 60
-                ? "yellow"
-                : "red"
-            }
-            fontSize="md"
-            py={1}
-            px={2}
-            borderRadius="full"
-          >
-            {category.score}
-          </Badge>
-        </HStack>
-        <Progress
+const HealthSystemContent = ({ category }) => {
+  const getColorScheme = (score) => {
+    if (score > 80) return "green";
+    if (score > 60) return "yellow";
+    return "red";
+  };
+
+  return (
+    <Box>
+      <HStack spacing={6} mb={6}>
+        <CircularProgress
           value={category.score}
-          colorScheme={
-            category.score > 80
-              ? "green"
-              : category.score > 60
-              ? "yellow"
-              : "red"
-          }
-          borderRadius="full"
-          size="sm"
-        />
-        <Text fontSize="sm" fontStyle="italic">
-          {category.oneLineSummary}
-        </Text>
-        <Divider />
-        <VStack align="stretch" spacing={3}>
-          <Box>
-            <Text fontSize="sm" fontWeight="bold" mb={1}>
-              Gold Standard Test:
-            </Text>
-            <Text fontSize="sm">{category.details.goldTest.name}</Text>
-          </Box>
-          <Box>
-            <Text fontSize="sm" fontWeight="bold" mb={1}>
-              Result:
-            </Text>
-            <Text fontSize="sm">{category.details.goldTest.result}</Text>
-          </Box>
-          <Box>
-            <Text fontSize="sm" fontWeight="bold" mb={1}>
-              Normal Range:
-            </Text>
-            <Text fontSize="sm">{category.details.goldTest.range}</Text>
-          </Box>
+          size="120px"
+          thickness="12px"
+          color={getColorScheme(category.score)}
+        >
+          <CircularProgressLabel fontWeight="bold" fontSize="2xl">
+            {category.score}%
+          </CircularProgressLabel>
+        </CircularProgress>
+        <VStack align="start" spacing={2}>
+          <Heading size="lg">{category.name}</Heading>
+          <Text fontSize="md">{category.oneLineSummary}</Text>
         </VStack>
-        <Spacer />
+      </HStack>
+      <Divider mb={6} />
+      <VStack align="start" spacing={4}>
+        <Box>
+          <Heading size="md" mb={2}>
+            Gold Test
+          </Heading>
+          <Text>Name: {category.details?.goldTest?.name || "N/A"}</Text>
+          <Text>Result: {category.details?.goldTest?.result || "N/A"}</Text>
+          <Text>Range: {category.details?.goldTest?.range || "N/A"}</Text>
+        </Box>
+        <Box>
+          <Heading size="md" mb={2}>
+            Recommendations
+          </Heading>
+          <Text mb={4}>
+            Based on your {category.name.toLowerCase()} health score, here are
+            some recommendations to improve your health:
+          </Text>
+          <SimpleGrid columns={2} spacing={4}>
+            {[
+              "Maintain a balanced diet rich in nutrients",
+              "Engage in regular physical activity",
+              "Ensure adequate sleep and stress management",
+              "Consider specific supplements if recommended by a healthcare professional",
+            ].map((recommendation, index) => (
+              <Box key={index} borderWidth={1} borderRadius="md" p={3}>
+                <Text>{recommendation}</Text>
+              </Box>
+            ))}
+          </SimpleGrid>
+        </Box>
       </VStack>
-
-      <RecommendationsMB medData={category} />
     </Box>
   );
 };
 
-const Health = () => {
+const HealthPanel = () => {
+  const [healthData, setHealthData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const borderColor = useColorModeValue("gray.200", "gray.600");
+  const bgColor = useColorModeValue("white", "gray.800");
+
   useEffect(() => {
     const gradient = new Gradient();
     gradient.initGradient("#gradient-canvas");
   }, []);
 
+  useEffect(() => {
+    const fetchHealthData = async () => {
+      try {
+        const response = await fetch(
+          "https://trymeddy.com/api/medical-record/",
+          {
+            headers: {
+              idtoken: "dev",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch health data");
+        }
+        const data = await response.json();
+        setHealthData(data);
+        setIsLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setIsLoading(false);
+      }
+    };
+    fetchHealthData();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <Spinner size="xl" />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <Text>Error: {error}</Text>
+      </Box>
+    );
+  }
+
   const healthCategories = [
-    medicalRecord.metabolicHealth,
-    medicalRecord.heartHealth,
-    medicalRecord.gutHealth,
-    medicalRecord.brainHealth,
-    medicalRecord.immuneSystem,
-    medicalRecord.musculoskeletalHealth,
-    medicalRecord.hormonalProfile,
+    healthData.metabolicHealth,
+    healthData.heartHealth,
+    healthData.gutHealth,
+    healthData.brainHealth,
+    healthData.immuneSystem,
+    healthData.musculoskeletalHealth,
+    healthData.hormonalProfile,
   ];
 
   return (
-    <Box
-      position="relative"
-      minHeight="100vh"
-      w="full"
-      overflow="hidden"
-      bg="transparent"
-    >
+    <Box position="relative" minHeight="100vh" w="full" overflow="hidden">
       <canvas
         id="gradient-canvas"
         data-js-darken-top
@@ -134,22 +209,47 @@ const Health = () => {
           zIndex: -1,
         }}
       ></canvas>
-      <Box position="relative" minHeight="100vh" py={12}>
-        <Container maxW="container.xl">
-          <VStack spacing={8} align="stretch">
-            <Heading size="xl" textAlign="center" color="black">
-              Your Health Summary
-            </Heading>
-            <SimpleGrid columns={[1, 2, 3, 4]} spacing={6}>
-              {healthCategories.map((category) => (
-                <HealthCard key={category.name} category={category} />
-              ))}
-            </SimpleGrid>
-          </VStack>
-        </Container>
-      </Box>
+      <Container maxW="container.xl" py={12}>
+        <VStack spacing={8} align="stretch">
+          <Heading size="xl" textAlign="center" mb={6} color="white">
+            Your Health Summary
+          </Heading>
+          <Box
+            borderWidth={1}
+            borderColor={borderColor}
+            borderRadius="md"
+            overflow="hidden"
+            bg={bgColor}
+          >
+            <Tabs
+              index={selectedIndex}
+              onChange={setSelectedIndex}
+              variant="unstyled"
+            >
+              <TabList borderBottomWidth={1} borderColor={borderColor}>
+                <HStack spacing={0} overflowX="auto" py={2} px={4}>
+                  {healthCategories.map((category, index) => (
+                    <HealthSystemTab
+                      key={category.name}
+                      category={category}
+                      isSelected={index === selectedIndex}
+                    />
+                  ))}
+                </HStack>
+              </TabList>
+              <TabPanels>
+                {healthCategories.map((category) => (
+                  <TabPanel key={category.name} p={6}>
+                    <HealthSystemContent category={category} />
+                  </TabPanel>
+                ))}
+              </TabPanels>
+            </Tabs>
+          </Box>
+        </VStack>
+      </Container>
     </Box>
   );
 };
 
-export default Health;
+export default HealthPanel;

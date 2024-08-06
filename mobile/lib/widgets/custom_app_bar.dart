@@ -316,7 +316,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
+    /* return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: InkWell(
@@ -368,6 +368,25 @@ class _CustomAppBarState extends State<CustomAppBar> {
             ),
           ),
         ),
+      ],
+    ); */
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      forceMaterialTransparency: true,
+      leading: Container(),
+      actions: [
+        InkWell(
+          onTap: () {
+            _showBottomSheet(context);
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Icon(
+              Icons.settings_outlined,
+              size: 50,
+            ),
+          ),
+        )
       ],
     );
   }

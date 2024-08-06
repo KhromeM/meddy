@@ -117,7 +117,7 @@ export const Hero = ({ login }) => {
                     onClick={() => {
                       window.location.href = "/dashboard/chat";
                     }}
-                    className="download-button"
+                    className="custom-button"
                     rightIcon={
                       <Image
                         src="/assets/svg-1.svg"

@@ -1,21 +1,33 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Text, Flex, Image } from "@chakra-ui/react";
 import ReactMarkdown from "react-markdown";
 import { CheckCircleIcon, WarningIcon } from "@chakra-ui/icons";
 import { useAuth } from "../firebase/AuthService";
+import { getImage } from "../server/imageHandler";
 
 const Message = ({ message, isStreaming }) => {
-  const { text, source, isAudio, result, imageUrl } = message;
+  const { text, source, isAudio, result } = message;
   const isUser = source === "user";
   const { user } = useAuth();
   let userName = user?.displayName || "You";
   userName = userName.split(" ")[0];
-
+  const [image, setImage] = useState(null);
   //this is sean trying to debug the empty chat box underneath the chat message displaying the audio
   if (!text && !isAudio) {
     return null;
   }
 
+  const fetchImage = async () => {
+    const response = await getImage({ name: message.imageid}, user);
+    if (response.status == 200) {
+      setImage(response.data);
+    }
+  };
+  useEffect(() => {
+    if (isUser && message.imageid) {
+      fetchImage();
+    }
+  }, [message.imageid, isUser]);
   const getBackgroundColor = () => {
     if (!result) return isUser ? "white" : "#fff2e4";
     return result.success ? "green.50" : "red.50";
@@ -59,9 +71,9 @@ const Message = ({ message, isStreaming }) => {
           ...
         </Text>
       )}
-      {isUser && imageUrl ? (
+      {isUser && image ? (
         <Box h={"100%"} maxHeight={"400px"} maxWidth={"400px"} mt={4}>
-          <Image w={"100%"} h={"100%"} src={imageUrl} alt="Image" />
+          <Image w={"100%"} h={"100%"} src={image} alt="Image" />
         </Box>
       ) : null}
     </Box>

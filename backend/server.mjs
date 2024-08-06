@@ -18,6 +18,7 @@ import errorHandler from "./server/middleware/errorHandler.mjs";
 import { setupErrorHandlers } from "./extra/errorHandlers.mjs";
 import credentialsRoutes from "./server/routes/credentialsRoutes.mjs";
 import medicalRecordRoutes from "./server/routes/medicalRecordRoutes.mjs";
+import gFitRoutes from "./server/routes/gfitRoutes.mjs";
 
 setupErrorHandlers();
 
@@ -43,6 +44,8 @@ app.use("/api/medplum", medplumRoutes);
 app.use("/api/image", imageRoutes);
 app.use("/api/credentials", credentialsRoutes);
 app.use("/api/medical-record", medicalRecordRoutes);
+app.use("/api/gfit", gFitRoutes);
+
 app.use(errorHandler);
 
 export const server = createServer(app);

@@ -1,13 +1,25 @@
 import { getTotalMedicalRecordsByUserId } from "../../db/dbMedicalRecords.mjs";
+import { createTotalSummary } from "../../utils/summarizeFHIR.mjs";
 
 export const getTotalMedicalRecordsByUserIdController = async (req, res) => {
 	try {
-		const { userId } = req.params;
-		const records = await getTotalMedicalRecordsByUserId(userId);
+		const user = req._dbUser;
+		const records = await getTotalMedicalRecordsByUserId(user.userid);
 		if (records.length == 0) {
 			records.push(defaultRecord);
 		}
 		res.status(200).json(records[0]);
+	} catch (error) {
+		console.error("Error in getTotalMedicalRecordsByUserIdController:", error);
+		res.status(500).json({ error: "Internal server error" });
+	}
+};
+
+export const generateTotalReportController = async (req, res) => {
+	try {
+		const user = req._dbUser;
+		getTotalMedicalRecordsByUserId(user.userid);
+		res.status(200).json("Attempting to generate comprehensive report");
 	} catch (error) {
 		console.error("Error in getTotalMedicalRecordsByUserIdController:", error);
 		res.status(500).json({ error: "Internal server error" });

@@ -18,8 +18,7 @@ const readFileAsBase64 = (file) => {
 	});
 };
 export const uploadImage = async (file, user) => {
-	const token = user?.stsTokenManager?.accessToken;
-	const userid = user?.uid;
+	const token = user?.stsTokenManager?.accessToken;  
 	const base64data = await readFileAsBase64(file);
 	const payload = {
 		image: {
@@ -30,7 +29,7 @@ export const uploadImage = async (file, user) => {
 	};
 	try {
 		const response = await axios.post(
-			`${baseUrl}/image?userId=${userid}`,
+			`${baseUrl}/image`,
 			payload,
 			{
 				headers: {
@@ -48,14 +47,13 @@ export const uploadImage = async (file, user) => {
 	}
 };
 
-export const getImage = (file, user) => {
-	const token = user?.stsTokenManager?.accessToken;
-	const userid = user?.uid;
+export const getImage = async (file, user) => {
+	const token = user?.stsTokenManager?.accessToken; 
 	const fileName = file?.name;
 
 	try {
-		const response = axios.get(
-			`${baseUrl}/image/base64?image=${fileName}&userId=${userid}`,
+		const response = await axios.get(
+			`${baseUrl}/image/base64?image=${fileName}`,
 			{
 				headers: {
 					"Content-Type": "application/json",
