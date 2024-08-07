@@ -17,7 +17,7 @@ class BottomBar extends StatelessWidget {
     return Theme(
       data: Theme.of(context),
       child: Container(
-        height: MediaQuery.of(context).size.height * .12,
+        height: MediaQuery.of(context).size.height * .11,
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
