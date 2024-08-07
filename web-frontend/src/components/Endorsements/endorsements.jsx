@@ -44,6 +44,7 @@ export const Endorsements = () => {
 
   useEffect(() => {
     const ul = reviewsRef.current;
+    const ulReverse = reviewsRefReverse.current;
   }, []);
 
   const handleMouseEnter = (ref) => {
@@ -82,10 +83,10 @@ export const Endorsements = () => {
         </div>
         <div className="reviews-container">
           <ul
-            ref={reviewsRef}
+            ref={reviewsRefReverse}
             className="reviews-reverse"
-            onMouseEnter={() => handleMouseEnter(reviewsRef)}
-            onMouseLeave={() => handleMouseLeave(reviewsRef)}
+            onMouseEnter={() => handleMouseEnter(reviewsRefReverse)}
+            onMouseLeave={() => handleMouseLeave(reviewsRefReverse)}
           >
             {reviews.map((review, index) => (
               <li key={index} className="review-item">

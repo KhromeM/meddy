@@ -5,16 +5,18 @@
   width: 100%;
 }
 
-.reviews-list {
+.reviews-list, .reviews-reverse {
   display: flex;
   flex-direction: row;
-  animation: scroll 60s linear infinite; /* Adjust the duration as needed */
+
+}
+
+.reviews-list {
+  animation: scroll 60s linear infinite;
 }
 
 .reviews-reverse {
-  display: flex;
-  flex-direction: row;
-  animation: scroll1 60s linear infinite; /* Reverse animation */
+  animation: scrollReverse 60s linear infinite;
 }
 
 .review-item {
@@ -54,19 +56,18 @@
 
 @keyframes scroll {
   0% {
-    transform: translateX(0%);
+    transform: translateX(100%);
   }
   100% {
     transform: translateX(-100%);
   }
 }
 
-@keyframes scroll1 {
+@keyframes scrollReverse {
   0% {
-    transform: translateX(100%);
+    transform: translateX(-100%);
   }
   100% {
-    transform: translateX(0%);
+    transform: translateX(100%);
   }
-
 }
