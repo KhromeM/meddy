@@ -16,7 +16,7 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [audioMode, setAudioMode] = useState(false);
   const [inProgress, setInProgress] = useState(false);
-  const [messageBuffer, setMessageBuffer] = useState({});
+  const [messageBuffer, setMessageBuffer] = useState({}); 
   const [imageUploaded, setImageUploaded] = useState();
   const { user } = useAuth();
   const messagesEndRef = useRef(null);
@@ -209,7 +209,7 @@ const Chat = () => {
   const sendMessage = async (message) => {
     const text = message.text;
     const reqId = uuidv4();
-    const imageid = message.imageName;
+	const imageid = message.imageName;
     addMessageToChatHistory("user", text, reqId + "_user", imageid);
     setInProgress(true);
     setImageUploaded(null);
@@ -229,7 +229,7 @@ const Chat = () => {
 
   const imageUploadResponse = async (file) => {
     const response = await getImage(file, user);
-    if (response.status == 200) {
+    if (response.status == 200) { 
       setImageUploaded(response.data);
     }
   };
@@ -244,6 +244,7 @@ const Chat = () => {
 
   return (
     <Flex direction="column" h="100vh" bg="fef9ef">
+      <Navbar />
       <Flex flex={1} direction="column" overflow="hidden">
         <Box flex={1} overflowY="auto">
           {messages.length === 0 ? (
