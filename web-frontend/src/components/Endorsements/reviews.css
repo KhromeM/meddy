@@ -6,17 +6,15 @@
 }
 
 .reviews-list, .reviews-reverse {
-  display: flex;
-  flex-direction: row;
-
+  display: inline-flex;
 }
 
 .reviews-list {
-  animation: scroll 60s linear infinite;
+  animation: scroll 30s linear infinite;
 }
 
 .reviews-reverse {
-  animation: scrollReverse 60s linear infinite;
+  animation: scrollReverse 30s linear infinite;
 }
 
 .review-item {
@@ -56,18 +54,18 @@
 
 @keyframes scroll {
   0% {
-    transform: translateX(100%);
+    transform: translateX(0%);
   }
   100% {
-    transform: translateX(-100%);
+    transform: translateX(-50%);
   }
 }
 
 @keyframes scrollReverse {
   0% {
-    transform: translateX(-100%);
+    transform: translateX(-50%);
   }
   100% {
-    transform: translateX(100%);
+    transform: translateX(0%);
   }
 }
