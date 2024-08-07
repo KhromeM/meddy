@@ -1,3 +1,4 @@
+import 'package:aura_box/aura_box.dart';
 import 'package:flutter/material.dart';
 import 'package:meddymobile/services/auth_service.dart';
 import 'package:meddymobile/widgets/main_background.dart';
@@ -6,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:meddymobile/services/appointment_service.dart';
 import 'package:meddymobile/widgets/new_reminder_bottom_sheet.dart';
 import 'package:meddymobile/utils/languages.dart';
+import 'package:motion/motion.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -180,41 +182,63 @@ class _ReminderPageState extends State<ReminderPage> {
         int? repeat = reminder['hoursuntilrepeat'];
         String repeat_text =
             repeat == 24 || repeat == null ? 'Once a day' : 'Every $repeat hs';
-        reminderCards.add(Card(
-            color: lightGreen,
+        reminderCards.add(Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(20.0),
+                border: Border.all(color: Theme.of(context).primaryColor),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.3),
+                    spreadRadius: 0,
+                    blurRadius: 10,
+                    offset: Offset(7, 7), // changes position of shadow
+                  ),
+                ]),
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          reminder['medicationname'],
-                          style: TextStyle(fontSize: 20, color: Colors.black),
-                        ),
-                        SizedBox(width: 15),
-                        Text(
-                          fullTime.substring(0, fullTime.length - 3),
-                          style: TextStyle(fontSize: 18, color: Colors.black),
-                        ),
-                        SizedBox(width: 15),
-                        Text(
-                          repeat_text,
-                          style: TextStyle(fontSize: 18, color: Colors.black),
-                        ),
-                      ],
+                    Text(
+                      reminder['medicationname'],
+                      style: TextStyle(
+                          fontSize: 20, color: Theme.of(context).primaryColor),
                     ),
-                    IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => {
-                              print(reminder['reminderid']),
-                              _removeReminder(reminder['reminderid']),
-                              _fetchAppointments()
-                            }),
-                  ]),
-            )));
+                    SizedBox(width: 15),
+                    Text(
+                      fullTime.substring(0, fullTime.length - 3),
+                      style: TextStyle(
+                          fontSize: 18, color: Theme.of(context).primaryColor),
+                    ),
+                    SizedBox(width: 15),
+                    Text(
+                      repeat_text,
+                      style: TextStyle(
+                          fontSize: 18, color: Theme.of(context).primaryColor),
+                    ),
+                  ],
+                ),
+                SizedBox(width: 15),
+                IconButton(
+                    icon: Icon(
+                      Icons.close,
+                      color: Colors.redAccent,
+                      size: 30,
+                    ),
+                    onPressed: () => {
+                          print(reminder['reminderid']),
+                          _removeReminder(reminder['reminderid']),
+                          _fetchAppointments()
+                        }),
+              ]),
+            ),
+          ),
+        ));
       }
     });
     return reminderCards;
@@ -227,7 +251,7 @@ class _ReminderPageState extends State<ReminderPage> {
       builder: (context, languageProvider, child) {
         return Stack(
           children: [
-            MainBackground(),
+            //MainBackground(),
             Scaffold(
               extendBodyBehindAppBar: true,
               backgroundColor: Colors.transparent,
@@ -317,7 +341,7 @@ class _ReminderPageState extends State<ReminderPage> {
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)),
-                  backgroundColor: orangeAccent,
+                  backgroundColor: Color.fromRGBO(1, 99, 218, 1),
                 ),
                 onPressed: _showAddReminderBottomSheet,
                 child: Row(
