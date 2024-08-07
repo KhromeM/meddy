@@ -46,7 +46,7 @@ class _MicPageState extends State<MicPage> {
       amplitude: 0.1,
       color: Colors.white,
       frequency: 6,
-      speed: 0.3,
+      speed: 0.1,
     );
 
     // handlers
@@ -168,7 +168,7 @@ class _MicPageState extends State<MicPage> {
 
       // Check if the transcribed text is empty and set a default message if it is
       if (_transcribedText.trim().isEmpty) {
-        _transcribedText = 'describe this image';
+        _transcribedText = '';
       }
 
       final newMessage = Message(

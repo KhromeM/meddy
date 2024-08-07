@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:meddymobile/pages/chat_page.dart';
-import 'package:meddymobile/pages/health_page.dart';
-import 'package:meddymobile/pages/reminder_page.dart';
-import 'package:meddymobile/providers/chat_provider.dart';
+
 import 'package:meddymobile/utils/app_colors.dart';
 import 'package:meddymobile/services/auth_service.dart';
 import 'package:meddymobile/pages/signin_page.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:meddymobile/utils/languages.dart';
 import 'package:meddymobile/widgets/high_contrast_mode.dart';
 import 'package:meddymobile/widgets/spinning_logo.dart';
@@ -253,20 +249,19 @@ class _CustomAppBarState extends State<CustomAppBar> {
             _showBottomSheet(context);
           },
           child: Padding(
-           padding: EdgeInsets.only(
-            top: 5.0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            ),
-            child: SpinningLogo(
-              initialSpeed: 0.3,
-              height: 100,
-              width: 120,
-              isVary: false,
-              speedNotifier: _speedNotifier,
-            )
-          ),
+              padding: EdgeInsets.only(
+                top: 5.0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              ),
+              child: SpinningLogo(
+                initialSpeed: 0.3,
+                height: 100,
+                width: 120,
+                isVary: false,
+                speedNotifier: _speedNotifier,
+              )),
         )
       ],
     );
