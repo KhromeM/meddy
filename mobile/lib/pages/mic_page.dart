@@ -265,11 +265,29 @@ class _MicPageState extends State<MicPage> {
     }
   }
 
+  String _truncateMeddyResponse(String text) {
+    if (text.length <= 100) return text;
+    return '${text.substring(0, 100)} . . .';
+  }
+
+  String _truncateUserChat(String text) {
+    if (text.length <= 100) return text;
+
+    // Get the part after the first 100 characters
+    String lastPart = text.substring(100);
+
+    // If the remaining text is less than or equal to 100 characters, show the last 100 characters
+    if (lastPart.length <= 100) {
+      lastPart = text.substring(text.length - 100);
+    }
+
+    return ' . . . $lastPart';
+  }
+
   @override
   Widget build(BuildContext context) {
-    String truncatedResponse = _llmResponse.length > 100
-        ? _llmResponse.substring(0, 100) + '...'
-        : _llmResponse;
+    String truncatedResponse = _truncateMeddyResponse(_llmResponse);
+    String truncatedTranscription = _truncateUserChat(_transcribedText);
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -379,7 +397,7 @@ class _MicPageState extends State<MicPage> {
                           children: [
                             Expanded(
                               child: Text(
-                                "${widget.userName}: $_transcribedText",
+                                "${widget.userName}: $truncatedTranscription",
                                 style: TextStyle(
                                     fontSize: 18, color: Colors.white),
                                 textAlign: TextAlign.center,
