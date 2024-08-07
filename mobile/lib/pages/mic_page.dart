@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:meddymobile/utils/ws_connection.dart';
 import 'package:meddymobile/services/recorder_service.dart';
+import 'package:meddymobile/services/player_service.dart';
 import 'package:meddymobile/providers/chat_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:meddymobile/models/message.dart';
@@ -20,6 +21,7 @@ class MicPage extends StatefulWidget {
 class _MicPageState extends State<MicPage> {
   late WSConnection wsConnection;
   late RecorderService recorderService;
+  late PlayerService playerService;
   final Uuid _uuid = Uuid();
   bool _isRecording = false;
   String _reqId = '';
@@ -34,13 +36,14 @@ class _MicPageState extends State<MicPage> {
     // ws connect
     wsConnection = WSConnection();
     recorderService = RecorderService(wsConnection);
+    playerService = PlayerService(wsConnection);
 
     // siri wave constructor
     siriController = IOS7SiriWaveformController(
-      amplitude: 0.5,
+      amplitude: 0.8,
       color: Colors.white,
       frequency: 6,
-      speed: 0.6,
+      speed: 0.3,
     );
 
     // handlers
@@ -66,10 +69,14 @@ class _MicPageState extends State<MicPage> {
   void dispose() {
     // Dispose services
     recorderService.dispose();
+    playerService.dispose();
     super.dispose();
   }
 
   Future<void> _startRecording() async {
+    // Stop any audio playback when starting recording
+    await playerService.stopPlayback();
+
     bool isRecording = await recorderService.toggleRecording();
     if (mounted) {
       setState(() {
@@ -90,6 +97,8 @@ class _MicPageState extends State<MicPage> {
         setState(() {
           _isRecording = false;
         });
+        playerService
+            .playQueuedAudio(); // Play the queued audio after stopping recording
       }
     }
   }
@@ -112,33 +121,55 @@ class _MicPageState extends State<MicPage> {
         text: _llmResponse,
         time: DateTime.now(),
       );
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Provider.of<ChatProvider>(context, listen: false)
-            .addMessage(newMessage);
-      });
+      if (mounted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            Provider.of<ChatProvider>(context, listen: false)
+                .addMessage(newMessage);
+            playerService.playQueuedAudio(); // Play Meddy's response
+          }
+        });
+      }
     }
   }
 
   void _handleTranscription(dynamic message) {
     final String text = message['data'];
+    final bool isComplete = message['isComplete'] ?? false;
 
-    if (message['isComplete'] ?? false) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          setState(() {
-            _transcribedText += text + ' ';
-          });
-          final newMessage = Message(
-            messageId: _reqId + "_user",
-            userId: "DEVELOPER",
-            source: "user",
-            text: _transcribedText,
-            time: DateTime.now(),
-          );
-          Provider.of<ChatProvider>(context, listen: false)
-              .addMessage(newMessage);
-        }
-      });
+    if (!isComplete) {
+      if (mounted) {
+        setState(() {
+          _transcribedText += text;
+        });
+      }
+    } else {
+      if (mounted) {
+        setState(() {
+          _transcribedText = text;
+        });
+      }
+
+      // Check if the transcribed text is empty and set a default message if it is
+      if (_transcribedText.trim().isEmpty) {
+        _transcribedText = 'describe this image';
+      }
+
+      final newMessage = Message(
+        messageId: _reqId + "_user",
+        userId: "DEVELOPER",
+        source: "user",
+        text: _transcribedText,
+        time: DateTime.now(),
+      );
+      if (mounted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            Provider.of<ChatProvider>(context, listen: false)
+                .addMessage(newMessage);
+          }
+        });
+      }
     }
   }
 
@@ -290,6 +321,8 @@ class _MicPageState extends State<MicPage> {
                       FloatingActionButton(
                         heroTag: "close_button",
                         onPressed: () {
+                          playerService
+                              .stopPlayback(); // Stop audio playback when exiting the page
                           Navigator.pop(context);
                         },
                         backgroundColor: Colors.red,
