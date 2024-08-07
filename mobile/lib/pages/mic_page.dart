@@ -12,7 +12,9 @@ import 'package:siri_wave/siri_wave.dart';
 import 'package:aura_box/aura_box.dart';
 
 class MicPage extends StatefulWidget {
-  const MicPage({super.key});
+  final String userName;
+
+  const MicPage({super.key, required this.userName});
 
   @override
   State<MicPage> createState() => _MicPageState();
@@ -28,6 +30,7 @@ class _MicPageState extends State<MicPage> {
   String _transcribedText = '';
   String _llmResponse = '';
   late IOS7SiriWaveformController siriController;
+  bool _isMeddySpeaking = false;
 
   @override
   void initState() {
@@ -40,7 +43,7 @@ class _MicPageState extends State<MicPage> {
 
     // siri wave constructor
     siriController = IOS7SiriWaveformController(
-      amplitude: 0.8,
+      amplitude: 0.1,
       color: Colors.white,
       frequency: 6,
       speed: 0.3,
@@ -81,6 +84,9 @@ class _MicPageState extends State<MicPage> {
     if (mounted) {
       setState(() {
         _isRecording = isRecording;
+        _isMeddySpeaking = false;
+        siriController.amplitude = _isRecording ? 0.8 : 0.1;
+        siriController.color = _isRecording ? Colors.white : Colors.blue;
         if (_isRecording) {
           _reqId = _uuid.v4();
           _transcribedText = '';
@@ -96,6 +102,8 @@ class _MicPageState extends State<MicPage> {
       if (mounted) {
         setState(() {
           _isRecording = false;
+          siriController.amplitude = 0.1;
+          siriController.color = Colors.white;
         });
         playerService
             .playQueuedAudio(); // Play the queued audio after stopping recording
@@ -110,6 +118,9 @@ class _MicPageState extends State<MicPage> {
     if (mounted) {
       setState(() {
         _llmResponse += text;
+        _isMeddySpeaking = true;
+        siriController.amplitude = 0.8;
+        siriController.color = Colors.blue;
       });
     }
 
@@ -127,6 +138,11 @@ class _MicPageState extends State<MicPage> {
             Provider.of<ChatProvider>(context, listen: false)
                 .addMessage(newMessage);
             playerService.playQueuedAudio(); // Play Meddy's response
+            setState(() {
+              _isMeddySpeaking = false;
+              siriController.amplitude = 0.1;
+              siriController.color = Colors.white;
+            });
           }
         });
       }
@@ -291,7 +307,7 @@ class _MicPageState extends State<MicPage> {
                       child: Container(
                         padding: EdgeInsets.all(10.0),
                         child: Text(
-                          "User: $_transcribedText",
+                          "${widget.userName}: $_transcribedText",
                           style: TextStyle(fontSize: 18, color: Colors.white),
                           textAlign: TextAlign.center,
                         ),
