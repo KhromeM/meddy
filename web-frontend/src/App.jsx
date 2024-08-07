@@ -3,6 +3,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom"; // Updated import
 import { LandingPage } from "./components/LandingPage";
 import Chat from "./components/Chat.jsx";
+import AudioChat from "./components/AudioChat.jsx";
 import "./styles/chat.css";
 import { AuthProvider } from "./firebase/AuthService.jsx";
 import customTheme from "./theme";
@@ -30,6 +31,7 @@ function App() {
             {/* Changed element to component */}
             {/* Commented out Chat and Recommendations */}
             <Route path="/chat" component={Chat} />
+            <Route path="/audiochat" component={AudioChat} />
             <Route path="/EVI" component={EVI} />
             <Route path="/contact" component={Contact} />
             <Route path="/about" component={AboutUsPage} />

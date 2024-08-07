@@ -63,8 +63,10 @@ const Chat = () => {
     }
   };
   const chatHistory = async () => {
-    const chatHistory = (await getChatHistory(user)) || [];
-    if (chatHistory.length > 0) setMessages(chatHistory);
+    if(user){
+      const chatHistory = (await getChatHistory(user)) || [];
+      if (chatHistory.length > 0) setMessages(chatHistory);
+    }
   };
 
   useEffect(() => {
