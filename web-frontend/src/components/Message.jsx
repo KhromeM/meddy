@@ -13,9 +13,6 @@ const Message = ({ message, isStreaming }) => {
   userName = userName.split(" ")[0];
   const [image, setImage] = useState(null);
   //this is sean trying to debug the empty chat box underneath the chat message displaying the audio
-  if (!text && !isAudio) {
-    return null;
-  }
 
   const fetchImage = async () => {
     const response = await getImage({ name: message.imageid}, user);
@@ -28,6 +25,11 @@ const Message = ({ message, isStreaming }) => {
       fetchImage();
     }
   }, [message.imageid, isUser]);
+
+  if (!text && !isAudio) {
+    return null;
+  }
+
   const getBackgroundColor = () => {
     if (!result) return isUser ? "white" : "#fff2e4";
     return result.success ? "green.50" : "red.50";
