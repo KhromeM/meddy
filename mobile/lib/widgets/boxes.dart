@@ -12,9 +12,9 @@ class Boxes extends StatelessWidget {
   final bool isHighContrast;
 
   final List<String> images = [
-    'assets/images/i1.jpeg',
-    'assets/images/i4.png',
-    'assets/images/i2.png',
+    'assets/images/c2.webp',
+    'assets/images/i4up.png',
+    'assets/images/i2up.png',
     'assets/images/i3.png',
     'assets/images/i5.webp',
     'assets/images/i6.webp',
