@@ -10,6 +10,11 @@ import 'package:uuid/uuid.dart';
 import 'package:meddymobile/models/message.dart';
 import 'package:siri_wave/siri_wave.dart';
 import 'package:aura_box/aura_box.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:path/path.dart' as path;
+import 'package:image/image.dart' as img;
+import 'package:meddymobile/services/chat_service.dart';
 
 class MicPage extends StatefulWidget {
   final String userName;
@@ -31,6 +36,12 @@ class _MicPageState extends State<MicPage> {
   String _llmResponse = '';
   late IOS7SiriWaveformController siriController;
   bool _isMeddySpeaking = false;
+
+  final ImagePicker _picker = ImagePicker();
+  String? _previewImagePath;
+  bool _isSendingImage = false;
+
+  final ChatService _chatService = ChatService();
 
   @override
   void initState() {
@@ -80,11 +91,18 @@ class _MicPageState extends State<MicPage> {
     // Stop any audio playback when starting recording
     await playerService.stopPlayback();
 
+    // If there's a selected image, send it to the chat history
+    if (_previewImagePath != null) {
+      final String reqId = _uuid.v4();
+      await _sendImageMessage(reqId);
+    }
+
     bool isRecording = await recorderService.toggleRecording();
     if (mounted) {
       setState(() {
         _isRecording = isRecording;
         _isMeddySpeaking = false;
+        _previewImagePath = null; // Clear the selected image
         siriController.amplitude = _isRecording ? 0.8 : 0.1;
         siriController.color = _isRecording ? Colors.white : Colors.blue;
         if (_isRecording) {
@@ -108,6 +126,64 @@ class _MicPageState extends State<MicPage> {
         playerService
             .playQueuedAudio(); // Play the queued audio after stopping recording
       }
+    }
+  }
+
+  Future<File> _resizeImage(String imagePath) async {
+    final image = File(imagePath);
+    final bytes = await image.readAsBytes();
+    img.Image? originalImage = img.decodeImage(bytes);
+    if (originalImage == null) return image;
+
+    img.Image resizedImage = img.copyResize(originalImage, width: 800);
+    final resizedBytes = img.encodeJpg(resizedImage);
+    final resizedFile = File('${image.path}_resized.jpg')
+      ..writeAsBytesSync(resizedBytes);
+
+    return resizedFile;
+  }
+
+  Future<void> _selectImageFromCamera() async {
+    final image = await _picker.pickImage(source: ImageSource.camera);
+    if (image != null) {
+      final resizedImage = await _resizeImage(image.path);
+      setState(() {
+        _previewImagePath = resizedImage.path;
+      });
+    }
+  }
+
+  Future<void> _sendImageMessage(String reqId) async {
+    if (_previewImagePath != null) {
+      String imageBaseName = path.basename(_previewImagePath!);
+      await _chatService.uploadImage(_previewImagePath!);
+
+      final newMessage = Message(
+        messageId: reqId + "_user",
+        userId: "DEVELOPER",
+        source: "user",
+        imageID: imageBaseName,
+        text: 'Image selected',
+        time: DateTime.now(),
+      );
+
+      if (mounted) {
+        Provider.of<ChatProvider>(context, listen: false)
+            .addMessage(newMessage);
+      }
+
+      setState(() {
+        _previewImagePath = null;
+      });
+
+      wsConnection.sendMessage({
+        'type': 'chat',
+        'data': {
+          'text': 'describe this image',
+          'image': imageBaseName,
+          'reqId': reqId
+        }
+      });
     }
   }
 
@@ -189,18 +265,11 @@ class _MicPageState extends State<MicPage> {
     }
   }
 
-  String _truncateResponse(String response) {
-    // Ensure truncation if response length exceeds a certain length
-    if (response.length > 100) {
-      return response.substring(0, 100) + '...';
-    } else {
-      return response;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    String truncatedResponse = _truncateResponse(_llmResponse);
+    String truncatedResponse = _llmResponse.length > 100
+        ? _llmResponse.substring(0, 100) + '...'
+        : _llmResponse;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -306,10 +375,30 @@ class _MicPageState extends State<MicPage> {
                       ),
                       child: Container(
                         padding: EdgeInsets.all(10.0),
-                        child: Text(
-                          "${widget.userName}: $_transcribedText",
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                          textAlign: TextAlign.center,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                "${widget.userName}: $_transcribedText",
+                                style: TextStyle(
+                                    fontSize: 18, color: Colors.white),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            if (_previewImagePath != null)
+                              Container(
+                                margin: EdgeInsets.only(left: 10),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(16.0),
+                                  child: Image.file(
+                                    File(_previewImagePath!),
+                                    width: 100,
+                                    height: 130,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
                       ),
                     ),
@@ -321,7 +410,7 @@ class _MicPageState extends State<MicPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       FloatingActionButton(
                         heroTag: "mic_button",
@@ -334,6 +423,18 @@ class _MicPageState extends State<MicPage> {
                           color: Colors.black,
                         ),
                       ),
+                      SizedBox(width: 10),
+                      FloatingActionButton(
+                        heroTag: "camera_button",
+                        onPressed: _selectImageFromCamera,
+                        backgroundColor: Colors.white,
+                        shape: CircleBorder(),
+                        child: Icon(
+                          Icons.camera_alt,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Spacer(),
                       FloatingActionButton(
                         heroTag: "close_button",
                         onPressed: () {
