@@ -58,109 +58,110 @@ class _HealthPageState extends State<HealthPage> {
       children: [
         // MainBackground(),
         // BackdropFilter(
-          // filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          Scaffold(
+        // filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
             backgroundColor: Colors.transparent,
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                showActivityStatus = false;
-                              });
-                            },
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Summary',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: !showActivityStatus
-                                        ? Color.fromARGB(255, 0, 0, 0)
-                                        : Colors.black,
-                                  ),
-                                ),
-                                SizedBox(height: 4),
-                                Container(
-                                  height: 2,
-                                  width: 60,
+            forceMaterialTransparency: true,
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              showActivityStatus = false;
+                            });
+                          },
+                          child: Column(
+                            children: [
+                              Text(
+                                'Summary',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                   color: !showActivityStatus
                                       ? Color.fromARGB(255, 0, 0, 0)
-                                      : Colors.transparent,
+                                      : Colors.black,
                                 ),
-                              ],
-                            ),
+                              ),
+                              SizedBox(height: 4),
+                              Container(
+                                height: 2,
+                                width: 60,
+                                color: !showActivityStatus
+                                    ? Color.fromARGB(255, 0, 0, 0)
+                                    : Colors.transparent,
+                              ),
+                            ],
                           ),
-                          SizedBox(width: 16),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                showActivityStatus = true;
-                              });
-                            },
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Activity',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: showActivityStatus
-                                        ? Color.fromARGB(255, 0, 0, 0)
-                                        : Colors.black,
-                                  ),
-                                ),
-                                SizedBox(height: 4),
-                                Container(
-                                  height: 2,
-                                  width: 60,
+                        ),
+                        SizedBox(width: 16),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              showActivityStatus = true;
+                            });
+                          },
+                          child: Column(
+                            children: [
+                              Text(
+                                'Activity',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                   color: showActivityStatus
                                       ? Color.fromARGB(255, 0, 0, 0)
-                                      : Colors.transparent,
+                                      : Colors.black,
                                 ),
-                              ],
-                            ),
+                              ),
+                              SizedBox(height: 4),
+                              Container(
+                                height: 2,
+                                width: 60,
+                                color: showActivityStatus
+                                    ? Color.fromARGB(255, 0, 0, 0)
+                                    : Colors.transparent,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            body: _fitnessData == null || _medicalRecord == null
-                ? Center(child: CircularProgressIndicator())
-                : SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            showActivityStatus
-                                ? 'Health Activity'
-                                : 'Health Summary',
-                            style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: 16),
+              ),
+            ],
+          ),
+          body: _fitnessData == null || _medicalRecord == null
+              ? Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
                           showActivityStatus
-                              ? FitnessCard(fitnessData: _fitnessData!)
-                              : HealthSummaryCard(medicalRecord: _medicalRecord!),
-                        ],
-                      ),
+                              ? 'Health Activity'
+                              : 'Health Summary',
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 16),
+                        showActivityStatus
+                            ? FitnessCard(fitnessData: _fitnessData!)
+                            : HealthSummaryCard(medicalRecord: _medicalRecord!),
+                      ],
                     ),
                   ),
-          ),
+                ),
+        ),
         // ),
       ],
     );
