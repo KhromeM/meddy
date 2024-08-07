@@ -55,7 +55,7 @@ dependencies:
   image: ^4.2.0
   path: ^1.9.0
 
-  sound_stream: ^0.4.0
+  sound_stream: ^0.4.1
   fl_chart: ^0.68.0
   skeletonizer: ^1.4.2
   blur: ^4.0.0
