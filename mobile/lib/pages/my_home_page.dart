@@ -114,13 +114,22 @@ class _MyHomePageState extends State<MyHomePage> {
                   alignment: Alignment.center,
                   children: [
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.95,
-                      height: 100,
-                      decoration: BoxDecoration(
-                          color: Color.fromRGBO(1, 99, 218, 1),
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(20)),
+                    width: MediaQuery.of(context).size.width * 0.95,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(1, 99, 218, 1),
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color.fromARGB(255, 26, 21, 79).withOpacity(0.3),
+                          spreadRadius: 0,
+                          blurRadius: 4,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
                     ),
+                  ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -186,58 +195,88 @@ class _MyHomePageState extends State<MyHomePage> {
                 isHighContrast: highContrastMode?.isHighContrast ?? false,
               ),
               SizedBox(height: 15),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                Text(
-                  'Integrate with your favorite apps',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: const Color.fromARGB(255, 71, 71, 71)),
-                )
-              ]),
+              
               SizedBox(height: 5),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  /*      Container(
-                    height: 120,
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Color.fromRGBO(248, 210, 173, 1),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.95,
+                height: 145,
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(218, 130, 15, 1),
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color.fromARGB(255, 26, 21, 79).withOpacity(0.3),
+                      spreadRadius: 0,
+                      blurRadius: 4,
+                      offset: Offset(0, 4),
                     ),
-                  ), */
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 100,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10, bottom: 10),
+                      child: Text(
+                        'Integrate with your favorite apps',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
                           color: Colors.white,
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Center(
-                              child: Image.asset('assets/images/epic.png')),
-                        ),
                       ),
-                      SizedBox(width: 10),
-                      Container(
-                        width: 100,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          color: Colors.white,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 80, // Square dimensions
+                          height: 80, // Square dimensions
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color.fromARGB(255, 26, 21, 79).withOpacity(0.1),
+                                spreadRadius: 0,
+                                blurRadius: 4,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Center(
+                                child: Image.asset('assets/images/epic.png')),
+                          ),
                         ),
-                        child: Center(
-                            child: Image.asset('assets/images/googlefit.png')),
-                      ),
-                    ],
-                  ),
-                ],
-              )
+                        SizedBox(width: 20),
+                        Container(
+                          width: 80, // Square dimensions
+                          height: 80, // Square dimensions
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color.fromARGB(255, 26, 21, 79).withOpacity(0.1),
+                                spreadRadius: 0,
+                                blurRadius: 4,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Center(
+                                child: Image.asset('assets/images/googlefit.png')),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
