@@ -185,7 +185,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 texts: texts,
                 isHighContrast: highContrastMode?.isHighContrast ?? false,
               ),
-              SizedBox(height: 15),
+              SizedBox(height: 30),
               Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                 Text(
                   'Integrate with your favorite apps',
@@ -195,7 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       color: const Color.fromARGB(255, 71, 71, 71)),
                 )
               ]),
-              SizedBox(height: 5),
+              SizedBox(height: 20),
               Stack(
                 alignment: Alignment.center,
                 children: [
