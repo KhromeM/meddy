@@ -11,6 +11,7 @@ import 'package:meddymobile/pages/signin_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:meddymobile/utils/languages.dart';
 import 'package:meddymobile/widgets/high_contrast_mode.dart';
+import 'package:meddymobile/widgets/spinning_logo.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   @override
@@ -25,6 +26,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   String _firstName = 'User';
   String? _profileImageUrl;
   String _currentLanguage = 'English';
+  final ValueNotifier<double> _speedNotifier = ValueNotifier<double>(0.3);
 
   @override
   void initState() {
@@ -61,7 +63,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
   }
 
   Future<void> _showBottomSheet(BuildContext context) async {
-    return showModalBottomSheet(
+    _speedNotifier.value = 0.0; // Stop the spinning when bottom sheet opens
+    await showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
       isScrollControlled: true,
@@ -106,6 +109,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
         );
       },
     );
+    _speedNotifier.value = 0.3; // Resume spinning when bottom sheet closes
   }
 
   Widget _buildHighContrastToggle(StateSetter setModalState) {
@@ -124,37 +128,18 @@ class _CustomAppBarState extends State<CustomAppBar> {
               borderRadius: BorderRadius.circular(100),
             ),
             child: SizedBox(
-              width:
-                  50, // Adjust this value to control the icon's container size
-              height:
-                  50, // Adjust this value to control the icon's container size
+              width: 50,
+              height: 50,
               child: Icon(
                 Icons.accessibility_new,
                 color: highContrastMode?.isHighContrast == true
                     ? Colors.white
                     : Colors.black,
-                size: 40, // You can make this even larger now
+                size: 40,
               ),
             ),
           ),
         );
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //   children: [
-        //     Text(
-        //       languageProvider.translate('high_contrast_mode'),
-        //       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-        //     ),
-        //     Switch(
-        //       value: highContrastMode?.isHighContrast ?? false,
-        //       onChanged: (value) {
-        //         highContrastMode?.toggleHighContrastMode();
-        //         setModalState(() {}); // Force bottom sheet to rebuild
-        //         setState(() {}); // Force CustomAppBar to rebuild
-        //       },
-        //     ),
-        //   ],
-        // );
       },
     );
   }
@@ -258,60 +243,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    /* return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      leading: InkWell(
-        onTap: () {
-          _showBottomSheet(context);
-        },
-        child: Padding(
-          padding:
-              const EdgeInsets.only(left: 14.0, top: 0, bottom: 0, right: 0),
-          child: SvgPicture.asset(
-            'assets/images/logo_image.svg',
-            fit: BoxFit.contain,
-          ),
-        ),
-      ),
-      actions: [
-        InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    Provider.of<ChatProvider>(context, listen: false).isLoading
-                        ? Scaffold(
-                            body: Center(child: CircularProgressIndicator()))
-                        : ChatPage(),
-              ),
-            );
-          },
-          child: Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Icon(
-                  Icons.circle,
-                  size: 60,
-                  color: Colors.black,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: FaIcon(
-                    FontAwesomeIcons.penToSquare,
-                    size: 20,
-                    color: Colors.white,
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-      ],
-    ); */
     return AppBar(
       backgroundColor: Colors.transparent,
       forceMaterialTransparency: true,
@@ -322,11 +253,19 @@ class _CustomAppBarState extends State<CustomAppBar> {
             _showBottomSheet(context);
           },
           child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Icon(
-              Icons.settings_outlined,
-              size: 50,
+           padding: EdgeInsets.only(
+            top: 5.0,
+            left: 0,
+            right: 0,
+            bottom: 0,
             ),
+            child: SpinningLogo(
+              initialSpeed: 0.3,
+              height: 100,
+              width: 120,
+              isVary: false,
+              speedNotifier: _speedNotifier,
+            )
           ),
         )
       ],
