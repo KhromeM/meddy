@@ -12,7 +12,7 @@ import { EVI } from "./components/EVI.jsx";
 import { Contact } from "./components/Contact.jsx";
 import { AboutUsPage } from "./components/about.jsx";
 import PrivacyPolicy from "./components/PrivacyPolicy.jsx";
-import Health from "./components/Health/Health.jsx";
+import Health from "./components/Health.jsx"
 import Dashboard from "./layouts/Admin";
 import VoiceMode from "./views/Dashboard/MeddyVoiceMode";
 
