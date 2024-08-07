@@ -9,45 +9,17 @@ import {
   Divider,
   Select,
   Flex,
-  Tooltip,
+  VStack,
 } from "@chakra-ui/react";
 import { FaPills } from "react-icons/fa";
-import { TbLetterS, TbLetterL, TbTestPipe } from "react-icons/tb";
-
-const ActionItem = ({ action, isLongTerm }) => (
-  <Tooltip
-    openDelay={1000}
-    label={isLongTerm ? "Long Term Suggestion" : "Short Term Suggestion"}
-    placement="top-start"
-    bg="#FACC87"
-    borderRadius="xl"
-    mb={-5}
-  >
-    <Box
-      borderWidth={1}
-      borderRadius="md"
-      p={3}
-      bg={isLongTerm ? "blue.50" : "green.50"}
-      borderColor={isLongTerm ? "blue.200" : "green.200"}
-    >
-      <Flex align="center">
-        <Icon
-          as={isLongTerm ? TbLetterL : TbLetterS}
-          color={isLongTerm ? "blue.500" : "green.500"}
-          boxSize={5}
-          mr={3}
-        />
-        <Text>{action}</Text>
-      </Flex>
-    </Box>
-  </Tooltip>
-);
+import { TbClock, TbCalendarTime, TbTestPipe } from "react-icons/tb";
 
 const TestDetails = ({ test }) => (
   <Box mb={3}>
     <Heading size="md" mb={2}>
       {test.name}
     </Heading>
+    {/* Progress Bar Here */}
     <Text>Name: {test.name || "N/A"}</Text>
     <Text>Result: {test.result || "N/A"}</Text>
     <Text>Range: {test.range || "N/A"}</Text>
@@ -123,7 +95,7 @@ const Recommendations = ({ medData }) => {
           ))}
         </Select>
       </Flex>
-      <TestDetails test={getCurrentTest()} score={medData.score} />
+      <TestDetails test={getCurrentTest()} />
 
       <Heading size="md" mb={2}>
         Recommendations
@@ -132,18 +104,57 @@ const Recommendations = ({ medData }) => {
         Based on your {medData.name.toLowerCase()} health score, here are some
         recommendations to improve your health:
       </Text>
-      <SimpleGrid columns={1} spacing={4} width="100%">
-        {medData.actionPlan.shortTerm.map((action, index) => (
-          <ActionItem
-            key={`short-${index}`}
-            action={action}
-            isLongTerm={false}
-          />
-        ))}
-        {medData.actionPlan.longTerm.map((action, index) => (
-          <ActionItem key={`long-${index}`} action={action} isLongTerm={true} />
-        ))}
-      </SimpleGrid>
+      <VStack spacing={4} width="100%" align="stretch">
+        <Box bg="blue.100" p={3} borderRadius="xl">
+          <Flex align="center" mb={3}>
+            <Icon as={TbClock} color="blue.500" boxSize={6} mr={1.5} />
+            <Heading size="sm" color="blue.500">
+              Short Term Recommendations
+            </Heading>
+          </Flex>
+          <SimpleGrid columns={1} spacing={1}>
+            {medData.actionPlan.shortTerm.map((action, index) => (
+              <Box
+                key={index}
+                borderWidth={1}
+                borderRadius="md"
+                p={4}
+                bg="white"
+                borderColor="blue.300"
+                _hover={{ boxShadow: "md", transform: "translateY(-2px)" }}
+                transition="all 0.2s"
+              >
+                <Text>{action}</Text>
+              </Box>
+            ))}
+          </SimpleGrid>
+        </Box>
+
+        <Box bg="purple.100" p={3} borderRadius="xl">
+          <Flex align="center" mb={3}>
+            <Icon as={TbCalendarTime} color="purple.500" boxSize={6} mr={1.5} />
+            <Heading size="sm" color="purple.500">
+              Long Term Recommendations
+            </Heading>
+          </Flex>
+          <SimpleGrid columns={1} spacing={1}>
+            {medData.actionPlan.longTerm.map((action, index) => (
+              <Box
+                key={index}
+                borderWidth={1}
+                borderRadius="md"
+                p={4}
+                bg="purple.50"
+                borderColor="purple.300"
+                _hover={{ boxShadow: "md", transform: "translateY(-2px)" }}
+                transition="all 0.2s"
+              >
+                <Text>{action}</Text>
+              </Box>
+            ))}
+          </SimpleGrid>
+        </Box>
+      </VStack>
     </Box>
   );
 };

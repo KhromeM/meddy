@@ -137,7 +137,7 @@ const HealthPanel = () => {
         display="flex"
         justifyContent="center"
         alignItems="center"
-        height="100vh"
+        height="100%"
       >
         <Spinner size="xl" />
       </Box>
