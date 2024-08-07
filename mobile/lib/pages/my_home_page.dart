@@ -325,7 +325,9 @@ class _MyHomePageState extends State<MyHomePage> {
   void _showMic() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const MicPage()),
+      MaterialPageRoute(
+        builder: (context) => MicPage(userName: _firstName),
+      ),
     );
   }
 }
