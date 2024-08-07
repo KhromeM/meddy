@@ -1,0 +1,71 @@
+.reviews-container {
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.reviews-list, .reviews-reverse {
+  display: inline-flex;
+}
+
+.reviews-list {
+  animation: scroll 30s linear infinite;
+}
+
+.reviews-reverse {
+  animation: scrollReverse 30s linear infinite;
+}
+
+.review-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  margin-right: 5px; /* 5px margin between each review */
+  flex: 0 0 auto;
+  min-width: 300px; /* Ensure each review has enough width to avoid overlap */
+}
+
+.review-card {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 300px; /* Set fixed width for uniformity */
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.review-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.review-card p {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.review-card span {
+  font-weight: bold;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scrollReverse {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}

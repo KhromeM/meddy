@@ -1,0 +1,18 @@
+@keyframes background {
+    0% {
+      background-position: 50% 0%;
+    }
+    50% {
+      background-position: 50% 100%;
+    }
+    100% {
+      background-position: 50% 0%;
+    }
+  }
+  
+  .animated-box {
+    background: linear-gradient(225deg, #d4e1f1, #f0daf5, #f9dcb5, #f79774);
+    background-size: 300% 300%;
+    animation: background 10s linear infinite;
+  }
+  
