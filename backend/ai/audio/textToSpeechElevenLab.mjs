@@ -223,6 +223,7 @@ async function streamLLMToElevenLabs(
 		req.logs.llmResponse = totalResponse.join("") + functionCallResponse; // logging
 		req.response = req.logs.llmResponse;
 		if (quality == 3) {
+			await db.createMessage(req.user.userid, "user", req.transcript);
 			await db.createMessage(req.user.userid, "llm", req.response);
 		}
 	});
