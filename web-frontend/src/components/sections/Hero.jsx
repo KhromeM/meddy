@@ -7,6 +7,7 @@ import {
   Button,
   Image,
   HStack,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import { images } from "../../../assets/images";
 import { Link as RouterLink } from "react-router-dom";
@@ -15,6 +16,9 @@ import "../../styles/button.css";
 import CardsInterface from "../CardsInterface";
 import { Gradient } from "../Gradient"; // Import the Gradient class
 import "../../styles/gradient.css"; // Import the gradient CSS
+import MeddyDemoGif from "../../assets/gif/MeddyDemo.gif"; 
+import "../../styles/animatedBG.css"
+
 
 export const Hero = ({ login }) => {
   useEffect(() => {
@@ -160,33 +164,87 @@ export const Hero = ({ login }) => {
           boxSizing: "border-box",
         }}
       >
-        <CardsInterface
-          headingText={"Empathic Voice Interface"}
-          img={images.ecnomicGraph}
-          btnText={"Start Building"}
-          paragraphText={
-            "Start building with the world's first emotionally intelligent voice AI"
-          }
-          bgColor={"#f9dcb5"}
-        />
-        <CardsInterface
-          headingText={"Measure Expression"}
-          img={images.graphDark}
-          btnText={"Start with Webcam"}
-          paragraphText={
-            "Use psychologically valid models of facial movement and vocal modulation"
-          }
-          bgColor={"#f0daf5"}
-        />
-        <CardsInterface
-          headingText={"Interpret Expressive Communication"}
-          img={images.graphThree}
-          btnText={"Use Custom Models"}
-          paragraphText={
-            "Start building with the world's first emotionally intelligent voice AI"
-          }
-          bgColor={"#d4e1f1"}
-        />
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8}>
+          <Box
+            position="relative"
+            boxShadow="lg"
+            p={6}
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            borderRadius="md"
+            className="animated-box" 
+          >
+            <Image
+              src={MeddyDemoGif}
+              alt="Empathic Voice Interface GIF"
+              boxSize="100%"
+              maxW="800px"
+              borderRadius="md"
+              zIndex={1}
+            />
+          </Box>
+          <Box
+            bg="#f9dcb5"
+            borderRadius="md"
+            boxShadow="lg"
+            p={6}
+            display="flex"
+            flexDirection="column"
+            alignItems="flex-start"
+          >
+            <VStack align="flex-start" spacing={4}>
+              <Heading as="h3" size="lg">
+                Empathic Voice Interface (EVI)
+              </Heading>
+              <Text>
+                Give your application empathy and a voice. EVI is a
+                conversational voice API powered by empathic AI. It is the only
+                API that measures nuanced vocal modulations, guiding language
+                and speech generation. Trained on millions of human
+                interactions, our empathic large language model (eLLM) unites
+                language modeling and text-to-speech with better EQ, prosody,
+                end-of-turn detection, interruptibility, and alignment.
+              </Text>
+              <HStack spacing={4}>
+                <Button
+                  as={RouterLink}
+                  to="/learn-more"
+                  variant="solid"
+                  colorScheme="blackAlpha"
+                >
+                  Learn More
+                </Button>
+                <Button
+                  as={RouterLink}
+                  to="/playground"
+                  variant="outline"
+                  colorScheme="blackAlpha"
+                >
+                  Playground
+                </Button>
+              </HStack>
+            </VStack>
+          </Box>
+          <CardsInterface
+            headingText={"Measure Expression"}
+            img={images.ecnomicGraph}
+            btnText={"Start with Webcam"}
+            paragraphText={
+              "Use psychologically valid models of facial movement and vocal modulation."
+            }
+            bgColor={"#f0daf5"}
+          />
+          <CardsInterface
+            headingText={"Interpret Expressive Communication"}
+            img={images.graphThree}
+            btnText={"Use Custom Models"}
+            paragraphText={
+              "Start building with the world's first emotionally intelligent voice AI."
+            }
+            bgColor={"#d4e1f1"}
+          />
+        </SimpleGrid>
       </Box>
     </>
   );

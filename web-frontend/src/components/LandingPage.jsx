@@ -6,7 +6,7 @@ import { Features } from "./sections/Features";
 import { Testimonial } from "./sections/Testimonial";
 import Blog from "./sections/Blog";
 import { Footer } from "./sections/Footer";
-import { Endorsements } from "./endorsements.jsx";
+import { Endorsements } from "./Endorsements/endorsements.jsx";
 
 export const LandingPage = () => {
   const { login } = useAuth();
