@@ -96,12 +96,18 @@ const SidebarContent = ({ logoText, routes, onOpen }) => {
               }}
               py="12px"
               borderRadius="15px"
-              _hover="none"
+              _hover={{
+                bg: inactiveBg,
+                boxShadow: "sm",
+                transform: "scale(1.01)",
+              }}
               w="100%"
               _active={{
                 bg: "inherit",
                 transform: "none",
                 borderColor: "transparent",
+                transform: "scale(0.98)",
+                boxShadow: "md",
               }}
               _focus={{
                 boxShadow: "none",
@@ -145,12 +151,18 @@ const SidebarContent = ({ logoText, routes, onOpen }) => {
                 xl: "16px",
               }}
               borderRadius="15px"
-              _hover="none"
               w="100%"
               _active={{
                 bg: "inherit",
                 transform: "none",
                 borderColor: "transparent",
+                transform: "scale(0.98)",
+                boxShadow: "md",
+              }}
+              _hover={{
+                bg: inactiveBg,
+                boxShadow: "sm",
+                transform: "scale(1.01)",
               }}
               _focus={{
                 boxShadow: "none",
@@ -213,7 +225,7 @@ const SidebarContent = ({ logoText, routes, onOpen }) => {
       <Flex
         sx={{
           position: "absolute",
-          bottom: "22px",
+          bottom: "16px",
         }}
         flexDirection="column"
       >

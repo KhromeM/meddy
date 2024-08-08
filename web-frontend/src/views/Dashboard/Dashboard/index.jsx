@@ -2,6 +2,8 @@
 import {
   Flex,
   Grid,
+  Heading,
+  Icon,
   Image,
   SimpleGrid,
   useColorModeValue,
@@ -28,39 +30,38 @@ import Projects from "./components/Projects";
 import SalesOverview from "./components/SalesOverview";
 import WorkWithTheRockets from "./components/WorkWithTheRockets";
 import RemindersCard from "./components/RemindersCard";
+import QuickActionCard from "./components/QuickActionCard";
+import { FaWallet } from "react-icons/fa";
+import SmallQuickActionCard from "./components/SmallQuickActionCard";
+import { useAuth } from "../../../firebase/AuthService";
+import QuickActionList from "./QuickActionList";
 
 export default function Dashboard() {
   const iconBoxInside = useColorModeValue("white", "white");
+  const { user } = useAuth();
 
   return (
     <Flex
       flexDirection="column"
       // pt={{ base: "120px", md: "75px" }}
     >
-      <SimpleGrid columns={{ sm: 1, md: 2, xl: 4 }} spacing="24px">
-        <MiniStatistics
-          title={"Today's Moneys"}
-          amount={"$53,000"}
-          percentage={55}
-          icon={<WalletIcon h={"24px"} w={"24px"} color={iconBoxInside} />}
+      <Heading as="h1" size="xl" mb="26px">
+        {user ? `Hi, ${user?.displayName || "Guest"}!` : "Hi Guest!"}
+      </Heading>
+      <QuickActionList iconBoxInside={iconBoxInside} />
+
+      <SimpleGrid columns={{ sm: 1, md: 2, xl: 4 }} mt="26px" spacing="24px">
+        <QuickActionCard
+          icon={<Icon h={"24px"} w={"24px"} color="white" as={FaWallet} />}
+          title={"Salary"}
+          description={"Belong interactive"}
+          // amount={2000}
         />
-        <MiniStatistics
-          title={"Today's Users"}
-          amount={"2,300"}
-          percentage={5}
-          icon={<GlobeIcon h={"24px"} w={"24px"} color={iconBoxInside} />}
-        />
-        <MiniStatistics
-          title={"New Clients"}
-          amount={"+3,020"}
-          percentage={-14}
-          icon={<DocumentIcon h={"24px"} w={"24px"} color={iconBoxInside} />}
-        />
-        <MiniStatistics
-          title={"Total Sales"}
-          amount={"$173,000"}
-          percentage={8}
-          icon={<CartIcon h={"24px"} w={"24px"} color={iconBoxInside} />}
+        <QuickActionCard
+          icon={<Icon h={"24px"} w={"24px"} color="white" as={FaWallet} />}
+          title={"Paypal"}
+          description={"Freelance Payment"}
+          amount={4550}
         />
       </SimpleGrid>
       <Grid
