@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Flex,
@@ -7,115 +7,53 @@ import {
   Image,
   HStack,
   Link,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  IconButton,
-  useBreakpointValue,
 } from "@chakra-ui/react";
-import { ChevronDownIcon, CloseIcon } from "@chakra-ui/icons";
+import logoWhite from '../../assets/svg/meddy-logo-white.svg';
 
 export const Navbar = () => {
-  const [showAnnouncement, setShowAnnouncement] = useState(true);
-  const isMobile = useBreakpointValue({ base: true, md: false });
-
   return (
-    <Box>
-      {/* Announcement Bar */}
-      {showAnnouncement && (
-        <Flex
-          bg="black"
-          color="white"
-          py={2}
-          px={4}
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Text fontSize="sm">Meddy: Your personal medical assistant</Text>
-          <HStack spacing={4}>
-            <Text fontSize="sm">Now available on iOS and Android</Text>
-            <Button size="sm" colorScheme="whiteAlpha" variant="outline">
-              <Link href="/downloadApp">Download →</Link>
-            </Button>
-          </HStack>
-          <IconButton
-            aria-label="Close announcement"
-            icon={<CloseIcon />}
-            size="sm"
-            variant="ghost"
-            color="white"
-            onClick={() => setShowAnnouncement(false)}
-          />
-        </Flex>
-      )}
-
-      {/* Main Navbar */}
-      <Flex
-        bg="#FEF9EF"
-        py={4}
-        px={8}
-        justifyContent="space-between"
-        alignItems="center"
-        borderBottomWidth={1}
-        borderColor="black"
-        wrap="wrap"
-      >
-        {/* Logo */}
-        <Flex alignItems="center">
-          <Image src="/assets/meddyLogo.png" alt="Meddy Logo" h="30px" />
-          <Text fontSize="xl" fontWeight="bold" ml={2}>
-            <Link href="/">Meddy</Link>
-          </Text>
-        </Flex>
+    <Box
+      bg="black"
+      color="white"
+      py={2}
+      px={4}
+      borderRadius="full"
+      boxShadow="md"
+      width="50%"
+      maxWidth="container.xl"
+      mx="auto"
+      my={4}
+    >
+      <Flex justifyContent="space-between" alignItems="center">
+        {/* Logo and Text wrapped in Link */}
+        <Link href="/" _hover={{ textDecoration: 'none' }}>
+          <Flex alignItems="center">
+            <Image src={logoWhite} alt="Meddy Logo" h="28px" />
+            <Text fontSize="xl" fontWeight="bold" ml={2}>
+              Meddy
+            </Text>
+          </Flex>
+        </Link>
 
         {/* Navigation Menu */}
-        <HStack
-          spacing={8}
-          display={isMobile ? "none" : "flex"}
-          flexGrow={1}
-          justifyContent="center"
-        >
-          <Menu>
-            <MenuButton
-              as={Button}
-              rightIcon={<ChevronDownIcon />}
-              variant="ghost"
-            >
-              PRODUCTS
-            </MenuButton>
-            <MenuList>
-              <MenuItem>Product 1</MenuItem>
-              <MenuItem>Product 2</MenuItem>
-            </MenuList>
-          </Menu>
-          <Link href="/research">RESEARCH</Link>
-          <Menu>
-            <MenuButton
-              as={Button}
-              rightIcon={<ChevronDownIcon />}
-              variant="ghost"
-            >
-              ABOUT
-            </MenuButton>
-            <MenuList>
-              <MenuItem>
-                <Link href="/about">About us</Link>
-              </MenuItem>
-              <MenuItem>Careers</MenuItem>
-            </MenuList>
-          </Menu>
+        <HStack spacing={6}>
+          <Link href="/about">About Us</Link>
+          <Link href="/downloadApp">Download App</Link>
         </HStack>
 
-        {/* Try on Web Button */}
+        {/* Login Button */}
         <Button
-          variant="outline"
+          bg="white"
+          color="black"
           borderRadius="full"
+          px={6}
+          _hover={{ bg: "gray.200" }}
+          fontWeight={400}
           onClick={() => {
             window.location.href = "dashboard/chat";
           }}
         >
-          TRY ON WEB →
+          Try Demo
         </Button>
       </Flex>
     </Box>
