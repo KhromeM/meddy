@@ -91,18 +91,16 @@ class _MicPageState extends State<MicPage> {
     // Stop any audio playback when starting recording
     await playerService.stopPlayback();
 
-    // If there's a selected image, send it to the chat history
-    if (_previewImagePath != null) {
-      final String reqId = _uuid.v4();
-      await _sendImageMessage(reqId);
-    }
+    // Clear the selected image when starting recording
+    setState(() {
+      _previewImagePath = null;
+    });
 
     bool isRecording = await recorderService.toggleRecording();
     if (mounted) {
       setState(() {
         _isRecording = isRecording;
         _isMeddySpeaking = false;
-        _previewImagePath = null; // Clear the selected image
         siriController.amplitude = _isRecording ? 0.8 : 0.1;
         siriController.color = _isRecording ? Colors.white : Colors.blue;
         if (_isRecording) {
@@ -149,40 +147,6 @@ class _MicPageState extends State<MicPage> {
       final resizedImage = await _resizeImage(image.path);
       setState(() {
         _previewImagePath = resizedImage.path;
-      });
-    }
-  }
-
-  Future<void> _sendImageMessage(String reqId) async {
-    if (_previewImagePath != null) {
-      String imageBaseName = path.basename(_previewImagePath!);
-      await _chatService.uploadImage(_previewImagePath!);
-
-      final newMessage = Message(
-        messageId: reqId + "_user",
-        userId: "DEVELOPER",
-        source: "user",
-        imageID: imageBaseName,
-        text: 'Image selected',
-        time: DateTime.now(),
-      );
-
-      if (mounted) {
-        Provider.of<ChatProvider>(context, listen: false)
-            .addMessage(newMessage);
-      }
-
-      setState(() {
-        _previewImagePath = null;
-      });
-
-      wsConnection.sendMessage({
-        'type': 'chat',
-        'data': {
-          'text': 'describe this image',
-          'image': imageBaseName,
-          'reqId': reqId
-        }
       });
     }
   }
@@ -273,13 +237,8 @@ class _MicPageState extends State<MicPage> {
   String _truncateUserChat(String text) {
     if (text.length <= 100) return text;
 
-    // Get the part after the first 100 characters
-    String lastPart = text.substring(100);
-
-    // If the remaining text is less than or equal to 100 characters, show the last 100 characters
-    if (lastPart.length <= 100) {
-      lastPart = text.substring(text.length - 100);
-    }
+    // Show only the last 97 characters (accounting for " . . . " being 3 characters)
+    String lastPart = text.substring(text.length - 97);
 
     return ' . . . $lastPart';
   }
