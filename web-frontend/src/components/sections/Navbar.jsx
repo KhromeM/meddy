@@ -63,10 +63,12 @@ export const Navbar = () => {
       >
         {/* Logo */}
         <Flex alignItems="center">
-          <Image src="/assets/meddyLogo.png" alt="Meddy Logo" h="30px" />
-          <Text fontSize="xl" fontWeight="bold" ml={2}>
-            <Link href="/">Meddy</Link>
-          </Text>
+          <Flex>
+            <Image src="/assets/meddyLogo.png" alt="Meddy Logo" h="30px" />
+            <Text fontSize="xl" fontWeight="bold" ml={2}>
+              <Link href="/">Meddy</Link>
+            </Text>
+          </Flex>
         </Flex>
 
         {/* Navigation Menu */}

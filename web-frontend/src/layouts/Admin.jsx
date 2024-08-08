@@ -1,6 +1,6 @@
 // Chakra imports
 import { ChakraProvider, Portal, useDisclosure } from "@chakra-ui/react";
-import Configurator from "../components/Configurator/Configurator";
+// import Configurator from "../components/Configurator/Configurator";
 import Footer from "../components/Footer/Footer";
 // Layout components
 import AdminNavbar from "../components/Navbars/AdminNavbar";
@@ -21,6 +21,7 @@ import PanelContent from "../components/Layout/PanelContent";
 // Meddy Add fade in
 import "./Admin.css";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
+import SettingsPopout from "../components/SettingsPopout/SettingsPopout.jsx";
 
 export default function Dashboard(props) {
   const location = useLocation();
@@ -122,7 +123,7 @@ export default function Dashboard(props) {
         <Portal>
           {/* Navbar for Meddy */}
           <AdminNavbar
-            onOpen={onOpen}
+            // onOpen={onOpen}
             logoText={"MEDDY UI DASHBOARD"}
             brandText={getActiveRoute(routes)}
             secondary={getActiveNavbar(routes)}
@@ -162,8 +163,8 @@ export default function Dashboard(props) {
           {/* Gear Icon for Meddy */}
           {/* <FixedPlugin secondary={getActiveNavbar(routes)} fixed={fixed} onOpen={onOpen} />   */}
         </Portal>
-        {/* Right sidebar popout for Meddy */}
-        <Configurator
+        {/* Right sidebar settings popout for Meddy */}
+        <SettingsPopout
           secondary={getActiveNavbar(routes)}
           isOpen={isOpen}
           onClose={onClose}
