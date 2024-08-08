@@ -84,6 +84,8 @@ export const Hero = ({ login }) => {
                   fontWeight="900"
                   lineHeight="1.2"
                   letterSpacing="-0.02em"
+                  w={'100%'}
+                  textAlign={'center'}
                 >
                   Medical Assistant Powered by Gemini
                 </Heading>
@@ -91,6 +93,7 @@ export const Hero = ({ login }) => {
                   fontSize={{ base: "xl", md: "2xl" }}
                   fontWeight="medium"
                   lineHeight="1.5"
+                  textAlign={{ base: "center", md: "center", lg: "center" }}
                 >
                   Meet the world's first voice powered medical assistant that
                   responds empathically, built to align technology with human
