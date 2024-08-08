@@ -16,7 +16,7 @@ import "../../styles/button.css";
 import CardsInterface from "../CardsInterface";
 import { Gradient } from "../Gradient"; // Import the Gradient class
 import "../../styles/gradient.css"; // Import the gradient CSS
-import MeddyDemoGif from "../../assets/gif/MeddyDemo.gif"; 
+import MeddyDemoGif from "../../assets/gif/MeddyDemo.gif";  
 import "../../styles/animatedBG.css"
 
 
@@ -62,7 +62,7 @@ export const Hero = ({ login }) => {
           <Box
             display="flex"
             justifyContent="space-between"
-            flexDirection={{ base: "column", md: "column", lg: "row" }}
+            flexDirection={{ base: "column", md: "column", lg: "column" }}
             width="1280px"
             alignItems="center"
           >
@@ -72,7 +72,7 @@ export const Hero = ({ login }) => {
               justifyContent="center"
               alignItems="center"
               height="100%"
-              width={{ base: "100%", md: "100%", lg: "50%" }}
+              width={{ base: "100%", md: "100%", lg: "100%" }}
               marginTop="10%"
               paddingX="5%"
               bg="transparent"
@@ -100,23 +100,11 @@ export const Hero = ({ login }) => {
                   spacing={4}
                   alignItems={"stretch"}
                   id="1"
+                  w={'100%'}
                   flexDirection={{ base: "column", md: "column", lg: "row" }}
                   margin={{ base: "auto", lg: "0" }}
-                >
-                  <Button
-                    className="download-button"
-                    rightIcon={
-                      <Image
-                        src="/assets/svg.svg"
-                        boxSize="1.5rem"
-                        alt="Download icon"
-                        className="download-icon"
-                      />
-                    }
-                    colorScheme="blackAlpha"
-                  >
-                    Download App
-                  </Button>
+                  justifyContent={{ base: "center", md: "center", lg: "center" }}
+                > 
                   <Button
                     onClick={() => {
                       window.location.href = "/dashboard/chat";
@@ -140,13 +128,13 @@ export const Hero = ({ login }) => {
             <Box
               alignContent={"end"}
               height="100%"
-              width={{ base: "100%", md: "100%", lg: "50%" }}
+              width={{ base: "100%", md: "100%", lg: "100%" }}
               paddingX="5%"
               marginTop={{ base: "20px", md: "10px", lg: "5%" }}
             >
               <Image
                 width="100%"
-                src={images.superHero}
+                src={images.heroImage}
                 alt="Code Image"
                 borderRadius="md"
                 maxW={{ base: "100%", md: "100%", lg: "100%" }}
