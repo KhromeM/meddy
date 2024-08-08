@@ -204,7 +204,16 @@ const Chat = () => {
     const text = message.text;
     const reqId = uuidv4();
 	const imageid = message.imageName;
-    addMessageToChatHistory("user", text, reqId + "_user", imageid);
+      setMessages((prev) => [
+        ...prev,
+        {
+          messageId: reqId + "_user",
+          source: "user",
+          text,
+          imageid,
+          time: new Date(),
+        },
+      ]);
     setInProgress(true);
     setImageUploaded(null);
 
