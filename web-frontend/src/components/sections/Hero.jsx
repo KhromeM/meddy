@@ -61,10 +61,11 @@ export const Hero = ({ login }) => {
         <Box display="flex" justifyContent="center">
           <Box
             display="flex"
-            justifyContent="space-between"
-            flexDirection={{ base: "column", md: "column", lg: "row" }}
+            justifyContent="center"
+            flexDirection="column"
             width="1280px"
             alignItems="center"
+            textAlign="center"
           >
             <Box
               display="flex"
@@ -72,12 +73,12 @@ export const Hero = ({ login }) => {
               justifyContent="center"
               alignItems="center"
               height="100%"
-              width={{ base: "100%", md: "100%", lg: "50%" }}
+              width={{ base: "100%", md: "100%", lg: "80%" }}
               marginTop="10%"
               paddingX="5%"
               bg="transparent"
             >
-              <VStack spacing={6} align="flex-start" width="100%">
+              <VStack spacing={6} align="center" width="100%">
                 <Heading
                   as="h1"
                   fontSize={{ base: "4xl", md: "5xl", lg: "5xl" }}
@@ -85,72 +86,40 @@ export const Hero = ({ login }) => {
                   lineHeight="1.2"
                   letterSpacing="-0.02em"
                 >
-                  Medical Assistant Powered by Gemini
+                  Meet your AI health companion
                 </Heading>
                 <Text
                   fontSize={{ base: "xl", md: "2xl" }}
                   fontWeight="medium"
                   lineHeight="1.5"
                 >
-                  Meet the world's first voice powered medical assistant that
+                  The world's first voice powered medical assistant that
                   responds empathically, built to align technology with human
                   well-being
                 </Text>
-                <HStack
-                  spacing={4}
-                  alignItems={"stretch"}
-                  id="1"
-                  flexDirection={{ base: "column", md: "column", lg: "row" }}
-                  margin={{ base: "auto", lg: "0" }}
+                <Button
+                  onClick={() => {
+                    window.location.href = "/dashboard/chat";
+                  }}
+                  className="custom-button"
+                  rightIcon={
+                    <Image
+                      src="/assets/svg-1.svg"
+                      boxSize="2rem"
+                      alt="Web icon"
+                      className="download-icon"
+                    />
+                  }
+                  variant="outline"
+                  size="lg"
+                  height="55px"
+                  width="250px"
+                  px="8"
+                  fontSize="xl"
                 >
-                  <Button
-                    className="download-button"
-                    rightIcon={
-                      <Image
-                        src="/assets/svg.svg"
-                        boxSize="1.5rem"
-                        alt="Download icon"
-                        className="download-icon"
-                      />
-                    }
-                    colorScheme="blackAlpha"
-                  >
-                    Download App
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      window.location.href = "/dashboard/chat";
-                    }}
-                    className="custom-button"
-                    rightIcon={
-                      <Image
-                        src="/assets/svg-1.svg"
-                        boxSize="1.5rem"
-                        alt="Web icon"
-                        className="download-icon"
-                      />
-                    }
-                    variant="outline"
-                  >
-                    Try on Web
-                  </Button>
-                </HStack>
+                  Try on Web
+                </Button>
               </VStack>
-            </Box>
-            <Box
-              alignContent={"end"}
-              height="100%"
-              width={{ base: "100%", md: "100%", lg: "50%" }}
-              paddingX="5%"
-              marginTop={{ base: "20px", md: "10px", lg: "5%" }}
-            >
-              <Image
-                width="100%"
-                src={images.superHero}
-                alt="Code Image"
-                borderRadius="md"
-                maxW={{ base: "100%", md: "100%", lg: "100%" }}
-              />
             </Box>
           </Box>
         </Box>
