@@ -273,13 +273,8 @@ class _MicPageState extends State<MicPage> {
   String _truncateUserChat(String text) {
     if (text.length <= 100) return text;
 
-    // Get the part after the first 100 characters
-    String lastPart = text.substring(100);
-
-    // If the remaining text is less than or equal to 100 characters, show the last 100 characters
-    if (lastPart.length <= 100) {
-      lastPart = text.substring(text.length - 100);
-    }
+    // Show only the last 100 characters
+    String lastPart = text.substring(text.length - 100);
 
     return ' . . . $lastPart';
   }
