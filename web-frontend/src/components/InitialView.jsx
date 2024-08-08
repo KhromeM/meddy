@@ -12,6 +12,7 @@ import {
 import { IoMdChatboxes } from "react-icons/io";
 import { BsStars } from "react-icons/bs";
 import { LuShieldAlert } from "react-icons/lu";
+import Card from "./Card/Card";
 
 const FeatureBox = ({ icon, title, description }) => {
   const boxWidth = useBreakpointValue({
@@ -20,21 +21,20 @@ const FeatureBox = ({ icon, title, description }) => {
   });
 
   return (
-    <Box
-      borderWidth={1}
-      borderRadius="lg"
-      p={4}
-      width={boxWidth}
-      mb={4}
+    <Card
+      // borderWidth={1}
+      // borderRadius="lg"
+      // p={4}
+      // width={boxWidth}
+      // mb={4}
       borderColor={"#843A05"}
-      height={"100%"}
-      bg={"#fff"}
+      // height={"100%"}
+      // bg={"#fff"}
     >
- 
-      <Text fontSize="sm" height={"34px"} lineHeight={"1.5rem"}>
+      <Text fontSize="md" height={"34px"} lineHeight={"1.5rem"}>
         {description}
       </Text>
-    </Box>
+    </Card>
   );
 };
 
@@ -47,7 +47,7 @@ const InitialView = () => (
       alignSelf={"center"}
     >
       <VStack align="center" spacing={4}>
-        <Icon as={IoMdChatboxes } boxSize={6} mb={2} />
+        <Icon as={IoMdChatboxes} boxSize={6} mb={2} />
 
         <Heading size="md">Examples</Heading>
 
@@ -65,7 +65,7 @@ const InitialView = () => (
         />
       </VStack>
       <VStack align="center" spacing={4}>
-	  <Icon as={BsStars } boxSize={6} mb={2} />
+        <Icon as={BsStars} boxSize={6} mb={2} />
 
         <Heading size="md">Capabilities</Heading>
         <FeatureBox
@@ -82,7 +82,7 @@ const InitialView = () => (
         />
       </VStack>
       <VStack align="center" spacing={4}>
-	  <Icon as={LuShieldAlert } boxSize={6} mb={2} />
+        <Icon as={LuShieldAlert} boxSize={6} mb={2} />
 
         <Heading size="md">Limitations</Heading>
         <FeatureBox

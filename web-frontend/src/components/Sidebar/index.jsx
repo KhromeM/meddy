@@ -1,8 +1,6 @@
 /*eslint-disable*/
 // chakra imports
-import {
-  Box, useColorModeValue
-} from "@chakra-ui/react";
+import { Box, useColorModeValue } from "@chakra-ui/react";
 import React from "react";
 import SidebarContent from "./SidebarContent";
 
@@ -48,19 +46,19 @@ function Sidebar(props) {
           borderRadius={sidebarRadius}
           borderRight="1px solid"
           borderColor="gray.300"
+          position="relative"
         >
-          <SidebarContent routes={routes}
-        logoText={"Meddy"} // Right side of logo text
-        display="none"
-        sidebarVariant={sidebarVariant}
-        />
+          <SidebarContent
+            routes={routes}
+            logoText={"Meddy"} // Right side of logo text
+            display="none"
+            sidebarVariant={sidebarVariant}
+            onOpen={props.onOpen}
+          />
         </Box>
       </Box>
     </Box>
   );
 }
-
-
-
 
 export default Sidebar;

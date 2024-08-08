@@ -27,7 +27,7 @@ const BuiltByDevelopers = ({ title, name, description, image }) => {
             lineHeight="1.6"
             width={{ lg: "45%" }}
           >
-            <Text fontSize="sm" color="gray.400" fontWeight="bold">
+            <Text fontSize="sm" color="gray.400" fontWeight="bold" pb=".3rem">
               {title}
             </Text>
             <Text fontSize="lg" color={textColor} fontWeight="bold" pb=".5rem">

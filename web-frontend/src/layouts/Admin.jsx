@@ -110,6 +110,7 @@ export default function Dashboard(props) {
         logoText={"MEDDY UI DASHBOARD"}
         display="none"
         sidebarVariant={sidebarVariant}
+        onOpen={onOpen}
         {...rest}
       />
       <MainPanel

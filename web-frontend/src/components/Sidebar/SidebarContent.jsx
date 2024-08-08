@@ -10,18 +10,22 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import IconBox from "../../components/Icons/IconBox";
-import { MeddyLogo } from "../../components/Icons/Icons";
+import { MeddyLogo, SettingsIcon } from "../../components/Icons/Icons";
 import { CreativeTimLogo } from "../../components/Icons/Icons";
 import { Separator } from "../../components/Separator/Separator";
 import { SidebarHelp } from "../../components/Sidebar/SidebarHelp";
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import SettingsButton from "./SettingsButton";
+import LoginButton from "./LoginButton";
 
 // this function creates the links and collapses that appear in the sidebar (left menu)
 
-const SidebarContent = ({ logoText, routes }) => {
+const SidebarContent = ({ logoText, routes, onOpen }) => {
   // to check for active links and opened collapses
   let location = useLocation();
+  const settingsRef = React.useRef();
+
   // this is for the rest of the collapses
   const [state, setState] = React.useState({});
 
@@ -204,8 +208,25 @@ const SidebarContent = ({ logoText, routes }) => {
       <Stack direction="column" mb="40px">
         <Box>{links}</Box>
       </Stack>
-      {/* // Want to try Meddy Help bottom left */}
+
       <SidebarHelp />
+      <Flex
+        sx={{
+          position: "absolute",
+          bottom: "22px",
+        }}
+        flexDirection="column"
+      >
+        <LoginButton />
+        <SettingsButton
+          settingsRef={settingsRef}
+          inactiveBg={"gray.700"}
+          inactiveColor={"gray.400"}
+          onOpen={onOpen}
+        />
+      </Flex>
+
+      {/* // Want to try Meddy Help bottom left */}
     </>
   );
 };

@@ -1,5 +1,10 @@
-import { QuestionIcon } from "@chakra-ui/icons";
-import { Button, Flex, Link, Text } from "@chakra-ui/react";
+// import { QuestionIcon } from "@chakra-ui/icons";
+import { FcPhoneAndroid } from "react-icons/fc";
+import { FcAndroidOs } from "react-icons/fc";
+import { FaApple } from "react-icons/fa";
+import { SiFlutter } from "react-icons/si";
+
+import { Button, Flex, Icon, Link, Text } from "@chakra-ui/react";
 import SidebarHelpImage from "../../assets/img/SidebarHelpImage.png";
 import MeddyLessWrong from "../../assets/img/meddyLessWrong.png";
 import IconBox from "../../components/Icons/IconBox";
@@ -22,16 +27,27 @@ export function SidebarHelp(props) {
       h="170px"
       w="100%"
     >
-      <IconBox width="35px" h="35px" bg="white" mb="auto">
-        <QuestionIcon color="orange.300" h="18px" w="18px" />
-      </IconBox>
+      <Flex mb={3} gap={1}>
+        <IconBox width="35px" h="35px" bg="white" mb="auto">
+          {/* <FcPhoneAndroid color="orange.300" h="22px" w="22px" /> */}
+          <Icon as={FcPhoneAndroid} color="orange.300" h="22px" w="22px" />
+        </IconBox>
+        <IconBox width="35px" h="35px" bg="white" mb="auto">
+          {/* <FcPhoneAndroid color="orange.300" h="22px" w="22px" /> */}
+          <Icon as={FcAndroidOs} color="orange.300" h="22px" w="22px" />
+        </IconBox>
+        <IconBox width="35px" h="35px" bg="white" mb="auto">
+          {/* <FcPhoneAndroid color="orange.300" h="22px" w="22px" /> */}
+          <Icon as={FaApple} color="black.300" h="22px" w="22px" />
+        </IconBox>
+      </Flex>
       <Text
         fontSize="sm"
         color="white"
         fontWeight="bold"
         textShadow="0 0 2px #000"
       >
-        Want to try Meddy?{" "}
+        Want to try Meddy on Android and iOS?{" "}
       </Text>
       <Text
         fontSize="xs"
@@ -47,8 +63,9 @@ export function SidebarHelp(props) {
           fontSize="10px"
           fontWeight="bold"
           w="100%"
-          bg="white"
-          _hover="none"
+          bg="#47c5fb"
+          border="3px solid lightblue"
+          _hover={{ bg: "#47e3fb" }}
           _active={{
             bg: "white",
             transform: "none",
@@ -59,7 +76,8 @@ export function SidebarHelp(props) {
           }}
           color="black"
         >
-          START DEMO
+          <Icon mr={1} as={SiFlutter} color="black.300" h="16px" w="16px" />
+          VIEW FLUTTER APP
         </Button>
       </Link>
     </Flex>
