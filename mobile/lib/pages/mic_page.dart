@@ -211,7 +211,7 @@ class _MicPageState extends State<MicPage> {
         _transcribedText = '';
       }
 
-      final newMessage = Message(
+      /* final newMessage = Message(
         messageId: _reqId + "_user",
         userId: "DEVELOPER",
         source: "user",
@@ -225,7 +225,7 @@ class _MicPageState extends State<MicPage> {
                 .addMessage(newMessage);
           }
         });
-      }
+      } */
     }
   }
 
