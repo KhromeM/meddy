@@ -1,13 +1,12 @@
 import db from "../../db/db.mjs";
 
 export const createAppointment = async (req, res) => {
-  const { date, transcript, transcriptSummary, description, userId, doctorId } =
-    req.body;
-  if (!date || !userId || !doctorId) {
+  const { date, transcript, transcriptSummary, description, userId } = req.body;
+  if (!date || !userId) {
     return res.status(400).json({
       status: "fail",
       message:
-        "date, userId, and doctorId are required. transcript, transcriptSummary, and description are optional.",
+        "date and userId are required. transcript, transcriptSummary, and description are optional.",
     });
   }
   try {
@@ -16,8 +15,7 @@ export const createAppointment = async (req, res) => {
       transcript,
       transcriptSummary,
       description,
-      userId,
-      doctorId
+      userId
     );
     res.status(201).json({ appointment });
   } catch (err) {
@@ -88,18 +86,17 @@ export const insertTranscript = async (req, res) => {
 
 export const updateAppointment = async (req, res) => {
   const { appointmentId } = req.params;
-  const { date, transcript, transcriptSummary, description, userId, doctorId } =
-    req.body;
+  const { date, transcript, transcriptSummary, description, userId } = req.body;
   if (!appointmentId) {
     return res
       .status(400)
       .json({ status: "fail", message: "appointmentId is required" });
   }
-  if (!date || !userId || !doctorId) {
+  if (!date || !userId) {
     return res.status(400).json({
       status: "fail",
       message:
-        "date, userId, and doctorId are required. transcript, transcriptSummary, and description are optional.",
+        "date and userId are required. transcript, transcriptSummary, and description are optional.",
     });
   }
   try {
@@ -109,8 +106,7 @@ export const updateAppointment = async (req, res) => {
       transcript,
       transcriptSummary,
       description,
-      userId,
-      doctorId
+      userId
     );
     res.status(200).json({ appointment });
   } catch (err) {

@@ -10,17 +10,17 @@ import { pool } from "./dbConfig.mjs";
  * @param {string} doctorId - The ID of the doctor
  * @returns {Promise<Object>} - A promise that resolves to the created appointment object
  */
-export const createAppointment = (date, transcript, transcriptSummary, description, userId, doctorId) => {
-	const query =
-		"INSERT INTO Appointments (Date, Transcript, TranscriptSummary, Description, UserID, DoctorID) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *";
-	const values = [date, transcript, transcriptSummary, description, userId, doctorId];
-	return pool
-		.query(query, values)
-		.then((res) => res.rows[0])
-		.catch((err) => {
-			console.error("Error creating appointment:", err);
-			throw err;
-		});
+export const createAppointment = (date, transcript, transcriptSummary, description, userId) => {
+    const query =
+        "INSERT INTO Appointments (Date, Transcript, TranscriptSummary, Description, UserID) VALUES ($1, $2, $3, $4, $5) RETURNING *";
+    const values = [date, transcript, transcriptSummary, description, userId];
+    return pool
+        .query(query, values)
+        .then((res) => res.rows[0])
+        .catch((err) => {
+            console.error("Error creating appointment:", err);
+            throw err;
+        });
 };
 
 /**
@@ -76,7 +76,7 @@ export const getAppointmentById = (appointmentId) => {
  * @param {string} transcriptSummary - The summary of the transcript
  * @returns {Promise<Object>} - A promise that resolves to the updated appointment object
  */
-export const insertTranscript = (appointmentId, transcript, transcriptSummary) => {
+export const insertTranscript = async (appointmentId, transcript, transcriptSummary) => {
 	const query =
 		"UPDATE Appointments SET Transcript = $1, TranscriptSummary = $2 WHERE AppointmentID = $3 RETURNING *";
 	const values = [transcript, transcriptSummary, appointmentId];
@@ -97,30 +97,27 @@ export const insertTranscript = (appointmentId, transcript, transcriptSummary) =
  * @param {string} transcriptSummary - The summary of the transcript
  * @param {string} description - The description of the appointment
  * @param {string} userId - The ID of the user
- * @param {string} doctorId - The ID of the doctor
  * @returns {Promise<Object>} - A promise that resolves to the updated appointment object
  */
 export const updateAppointment = (
-	appointmentId,
-	date,
-	transcript,
-	transcriptSummary,
-	description,
-	userId,
-	doctorId
+    appointmentId,
+    date,
+    transcript,
+    transcriptSummary,
+    description,
+    userId
 ) => {
-	const query =
-		"UPDATE Appointments SET Date = $1, Transcript = $2, TranscriptSummary = $3, Description = $4, UserID = $5, DoctorID = $6 WHERE AppointmentID = $7 RETURNING *";
-	const values = [date, transcript, transcriptSummary, description, userId, doctorId, appointmentId];
-	return pool
-		.query(query, values)
-		.then((res) => res.rows[0])
-		.catch((err) => {
-			console.error("Error updating appointment:", err);
-			throw err;
-		});
+    const query =
+        "UPDATE Appointments SET Date = $1, Transcript = $2, TranscriptSummary = $3, Description = $4, UserID = $5 WHERE AppointmentID = $6 RETURNING *";
+    const values = [date, transcript, transcriptSummary, description, userId, appointmentId];
+    return pool
+        .query(query, values)
+        .then((res) => res.rows[0])
+        .catch((err) => {
+            console.error("Error updating appointment:", err);
+            throw err;
+        });
 };
-
 /**
  * Delete an appointment
  * @param {string} appointmentId - The ID of the appointment to delete
