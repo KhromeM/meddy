@@ -47,7 +47,7 @@ var dashRoutes = [
     path: "/home",
     name: "Home", // Changes the actual name of Meddy sidebar
     icon: <IoHome color="inherit" />,
-    component: MeddyHome, // Updated to MeddyHome
+    component: Dashboard, // Updated to MeddyHome
     // william pathing
     layout: "/dashboard",
   },

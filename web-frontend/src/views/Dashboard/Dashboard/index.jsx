@@ -32,7 +32,10 @@ export default function Dashboard() {
   const iconBoxInside = useColorModeValue("white", "white");
 
   return (
-    <Flex flexDirection="column" pt={{ base: "120px", md: "75px" }}>
+    <Flex
+      flexDirection="column"
+      // pt={{ base: "120px", md: "75px" }}
+    >
       <SimpleGrid columns={{ sm: 1, md: 2, xl: 4 }} spacing="24px">
         <MiniStatistics
           title={"Today's Moneys"}
