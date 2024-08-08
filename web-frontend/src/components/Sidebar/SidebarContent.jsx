@@ -205,7 +205,7 @@ const SidebarContent = ({ logoText, routes, onOpen }) => {
         </Link>
         <Separator></Separator>
       </Box>
-      <Stack direction="column" mb="40px">
+      <Stack direction="column" mb="10px">
         <Box>{links}</Box>
       </Stack>
 
