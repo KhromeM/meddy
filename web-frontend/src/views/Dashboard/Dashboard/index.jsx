@@ -27,6 +27,7 @@ import OrdersOverview from "./components/OrdersOverview";
 import Projects from "./components/Projects";
 import SalesOverview from "./components/SalesOverview";
 import WorkWithTheRockets from "./components/WorkWithTheRockets";
+import RemindersCard from "./components/RemindersCard";
 
 export default function Dashboard() {
   const iconBoxInside = useColorModeValue("white", "white");
@@ -118,11 +119,7 @@ export default function Dashboard() {
           captions={["Companies", "Members", "Budget", "Completion"]}
           data={dashboardTableData}
         />
-        <OrdersOverview
-          title={"Orders Overview"}
-          amount={30}
-          data={timelineData}
-        />
+        <RemindersCard />
       </Grid>
     </Flex>
   );
