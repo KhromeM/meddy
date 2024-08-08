@@ -16,8 +16,8 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [audioMode, setAudioMode] = useState(false);
   const [inProgress, setInProgress] = useState(false);
-  const [messageBuffer, setMessageBuffer] = useState({}); 
   const [imageUploaded, setImageUploaded] = useState();
+  const [currentTranscription, setCurrentTranscription] = useState(null)
   const { user } = useAuth();
   const messagesEndRef = useRef(null);
   const wsConnectionRef = useRef(null);
@@ -128,25 +128,27 @@ const Chat = () => {
     const reqId = message.reqId + "_user";
     const text = message.data;
 
-    setMessageBuffer((prev) => {
-      const updatedBuffer = { ...prev };
-      if (!updatedBuffer[reqId]) {
-        addMessageToChatHistory("user", text, reqId);
-        updatedBuffer[reqId] = [text];
-      } else {
-        updatedBuffer[reqId] = [...updatedBuffer[reqId], text];
-        const fullMessage = updatedBuffer[reqId].join(" ");
-        updateCurrentMessageChunk(fullMessage, reqId);
+    setCurrentTranscription((prev) => {
+      if(!prev || prev.reqId !== reqId){
+        return {reqId, text}
       }
-      return updatedBuffer;
-    });
+      return {...prev, text: prev.text + " " + text}
+    })
 
-    if (message.isComplete) {
-      setMessageBuffer((prev) => {
-        const { [reqId]: _, ...rest } = prev;
-        return rest;
-      });
+    if(message.isComplete){
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          messageId: reqId,
+          source: "user",
+          text: currentTranscription ? currentTranscription.text + " " + text : text,
+          time: new Date(),
+          isComplete: true,        
+        }
+      ])
+      setCurrentTranscription(null);
     }
+
   };
 
   const handleAudioResponse = (audioChunk, queueNumber, isComplete) => {
@@ -190,21 +192,13 @@ const Chat = () => {
     console.log("Messages updated:", messages);
   }, [messages]);
 
-  const addMessageToChatHistory = (source, text, reqId, imageid = null) => {
-    setMessages((prev) => [
-      ...prev,
-      { messageId: reqId, source, text, imageid, time: new Date() },
-    ]);
-  };
-  const updateCurrentMessageChunk = (text, reqId) => {
-    setMessages((prevMessages) => {
-      const index = prevMessages.findIndex((msg) => msg.messageId === reqId);
-      if (index === -1) return prevMessages;
-      const updatedMessages = [...prevMessages];
-      updatedMessages[index] = { ...updatedMessages[index], text: text || "" };
-      return updatedMessages;
-    });
-  };
+  // const addMessageToChatHistory = (source, text, reqId, imageid = null) => {
+  //   setMessages((prev) => [
+  //     ...prev,
+  //     { messageId: reqId, source, text, imageid, time: new Date() },
+  //   ]);
+  // };
+
 
   const sendMessage = async (message) => {
     const text = message.text;
@@ -275,6 +269,7 @@ const Chat = () => {
                     messages={messages}
                     messagesEndRef={messagesEndRef}
                     inProgress={inProgress}
+                    currentTranscription={currentTranscription}
                   />
                 </Box>
               </Box>
