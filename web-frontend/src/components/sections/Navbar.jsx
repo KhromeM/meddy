@@ -1,14 +1,6 @@
 import React from "react";
-import {
-  Box,
-  Flex,
-  Text,
-  Button,
-  Image,
-  HStack,
-  Link,
-} from "@chakra-ui/react";
-import logoWhite from '../../assets/svg/meddy-logo-white.svg';
+import { Box, Flex, Text, Button, Image, HStack, Link } from "@chakra-ui/react";
+import logoWhite from "../../assets/svg/meddy-logo-white.svg";
 
 export const Navbar = () => {
   return (
@@ -20,13 +12,14 @@ export const Navbar = () => {
       borderRadius="full"
       boxShadow="md"
       width="50%"
+      w={{ base: "100%", md: "100%", lg: "50%" }}
       maxWidth="container.xl"
       mx="auto"
       my={4}
     >
       <Flex justifyContent="space-between" alignItems="center">
         {/* Logo and Text wrapped in Link */}
-        <Link href="/" _hover={{ textDecoration: 'none' }}>
+        <Link href="/" _hover={{ textDecoration: "none" }}>
           <Flex alignItems="center">
             <Image src={logoWhite} alt="Meddy Logo" h="28px" />
             <Text fontSize="xl" fontWeight="bold" ml={2}>

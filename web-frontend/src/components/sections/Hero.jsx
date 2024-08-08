@@ -47,7 +47,6 @@ export const Hero = ({ login }) => {
     <>
       <Box
         position="relative"
-        minHeight="100vh"
         width="100vw"
         overflow="hidden"
         bg="transparent"
@@ -57,13 +56,17 @@ export const Hero = ({ login }) => {
           data-js-darken-top
           data-transition-in
         ></canvas>
+        <Box mx={2}>
+
         <Navbar />
+        </Box>
         <Box display="flex" justifyContent="center">
           <Box
             display="flex"
             justifyContent="space-between"
             flexDirection={{ base: "column", md: "column", lg: "column" }}
-            width="1280px"
+            width="1280px" 
+            w={{ xl: "80%" }}
             alignItems="center"
           >
             <Box
@@ -90,9 +93,10 @@ export const Hero = ({ login }) => {
                   Medical Assistant Powered by Gemini
                 </Heading>
                 <Text
-                  fontSize={{ base: "xl", md: "2xl" }}
+                  fontSize={{ base: "xl", md: "2xl", }}
                   fontWeight="medium"
                   lineHeight="1.5"
+                  w={'100%'}
                   textAlign={{ base: "center", md: "center", lg: "center" }}
                 >
                   Meet the world's first voice powered medical assistant that
@@ -103,8 +107,7 @@ export const Hero = ({ login }) => {
                   spacing={4}
                   alignItems={"stretch"}
                   id="1"
-                  w={'100%'}
-                  flexDirection={{ base: "column", md: "column", lg: "row" }}
+                  w={'100%'} 
                   margin={{ base: "auto", lg: "0" }}
                   justifyContent={{ base: "center", md: "center", lg: "center" }}
                 > 
@@ -113,15 +116,9 @@ export const Hero = ({ login }) => {
                       window.location.href = "/dashboard/chat";
                     }}
                     className="custom-button"
-                    rightIcon={
-                      <Image
-                        src="/assets/svg-1.svg"
-                        boxSize="1.5rem"
-                        alt="Web icon"
-                        className="download-icon"
-                      />
-                    }
+                    fontSize={{ base: "lg", md: "xl", lg: "2xl" }}
                     variant="outline"
+                    w={'fit-content'}
                   >
                     Try on Web
                   </Button>
@@ -146,16 +143,15 @@ export const Hero = ({ login }) => {
           </Box>
         </Box>
       </Box>
-      <Box
-        maxW={{ base: "90%", md: "70%", lg: "100%" }}
-        style={{
-          maxWidth: "1280px",
-          margin: "auto",
-          width: "100%",
+      <Box 
+        style={{ 
+          margin: "auto", 
           boxSizing: "border-box",
         }}
+        width="1280px" 
+        w={{ xl: "80%" }} 
       >
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8}>
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8}  paddingX="5%">
           <Box
             position="relative"
             boxShadow="lg"
@@ -164,7 +160,8 @@ export const Hero = ({ login }) => {
             flexDirection="column"
             alignItems="center"
             borderRadius="md"
-            className="animated-box" 
+            className="animated-box"  
+        
           >
             <Image
               src={MeddyDemoGif}
