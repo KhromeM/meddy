@@ -46,6 +46,8 @@ function Sidebar(props) {
           pe="20px"
           m={sidebarMargins}
           borderRadius={sidebarRadius}
+          borderRight="1px solid"
+          borderColor="gray.300"
         >
           <SidebarContent routes={routes}
         logoText={"Meddy"} // Right side of logo text
