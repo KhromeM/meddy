@@ -75,13 +75,13 @@ var dashRoutes = [
     component: Health,
     layout: "/dashboard",
   },
-  {
-    path: "/reminders",
-    name: "Reminders",
-    icon: <IoTimeSharp color="inherit" />,
-    component: MeddyReminders, // Updated to MeddyReminders
-    layout: "/dashboard",
-  },
+  // {
+  //   path: "/reminders",
+  //   name: "Reminders",
+  //   icon: <IoTimeSharp color="inherit" />,
+  //   component: Billing, // Updated to MeddyReminders
+  //   layout: "/dashboard",
+  // },
   {
     path: "/uploads",
     name: "Uploads",

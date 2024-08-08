@@ -67,6 +67,8 @@ const LoginButton = () => {
         bg: "inherit",
         transform: "none",
         borderColor: "transparent",
+        transform: "scale(0.91)",
+        boxShadow: "md",
       }}
       _focus={{
         boxShadow: "none",

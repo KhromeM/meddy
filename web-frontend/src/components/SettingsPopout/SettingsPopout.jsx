@@ -7,6 +7,7 @@ import {
   DrawerCloseButton,
   DrawerContent,
   DrawerHeader,
+  DrawerOverlay,
   Flex,
   Icon,
   Link,
@@ -15,12 +16,12 @@ import {
   useColorMode,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { Separator } from "../../components/Separator/Separator";
+import { Separator } from "../Separator/Separator";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { FaTwitter, FaFacebook } from "react-icons/fa";
 
-export default function Configurator(props) {
+export default function SettingsPopout(props) {
   const { secondary, isOpen, onClose, fixed, ...rest } = props;
   const [switched, setSwitched] = useState(props.isChecked);
 
@@ -49,6 +50,7 @@ export default function Configurator(props) {
         finalFocusRef={settingsRef}
         blockScrollOnMount={false}
       >
+        <DrawerOverlay />
         <DrawerContent>
           <DrawerHeader pt="24px" px="24px">
             <DrawerCloseButton />
@@ -206,7 +208,7 @@ export default function Configurator(props) {
     </>
   );
 }
-Configurator.propTypes = {
+SettingsPopout.propTypes = {
   secondary: PropTypes.bool,
   isOpen: PropTypes.bool,
   onClose: PropTypes.func,

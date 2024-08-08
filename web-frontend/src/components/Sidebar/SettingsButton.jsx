@@ -17,7 +17,7 @@ const SettingsButton = ({ onOpen, inactiveBg, settingsRef, inactiveColor }) => {
       mx={{
         xl: "auto",
       }}
-      py="12px"
+      py="6px"
       ps={{
         sm: "10px",
         xl: "16px",
@@ -31,6 +31,8 @@ const SettingsButton = ({ onOpen, inactiveBg, settingsRef, inactiveColor }) => {
         bg: "inherit",
         transform: "none",
         borderColor: "transparent",
+        transform: "scale(0.91)",
+        boxShadow: "md",
       }}
       _focus={{
         boxShadow: "none",
