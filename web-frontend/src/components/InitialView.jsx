@@ -27,9 +27,19 @@ const FeatureBox = ({ icon, title, description }) => {
       // p={4}
       // width={boxWidth}
       // mb={4}
+
       borderColor={"#843A05"}
+      borderWidth="0.25px"
       // height={"100%"}
-      // bg={"#fff"}
+
+      // fontWeight="500"
+      backgroundColor={"#faf5f1 !important"}
+      transition="all 0.3s"
+      _hover={{
+        bg: "#fff5df",
+        boxShadow: "lg",
+        transform: "scale(1.01)",
+      }}
     >
       <Text fontSize="md" height={"34px"} lineHeight={"1.5rem"}>
         {description}
