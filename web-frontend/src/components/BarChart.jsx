@@ -70,13 +70,13 @@ export const barChartOptions = {
 	tooltip: {
 		style: {
 			backgroundColor: "red",
-			fontSize: "12px",
+			fontSize: "20px",
 			fontFamily: undefined,
 		},
 		onDatasetHover: {
 			style: {
 				backgroundColor: "red",
-				fontSize: "12px",
+				fontSize: "20px",
 				fontFamily: undefined,
 			},
 		},

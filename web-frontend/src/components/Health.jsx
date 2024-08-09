@@ -359,23 +359,36 @@ const HealthPanel = () => {
 	];
 
 	return (
-		<Box position="relative" minHeight="100vh" width="100%" overflow="auto">
-			<canvas
-				id="gradient-canvas"
-				data-js-darken-top
-				data-transition-in
-				style={{
-					position: "absolute",
-					width: "100%",
-					height: "100%",
-					top: 0,
-					left: 0,
-					zIndex: -1,
-				}}
-			></canvas>
+		<Box
+			position="relative"
+			minHeight="100vh"
+			width="100%"
+			overflow="auto"
+			br={10}
+		>
 			<VStack spacing={0} align="stretch" height="100%" width="100%">
 				<Box py={4} px={4} width="100%">
-					<Heading size="xl" textAlign="left" color="white">
+					<canvas
+						id="gradient-canvas"
+						data-js-darken-top
+						data-transition-in
+						style={{
+							position: "absolute",
+							width: "100%",
+							height: "100%",
+							top: 0,
+							left: 0,
+							zIndex: -1,
+						}}
+					></canvas>
+					<Heading
+						size="xl"
+						textAlign="left"
+						color="black"
+						opacity={100}
+						height={50}
+						br={10}
+					>
 						Your Health Summary
 					</Heading>
 				</Box>
