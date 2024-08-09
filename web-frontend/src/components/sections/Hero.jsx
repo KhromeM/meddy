@@ -8,7 +8,7 @@ import {
   Image,
   HStack,
   SimpleGrid,
-  Flex
+  Flex,
 } from "@chakra-ui/react";
 import { images } from "../../../assets/images";
 import { Link as RouterLink } from "react-router-dom";
@@ -17,9 +17,10 @@ import "../../styles/button.css";
 import CardsInterface from "../CardsInterface";
 import { Gradient } from "../Gradient"; // Import the Gradient class
 import "../../styles/gradient.css"; // Import the gradient CSS
-import MeddyDemoGif from "../../assets/gif/MeddyDemo.gif";  
-import "../../styles/animatedBG.css"
-
+import MeddyDemoGif from "../../assets/gif/MeddyDemo.gif";
+import "../../styles/animatedBG.css";
+import Card from "../Card/Card";
+import GeminiLogo from "../../assets/img/google-gemini-icon.png";
 
 export const Hero = ({ login }) => {
   useEffect(() => {
@@ -46,28 +47,22 @@ export const Hero = ({ login }) => {
 
   return (
     <>
-      <Box
-        position="relative"
-        width="100vw"
-        overflow="hidden"
-        bg="transparent"
-      >
+      <Box position="relative" width="100vw" overflow="hidden" bg="transparent">
         <canvas
           id="gradient-canvas"
           data-js-darken-top
           data-transition-in
         ></canvas>
         <Box mx={2}>
-
-        <Navbar />
+          <Navbar />
         </Box>
         <Box display="flex" justifyContent="center">
           <Box
             display="flex"
             justifyContent="space-between"
             flexDirection={{ base: "column", md: "column", lg: "column" }}
-            width="1280px" 
-            w={{ '2xl': "80%" }}
+            width="1280px"
+            w={{ "2xl": "80%" }}
             alignItems="center"
             textAlign="center"
           >
@@ -78,27 +73,53 @@ export const Hero = ({ login }) => {
               alignItems="center"
               height="100%"
               width={{ base: "100%", md: "100%", lg: "100%" }}
-              marginTop="10%"
+              marginTop="9%"
               paddingX="5%"
               bg="transparent"
             >
-              <VStack spacing={6} align="center" width="100%">
+              <VStack spacing={4} align="center" width="100%">
+                <Card
+                  margin="-7px"
+                  minHeight="20px"
+                  maxWidth="138px"
+                  padding="6px 5px"
+                  _hover={{
+                    cursor: "pointer",
+                  }}
+                  target="_blank"
+                  onClick={() => {
+                    window.open("https://ai.google.dev/competition", "_blank");
+                  }}
+                >
+                  <Text
+                    fontSize="11px"
+                    fontWeight={600}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    Powered by{" "}
+                    <Image boxSize="10px" src={GeminiLogo} margin="2px" />{" "}
+                    Gemini
+                  </Text>
+                </Card>
                 <Heading
                   as="h1"
-                  fontSize={{ base: "4xl", md: "5xl", lg: "5xl" }}
+                  fontSize={{ base: "5xl", md: "6xl", lg: "7xl" }}
                   fontWeight="900"
                   lineHeight="1.2"
                   letterSpacing="-0.02em"
-                  w={'100%'}
-                  textAlign={'center'}
+                  w={"100%"}
+                  textAlign={"center"}
                 >
                   Meet your AI health companion
                 </Heading>
                 <Text
-                  fontSize={{ base: "xl", md: "2xl", }}
-                  fontWeight="medium"
+                  fontSize={{ base: "16px", md: "22px" }}
+                  fontWeight="500"
                   lineHeight="1.5"
-                  w={'100%'}
+                  color="gray.600"
+                  w={"60%"}
                   textAlign={{ base: "center", md: "center", lg: "center" }}
                 >
                   The world's first voice powered medical assistant that
@@ -109,18 +130,31 @@ export const Hero = ({ login }) => {
                   spacing={4}
                   alignItems={"stretch"}
                   id="1"
-                  w={'100%'} 
+                  w={"100%"}
                   margin={{ base: "auto", lg: "0" }}
-                  justifyContent={{ base: "center", md: "center", lg: "center" }}
-                > 
+                  justifyContent={{
+                    base: "center",
+                    md: "center",
+                    lg: "center",
+                  }}
+                >
                   <Button
+                    mt={4}
                     onClick={() => {
                       window.location.href = "/dashboard/chat";
                     }}
                     className="custom-button"
                     fontSize={{ base: "lg", md: "xl", lg: "2xl" }}
                     variant="outline"
-                    w={'fit-content'}
+                    w={"fit-content"}
+                    height="50px"
+                    borderWidth={3}
+                    bgColor="#FAF9F6"
+                    _hover={{
+                      bg: "#e2fdfc",
+                      boxShadow: "sm",
+                      // transform: "scale(1.05)",
+                    }}
                   >
                     Try on Web
                   </Button>
@@ -145,15 +179,15 @@ export const Hero = ({ login }) => {
           </Box>
         </Box>
       </Box>
-      <Box 
-        style={{ 
-          margin: "auto", 
+      <Box
+        style={{
+          margin: "auto",
           boxSizing: "border-box",
         }}
-        width="1280px" 
-        w={{ xl: "80%" }} 
+        width="1280px"
+        w={{ xl: "80%" }}
       >
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8}  paddingX="5%">
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8} paddingX="5%">
           <Box
             position="relative"
             boxShadow="lg"
@@ -162,8 +196,7 @@ export const Hero = ({ login }) => {
             flexDirection="column"
             alignItems="center"
             borderRadius="md"
-            className="animated-box"  
-        
+            className="animated-box"
           >
             <Image
               src={MeddyDemoGif}
@@ -211,7 +244,7 @@ export const Hero = ({ login }) => {
                   as={RouterLink}
                   to="/playground"
                   variant="outline"
-                  colorScheme="blackAlpha" 
+                  colorScheme="blackAlpha"
                   width={{ base: "100%", md: "auto" }}
                   flex={{ base: "1 1 100%", md: "none" }}
                 >
