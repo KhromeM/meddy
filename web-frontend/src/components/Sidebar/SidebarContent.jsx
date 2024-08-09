@@ -70,8 +70,8 @@ const SidebarContent = ({ logoText, routes, onOpen }) => {
           </div>
         );
       }
-      console.log(prop.layout, prop.path);
-      console.log(activeRoute(prop.path));
+      // console.log(prop.layout, prop.path);
+      // console.log(activeRoute(prop.path));
       return (
         // william pathing
 

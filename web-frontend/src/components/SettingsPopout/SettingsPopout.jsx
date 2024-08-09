@@ -55,16 +55,16 @@ export default function SettingsPopout(props) {
           <DrawerHeader pt="24px" px="24px">
             <DrawerCloseButton />
             <Text fontSize="xl" fontWeight="bold" mt="16px">
-              trymeddy.com Configurator
+              Meddy Settings{" "}
             </Text>
             <Text fontSize="md" mb="16px">
-              See your dashboard options.
+              See your Meddy options.
             </Text>
             <Separator />
           </DrawerHeader>
           <DrawerBody w="340px" ps="24px" pe="40px">
             <Flex flexDirection="column">
-              <Box>
+              {/* <Box>
                 <Text fontSize="md" fontWeight="600">
                   Sidenav Type
                 </Text>
@@ -99,8 +99,8 @@ export default function SettingsPopout(props) {
                     Opaque
                   </Button>
                 </Flex>
-              </Box>
-              <Box
+              </Box> */}
+              {/* <Box
                 display={fixedDisplay}
                 justifyContent="space-between "
                 mb="16px"
@@ -121,7 +121,7 @@ export default function SettingsPopout(props) {
                     }
                   }}
                 />
-              </Box>
+              </Box> */}
               <Flex
                 justifyContent="space-between"
                 alignItems="center"
@@ -136,7 +136,7 @@ export default function SettingsPopout(props) {
               </Flex>
 
               <Separator />
-              <Box mt="24px">
+              {/* <Box mt="24px">
                 <Text fontSize="md" fontWeight="600">
                   Sidenav Type
                 </Text>
@@ -200,7 +200,7 @@ export default function SettingsPopout(props) {
                     </Link>
                   </Flex>
                 </Box>
-              </Box>
+              </Box> */}
             </Flex>
           </DrawerBody>
         </DrawerContent>
