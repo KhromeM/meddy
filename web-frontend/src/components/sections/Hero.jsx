@@ -8,6 +8,7 @@ import {
   Image,
   HStack,
   SimpleGrid,
+  Flex
 } from "@chakra-ui/react";
 import { images } from "../../../assets/images";
 import { Link as RouterLink } from "react-router-dom";
@@ -16,7 +17,7 @@ import "../../styles/button.css";
 import CardsInterface from "../CardsInterface";
 import { Gradient } from "../Gradient"; // Import the Gradient class
 import "../../styles/gradient.css"; // Import the gradient CSS
-import MeddyDemoGif from "../../assets/gif/MeddyDemo.gif"; 
+import MeddyDemoGif from "../../assets/gif/MeddyDemo.gif";  
 import "../../styles/animatedBG.css"
 
 
@@ -47,7 +48,6 @@ export const Hero = ({ login }) => {
     <>
       <Box
         position="relative"
-        minHeight="100vh"
         width="100vw"
         overflow="hidden"
         bg="transparent"
@@ -57,14 +57,19 @@ export const Hero = ({ login }) => {
           data-js-darken-top
           data-transition-in
         ></canvas>
+        <Box mx={2}>
+
         <Navbar />
+        </Box>
         <Box display="flex" justifyContent="center">
           <Box
             display="flex"
             justifyContent="space-between"
-            flexDirection={{ base: "column", md: "column", lg: "row" }}
-            width="1280px"
+            flexDirection={{ base: "column", md: "column", lg: "column" }}
+            width="1280px" 
+            w={{ '2xl': "80%" }}
             alignItems="center"
+            textAlign="center"
           >
             <Box
               display="flex"
@@ -72,27 +77,31 @@ export const Hero = ({ login }) => {
               justifyContent="center"
               alignItems="center"
               height="100%"
-              width={{ base: "100%", md: "100%", lg: "50%" }}
+              width={{ base: "100%", md: "100%", lg: "100%" }}
               marginTop="10%"
               paddingX="5%"
               bg="transparent"
             >
-              <VStack spacing={6} align="flex-start" width="100%">
+              <VStack spacing={6} align="center" width="100%">
                 <Heading
                   as="h1"
                   fontSize={{ base: "4xl", md: "5xl", lg: "5xl" }}
                   fontWeight="900"
                   lineHeight="1.2"
                   letterSpacing="-0.02em"
+                  w={'100%'}
+                  textAlign={'center'}
                 >
-                  Medical Assistant Powered by Gemini
+                  Meet your AI health companion
                 </Heading>
                 <Text
-                  fontSize={{ base: "xl", md: "2xl" }}
+                  fontSize={{ base: "xl", md: "2xl", }}
                   fontWeight="medium"
                   lineHeight="1.5"
+                  w={'100%'}
+                  textAlign={{ base: "center", md: "center", lg: "center" }}
                 >
-                  Meet the world's first voice powered medical assistant that
+                  The world's first voice powered medical assistant that
                   responds empathically, built to align technology with human
                   well-being
                 </Text>
@@ -100,37 +109,18 @@ export const Hero = ({ login }) => {
                   spacing={4}
                   alignItems={"stretch"}
                   id="1"
-                  flexDirection={{ base: "column", md: "column", lg: "row" }}
+                  w={'100%'} 
                   margin={{ base: "auto", lg: "0" }}
-                >
-                  <Button
-                    className="download-button"
-                    rightIcon={
-                      <Image
-                        src="/assets/svg.svg"
-                        boxSize="1.5rem"
-                        alt="Download icon"
-                        className="download-icon"
-                      />
-                    }
-                    colorScheme="blackAlpha"
-                  >
-                    Download App
-                  </Button>
+                  justifyContent={{ base: "center", md: "center", lg: "center" }}
+                > 
                   <Button
                     onClick={() => {
                       window.location.href = "/dashboard/chat";
                     }}
                     className="custom-button"
-                    rightIcon={
-                      <Image
-                        src="/assets/svg-1.svg"
-                        boxSize="1.5rem"
-                        alt="Web icon"
-                        className="download-icon"
-                      />
-                    }
+                    fontSize={{ base: "lg", md: "xl", lg: "2xl" }}
                     variant="outline"
+                    w={'fit-content'}
                   >
                     Try on Web
                   </Button>
@@ -140,13 +130,13 @@ export const Hero = ({ login }) => {
             <Box
               alignContent={"end"}
               height="100%"
-              width={{ base: "100%", md: "100%", lg: "50%" }}
+              width={{ base: "100%", md: "100%", lg: "100%" }}
               paddingX="5%"
               marginTop={{ base: "20px", md: "10px", lg: "5%" }}
             >
               <Image
                 width="100%"
-                src={images.superHero}
+                src={images.heroImage}
                 alt="Code Image"
                 borderRadius="md"
                 maxW={{ base: "100%", md: "100%", lg: "100%" }}
@@ -155,16 +145,15 @@ export const Hero = ({ login }) => {
           </Box>
         </Box>
       </Box>
-      <Box
-        maxW={{ base: "90%", md: "70%", lg: "100%" }}
-        style={{
-          maxWidth: "1280px",
-          margin: "auto",
-          width: "100%",
+      <Box 
+        style={{ 
+          margin: "auto", 
           boxSizing: "border-box",
         }}
+        width="1280px" 
+        w={{ xl: "80%" }} 
       >
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8}>
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8}  paddingX="5%">
           <Box
             position="relative"
             boxShadow="lg"
@@ -173,7 +162,8 @@ export const Hero = ({ login }) => {
             flexDirection="column"
             alignItems="center"
             borderRadius="md"
-            className="animated-box" 
+            className="animated-box"  
+        
           >
             <Image
               src={MeddyDemoGif}
@@ -193,7 +183,7 @@ export const Hero = ({ login }) => {
             flexDirection="column"
             alignItems="flex-start"
           >
-            <VStack align="flex-start" spacing={4}>
+            <VStack align="flex-start" spacing={4} p={10}>
               <Heading as="h3" size="lg">
                 Empathic Voice Interface (EVI)
               </Heading>
@@ -206,12 +196,14 @@ export const Hero = ({ login }) => {
                 language modeling and text-to-speech with better EQ, prosody,
                 end-of-turn detection, interruptibility, and alignment.
               </Text>
-              <HStack spacing={4}>
+              <Flex flexWrap={"wrap"} gap={4}>
                 <Button
                   as={RouterLink}
                   to="/learn-more"
                   variant="solid"
                   colorScheme="blackAlpha"
+                  width={{ base: "100%", md: "auto" }}
+                  flex={{ base: "1 1 100%", md: "none" }}
                 >
                   Learn More
                 </Button>
@@ -219,11 +211,13 @@ export const Hero = ({ login }) => {
                   as={RouterLink}
                   to="/playground"
                   variant="outline"
-                  colorScheme="blackAlpha"
+                  colorScheme="blackAlpha" 
+                  width={{ base: "100%", md: "auto" }}
+                  flex={{ base: "1 1 100%", md: "none" }}
                 >
                   Playground
                 </Button>
-              </HStack>
+              </Flex>
             </VStack>
           </Box>
           <CardsInterface

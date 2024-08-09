@@ -4,9 +4,8 @@ import 'package:meddymobile/pages/health_page.dart';
 import 'package:meddymobile/pages/my_home_page.dart';
 import 'package:meddymobile/pages/reminder_page.dart';
 import 'package:meddymobile/widgets/bottom_bar.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:meddymobile/utils/app_colors.dart';
+
 class ScreenWrapper extends StatefulWidget {
   const ScreenWrapper({super.key});
 
@@ -67,27 +66,15 @@ class _ScreenWrapperState extends State<ScreenWrapper> {
               ReminderPage(),
             ],
           ),
-          // Positioned(
-          //   bottom: 10,
-          //   child: SmoothPageIndicator(
-          //     controller: _pageController,
-          //     count: _bottomNavigationBarItems.length,
-          //     effect: WormEffect(
-          //       dotHeight: 8.0,
-          //       dotWidth: 8.0,
-          //       spacing: 16.0,
-          //       dotColor: Colors.grey,
-          //       activeDotColor: Colors.purple,
-          //     ),
-          //   ),
-          // ),
         ],
       ),
-      bottomNavigationBar: BottomBar(
-        bottomNavigationBarItems: _bottomNavigationBarItems,
-        currentIndex: _currentIndex,
-        pageController: _pageController,
-      ),
+      bottomNavigationBar: _currentIndex == 1
+          ? null
+          : BottomBar(
+              bottomNavigationBarItems: _bottomNavigationBarItems,
+              currentIndex: _currentIndex,
+              pageController: _pageController,
+            ),
     );
   }
 }

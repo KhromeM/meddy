@@ -1,4 +1,6 @@
+import { getModel } from "../../ai/langAi/setupVertexAI.mjs";
 import db from "../../db/db.mjs";
+import { getUserInfoLite,getUserReminders } from "../../db/dbInfo.mjs";
 
 // Medication
 export const createMedication = async (req, res) => {
@@ -16,7 +18,9 @@ export const createMedication = async (req, res) => {
 		res.status(201).json({ medication });
 	} catch (err) {
 		console.error(err);
-		res.status(500).json({ status: "fail", message: "Could not create medication" });
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not create medication" });
 	}
 };
 
@@ -26,7 +30,9 @@ export const getAllMedications = async (req, res) => {
 		res.status(200).json({ medications });
 	} catch (err) {
 		console.error(err);
-		res.status(500).json({ status: "fail", message: "Could not retrieve medications" });
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not retrieve medications" });
 	}
 };
 
@@ -34,7 +40,9 @@ export const getMedicationById = async (req, res) => {
 	const { medicationId } = req.params;
 
 	if (!medicationId) {
-		return res.status(400).json({ status: "fail", message: "medicationId is required" });
+		return res
+			.status(400)
+			.json({ status: "fail", message: "medicationId is required" });
 	}
 
 	try {
@@ -42,7 +50,9 @@ export const getMedicationById = async (req, res) => {
 		res.status(200).json({ medication });
 	} catch (err) {
 		console.error(err);
-		res.status(500).json({ status: "fail", message: "Could not retrieve medication" });
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not retrieve medication" });
 	}
 };
 
@@ -58,11 +68,18 @@ export const updateMedication = async (req, res) => {
 	}
 
 	try {
-		const medication = await db.updateMedication(medicationId, userId, name, dosage);
+		const medication = await db.updateMedication(
+			medicationId,
+			userId,
+			name,
+			dosage
+		);
 		res.status(200).json({ medication });
 	} catch (err) {
 		console.error(err);
-		res.status(500).json({ status: "fail", message: "Could not update medication" });
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not update medication" });
 	}
 };
 
@@ -70,7 +87,9 @@ export const deleteMedication = async (req, res) => {
 	const { medicationId } = req.params;
 
 	if (!medicationId) {
-		return res.status(400).json({ status: "fail", message: "medicationId is required" });
+		return res
+			.status(400)
+			.json({ status: "fail", message: "medicationId is required" });
 	}
 
 	try {
@@ -78,7 +97,9 @@ export const deleteMedication = async (req, res) => {
 		res.status(200).json({ medication });
 	} catch (err) {
 		console.error(err);
-		res.status(500).json({ status: "fail", message: "Could not delete medication" });
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not delete medication" });
 	}
 };
 
@@ -89,12 +110,18 @@ export const createReminder = async (req, res) => {
 	if (!userId || !medicationName || !hoursUntilRepeat || !time) {
 		return res.status(400).json({
 			status: "fail",
-			message: "userId, medicationName, hoursUntilRepeat, and time are required.",
+			message:
+				"userId, medicationName, hoursUntilRepeat, and time are required.",
 		});
 	}
 
 	try {
-		const reminder = await db.createReminder(userId, medicationName, hoursUntilRepeat, time);
+		const reminder = await db.createReminder(
+			userId,
+			medicationName,
+			hoursUntilRepeat,
+			time
+		);
 		res.status(201).json({ reminder });
 	} catch (err) {
 		console.error(err);
@@ -107,11 +134,13 @@ export const createReminder = async (req, res) => {
 
 export const getAllReminders = async (req, res) => {
 	try {
-		const reminders = await db.getAllReminders();
+		const reminders = await getUserReminders(req._dbUser.userid);
 		res.status(200).json({ reminders });
 	} catch (err) {
 		console.error(err);
-		res.status(500).json({ status: "fail", message: "Could not retrieve reminders" });
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not retrieve reminders" });
 	}
 };
 
@@ -119,7 +148,9 @@ export const getReminderById = async (req, res) => {
 	const { reminderId } = req.params;
 
 	if (!reminderId) {
-		return res.status(400).json({ status: "fail", message: "reminderId is required" });
+		return res
+			.status(400)
+			.json({ status: "fail", message: "reminderId is required" });
 	}
 
 	try {
@@ -127,7 +158,9 @@ export const getReminderById = async (req, res) => {
 		res.status(200).json({ reminder });
 	} catch (err) {
 		console.error(err);
-		res.status(500).json({ status: "fail", message: "Could not retrieve reminder" });
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not retrieve reminder" });
 	}
 };
 
@@ -138,7 +171,8 @@ export const updateReminder = async (req, res) => {
 	if (!reminderId || !userId || !medicationName || !hoursUntilRepeat || !time) {
 		return res.status(400).json({
 			status: "fail",
-			message: "reminderId, userId, medicationName, hoursUntilRepeat, and time are required.",
+			message:
+				"reminderId, userId, medicationName, hoursUntilRepeat, and time are required.",
 		});
 	}
 
@@ -151,12 +185,21 @@ export const updateReminder = async (req, res) => {
 			time
 		);
 		if (!updatedReminder) {
-			return res.status(404).json({ status: "fail", message: "Reminder not found" });
+			return res
+				.status(404)
+				.json({ status: "fail", message: "Reminder not found" });
 		}
-		res.status(200).json({ message: "Updated reminder successfully", data: updatedReminder });
+		res
+			.status(200)
+			.json({
+				message: "Updated reminder successfully",
+				data: updatedReminder,
+			});
 	} catch (err) {
 		console.error(err);
-		res.status(500).json({ status: "fail", message: "Could not update reminder" });
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not update reminder" });
 	}
 };
 
@@ -164,7 +207,9 @@ export const deleteReminder = async (req, res) => {
 	const { reminderId } = req.params;
 
 	if (!reminderId) {
-		return res.status(400).json({ status: "fail", message: "reminderId is required" });
+		return res
+			.status(400)
+			.json({ status: "fail", message: "reminderId is required" });
 	}
 
 	try {
@@ -172,7 +217,9 @@ export const deleteReminder = async (req, res) => {
 		res.status(200).json({ message: "Deleted reminder successfully" });
 	} catch (err) {
 		console.error(err);
-		res.status(500).json({ status: "fail", message: "Could not delete reminder" });
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not delete reminder" });
 	}
 };
 
@@ -192,7 +239,9 @@ export const createAllergy = async (req, res) => {
 		res.status(201).json({ allergy });
 	} catch (err) {
 		console.error(err);
-		res.status(500).json({ status: "fail", message: "Could not create allergy" });
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not create allergy" });
 	}
 };
 
@@ -202,7 +251,9 @@ export const getAllAllergies = async (req, res) => {
 		res.status(200).json({ allergies });
 	} catch (err) {
 		console.error(err);
-		res.status(500).json({ status: "fail", message: "Could not retrieve allergies" });
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not retrieve allergies" });
 	}
 };
 
@@ -210,7 +261,9 @@ export const getAllergyById = async (req, res) => {
 	const { allergyId } = req.params;
 
 	if (!allergyId) {
-		return res.status(400).json({ status: "fail", message: "allergyId is required" });
+		return res
+			.status(400)
+			.json({ status: "fail", message: "allergyId is required" });
 	}
 
 	try {
@@ -218,7 +271,9 @@ export const getAllergyById = async (req, res) => {
 		res.status(200).json({ allergy });
 	} catch (err) {
 		console.error(err);
-		res.status(500).json({ status: "fail", message: "Could not retrieve allergy" });
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not retrieve allergy" });
 	}
 };
 
@@ -227,7 +282,9 @@ export const updateAllergy = async (req, res) => {
 	const { userId, name } = req.body;
 
 	if (!allergyId) {
-		return res.status(400).json({ status: "fail", message: "allergyId is required" });
+		return res
+			.status(400)
+			.json({ status: "fail", message: "allergyId is required" });
 	}
 
 	if (!userId || !name) {
@@ -242,7 +299,9 @@ export const updateAllergy = async (req, res) => {
 		res.status(200).json({ allergy });
 	} catch (err) {
 		console.error(err);
-		res.status(500).json({ status: "fail", message: "Could not update allergy" });
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not update allergy" });
 	}
 };
 
@@ -250,7 +309,9 @@ export const deleteAllergy = async (req, res) => {
 	const { allergyId } = req.params;
 
 	if (!allergyId) {
-		return res.status(400).json({ status: "fail", message: "allergyId is required" });
+		return res
+			.status(400)
+			.json({ status: "fail", message: "allergyId is required" });
 	}
 
 	try {
@@ -258,7 +319,9 @@ export const deleteAllergy = async (req, res) => {
 		res.status(200).json({ message: "Deleted allergy successfully" });
 	} catch (err) {
 		console.error(err);
-		res.status(500).json({ status: "fail", message: "Could not delete allergy" });
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not delete allergy" });
 	}
 };
 
@@ -278,7 +341,9 @@ export const createCondition = async (req, res) => {
 		res.status(201).json({ condition });
 	} catch (err) {
 		console.error(err);
-		res.status(500).json({ status: "fail", message: "Could not create condition" });
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not create condition" });
 	}
 };
 
@@ -288,7 +353,9 @@ export const getAllConditions = async (req, res) => {
 		res.status(200).json({ conditions });
 	} catch (err) {
 		console.error(err);
-		res.status(500).json({ status: "fail", message: "Could not retrieve conditions" });
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not retrieve conditions" });
 	}
 };
 
@@ -296,7 +363,9 @@ export const getConditionById = async (req, res) => {
 	const { conditionId } = req.params;
 
 	if (!conditionId) {
-		return res.status(400).json({ status: "fail", message: "conditionId is required" });
+		return res
+			.status(400)
+			.json({ status: "fail", message: "conditionId is required" });
 	}
 
 	try {
@@ -304,7 +373,9 @@ export const getConditionById = async (req, res) => {
 		res.status(200).json({ condition });
 	} catch (err) {
 		console.error(err);
-		res.status(500).json({ status: "fail", message: "Could not retrieve condition" });
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not retrieve condition" });
 	}
 };
 
@@ -313,7 +384,9 @@ export const updateCondition = async (req, res) => {
 	const { userId, name } = req.body;
 
 	if (!conditionId) {
-		return res.status(400).json({ status: "fail", message: "conditionId is required" });
+		return res
+			.status(400)
+			.json({ status: "fail", message: "conditionId is required" });
 	}
 
 	if (!userId || !name) {
@@ -328,7 +401,9 @@ export const updateCondition = async (req, res) => {
 		res.status(200).json({ condition });
 	} catch (err) {
 		console.error(err);
-		res.status(500).json({ status: "fail", message: "Could not update condition" });
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not update condition" });
 	}
 };
 
@@ -336,7 +411,9 @@ export const deleteCondition = async (req, res) => {
 	const { conditionId } = req.params;
 
 	if (!conditionId) {
-		return res.status(400).json({ status: "fail", message: "conditionId is required" });
+		return res
+			.status(400)
+			.json({ status: "fail", message: "conditionId is required" });
 	}
 
 	try {
@@ -344,6 +421,159 @@ export const deleteCondition = async (req, res) => {
 		res.status(200).json({ message: "Deleted condition successfully" });
 	} catch (err) {
 		console.error(err);
-		res.status(500).json({ status: "fail", message: "Could not delete condition" });
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not delete condition" });
+	}
+};
+
+// Health Goals
+export const createHealthGoal = async (req, res) => {
+	const { userId, goal } = req.body;
+
+	if (!userId || !goal) {
+		return res.status(400).json({
+			status: "fail",
+			message: "userId and goal are required.",
+		});
+	}
+
+	try {
+		const healthGoal = await db.createHealthGoal(userId, goal);
+		res.status(201).json({ healthGoal });
+	} catch (err) {
+		console.error(err);
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not create health goal" });
+	}
+};
+
+export const getAllHealthGoals = async (req, res) => {
+	try {
+		const healthGoals = await db.getAllHealthGoals();
+		res.status(200).json({ healthGoals });
+	} catch (err) {
+		console.error(err);
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not retrieve health goals" });
+	}
+};
+
+export const getUserHealthGoals = async (req, res) => {
+	const { userId } = req.params;
+
+	if (!userId) {
+		return res
+			.status(400)
+			.json({ status: "fail", message: "userId is required" });
+	}
+
+	try {
+		const healthGoals = await db.getUserHealthGoals(userId);
+		res.status(200).json({ healthGoals });
+	} catch (err) {
+		console.error(err);
+		res
+			.status(500)
+			.json({
+				status: "fail",
+				message: "Could not retrieve user health goals",
+			});
+	}
+};
+
+export const updateHealthGoal = async (req, res) => {
+	const { userId, oldGoal, newGoal } = req.body;
+
+	if (!userId || !oldGoal || !newGoal) {
+		return res.status(400).json({
+			status: "fail",
+			message: "userId, oldGoal, and newGoal are required.",
+		});
+	}
+
+	try {
+		const updatedGoal = await db.updateHealthGoal(userId, oldGoal, newGoal);
+		if (!updatedGoal) {
+			return res
+				.status(404)
+				.json({ status: "fail", message: "Health goal not found" });
+		}
+		res
+			.status(200)
+			.json({ message: "Updated health goal successfully", data: updatedGoal });
+	} catch (err) {
+		console.error(err);
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not update health goal" });
+	}
+};
+
+export const deleteHealthGoal = async (req, res) => {
+	const { userId, goal } = req.body;
+
+	if (!userId || !goal) {
+		return res.status(400).json({
+			status: "fail",
+			message: "userId and goal are required.",
+		});
+	}
+
+	try {
+		await db.deleteHealthGoal(userId, goal);
+		res.status(200).json({ message: "Deleted health goal successfully" });
+	} catch (err) {
+		console.error(err);
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not delete health goal" });
+	}
+};
+
+export const getDailyHealthTips = async (req, res) => {
+	try {
+		const user = req._dbUser;
+		const info = await getUserInfoLite(user.userid);
+		const responseSchema = {
+			type: "array",
+			items: {
+				type: "string",
+				description:
+					"Three relevant health tips based on the users given info. If insufficient info is given, provide three general health tips.",
+			},
+		};
+		const llm = getModel(responseSchema);
+		const request = {
+			contents: [
+				{
+					role: "user",
+					parts: [{ text: "Give me 3 health tips." }],
+				},
+			],
+			systemInstruction: {
+				parts: [
+					{
+						text: `You are Meddy, a helpful AI assistant. Provide three health tips for the user. Make sure the tips are at least one sentence long. Here is their information: ${info}`,
+					},
+				],
+			},
+		};
+		const result = await llm.generateContent(request);
+		res
+			.status(200)
+			.json({
+				tips: JSON.parse(result.response.candidates[0].content.parts[0].text),
+			});
+	} catch (err) {
+		console.error(err);
+		res
+			.status(500)
+			.json({
+				status: "fail",
+				message: "Could not retrieve daily health tips",
+			});
 	}
 };

@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 final Map<String, Map<String, String>> languageMap = {
   'en': {
-    'hello': 'Hi',
+    'hello': 'Hey!',
     'how_may_i_assist': 'How may I assist you today?',
     'reminders': 'Reminders',
     'reminder': 'Reminder',
@@ -34,9 +34,16 @@ final Map<String, Map<String, String>> languageMap = {
     'box6': 'What are common causes of frequent headaches?',
     'box7': 'Can you suggest ways to boost my energy levels?',
     'box8': 'How does meditation impact overall health?',
+    'settings': 'Settings',
+    'contrast': 'Contrast',
+    'language': 'Language',
+    'integrate': 'Integrate with your favorite apps',
+    'start_voice': 'Start Voice Call',
+    'translate_doctor': 'or Translate my doctor',
+    'listen_doctor': 'or Listen with me to my doctor'
   },
   'es': {
-    'hello': 'Hola',
+    'hello': 'Hola!',
     'how_may_i_assist': '¿Cómo te puedo ayudar hoy?',
     'reminders': 'Recordatorios',
     'reminder': 'Recordatorio',
@@ -68,6 +75,13 @@ final Map<String, Map<String, String>> languageMap = {
     'box6': '¿Cuáles son las causas comunes de dolores de cabeza frecuentes?',
     'box7': '¿Puedes sugerir formas de aumentar mis niveles de energía?',
     'box8': '¿Cómo impacta la meditación en la salud general?',
+    'settings': 'Configuración',
+    'contrast': 'Contraste',
+    'language': 'Lenguaje',
+    'integrate': 'Conectá con tus apps favoritas',
+    'start_voice': 'Iniciar Modo Voz',
+    'translate_doctor': 'o Traducí a mi doctor',
+    'listen_doctor': 'o Escucha conmigo a mi doctor'
   },
 };
 

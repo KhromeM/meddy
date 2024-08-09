@@ -52,7 +52,7 @@ const RemindersCard = () => {
   };
 
   return (
-    <Box borderRadius="xl" overflow="hidden" boxShadow="lg" bg={bgColor}>
+    <Box borderRadius="xl" overflow="hidden" boxShadow="sm" bg={bgColor}>
       <Box bg={headerBg} p="4">
         <Flex alignItems="center">
           <Icon as={MdNotifications} color="white" boxSize={6} mr={3} />
