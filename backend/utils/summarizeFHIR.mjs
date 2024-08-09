@@ -40,7 +40,10 @@ export const summarizeFHIR = async (user, data) => {
 	// //////////////////////////////////////
 
 	const sysPrompt = createAnalyzeCategoryPrompt("default");
-	let cachedModel = getModelWithCaching(`${sysPrompt} \n\n USER DATA: ${data}`);
+	const filler = data.length > 150000 ? "" : "0".repeat(150000 - data.length); // context caching requires a minimum of 32k tokens
+	const fullPrompt = `${filler}\n\n${sysPrompt} \n\nUSER DATA: ${data}`;
+	console.log(fullPrompt);
+	let cachedModel = await getModelWithCaching(fullPrompt);
 	const combinedResponse = {};
 
 	const categoryPromises = healthCategories.map(async (category) => {
