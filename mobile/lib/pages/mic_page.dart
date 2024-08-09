@@ -235,12 +235,27 @@ class _MicPageState extends State<MicPage> {
   }
 
   String _truncateUserChat(String text) {
-    if (text.length <= 100) return text;
+    int maxLength = 100;
 
-    // Show only the last 97 characters (accounting for " . . . " being 3 characters)
-    String lastPart = text.substring(text.length - 97);
+    // If text length is less than or equal to maxLength, return text as is
+    if (text.length <= maxLength) return text;
 
-    return ' . . . $lastPart';
+    // Calculate the quotient and remainder
+    int quotient = text.length ~/ maxLength;
+    int remainder = text.length % maxLength;
+
+    // If the quotient is greater than 1, add ellipsis to the first part
+    if (quotient > 1) {
+      String lastPart = text.substring(text.length - remainder);
+      int previousPartStart = text.length - remainder - (maxLength - remainder);
+      String previousPart =
+          text.substring(previousPartStart, text.length - remainder);
+      return ' . . . $previousPart$lastPart';
+    }
+
+    // If quotient is not greater than 1, use the last maxLength characters
+    String lastPart = text.substring(text.length - maxLength);
+    return '$lastPart';
   }
 
   @override
@@ -282,6 +297,9 @@ class _MicPageState extends State<MicPage> {
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       child: Container(
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.8,
+                        ),
                         padding: EdgeInsets.all(10.0),
                         child: Text(
                           "Meddy: $truncatedResponse",
@@ -351,10 +369,14 @@ class _MicPageState extends State<MicPage> {
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       child: Container(
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.8,
+                        ),
                         padding: EdgeInsets.all(10.0),
                         child: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Expanded(
+                            Flexible(
                               child: Text(
                                 "${widget.userName}: $truncatedTranscription",
                                 style: TextStyle(
@@ -364,7 +386,8 @@ class _MicPageState extends State<MicPage> {
                             ),
                             if (_previewImagePath != null)
                               Container(
-                                margin: EdgeInsets.only(left: 10),
+                                margin: EdgeInsets.only(
+                                    left: 30), // Increased padding here
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(16.0),
                                   child: Image.file(

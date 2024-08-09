@@ -58,9 +58,7 @@ CREATE TABLE Appointments (
     TranscriptSummary TEXT,
     Description TEXT,
     UserID VARCHAR(255),
-    DoctorID VARCHAR(255),
     FOREIGN KEY (UserID) REFERENCES Users(UserID),
-    FOREIGN KEY (DoctorID) REFERENCES Doctors(DoctorID)
 );
 
 CREATE TABLE Medications (

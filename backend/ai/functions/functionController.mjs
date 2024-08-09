@@ -124,7 +124,13 @@ export const executeLLMFunction = async (rspObj) => {
 				break;
 			case "LLMScheduleAppointment".toLowerCase():
 				user = await getUserById(params.userId);
-				createAppointment(params.appointmentStartTime, "", "", "", user.userid);
+				await createAppointment(
+					params.appointmentStartTime,
+					"", // transcript
+					"", // transcriptSummary
+					params.description || "",
+					user.userid
+				);
 				response =
 					params.response ||
 					`Your appointment has been scheduled successfully!`;
@@ -137,7 +143,11 @@ export const executeLLMFunction = async (rspObj) => {
 			case "LLMRescheduleAppointment".toLowerCase():
 				await updateAppointment(
 					params.appointmentId,
-					params.appointmentStartTime
+					params.appointmentStartTime,
+					null, // transcript
+					null, // transcriptSummary
+					null, // description
+					params.userId
 				);
 				response =
 					params.response ||
