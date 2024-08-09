@@ -9,7 +9,10 @@ import {
   Link,
   Show,
 } from "@chakra-ui/react";
-import logoWhite from "../../assets/svg/meddy-logo-white.svg";
+
+import logoWhite from '../../assets/svg/meddy-logo-white.svg';
+import  SpinningLogo  from '../SpinningLogo.jsx'
+
 
 export const Navbar = () => {
   return (
@@ -30,7 +33,13 @@ export const Navbar = () => {
         {/* Logo and Text wrapped in Link */}
         <Link href="/" _hover={{ textDecoration: "none" }}>
           <Flex alignItems="center">
-            <Image src={logoWhite} alt="Meddy Logo" h="28px" />
+          <SpinningLogo 
+            size={35} 
+            outerSpeed={10} 
+            innerSpeed={8}
+            outerCircleSize={1.2} 
+            innerCircleSize={0.8}
+          />
             <Text fontSize="xl" fontWeight="bold" ml={2}>
               Meddy
             </Text>
