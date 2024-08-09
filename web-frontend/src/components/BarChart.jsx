@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import Card from "../../components/Card/Card";
+import Card from "./Card/Card";
 import Chart from "react-apexcharts";
 
 class BarChart extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			data: props.chartData,
+			data: props.data,
 			chartData: [],
 		};
 	}
@@ -40,6 +40,14 @@ class BarChart extends Component {
 
 export default BarChart;
 
+// Example chartData
+export const barChartData = [
+	{
+		name: "Sales",
+		data: [330, 250, 110, 300, 490, 350, 270, 130, 425],
+	},
+];
+
 export const barChartOptions = {
 	chart: {
 		toolbar: {
@@ -63,7 +71,7 @@ export const barChartOptions = {
 	},
 	xaxis: {
 		categories: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-		show: false,
+		show: true,
 		labels: {
 			show: false,
 			style: {
