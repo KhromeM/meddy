@@ -21,7 +21,7 @@ import {
 } from "@chakra-ui/react";
 import { useAuth } from "../firebase/AuthService.jsx";
 import { Gradient } from "./Gradient";
-import "../styles/Gradient.css";
+import "../styles/gradient.css";
 import {
 	LineChart,
 	Line,
