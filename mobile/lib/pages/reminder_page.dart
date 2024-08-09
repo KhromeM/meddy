@@ -70,7 +70,7 @@ class _ReminderPageState extends State<ReminderPage> {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/info/reminder'),
-        headers: {'Content-Type': 'application/json', 'idToken': 'dev'},
+        headers: {'Content-Type': 'application/json', 'idToken': user ?? 'dev'},
         body: jsonEncode({
           'date': DateFormat('yyyy-MM-dd').format(date),
           'userId': user,
@@ -84,11 +84,12 @@ class _ReminderPageState extends State<ReminderPage> {
 
   void _removeReminder(int id) async {
     final service = AppointmentService();
+    String? user = await _authService.getIdToken();
     try {
       final response = await http.delete(
           Uri.parse('$baseUrl/info/reminder/$id'),
-          headers: {'idToken': 'dev'});
-      setState(() {});
+          headers: {'idToken': user ?? 'dev'});
+      _refreshAppointments(); // Refresh after removing
       print(response.body);
     } catch (e) {
       // Handle error

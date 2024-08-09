@@ -4,7 +4,7 @@ import {
 	healthSchema,
 	summarySchema,
 } from "../ai/prompts/summarizeRecords.mjs";
-import { getModel } from "../ai/langAi/setupVertexAI.mjs";
+import { getModel, getModelWithCaching } from "../ai/langAi/setupVertexAI.mjs";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
@@ -26,7 +26,7 @@ const healthCategories = [
 export const summarizeFHIR = async (user, data) => {
 	// ///////////////////////////////////////
 	if (!data) {
-		return;
+		// return;
 		try {
 			const jsonPath = path.resolve(
 				__dirname,
@@ -38,27 +38,21 @@ export const summarizeFHIR = async (user, data) => {
 		}
 	}
 	// //////////////////////////////////////
-	const chatHistory = [
-		{
-			role: "user",
-			parts: [{ text: data }],
-		},
-	];
 
-	let generativeModel = getModel(healthSchema);
+	const sysPrompt = createAnalyzeCategoryPrompt("default");
+	let cachedModel = getModelWithCaching(`${sysPrompt} \n\n USER DATA: ${data}`);
 	const combinedResponse = {};
 
 	const categoryPromises = healthCategories.map(async (category) => {
-		const sysPrompt = createAnalyzeCategoryPrompt(category.name);
-
 		const request = {
-			contents: chatHistory,
-			systemInstruction: {
-				parts: [{ text: sysPrompt }],
-			},
+			contents: [
+				{
+					role: "user",
+					parts: [{ text: `**{HEALTH_CATEGORY} IS ${category.name}**\n\n` }],
+				},
+			],
 		};
-
-		const result = await generativeModel.generateContent(request);
+		const result = await cachedModel.generateContent(request);
 		const categoryResponse = JSON.parse(
 			result.response.candidates[0].content.parts[0].text
 		);
@@ -177,7 +171,7 @@ export const createTotalSummary = async (user) => {
 	}
 };
 
-// summarizeFHIR({ userid: "DEVELOPER" });
+summarizeFHIR({ userid: "DEVELOPER" });
 // createTotalSummary({ userid: "DEVELOPER" });
 // const records = await db.getMedicalRecordsByUserId("DEVELOPER");
 // console.log(records);
