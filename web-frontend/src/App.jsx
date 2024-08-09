@@ -42,8 +42,7 @@ function App() {
             <Route path={`/dashboard`} component={AdminLayout} />
             {/*  */}
             {/* <Route path="/team" component={Team} /> */}
-          </Switch>
-          <ChatWidget />
+          </Switch> 
         </AuthProvider>
       </Router>
     </ChakraProvider>
