@@ -8,8 +8,14 @@ import {
 } from "../../../../components/Icons/Icons";
 import { FcGoogle } from "react-icons/fc";
 import { BiSolidPhoneCall } from "react-icons/bi";
+import { useContext } from "react";
+import { SettingsContext } from "../../../../layouts/Admin";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
 const QuickActionList = ({ iconBoxInside }) => {
+  const onOpen = useContext(SettingsContext);
+  const history = useHistory();
+
   return (
     <>
       <Heading color="gray" textAlign="center" as="h3" size="md" mb="14px">
@@ -24,8 +30,9 @@ const QuickActionList = ({ iconBoxInside }) => {
           height="120px"
           // width="60px"
           icon={
-            <Icon as={FcGoogle} h={"24px"} w={"24px"} color={iconBoxInside} />
+            <Icon as={FcGoogle} h={"24px"} w={"24px"} color={"iconBoxInside"} />
           }
+          onClick={onOpen}
         />
         <SmallQuickActionCard
           title={"Change Language"}
@@ -33,12 +40,13 @@ const QuickActionList = ({ iconBoxInside }) => {
           percentage={5}
           icon={
             <GlobeIcon
-              color="#230b14"
+              color="#eeeeee"
               h={"24px"}
               w={"24px"}
               // color={iconBoxInside}
             />
           }
+          onClick={onOpen}
         />
         <SmallQuickActionCard
           title={"Listen into my Call"}
@@ -47,18 +55,28 @@ const QuickActionList = ({ iconBoxInside }) => {
           icon={
             <Icon
               as={BiSolidPhoneCall}
-              color="#ddfafa"
+              color="#eeeeee"
               h={"24px"}
               w={"24px"}
               // color={iconBoxInside}
             />
           }
+          onClick={() => {
+            setTimeout(() => {
+              history.push("/dashboard/voicemode");
+            }, 300);
+          }}
         />
         <SmallQuickActionCard
           title={"View Files"}
           amount={"$173,000"}
           percentage={8}
           icon={<DocumentIcon h={"24px"} w={"24px"} color={"#eeeeee"} />}
+          onClick={() => {
+            setTimeout(() => {
+              history.push("/dashboard/uploads");
+            }, 300);
+          }}
         />
       </SimpleGrid>
     </>

@@ -341,7 +341,7 @@ class _ChatPageState extends State<ChatPage> {
       body: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.only(bottom: 10.0, left: 15, right: 15),
+            padding: const EdgeInsets.only(bottom: 50.0, left: 15, right: 15),
             child: Column(
               children: [
                 Expanded(
@@ -356,7 +356,7 @@ class _ChatPageState extends State<ChatPage> {
                             ),
                       if (_isGenerating)
                         Positioned(
-                          bottom: 0,
+                          bottom: 5,
                           left: 12,
                           child: AnimatedStopButton(
                             onPressed: _stopGenerationVisually,

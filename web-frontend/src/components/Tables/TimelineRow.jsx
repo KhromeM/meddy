@@ -1,11 +1,26 @@
 import React from "react";
-import { Box, Flex, Icon, Text, useColorModeValue, Circle } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Icon,
+  Text,
+  useColorModeValue,
+  Circle,
+} from "@chakra-ui/react";
 import { MdAccessTime } from "react-icons/md";
 
-function TimelineRow({ logo, medicationName, time, hoursUntilRepeat, color, index, arrLength }) {
+function TimelineRow({
+  logo,
+  medicationName,
+  time,
+  hoursUntilRepeat,
+  color,
+  index,
+  arrLength,
+}) {
   const textColor = useColorModeValue("gray.700", "white.300");
   const subTextColor = useColorModeValue("gray.500", "gray.400");
-  
+
   return (
     <Flex alignItems="center" width="100%">
       <Box position="relative" minWidth="60px" height="100%" mr={4}>
@@ -22,7 +37,7 @@ function TimelineRow({ logo, medicationName, time, hoursUntilRepeat, color, inde
           <Text fontSize="sm">{time}</Text>
         </Flex>
         <Text fontSize="sm" color={subTextColor} mt={1}>
-          Repeats every {hoursUntilRepeat} hour{hoursUntilRepeat > 1 ? 's' : ''}
+          Repeats every {hoursUntilRepeat} hour{hoursUntilRepeat > 1 ? "s" : ""}
         </Text>
       </Flex>
     </Flex>
