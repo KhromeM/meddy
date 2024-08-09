@@ -29,7 +29,7 @@ export const Hero = ({ login }) => {
 
 		const handleScroll = () => {
 			const scrollPosition = window.scrollY;
-			const maxScroll = 800;
+			const maxScroll = 1000;
 			const opacity = Math.max(1 - scrollPosition / maxScroll, 0);
 
 			const canvas = document.querySelector("#gradient-canvas");

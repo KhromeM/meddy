@@ -7,7 +7,9 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { GoogleAICacheManager } from "@google/generative-ai/server";
 
 // Set up Vertex
-const googleAuthCreds = JSON.parse(fs.readFileSync(CONFIG.GOOGLE_APPLICATION_CREDENTIALS));
+const googleAuthCreds = JSON.parse(
+	fs.readFileSync(CONFIG.GOOGLE_APPLICATION_CREDENTIALS)
+);
 const project = googleAuthCreds.project_id;
 const location = "us-central1";
 const textModel = "gemini-1.5-pro-001";
@@ -20,7 +22,8 @@ const responseSchema = {
 	properties: {
 		thoughts: {
 			type: "string",
-			description: "The AI's analysis and reasoning about the user's request or the current situation.",
+			description:
+				"The AI's analysis and reasoning about the user's request or the current situation.",
 		},
 		function: {
 			type: "string",
@@ -47,7 +50,8 @@ const responseSchema = {
 				},
 				newName: {
 					type: "string",
-					description: "The updated name for the user. Used in LLMUpdateUserName function.",
+					description:
+						"The updated name for the user. Used in LLMUpdateUserName function.",
 				},
 				newPhoneNumber: {
 					type: "string",
@@ -56,7 +60,8 @@ const responseSchema = {
 				},
 				newAddress: {
 					type: "string",
-					description: "The updated address for the user. Used in LLMUpdateUserAddress function.",
+					description:
+						"The updated address for the user. Used in LLMUpdateUserAddress function.",
 				},
 				newEmail: {
 					type: "string",
@@ -185,14 +190,22 @@ export const getModel = (schema = responseSchema) => {
 	});
 };
 
-export async function getStructuredVertexResponse(user, chatHistory, schema = responseSchema) {
+export async function getStructuredVertexResponse(
+	user,
+	chatHistory,
+	schema = responseSchema
+) {
 	// Set up prompt and chat history
+	if (chatHistory[0].source != "user") {
+		chatHistory.shift();
+	}
 	const data = await getUserInfo(user.userid);
 	const prompt = createFunctionCallingSystemPrompt(data);
-	const cleanedHistory = chatHistory.slice(1).map((message) => ({
+	const cleanedHistory = chatHistory.map((message) => ({
 		role: message.source === "llm" ? "model" : "user",
 		parts: [{ text: message.text }],
 	}));
+	console.log(cleanedHistory);
 
 	// Make the request
 	const request = {
@@ -203,7 +216,9 @@ export async function getStructuredVertexResponse(user, chatHistory, schema = re
 	};
 	const generativeModel = getModel(schema);
 	const result = await generativeModel.generateContent(request);
-	const response = JSON.parse(result.response.candidates[0].content.parts[0].text);
+	const response = JSON.parse(
+		result.response.candidates[0].content.parts[0].text
+	);
 	return response;
 }
 
