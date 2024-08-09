@@ -37,6 +37,11 @@ import {
 	getConditionById,
 	updateCondition,
 	deleteCondition,
+	createHealthGoal,
+	getAllHealthGoals,
+	getUserHealthGoals,
+	updateHealthGoal,
+	deleteHealthGoal,
 } from "./dbInfo.mjs";
 
 import { getCredentials, saveCredentials } from "./dbCredentials.mjs";
@@ -99,4 +104,9 @@ export default {
 	deleteMedicalRecord,
 	getTotalMedicalRecordsByUserId,
 	copyMedicalRecords,
+	createHealthGoal,
+	getAllHealthGoals,
+	getUserHealthGoals,
+	updateHealthGoal,
+	deleteHealthGoal,
 };

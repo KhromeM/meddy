@@ -92,6 +92,12 @@ CREATE TABLE Conditions (
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
+CREATE TABLE HealthGoals (
+    UserID VARCHAR(255),
+    Goal TEXT,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
 CREATE TABLE Credentials (
     UserID VARCHAR(255),
     ProviderName VARCHAR(50),
