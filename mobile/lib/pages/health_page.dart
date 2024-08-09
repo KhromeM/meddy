@@ -1,10 +1,7 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:meddymobile/models/fitness_data.dart';
 import 'package:meddymobile/models/health_category.dart';
 import 'package:meddymobile/services/health_service.dart';
-import 'package:meddymobile/widgets/main_background.dart';
 import 'package:meddymobile/widgets/health_summary_card.dart';
 import 'package:meddymobile/widgets/fitness_card.dart';
 
@@ -42,10 +39,12 @@ class _HealthPageState extends State<HealthPage> {
   Future<void> _loadActivitiyData() async {
     try {
       final fitnessData = await healthService.fetchGFitData();
+      if (!mounted) return; // check if the widget is still mounted
       setState(() {
         _fitnessData = fitnessData;
       });
     } catch (e) {
+      if (!mounted) return; // check if the widget is still mounted
       setState(() {
         print("Error loading fitness records");
       });
