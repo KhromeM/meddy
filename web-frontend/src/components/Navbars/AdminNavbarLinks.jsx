@@ -126,7 +126,7 @@ export default function HeaderLinks(props) {
         {...rest}
       />
       {/* MEDDY SETTINGS ICON   */}
-      <SettingsIcon
+      {/* <SettingsIcon
         cursor="pointer"
         ms={{ base: "16px", xl: "0px" }}
         me="16px"
@@ -135,7 +135,7 @@ export default function HeaderLinks(props) {
         color={navbarIcon}
         w="32px"
         h="32px"
-      />
+      /> */}
       {/* <Menu>
         <MenuButton>
           <BellIcon color={navbarIcon} w="18px" h="18px" />

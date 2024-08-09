@@ -58,9 +58,7 @@ CREATE TABLE Appointments (
     TranscriptSummary TEXT,
     Description TEXT,
     UserID VARCHAR(255),
-    DoctorID VARCHAR(255),
     FOREIGN KEY (UserID) REFERENCES Users(UserID),
-    FOREIGN KEY (DoctorID) REFERENCES Doctors(DoctorID)
 );
 
 CREATE TABLE Medications (
@@ -91,6 +89,12 @@ CREATE TABLE Conditions (
     ConditionID SERIAL PRIMARY KEY,
     UserID VARCHAR(255),
     Name VARCHAR(255) NOT NULL,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+CREATE TABLE HealthGoals (
+    UserID VARCHAR(255),
+    Goal TEXT,
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 

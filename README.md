@@ -38,6 +38,12 @@ Meddy functions as an all-around friendly medical assistant AI, striving to help
 
 The app's primary goal is to improve patient care by enhancing communication, providing reliable information, and offering emotional support throughout the medical journey.
 
+## Easy deployment
+```
+ssh root@24.144.94.136 
+cd /home/meddy/web-frontend && git pull && npm i && npm run build
+```
+
 # Project Setup
 
 ## Frontend Setup (this frontend is just for testing)

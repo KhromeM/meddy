@@ -30,7 +30,7 @@ import {
 } from "react-icons/io5";
 import { RiHealthBookFill, RiUserVoiceFill } from "react-icons/ri";
 import Chat from "./components/Chat";
-import Health from "./components/Health";
+import Health from "./components/Health.jsx";
 import Uploads from "./components/Uploads.jsx";
 
 var dashRoutes = [
@@ -47,7 +47,7 @@ var dashRoutes = [
     path: "/home",
     name: "Home", // Changes the actual name of Meddy sidebar
     icon: <IoHome color="inherit" />,
-    component: MeddyHome, // Updated to MeddyHome
+    component: Dashboard, // Updated to MeddyHome
     // william pathing
     layout: "/dashboard",
   },
@@ -79,7 +79,7 @@ var dashRoutes = [
     path: "/reminders",
     name: "Reminders",
     icon: <IoTimeSharp color="inherit" />,
-    component: MeddyReminders, // Updated to MeddyReminders
+    component: Billing, // Updated to MeddyReminders
     layout: "/dashboard",
   },
   {

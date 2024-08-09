@@ -16,9 +16,12 @@ class AudioService {
     this.isPlayingBestAudio = false;
   }
 
+  //console logs seen are sean debugging
+
   initAudioContext() {
     this.audioContext = new (window.AudioContext ||
       window.webkitAudioContext)();
+      console.log("Audio context initialized");
   }
 
   async playAudioChunk(base64Audio) {
@@ -41,6 +44,7 @@ class AudioService {
       source.connect(this.audioContext.destination);
       await new Promise((resolve) => {
         source.onended = () => {
+          console.log("Audio chunk finished playing");
           resolve();
         };
         source.start(0);
@@ -55,18 +59,20 @@ class AudioService {
 
     if (audioChunk) {
       queue.push(audioChunk);
-      
+      console.log(
+        `Added chunk to queue ${queueNumber}. Queue length: ${queue.length}`
+      );
       this.onAudioResponse(audioChunk, queueNumber, isComplete);
     }
 
-    //this is me trying to debug the empty message box popping up.
     if (isComplete) {
+      console.log(`Queue ${queueNumber} is complete`);
       this.handleCompletion(queueNumber);
     }
 
     if (isComplete && queueNumber === 3) {
-      
       if (!this.isPlayingBestAudio) {
+        console.log("Starting playback of best audio");
         this.playBestAudio();
       }
     }

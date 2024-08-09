@@ -180,3 +180,5 @@ export const createDefaultSystemPrompt = async (user, lang = "english") => {
 	// console.log(sysPrompt);
 	return sysPrompt;
 };
+
+// console.log((await createDefaultSystemPrompt({ userid: "DEVELOPER" })).length);

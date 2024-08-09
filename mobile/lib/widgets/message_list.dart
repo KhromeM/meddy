@@ -159,12 +159,10 @@ class MessageList extends StatelessWidget {
                       padding: EdgeInsets.symmetric(
                           vertical: 10.0, horizontal: 15.0), // user chat boxes
                       margin: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-                      decoration: isUser
-                          ? BoxDecoration(
-                              color: messageColor,
-                              borderRadius: BorderRadius.circular(20),
-                            )
-                          : null,
+                      decoration: BoxDecoration(
+                        color: messageColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

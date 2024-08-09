@@ -1,12 +1,10 @@
 import fs from "fs";
 import CONFIG from "../../config.mjs";
-import {
-	HarmBlockThreshold,
-	HarmCategory,
-	VertexAI,
-} from "@google-cloud/vertexai";
+import { VertexAI } from "@google-cloud/vertexai";
 import { getUserInfo } from "../../db/dbInfo.mjs";
 import { createFunctionCallingSystemPrompt } from "../prompts/functionCallingPrompt.mjs";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleAICacheManager } from "@google/generative-ai/server";
 
 // Set up Vertex
 const googleAuthCreds = JSON.parse(
@@ -14,8 +12,9 @@ const googleAuthCreds = JSON.parse(
 );
 const project = googleAuthCreds.project_id;
 const location = "us-central1";
-const textModel = "gemini-1.5-pro";
+const textModel = "gemini-1.5-pro-001";
 const vertexAI = new VertexAI({ project: project, location: location });
+let cachedModel;
 
 // Set up response schema
 const responseSchema = {
@@ -197,12 +196,16 @@ export async function getStructuredVertexResponse(
 	schema = responseSchema
 ) {
 	// Set up prompt and chat history
+	if (chatHistory[0].source != "user") {
+		chatHistory.shift();
+	}
 	const data = await getUserInfo(user.userid);
 	const prompt = createFunctionCallingSystemPrompt(data);
-	const cleanedHistory = chatHistory.slice(1).map((message) => ({
+	const cleanedHistory = chatHistory.map((message) => ({
 		role: message.source === "llm" ? "model" : "user",
 		parts: [{ text: message.text }],
 	}));
+	console.log(cleanedHistory);
 
 	// Make the request
 	const request = {
@@ -218,3 +221,19 @@ export async function getStructuredVertexResponse(
 	);
 	return response;
 }
+
+export const getModelWithCaching = async (prompt) => {
+	if (!cachedModel) {
+		const genAI = new GoogleGenerativeAI(CONFIG.GEMINI_API_KEY);
+		const cacheManager = new GoogleAICacheManager(CONFIG.GEMINI_API_KEY);
+		const cache = await cacheManager.create({
+			model: textModel,
+			systemInstruction: prompt,
+			contents: [],
+			ttlSeconds: 8000,
+		});
+		cachedModel = genAI.getGenerativeModelFromCachedContent(cache);
+	}
+
+	return cachedModel;
+};

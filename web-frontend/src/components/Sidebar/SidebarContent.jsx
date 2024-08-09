@@ -10,18 +10,22 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import IconBox from "../../components/Icons/IconBox";
-import { MeddyLogo } from "../../components/Icons/Icons";
+import { MeddyLogo, SettingsIcon } from "../../components/Icons/Icons";
 import { CreativeTimLogo } from "../../components/Icons/Icons";
 import { Separator } from "../../components/Separator/Separator";
 import { SidebarHelp } from "../../components/Sidebar/SidebarHelp";
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import SettingsButton from "./SettingsButton";
+import LoginButton from "./LoginButton";
 
 // this function creates the links and collapses that appear in the sidebar (left menu)
 
-const SidebarContent = ({ logoText, routes }) => {
+const SidebarContent = ({ logoText, routes, onOpen }) => {
   // to check for active links and opened collapses
   let location = useLocation();
+  const settingsRef = React.useRef();
+
   // this is for the rest of the collapses
   const [state, setState] = React.useState({});
 
@@ -66,8 +70,8 @@ const SidebarContent = ({ logoText, routes }) => {
           </div>
         );
       }
-      console.log(prop.layout, prop.path);
-      console.log(activeRoute(prop.path));
+      // console.log(prop.layout, prop.path);
+      // console.log(activeRoute(prop.path));
       return (
         // william pathing
 
@@ -92,12 +96,17 @@ const SidebarContent = ({ logoText, routes }) => {
               }}
               py="12px"
               borderRadius="15px"
-              _hover="none"
+              _hover={{
+                bg: inactiveBg,
+                boxShadow: "sm",
+                transform: "scale(1.01)",
+              }}
               w="100%"
               _active={{
                 bg: "inherit",
-                transform: "none",
                 borderColor: "transparent",
+                transform: "scale(0.98)",
+                boxShadow: "md",
               }}
               _focus={{
                 boxShadow: "none",
@@ -141,12 +150,17 @@ const SidebarContent = ({ logoText, routes }) => {
                 xl: "16px",
               }}
               borderRadius="15px"
-              _hover="none"
               w="100%"
               _active={{
                 bg: "inherit",
-                transform: "none",
                 borderColor: "transparent",
+                transform: "scale(0.98)",
+                boxShadow: "md",
+              }}
+              _hover={{
+                bg: inactiveBg,
+                boxShadow: "sm",
+                transform: "scale(1.01)",
               }}
               _focus={{
                 boxShadow: "none",
@@ -201,11 +215,28 @@ const SidebarContent = ({ logoText, routes }) => {
         </Link>
         <Separator></Separator>
       </Box>
-      <Stack direction="column" mb="40px">
+      <Stack direction="column" mb="10px">
         <Box>{links}</Box>
       </Stack>
-      {/* // Want to try Meddy Help bottom left */}
+
       <SidebarHelp />
+      <Flex
+        sx={{
+          position: "absolute",
+          bottom: "16px",
+        }}
+        flexDirection="column"
+      >
+        <LoginButton />
+        <SettingsButton
+          settingsRef={settingsRef}
+          inactiveBg={"gray.700"}
+          inactiveColor={"gray.400"}
+          onOpen={onOpen}
+        />
+      </Flex>
+
+      {/* // Want to try Meddy Help bottom left */}
     </>
   );
 };

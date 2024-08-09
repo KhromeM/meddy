@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:meddymobile/pages/chat_page.dart';
-import 'package:meddymobile/pages/health_page.dart';
-import 'package:meddymobile/pages/reminder_page.dart';
-import 'package:meddymobile/providers/chat_provider.dart';
+
 import 'package:meddymobile/utils/app_colors.dart';
 import 'package:meddymobile/services/auth_service.dart';
 import 'package:meddymobile/pages/signin_page.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:meddymobile/utils/languages.dart';
 import 'package:meddymobile/widgets/high_contrast_mode.dart';
+import 'package:meddymobile/widgets/spinning_logo.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   @override
@@ -25,6 +22,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   String _firstName = 'User';
   String? _profileImageUrl;
   String _currentLanguage = 'English';
+  final ValueNotifier<double> _speedNotifier = ValueNotifier<double>(0.3);
 
   @override
   void initState() {
@@ -61,58 +59,48 @@ class _CustomAppBarState extends State<CustomAppBar> {
   }
 
   Future<void> _showBottomSheet(BuildContext context) async {
-    return showModalBottomSheet(
+    _speedNotifier.value = 0.0; // Stop the spinning when bottom sheet opens
+    
+    await showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
       isScrollControlled: true,
       builder: (BuildContext context) {
+        return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setModalState) {
             return Container(
-              height: MediaQuery.of(context).size.height * 0.65,
+              height: MediaQuery.of(context).size.height * 0.4,
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildGreetingText(),
-                    SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: _buildSquareButton(
-                            'reminders',
-                            () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const ReminderPage()),
-                              );
-                            },
-                          ),
-                        ),
-                        SizedBox(width: 20),
-                        Expanded(
-                          child: _buildSquareButton(
-                            'health',
-                            () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HealthPage()),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 10),
                     Row(children: [
-                      _buildLanguageSelector(setModalState),
+                      Column(
+                        children: [
+                          _buildLanguageSelector(setModalState),
+                          Text(
+                            languageProvider.translate('language'),
+                          )
+                        ],
+                      ),
                       SizedBox(width: 12),
-                      _buildHighContrastToggle(setModalState)
+                      Column(
+                        children: [
+                          _buildHighContrastToggle(setModalState),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            languageProvider.translate('contrast'),
+                            )
+                        ],
+                      )
                     ]),
                     Spacer(),
                     _buildLogoutButton(context),
@@ -123,49 +111,40 @@ class _CustomAppBarState extends State<CustomAppBar> {
           },
         );
       },
+        );
+      },
     );
+    _speedNotifier.value = 0.3; // Resume spinning when bottom sheet closes
   }
 
   Widget _buildHighContrastToggle(StateSetter setModalState) {
     return Consumer<LanguageProvider>(
       builder: (context, languageProvider, child) {
         final highContrastMode = HighContrastMode.of(context);
-        return FloatingActionButton(
-          onPressed: highContrastMode?.toggleHighContrastMode,
-          backgroundColor: highContrastMode?.isHighContrast == true
-              ? Colors.black
-              : lightGreen,
-          elevation: 0,
-          child: SizedBox(
-            width: 50, // Adjust this value to control the icon's container size
-            height:
-                50, // Adjust this value to control the icon's container size
-            child: Icon(
-              Icons.accessibility_new,
+        return InkWell(
+          onTap: highContrastMode?.toggleHighContrastMode,
+          child: Container(
+            height: 70,
+            width: 70,
+            decoration: BoxDecoration(
               color: highContrastMode?.isHighContrast == true
-                  ? Colors.white
-                  : Colors.black,
-              size: 40, // You can make this even larger now
+                  ? Colors.black
+                  : lightGreen,
+              borderRadius: BorderRadius.circular(100),
+            ),
+            child: SizedBox(
+              width: 50,
+              height: 50,
+              child: Icon(
+                Icons.accessibility_new,
+                color: highContrastMode?.isHighContrast == true
+                    ? Colors.white
+                    : Colors.black,
+                size: 40,
+              ),
             ),
           ),
         );
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //   children: [
-        //     Text(
-        //       languageProvider.translate('high_contrast_mode'),
-        //       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-        //     ),
-        //     Switch(
-        //       value: highContrastMode?.isHighContrast ?? false,
-        //       onChanged: (value) {
-        //         highContrastMode?.toggleHighContrastMode();
-        //         setModalState(() {}); // Force bottom sheet to rebuild
-        //         setState(() {}); // Force CustomAppBar to rebuild
-        //       },
-        //     ),
-        //   ],
-        // );
       },
     );
   }
@@ -176,72 +155,25 @@ class _CustomAppBarState extends State<CustomAppBar> {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      languageProvider.translate('hello'),
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      ', $_firstName',
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+            Padding(
+              padding: const EdgeInsets.only(left: 15.0),
+              child: Text(
+                languageProvider.translate('settings'),
+                style: TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold,
                 ),
-                SizedBox(height: 8),
-                Text(
-                  languageProvider.translate('how_may_i_assist'),
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
+              ),
             ),
             if (_profileImageUrl != null)
-              CircleAvatar(
-                radius: 30,
-                backgroundImage: NetworkImage(_profileImageUrl!),
+              Padding(
+                padding: const EdgeInsets.only(right: 15.0),
+                child: CircleAvatar(
+                  radius: 30,
+                  backgroundImage: NetworkImage(_profileImageUrl!),
+                ),
               ),
           ],
-        );
-      },
-    );
-  }
-
-  Widget _buildSquareButton(String text, VoidCallback onPressed) {
-    return Consumer<LanguageProvider>(
-      builder: (context, languageProvider, child) {
-        return ElevatedButton(
-          onPressed: onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: lightPurple,
-            foregroundColor: Colors.black,
-            padding: EdgeInsets.only(top: 130),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(25),
-            ),
-            elevation: 0,
-          ),
-          child: Align(
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(15, 8.0, 8.0, 10),
-              child: Text(
-                languageProvider.translate(text),
-                style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
-              ),
-            ),
-          ),
         );
       },
     );
@@ -316,60 +248,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    /* return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      leading: InkWell(
-        onTap: () {
-          _showBottomSheet(context);
-        },
-        child: Padding(
-          padding:
-              const EdgeInsets.only(left: 14.0, top: 0, bottom: 0, right: 0),
-          child: SvgPicture.asset(
-            'assets/images/logo_image.svg',
-            fit: BoxFit.contain,
-          ),
-        ),
-      ),
-      actions: [
-        InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    Provider.of<ChatProvider>(context, listen: false).isLoading
-                        ? Scaffold(
-                            body: Center(child: CircularProgressIndicator()))
-                        : ChatPage(),
-              ),
-            );
-          },
-          child: Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Icon(
-                  Icons.circle,
-                  size: 60,
-                  color: Colors.black,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: FaIcon(
-                    FontAwesomeIcons.penToSquare,
-                    size: 20,
-                    color: Colors.white,
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-      ],
-    ); */
     return AppBar(
       backgroundColor: Colors.transparent,
       forceMaterialTransparency: true,
@@ -380,12 +258,19 @@ class _CustomAppBarState extends State<CustomAppBar> {
             _showBottomSheet(context);
           },
           child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Icon(
-              Icons.settings_outlined,
-              size: 50,
-            ),
-          ),
+              padding: EdgeInsets.only(
+                top: 5.0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              ),
+              child: SpinningLogo(
+                initialSpeed: 0.3,
+                height: 100,
+                width: 120,
+                isVary: false,
+                speedNotifier: _speedNotifier,
+              )),
         )
       ],
     );

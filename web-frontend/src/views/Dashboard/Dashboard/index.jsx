@@ -2,6 +2,8 @@
 import {
   Flex,
   Grid,
+  Heading,
+  Icon,
   Image,
   SimpleGrid,
   useColorModeValue,
@@ -27,38 +29,51 @@ import OrdersOverview from "./components/OrdersOverview";
 import Projects from "./components/Projects";
 import SalesOverview from "./components/SalesOverview";
 import WorkWithTheRockets from "./components/WorkWithTheRockets";
+import RemindersCard from "./components/RemindersCard";
+import QuickActionCard from "./components/QuickActionCard";
+import { FaWallet } from "react-icons/fa";
+import { useAuth } from "../../../firebase/AuthService";
+import QuickActionList from "./components/QuickActionList";
+import Card from "../../../components/Card/Card";
+
+const barChartData = [
+  {
+    name: "Sales",
+    data: [0, 10, 30, 70, 120, 200, 340, 600, 500],
+  },
+];
 
 export default function Dashboard() {
   const iconBoxInside = useColorModeValue("white", "white");
+  const { user } = useAuth();
 
   return (
-    <Flex flexDirection="column" pt={{ base: "120px", md: "75px" }}>
-      <SimpleGrid columns={{ sm: 1, md: 2, xl: 4 }} spacing="24px">
-        <MiniStatistics
-          title={"Today's Moneys"}
-          amount={"$53,000"}
-          percentage={55}
-          icon={<WalletIcon h={"24px"} w={"24px"} color={iconBoxInside} />}
-        />
-        <MiniStatistics
-          title={"Today's Users"}
-          amount={"2,300"}
-          percentage={5}
-          icon={<GlobeIcon h={"24px"} w={"24px"} color={iconBoxInside} />}
-        />
-        <MiniStatistics
-          title={"New Clients"}
-          amount={"+3,020"}
-          percentage={-14}
-          icon={<DocumentIcon h={"24px"} w={"24px"} color={iconBoxInside} />}
-        />
-        <MiniStatistics
-          title={"Total Sales"}
-          amount={"$173,000"}
-          percentage={8}
-          icon={<CartIcon h={"24px"} w={"24px"} color={iconBoxInside} />}
-        />
+    <Flex
+      flexDirection="column"
+      // pt={{ base: "120px", md: "75px" }}
+    >
+      <Heading as="h1" size="xl" mb="26px">
+        {user ? `Hi, ${user?.displayName || "Guest"}!` : "Hi Guest!"}
+      </Heading>
+      <SimpleGrid columns={{ sm: 2, md: 2, xl: 3 }} mt="26px" spacing="24px">
+        <Card maxW="380">
+          <QuickActionList iconBoxInside={iconBoxInside} />
+        </Card>
       </SimpleGrid>
+      {/* <SimpleGrid columns={{ sm: 1, md: 2, xl: 4 }} mt="26px" spacing="24px">
+        <QuickActionCard
+          icon={<Icon h={"24px"} w={"24px"} color="white" as={FaWallet} />}
+          title={"Salary"}
+          description={"Belong interactive"}
+          // amount={2000}
+        />
+        <QuickActionCard
+          icon={<Icon h={"24px"} w={"24px"} color="white" as={FaWallet} />}
+          title={"Paypal"}
+          description={"Freelance Payment"}
+          amount={4550}
+        />
+      </SimpleGrid> */}
       <Grid
         templateColumns={{ md: "1fr", lg: "1.8fr 1.2fr" }}
         templateRows={{ md: "1fr auto", lg: "1fr" }}
@@ -96,7 +111,7 @@ export default function Dashboard() {
         <ActiveUsers
           title={"Active Users"}
           percentage={23}
-          chart={<BarChart />}
+          chart={<BarChart chartData={barChartData} />}
         />
         <SalesOverview
           title={"Sales Overview"}
@@ -115,11 +130,7 @@ export default function Dashboard() {
           captions={["Companies", "Members", "Budget", "Completion"]}
           data={dashboardTableData}
         />
-        <OrdersOverview
-          title={"Orders Overview"}
-          amount={30}
-          data={timelineData}
-        />
+        <RemindersCard />
       </Grid>
     </Flex>
   );

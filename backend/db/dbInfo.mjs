@@ -7,8 +7,7 @@ import { getMedicalRecordsByUserId } from "./dbMedicalRecords.mjs";
 
 // Medications Methods
 export const createMedication = (userId, name, dosage) => {
-	const query =
-		"INSERT INTO Medications (UserID, Name, Dosage) VALUES ($1, $2, $3) RETURNING *";
+	const query = "INSERT INTO Medications (UserID, Name, Dosage) VALUES ($1, $2, $3) RETURNING *";
 	const values = [userId, name, dosage];
 	return pool
 		.query(query, values)
@@ -311,6 +310,69 @@ export const deleteCondition = (conditionId) => {
 			throw err;
 		});
 };
+
+export const createHealthGoal = (userId, goal) => {
+	const query =
+		"INSERT INTO HealthGoals (UserID, Goal) VALUES ($1, $2) RETURNING *";
+	const values = [userId, goal];
+	return pool
+		.query(query, values)
+		.then((res) => res.rows[0])
+		.catch((err) => {
+			console.error("Error creating health goal:", err);
+			throw err;
+		});
+};
+
+export const getAllHealthGoals = () => {
+	const query = "SELECT * FROM HealthGoals";
+	return pool
+		.query(query)
+		.then((res) => res.rows)
+		.catch((err) => {
+			console.error("Error getting all health goals:", err);
+			throw err;
+		});
+};
+
+export const getUserHealthGoals = (userId) => {
+	const query = "SELECT * FROM HealthGoals WHERE UserID = $1";
+	const values = [userId];
+	return pool
+		.query(query, values)
+		.then((res) => res.rows)
+		.catch((err) => {
+			console.error("Error getting user health goals:", err);
+			throw err;
+		});
+};
+
+export const updateHealthGoal = (userId, oldGoal, newGoal) => {
+	const query =
+		"UPDATE HealthGoals SET Goal = $1 WHERE UserID = $2 AND Goal = $3 RETURNING *";
+	const values = [newGoal, userId, oldGoal];
+	return pool
+		.query(query, values)
+		.then((res) => res.rows[0])
+		.catch((err) => {
+			console.error("Error updating health goal:", err);
+			throw err;
+		});
+};
+
+export const deleteHealthGoal = (userId, goal) => {
+	const query =
+		"DELETE FROM HealthGoals WHERE UserID = $1 AND Goal = $2 RETURNING *";
+	const values = [userId, goal];
+	return pool
+		.query(query, values)
+		.then((res) => res.rows[0])
+		.catch((err) => {
+			console.error("Error deleting health goal:", err);
+			throw err;
+		});
+};
+
 // lets not go bankrupt here
 export const getUserInfoLite = async (userId) => {
 	try {
@@ -318,6 +380,7 @@ export const getUserInfoLite = async (userId) => {
 		const medications = await getUserMedications(userId);
 		const reminders = await getUserReminders(userId);
 		const appointments = await getUserAppointments(userId);
+		const goals = await getUserHealthGoals(userId);
 		const medicalRecords = await getMedicalRecordsByUserId(userId);
 
 		return {
@@ -347,10 +410,13 @@ export const getUserInfoLite = async (userId) => {
 				hoursuntilrepeat: rem.hoursuntilrepeat,
 				time: rem.time,
 			})),
-			medicalRecords: medicalRecords.map((record) => {
-				if (record.isTotal) return record;
-				return record.summary;
-			}),
+			goals: goals.map((goal) => ({
+				goaldescription: goal.goal,
+			})),
+			// medicalRecords: medicalRecords.map((record) => {
+			// 	if (record.isTotal) return record;
+			// 	return record.summary;
+			// }),
 		};
 	} catch (error) {
 		console.error("Error getting user info:", error);

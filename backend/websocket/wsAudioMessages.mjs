@@ -179,7 +179,6 @@ export async function useTranscriptionTTS(clientSocket, req) {
 			100
 		);
 		chatHistory.push({ source: "user", text });
-		await db.createMessage(req.user.userid, "user", text);
 		const filePath = "./websocket/genAudio/";
 		const fileName =
 			filePath + new Date(Date.now()).toISOString() + `audio.mp3`;

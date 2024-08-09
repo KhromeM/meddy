@@ -21,6 +21,9 @@ export const getGFitData = async (req, res) => {
 	}
 };
 
+export const gFitScores = async (req, res) => {
+	res.status(200).json({ sleep: 83, steps: 77 });
+};
 const sampleData = {
 	data: {
 		steps: [
