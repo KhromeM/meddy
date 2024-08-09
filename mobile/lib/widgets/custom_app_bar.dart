@@ -60,11 +60,14 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   Future<void> _showBottomSheet(BuildContext context) async {
     _speedNotifier.value = 0.0; // Stop the spinning when bottom sheet opens
+    
     await showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
       isScrollControlled: true,
       builder: (BuildContext context) {
+        return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setModalState) {
             return Container(
@@ -81,7 +84,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       Column(
                         children: [
                           _buildLanguageSelector(setModalState),
-                          Text('Language')
+                          Text(
+                            languageProvider.translate('language'),
+                          )
                         ],
                       ),
                       SizedBox(width: 12),
@@ -91,7 +96,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           SizedBox(
                             height: 10,
                           ),
-                          Text('Contrast')
+                          Text(
+                            languageProvider.translate('contrast'),
+                            )
                         ],
                       )
                     ]),
@@ -102,6 +109,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
               ),
             );
           },
+        );
+      },
         );
       },
     );
@@ -149,7 +158,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             Padding(
               padding: const EdgeInsets.only(left: 15.0),
               child: Text(
-                languageProvider.translate('Settings'),
+                languageProvider.translate('settings'),
                 style: TextStyle(
                   fontSize: 36,
                   fontWeight: FontWeight.bold,
