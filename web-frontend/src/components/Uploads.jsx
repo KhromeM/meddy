@@ -45,10 +45,10 @@ const Uploads = () => {
 		setIsLoading(true);
 		setError(null);
 		try {
-			const idToken = (await user?.getIdToken(false)) || dev;
-			console.log(idToken);
+			const idToken = await user?.getIdToken(false);
+			// console.log(idToken);
 			const response = await axios.get(`${serverUrl.http}/file/health`, {
-				headers: { idToken: idToken },
+				headers: { idToken: idToken || "dev" },
 			});
 			setFiles(Array.isArray(response.data.files) ? response.data.files : []);
 		} catch (err) {
@@ -70,7 +70,10 @@ const Uploads = () => {
 
 		const fileExtension = `.${file.name.split(".").pop().toLowerCase()}`;
 		if (!allowedFormats.includes(fileExtension)) {
-			showToast("Invalid file format. Allowed formats: " + allowedFormats.join(", "), "error");
+			showToast(
+				"Invalid file format. Allowed formats: " + allowedFormats.join(", "),
+				"error"
+			);
 			return;
 		}
 
@@ -105,9 +108,12 @@ const Uploads = () => {
 	const handleFileClick = async (filename) => {
 		try {
 			const idToken = (await user?.getIdToken(false)) || dev;
-			const response = await axios.get(`${serverUrl.http}/file/health/${filename}`, {
-				headers: { idToken: idToken },
-			});
+			const response = await axios.get(
+				`${serverUrl.http}/file/health/${filename}`,
+				{
+					headers: { idToken: idToken },
+				}
+			);
 			console.log(response.data.content);
 			setSelectedFile(filename);
 			setFileContent(response.data.content);
@@ -149,8 +155,8 @@ const Uploads = () => {
 					Your Health Data
 				</Heading>
 				<Text>
-					Please upload your health data in JSON, TXT, MD, or XML format. The maximum file size is
-					5MB.
+					Please upload your health data in JSON, TXT, MD, or XML format. The
+					maximum file size is 5MB.
 				</Text>
 				<Box
 					border="2px"
@@ -220,7 +226,11 @@ const Uploads = () => {
 				)}
 			</VStack>
 
-			<Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} size="xl">
+			<Modal
+				isOpen={isModalOpen}
+				onClose={() => setIsModalOpen(false)}
+				size="xl"
+			>
 				<ModalOverlay />
 				<ModalContent>
 					<ModalHeader>{selectedFile}</ModalHeader>
@@ -229,7 +239,11 @@ const Uploads = () => {
 						<Text whiteSpace="pre-wrap">{fileContent}</Text>
 					</ModalBody>
 					<ModalFooter>
-						<Button colorScheme="blue" mr={3} onClick={() => setIsModalOpen(false)}>
+						<Button
+							colorScheme="blue"
+							mr={3}
+							onClick={() => setIsModalOpen(false)}
+						>
 							Close
 						</Button>
 					</ModalFooter>
