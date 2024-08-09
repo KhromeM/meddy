@@ -104,7 +104,6 @@ const SidebarContent = ({ logoText, routes, onOpen }) => {
               w="100%"
               _active={{
                 bg: "inherit",
-                transform: "none",
                 borderColor: "transparent",
                 transform: "scale(0.98)",
                 boxShadow: "md",
@@ -154,7 +153,6 @@ const SidebarContent = ({ logoText, routes, onOpen }) => {
               w="100%"
               _active={{
                 bg: "inherit",
-                transform: "none",
                 borderColor: "transparent",
                 transform: "scale(0.98)",
                 boxShadow: "md",
