@@ -1,38 +1,43 @@
-import { Box, Flex, Icon, Text, useColorModeValue } from "@chakra-ui/react";
 import React from "react";
+import {
+  Box,
+  Flex,
+  Icon,
+  Text,
+  useColorModeValue,
+  Circle,
+} from "@chakra-ui/react";
+import { MdAccessTime } from "react-icons/md";
 
-function TimelineRow(props) {
-  const { logo, title, date, color, index, arrLength } = props;
+function TimelineRow({
+  logo,
+  medicationName,
+  time,
+  hoursUntilRepeat,
+  color,
+  index,
+  arrLength,
+}) {
   const textColor = useColorModeValue("gray.700", "white.300");
-  const bgIconColor = useColorModeValue("white.300", "gray.700");
+  const subTextColor = useColorModeValue("gray.500", "gray.400");
 
   return (
-    <Flex alignItems="center" minH="78px" justifyContent="start" mb="5px">
-      <Flex direction="column" h="100%">
-        <Icon
-          as={logo}
-          bg={bgIconColor}
-          color={color}
-          h={"30px"}
-          w={"26px"}
-          pe="6px"
-          zIndex="1"
-          position="relative"
-          right="-8px"
-          left="-8px"
-        />
-        <Box
-          w="2px"
-          bg="gray.200"
-          h={index === arrLength - 1 ? "15px" : "100%"}
-        ></Box>
-      </Flex>
-      <Flex direction="column" justifyContent="flex-start" h="100%">
-        <Text fontSize="sm" color={textColor} fontWeight="bold">
-          {title}
+    <Flex alignItems="center" width="100%">
+      <Box position="relative" minWidth="60px" height="100%" mr={4}>
+        <Circle size="40px" bg={color} color="white">
+          <Icon as={logo} boxSize="20px" />
+        </Circle>
+      </Box>
+      <Flex direction="column" flex={1} gap={1}>
+        <Text fontSize="md" fontWeight="bold" color={textColor}>
+          {medicationName}
         </Text>
-        <Text fontSize="sm" color="gray.400" fontWeight="normal">
-          {date}
+        <Flex alignItems="center" color={subTextColor} mt={1}>
+          <Icon as={MdAccessTime} mr={1} />
+          <Text fontSize="sm">{time}</Text>
+        </Flex>
+        <Text fontSize="sm" color={subTextColor} mt={1}>
+          Repeats every {hoursUntilRepeat} hour{hoursUntilRepeat > 1 ? "s" : ""}
         </Text>
       </Flex>
     </Flex>
