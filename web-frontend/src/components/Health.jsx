@@ -382,12 +382,12 @@ const HealthPanel = () => {
 						}}
 					></canvas>
 					<Heading
-						size="xl"
+						size="2xl"
 						textAlign="left"
 						color="black"
 						opacity={100}
-						height={50}
-						br={10}
+						height={55}
+						pl={5}
 					>
 						Your Health Summary
 					</Heading>
