@@ -18,6 +18,8 @@ import {
 	SimpleGrid,
 	Divider,
 	AbsoluteCenter,
+	useMediaQuery,
+	useBreakpointValue,
 } from "@chakra-ui/react";
 import { useAuth } from "../firebase/AuthService.jsx";
 import { Gradient } from "./Gradient";
@@ -46,25 +48,29 @@ const HealthSystemTab = ({ category, isSelected }) => {
 	);
 	const textColor = useColorModeValue("gray.800", "white");
 
+	const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
+
 	return (
 		<Tab
-			py={2}
+			py={4}
 			px={4}
-			borderTopRadius="md"
+			mx={1}
+			borderRadius="20"
 			bg={bgColor}
 			color={textColor}
-			fontWeight="medium"
-			fontSize="sm"
+			fontWeight="bold"
+			fontSize={isLargerThan768 ? "xl" : "md"}
 			_selected={{
 				bg: bgColor,
 				color: textColor,
-				borderTop: "2px solid",
 				borderColor: borderColor,
 				borderBottom: "none",
 			}}
 			_hover={{ bg: isSelected ? bgColor : "gray.200" }}
 			transition="all 0.2s"
-			mr={1}
+			flex={1}
+			minWidth={isLargerThan768 ? "200px" : "150px"}
+			maxWidth="200px"
 		>
 			{category.name.split(" ")[0]}
 		</Tab>
@@ -76,6 +82,7 @@ const FitnessContent = ({ fitnessData, scoreData }) => {
 		const date = new Date(dateString);
 		return `${date.getMonth() + 1}/${date.getDate()}`;
 	};
+	const columns = useBreakpointValue({ base: 1, md: 3 });
 
 	const data = {
 		steps: [
@@ -110,27 +117,29 @@ const FitnessContent = ({ fitnessData, scoreData }) => {
 
 	return (
 		<Box>
-			<SimpleGrid columns={3} spacing={4} mb={4}>
-				<ProgressChart
-					data={scoreData.fitnessScore}
-					color="#74d68e"
-					label="Overall Fitness"
-				/>
-				<ProgressChart
-					data={scoreData.sleep}
-					color="#74d6d1"
-					label="Sleep Quality"
-				/>
-				<ProgressChart
-					data={scoreData.steps}
-					color="#f57064"
-					label="Walking Activity"
-				/>
-			</SimpleGrid>
-			<Box position="relative" pt={10}>
+			<Box mx="auto">
+				<SimpleGrid columns={columns} spacing={4} mb={4}>
+					<ProgressChart
+						data={scoreData.fitnessScore}
+						color="#74d68e"
+						label="Overall Fitness"
+					/>
+					<ProgressChart
+						data={scoreData.sleep}
+						color="#74d6d1"
+						label="Sleep Quality"
+					/>
+					<ProgressChart
+						data={scoreData.steps}
+						color="#f57064"
+						label="Walking Activity"
+					/>
+				</SimpleGrid>
+			</Box>
+			<Box position="relative" mt={25} pt={20}>
 				<Divider />
 				<AbsoluteCenter bg="white" px="4">
-					<Text as="b" fontSize="3xl">
+					<Text as="b" fontSize="5xl">
 						Recent Activity
 					</Text>
 				</AbsoluteCenter>
