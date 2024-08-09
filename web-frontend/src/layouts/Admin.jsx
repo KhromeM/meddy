@@ -119,6 +119,7 @@ export default function Dashboard(props) {
           base: "100%",
           xl: "calc(100% - 275px)",
         }}
+        backgroundColor="#dcf1f8cc"
       >
         <Portal>
           {/* Navbar for Meddy */}

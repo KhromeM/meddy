@@ -16,11 +16,12 @@ function Card(props) {
         minWidth: "0px",
         overflowWrap: "break-word",
         // background: {colorBun},
-        backgroundColor: colorBg,
+        backgroundColor: props.backgroundColor || colorBg,
         boxShadow: "rgba(0, 0, 0, 0.02) 0px 3.5px 5.5px",
         borderRadius: "15px",
         minHeight: "83px",
       }}
+      // backgroundColor={props.backgroundColor}
       {...rest}
     >
       {children}

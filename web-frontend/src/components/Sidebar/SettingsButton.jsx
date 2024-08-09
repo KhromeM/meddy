@@ -29,7 +29,6 @@ const SettingsButton = ({ onOpen, inactiveBg, settingsRef, inactiveColor }) => {
       w="100%"
       _active={{
         bg: "inherit",
-        transform: "none",
         borderColor: "transparent",
         transform: "scale(0.91)",
         boxShadow: "md",

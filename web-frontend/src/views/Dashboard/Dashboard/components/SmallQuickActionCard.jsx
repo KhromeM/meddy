@@ -19,6 +19,9 @@ const SmallQuickActionCard = ({ title, amount, percentage, icon }) => {
 
   return (
     <Card
+      className="small-quick-action-card"
+      backgroundColor={"#ebf4f3 "}
+      // sx={{ backgroundColor: "#F0F0F0 !important" }}
       _hover={{
         transition: "all 0.3s",
         bg: "#fff5df",
@@ -30,16 +33,34 @@ const SmallQuickActionCard = ({ title, amount, percentage, icon }) => {
         transform: "scale(0.98)",
         boxShadow: "md",
       }}
-      minH="83px"
+      height="134px"
+      width="134px"
+      // sx={{ }}
     >
-      <CardBody>
-        <Flex flexDirection="row" align="center" justify="center" w="100%">
-          <Stat me="auto">
+      <CardBody h="100%">
+        <Flex
+          flexDirection="column"
+          align="center"
+          justify="center"
+          w="100%"
+          h="100%"
+          gap={2}
+        >
+          <IconBox as="box" minH={"45px"} w={"45px"} bg={iconTeal}>
+            {icon}
+          </IconBox>
+          <Stat
+            // mt="8px"
+            sx={{ display: "flex !important" }}
+            alignItems="center"
+          >
             <StatLabel
-              fontSize="md"
+              fontSize="sm"
+              textAlign="center"
               color="gray.400"
               fontWeight="bold"
               pb=".1rem"
+              margin="auto auto"
             >
               {title}
             </StatLabel>
@@ -60,9 +81,6 @@ const SmallQuickActionCard = ({ title, amount, percentage, icon }) => {
               </StatHelpText> */}
             </Flex>
           </Stat>
-          <IconBox as="box" h={"45px"} w={"45px"} bg={iconTeal}>
-            {icon}
-          </IconBox>
         </Flex>
       </CardBody>
     </Card>
