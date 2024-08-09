@@ -70,7 +70,7 @@ class ProgressChart extends Component {
 				py="1rem"
 				height={{ sm: "300px" }}
 				width="100%"
-				bg="linear-gradient(81.62deg, #313860 2.25%, #151928 79.87%)"
+				bg="linear-gradient(90deg, rgba(6,53,58,1) 0%, rgba(7,28,52,1) 100%)"
 				position="relative"
 				display="flex"
 				flexDirection="column"
