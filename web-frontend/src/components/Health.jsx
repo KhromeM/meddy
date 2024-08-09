@@ -17,6 +17,7 @@ import {
 	TabPanel,
 	SimpleGrid,
 	Divider,
+	AbsoluteCenter,
 } from "@chakra-ui/react";
 import { Gradient } from "./Gradient";
 import "../styles/gradient.css";
@@ -31,6 +32,7 @@ import {
 } from "recharts";
 import Recommendations from "./Recommendations";
 import BarChart from "./BarChart.jsx";
+import ProgressChart from "./ProgressChart.jsx";
 
 const HealthSystemTab = ({ category, isSelected }) => {
 	const bgColor = useColorModeValue(
@@ -107,35 +109,31 @@ const FitnessContent = ({ fitnessData, scoreData }) => {
 
 	return (
 		<Box>
-			<HStack spacing={6} mb={6}>
-				<CircularProgress
-					value={scoreData.fitnessScore}
-					size="120px"
-					thickness="12px"
-					color={scoreData.fitnessScore > 60 ? "green.400" : "red.400"}
-				>
-					<CircularProgressLabel fontWeight="bold" fontSize="2xl">
-						{scoreData.fitnessScore}%
-					</CircularProgressLabel>
-				</CircularProgress>
-				<VStack align="start" spacing={2}>
-					<Heading size="lg">Fitness</Heading>
-					<Text fontSize="md">
-						Your overall fitness based on activity and sleep patterns
-					</Text>
-				</VStack>
-			</HStack>
-			<Divider mb={6} />
-			<SimpleGrid columns={2} spacing={4} mb={8}>
-				<Box borderWidth={1} borderRadius="md" p={4}>
-					<Text fontWeight="bold">Sleep Score</Text>
-					<Text fontSize="2xl">{scoreData.sleep}%</Text>
-				</Box>
-				<Box borderWidth={1} borderRadius="md" p={4}>
-					<Text fontWeight="bold">Steps Score</Text>
-					<Text fontSize="2xl">{scoreData.steps}%</Text>
-				</Box>
+			<SimpleGrid columns={3} spacing={4} mb={4}>
+				<ProgressChart
+					data={scoreData.fitnessScore}
+					color="#74d68e"
+					label="Overall Fitness"
+				/>
+				<ProgressChart
+					data={scoreData.sleep}
+					color="#74d6d1"
+					label="Sleep Quality"
+				/>
+				<ProgressChart
+					data={scoreData.steps}
+					color="#f57064"
+					label="Walking Activity"
+				/>
 			</SimpleGrid>
+			<Box position="relative" pt={10}>
+				<Divider />
+				<AbsoluteCenter bg="white" px="4">
+					<Text as="b" fontSize="3xl">
+						Recent Activity
+					</Text>
+				</AbsoluteCenter>
+			</Box>
 
 			<VStack spacing={8} align="stretch">
 				<Box>
@@ -227,6 +225,8 @@ const HealthPanel = () => {
 
 	const borderColor = useColorModeValue("gray.200", "gray.600");
 	const bgColor = useColorModeValue("white", "gray.800");
+	const tabListBorderColor = useColorModeValue("gray.200", "gray.600");
+	const tabListBgColor = useColorModeValue("white", "gray.800");
 
 	useEffect(() => {
 		const gradient = new Gradient();
@@ -267,10 +267,14 @@ const HealthPanel = () => {
 				setFitnessData(fitData);
 				setScoreData(scoreData);
 				setIsLoading(false);
+				setError(null);
 			} catch (err) {
 				console.error(err.message);
-				setError(err.message);
+				setHealthData(null);
+				setFitnessData(null);
+				setScoreData(null);
 				setIsLoading(false);
+				setError(err.message);
 			}
 		};
 		fetchData();
@@ -362,9 +366,9 @@ const HealthPanel = () => {
 					flexDirection="column"
 					flex={1}
 					borderTopWidth={1}
-					borderColor={useColorModeValue("gray.200", "gray.600")}
+					borderColor={borderColor}
 					borderTopRadius="md"
-					bg={useColorModeValue("white", "gray.800")}
+					bg={bgColor}
 					width="100%"
 					overflow="hidden"
 				>
@@ -380,8 +384,8 @@ const HealthPanel = () => {
 							position="sticky"
 							top={0}
 							borderBottomWidth={1}
-							borderColor={useColorModeValue("gray.200", "gray.600")}
-							bg={useColorModeValue("white", "gray.800")}
+							borderColor={tabListBorderColor}
+							bg={tabListBgColor}
 							zIndex={1}
 						>
 							<HStack spacing={0} overflowX="auto" py={2} px={4} width="100%">
