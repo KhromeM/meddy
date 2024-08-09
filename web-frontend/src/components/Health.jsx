@@ -18,8 +18,9 @@ import {
 	SimpleGrid,
 	Divider,
 } from "@chakra-ui/react";
+import { useAuth } from "../firebase/AuthService.jsx";
 import { Gradient } from "./Gradient";
-import "../styles/gradient.css";
+import "../styles/Gradient.css";
 import {
 	LineChart,
 	Line,
@@ -31,6 +32,7 @@ import {
 } from "recharts";
 import Recommendations from "./Recommendations";
 import BarChart from "./BarChart.jsx";
+
 
 const HealthSystemTab = ({ category, isSelected }) => {
 	const bgColor = useColorModeValue(
@@ -228,45 +230,53 @@ const HealthPanel = () => {
 	const borderColor = useColorModeValue("gray.200", "gray.600");
 	const bgColor = useColorModeValue("white", "gray.800");
 
+  const { user } = useAuth();
+
 	useEffect(() => {
 		const gradient = new Gradient();
 		gradient.initGradient("#gradient-canvas");
-	}, []);
+	}, [isLoading]);
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const [healthResponse, fitResponse, scoreResponse] = await Promise.all([
-					fetch("https://trymeddy.com/api/medical-record/", {
-						headers: { idtoken: "dev", "Content-Type": "application/json" },
-					}),
-					fetch("https://trymeddy.com/api/gfit", {
-						headers: { idtoken: "dev", "Content-Type": "application/json" },
-					}),
-					fetch("https://trymeddy.com/api/gfit/report", {
-						headers: { idtoken: "dev", "Content-Type": "application/json" },
-					}),
-				]);
+        if(user){
+          const idToken = await user.getIdToken();
+          const [healthResponse, fitResponse, scoreResponse] = await Promise.all([
+            fetch("https://trymeddy.com/api/medical-record/", {
+              headers: { idtoken: idToken, "Content-Type": "application/json" },
+            }),
+            fetch("https://trymeddy.com/api/gfit", {
+              headers: { idtoken: idToken, "Content-Type": "application/json" },
+            }),
+            fetch("https://trymeddy.com/api/gfit/report", {
+              headers: { idtoken: idToken, "Content-Type": "application/json" },
+            }),
+          ]);
+  
+          if (!healthResponse.ok || !fitResponse.ok || !scoreResponse.ok) {
+            throw new Error("Failed to fetch data!");
+          }
+  
+          const [healthData, fitData, scoreData] = await Promise.all([
+            healthResponse.json(),
+            fitResponse.json(),
+            scoreResponse.json(),
+          ]);
+  
+          const fitnessScore = Math.round(
+            (scoreData.sleep + scoreData.steps) / 2
+          );
+          scoreData.fitnessScore = fitnessScore;
+  
+          setHealthData(healthData);
+          setFitnessData(fitData);
+          setScoreData(scoreData);
+          setIsLoading(false);
 
-				if (!healthResponse.ok || !fitResponse.ok || !scoreResponse.ok) {
-					throw new Error("Failed to fetch data!");
-				}
-
-				const [healthData, fitData, scoreData] = await Promise.all([
-					healthResponse.json(),
-					fitResponse.json(),
-					scoreResponse.json(),
-				]);
-
-				const fitnessScore = Math.round(
-					(scoreData.sleep + scoreData.steps) / 2
-				);
-				scoreData.fitnessScore = fitnessScore;
-
-				setHealthData(healthData);
-				setFitnessData(fitData);
-				setScoreData(scoreData);
-				setIsLoading(false);
+        }else{
+          throw new Error('No user is signed in');
+        }
 			} catch (err) {
 				console.error(err.message);
 				setError(err.message);
