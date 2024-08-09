@@ -5,7 +5,7 @@ import Footer from "../components/Footer/Footer";
 // Layout components
 import AdminNavbar from "../components/Navbars/AdminNavbar";
 import Sidebar from "../components/Sidebar";
-import React, { useState } from "react";
+import React, { createContext, useState } from "react";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import routes from "../routes.jsx";
 // import '@fontsource/roboto/400.css';
@@ -23,7 +23,11 @@ import "./Admin.css";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import SettingsPopout from "../components/SettingsPopout/SettingsPopout.jsx";
 
+export const SettingsContext = createContext();
+
 export default function Dashboard(props) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const location = useLocation();
   const { ...rest } = props;
   // states and functions
@@ -87,6 +91,7 @@ export default function Dashboard(props) {
       }
       if (prop.layout === "/dashboard") {
         // meddy william pathing prev /admin
+
         return (
           <Route
             path={prop.layout + prop.path}
@@ -100,9 +105,9 @@ export default function Dashboard(props) {
       }
     });
   };
-  const { isOpen, onOpen, onClose } = useDisclosure();
+
   document.documentElement.dir = "ltr";
-  console.log(getRoutes(routes));
+  // console.log(getRoutes(routes));
   // Chakra Color Mode
   return (
     <ChakraProvider theme={theme} resetCss={false}>
@@ -148,7 +153,9 @@ export default function Dashboard(props) {
               // location={location}
               >
                 {/* Main Body Logic for Meddy */}
-                {getRoutes(routes)}
+                <SettingsContext.Provider value={onOpen}>
+                  {getRoutes(routes)}
+                </SettingsContext.Provider>
                 {/* <div>Nothing rendering bro.</div> */}
                 {/* <Redirect from="/admin" to="/admin/dashboard" /> */}
               </Switch>
