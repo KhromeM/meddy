@@ -79,7 +79,12 @@ export const deleteMedication = (medicationId) => {
 };
 
 // Reminders Methods
-export const createReminder = (userId, medicationName, hoursUntilRepeat, time) => {
+export const createReminder = (
+	userId,
+	medicationName,
+	hoursUntilRepeat,
+	time
+) => {
 	const query =
 		"INSERT INTO Reminders (UserID, MedicationName, HoursUntilRepeat, Time) VALUES ($1, $2, $3, $4) RETURNING *";
 	const values = [userId, medicationName, hoursUntilRepeat, time];
@@ -127,7 +132,13 @@ export const getReminderById = (reminderId) => {
 		});
 };
 
-export const updateReminder = (reminderId, userId, medicationName, hoursUntilRepeat, time) => {
+export const updateReminder = (
+	reminderId,
+	userId,
+	medicationName,
+	hoursUntilRepeat,
+	time
+) => {
 	const query =
 		"UPDATE Reminders SET UserID = $1, MedicationName = $2, HoursUntilRepeat = $3, Time = $4 WHERE ReminderID = $5 RETURNING *";
 	const values = [userId, medicationName, hoursUntilRepeat, time, reminderId];
@@ -154,7 +165,8 @@ export const deleteReminder = (reminderId) => {
 
 // Allergies Methods
 export const createAllergy = (userId, name) => {
-	const query = "INSERT INTO Allergies (UserID, Name) VALUES ($1, $2) RETURNING *";
+	const query =
+		"INSERT INTO Allergies (UserID, Name) VALUES ($1, $2) RETURNING *";
 	const values = [userId, name];
 	return pool
 		.query(query, values)
@@ -201,7 +213,8 @@ export const getAllergyById = (allergyId) => {
 };
 
 export const updateAllergy = (allergyId, userId, name) => {
-	const query = "UPDATE Allergies SET UserID = $1, Name = $2 WHERE AllergyID = $3 RETURNING *";
+	const query =
+		"UPDATE Allergies SET UserID = $1, Name = $2 WHERE AllergyID = $3 RETURNING *";
 	const values = [userId, name, allergyId];
 	return pool
 		.query(query, values)
@@ -226,7 +239,8 @@ export const deleteAllergy = (allergyId) => {
 
 // Conditions Methods
 export const createCondition = (userId, name) => {
-	const query = "INSERT INTO Conditions (UserID, Name) VALUES ($1, $2) RETURNING *";
+	const query =
+		"INSERT INTO Conditions (UserID, Name) VALUES ($1, $2) RETURNING *";
 	const values = [userId, name];
 	return pool
 		.query(query, values)
@@ -273,7 +287,8 @@ export const getConditionById = (conditionId) => {
 };
 
 export const updateCondition = (conditionId, userId, name) => {
-	const query = "UPDATE Conditions SET UserID = $1, Name = $2 WHERE ConditionID = $3 RETURNING *";
+	const query =
+		"UPDATE Conditions SET UserID = $1, Name = $2 WHERE ConditionID = $3 RETURNING *";
 	const values = [userId, name, conditionId];
 	return pool
 		.query(query, values)
@@ -297,7 +312,8 @@ export const deleteCondition = (conditionId) => {
 };
 
 export const createHealthGoal = (userId, goal) => {
-	const query = "INSERT INTO HealthGoals (UserID, Goal) VALUES ($1, $2) RETURNING *";
+	const query =
+		"INSERT INTO HealthGoals (UserID, Goal) VALUES ($1, $2) RETURNING *";
 	const values = [userId, goal];
 	return pool
 		.query(query, values)
@@ -332,7 +348,8 @@ export const getUserHealthGoals = (userId) => {
 };
 
 export const updateHealthGoal = (userId, oldGoal, newGoal) => {
-	const query = "UPDATE HealthGoals SET Goal = $1 WHERE UserID = $2 AND Goal = $3 RETURNING *";
+	const query =
+		"UPDATE HealthGoals SET Goal = $1 WHERE UserID = $2 AND Goal = $3 RETURNING *";
 	const values = [newGoal, userId, oldGoal];
 	return pool
 		.query(query, values)
@@ -344,7 +361,8 @@ export const updateHealthGoal = (userId, oldGoal, newGoal) => {
 };
 
 export const deleteHealthGoal = (userId, goal) => {
-	const query = "DELETE FROM HealthGoals WHERE UserID = $1 AND Goal = $2 RETURNING *";
+	const query =
+		"DELETE FROM HealthGoals WHERE UserID = $1 AND Goal = $2 RETURNING *";
 	const values = [userId, goal];
 	return pool
 		.query(query, values)
