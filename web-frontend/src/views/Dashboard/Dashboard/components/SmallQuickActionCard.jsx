@@ -16,11 +16,12 @@ import React from "react";
 const SmallQuickActionCard = ({ title, amount, percentage, icon, onClick }) => {
   const iconTeal = useColorModeValue("orange.300", "orange.300");
   const textColor = useColorModeValue("gray.700", "white");
+  const bgColor = useColorModeValue("#ebf4f3", "#525558");
 
   return (
     <Card
       className="small-quick-action-card"
-      backgroundColor={"#ebf4f3 "}
+      backgroundColor={bgColor}
       // sx={{ backgroundColor: "#F0F0F0 !important" }}
       _hover={{
         transition: "all 0.3s",
