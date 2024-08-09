@@ -1,5 +1,14 @@
 import React from "react";
-import { Box, Flex, Text, Button, Image, HStack, Link } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Text,
+  Button,
+  Image,
+  HStack,
+  Link,
+  Show,
+} from "@chakra-ui/react";
 import logoWhite from "../../assets/svg/meddy-logo-white.svg";
 
 export const Navbar = () => {
@@ -30,24 +39,28 @@ export const Navbar = () => {
 
         {/* Navigation Menu */}
         <HStack spacing={6}>
-          <Link href="/about">About Us</Link>
+          <Show breakpoint="(min-width: 500px)">
+            <Link href="/about">About Us</Link>
+          </Show>
           <Link href="/downloadApp">Download App</Link>
         </HStack>
 
         {/* Login Button */}
-        <Button
-          bg="white"
-          color="black"
-          borderRadius="full"
-          px={6}
-          _hover={{ bg: "gray.200" }}
-          fontWeight={400}
-          onClick={() => {
-            window.location.href = "dashboard/chat";
-          }}
-        >
-          Try Demo
-        </Button>
+        <Show breakpoint="(min-width: 500px)">
+          <Button
+            bg="white"
+            color="black"
+            borderRadius="full"
+            px={6}
+            _hover={{ bg: "gray.200" }}
+            fontWeight={400}
+            onClick={() => {
+              window.location.href = "dashboard/chat";
+            }}
+          >
+            Try Demo
+          </Button>
+        </Show>
       </Flex>
     </Box>
   );
