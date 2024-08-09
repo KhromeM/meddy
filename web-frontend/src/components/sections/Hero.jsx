@@ -8,6 +8,7 @@ import {
   Image,
   HStack,
   SimpleGrid,
+  Flex
 } from "@chakra-ui/react";
 import { images } from "../../../assets/images";
 import { Link as RouterLink } from "react-router-dom";
@@ -181,7 +182,7 @@ export const Hero = ({ login }) => {
             flexDirection="column"
             alignItems="flex-start"
           >
-            <VStack align="flex-start" spacing={4}>
+            <VStack align="flex-start" spacing={4} p={10}>
               <Heading as="h3" size="lg">
                 Empathic Voice Interface (EVI)
               </Heading>
@@ -194,12 +195,14 @@ export const Hero = ({ login }) => {
                 language modeling and text-to-speech with better EQ, prosody,
                 end-of-turn detection, interruptibility, and alignment.
               </Text>
-              <HStack spacing={4}>
+              <Flex flexWrap={"wrap"} gap={4}>
                 <Button
                   as={RouterLink}
                   to="/learn-more"
                   variant="solid"
                   colorScheme="blackAlpha"
+                  width={{ base: "100%", md: "auto" }}
+                  flex={{ base: "1 1 100%", md: "none" }}
                 >
                   Learn More
                 </Button>
@@ -207,11 +210,13 @@ export const Hero = ({ login }) => {
                   as={RouterLink}
                   to="/playground"
                   variant="outline"
-                  colorScheme="blackAlpha"
+                  colorScheme="blackAlpha" 
+                  width={{ base: "100%", md: "auto" }}
+                  flex={{ base: "1 1 100%", md: "none" }}
                 >
                   Playground
                 </Button>
-              </HStack>
+              </Flex>
             </VStack>
           </Box>
           <CardsInterface
