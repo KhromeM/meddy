@@ -1,4 +1,6 @@
+import { getModel } from "../../ai/langAi/setupVertexAI.mjs";
 import db from "../../db/db.mjs";
+import { getUserInfoLite } from "../../db/dbInfo.mjs";
 
 // Medication
 export const createMedication = async (req, res) => {
@@ -345,5 +347,128 @@ export const deleteCondition = async (req, res) => {
 	} catch (err) {
 		console.error(err);
 		res.status(500).json({ status: "fail", message: "Could not delete condition" });
+	}
+};
+
+// Health Goals
+export const createHealthGoal = async (req, res) => {
+	const { userId, goal } = req.body;
+
+	if (!userId || !goal) {
+		return res.status(400).json({
+			status: "fail",
+			message: "userId and goal are required.",
+		});
+	}
+
+	try {
+		const healthGoal = await db.createHealthGoal(userId, goal);
+		res.status(201).json({ healthGoal });
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ status: "fail", message: "Could not create health goal" });
+	}
+};
+
+export const getAllHealthGoals = async (req, res) => {
+	try {
+		const healthGoals = await db.getAllHealthGoals();
+		res.status(200).json({ healthGoals });
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ status: "fail", message: "Could not retrieve health goals" });
+	}
+};
+
+export const getUserHealthGoals = async (req, res) => {
+	const { userId } = req.params;
+
+	if (!userId) {
+		return res.status(400).json({ status: "fail", message: "userId is required" });
+	}
+
+	try {
+		const healthGoals = await db.getUserHealthGoals(userId);
+		res.status(200).json({ healthGoals });
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ status: "fail", message: "Could not retrieve user health goals" });
+	}
+};
+
+export const updateHealthGoal = async (req, res) => {
+	const { userId, oldGoal, newGoal } = req.body;
+
+	if (!userId || !oldGoal || !newGoal) {
+		return res.status(400).json({
+			status: "fail",
+			message: "userId, oldGoal, and newGoal are required.",
+		});
+	}
+
+	try {
+		const updatedGoal = await db.updateHealthGoal(userId, oldGoal, newGoal);
+		if (!updatedGoal) {
+			return res.status(404).json({ status: "fail", message: "Health goal not found" });
+		}
+		res.status(200).json({ message: "Updated health goal successfully", data: updatedGoal });
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ status: "fail", message: "Could not update health goal" });
+	}
+};
+
+export const deleteHealthGoal = async (req, res) => {
+	const { userId, goal } = req.body;
+
+	if (!userId || !goal) {
+		return res.status(400).json({
+			status: "fail",
+			message: "userId and goal are required.",
+		});
+	}
+
+	try {
+		await db.deleteHealthGoal(userId, goal);
+		res.status(200).json({ message: "Deleted health goal successfully" });
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ status: "fail", message: "Could not delete health goal" });
+	}
+};
+
+export const getDailyHealthTips = async (req, res) => {
+	try {
+		const user = req._dbUser;
+		const info = await getUserInfoLite(user.userid);
+		const responseSchema = {
+			type: "array",
+			items: {
+				type: "string",
+				description:
+					"Three relevant health tips based on the users given info. If insufficient info is given, provide three general health tips.",
+			},
+		};
+		const llm = getModel(responseSchema);
+		const request = {
+			contents: [
+				{
+					role: "user",
+					parts: [{ text: "Give me 3 health tips." }],
+				},
+			],
+			systemInstruction: {
+				parts: [
+					{
+						text: `You are Meddy, a helpful AI assistant. Provide three health tips for the user. Make sure the tips are at least one sentence long. Here is their information: ${info}`,
+					},
+				],
+			},
+		};
+		const result = await llm.generateContent(request);
+		res.status(200).json({ tips: JSON.parse(result.response.candidates[0].content.parts[0].text) });
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ status: "fail", message: "Could not retrieve daily health tips" });
 	}
 };

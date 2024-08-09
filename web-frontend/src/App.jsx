@@ -16,8 +16,7 @@ import Health from "./components/Health.jsx"
 import Dashboard from "./layouts/Admin";
 import VoiceMode from "./views/Dashboard/MeddyVoiceMode";
 
-import AdminLayout from "./layouts/Admin";
-import ChatWidget from "./components/ChatWidget.jsx";
+import AdminLayout from "./layouts/Admin"; 
 
 function App() {
   return (
@@ -42,8 +41,7 @@ function App() {
             <Route path={`/dashboard`} component={AdminLayout} />
             {/*  */}
             {/* <Route path="/team" component={Team} /> */}
-          </Switch>
-          <ChatWidget />
+          </Switch> 
         </AuthProvider>
       </Router>
     </ChakraProvider>
