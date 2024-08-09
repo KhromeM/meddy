@@ -11,7 +11,7 @@ import 'package:meddymobile/utils/ws_connection.dart';
 import 'package:meddymobile/services/player_service.dart';
 import 'package:meddymobile/services/recorder_service.dart';
 import 'package:aura_box/aura_box.dart'; // Add this import
-
+import 'package:meddymobile/utils/languages.dart';
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
@@ -72,7 +72,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final highContrastMode = HighContrastMode.of(context);
-
+    return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
     return Stack(
       children: [
         // MainBackground(),
@@ -88,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Row(
                   children: [
                     Text(
-                      'Hey!',
+                       languageProvider.translate('hello'),
                       style: TextStyle(fontSize: 40),
                     ),
                   ],
@@ -158,19 +159,19 @@ class _MyHomePageState extends State<MyHomePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Start Voice Call',
+                              languageProvider.translate('start_voice'),
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w700),
                             ),
                             Text(
-                              'or Translate my doctor',
+                              languageProvider.translate('translate_doctor'),
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w300),
                             ),
                             Text(
-                              'or Listen in with me to the doctor',
+                              languageProvider.translate('listen_doctor'),
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w300),
@@ -238,7 +239,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                'Integrate with your favorite apps',
+                                languageProvider.translate('integrate'),
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w800,
@@ -320,6 +321,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ],
     );
+      },);
   }
 
   void _showMic() {

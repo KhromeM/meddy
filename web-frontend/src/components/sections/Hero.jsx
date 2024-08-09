@@ -67,8 +67,9 @@ export const Hero = ({ login }) => {
             justifyContent="space-between"
             flexDirection={{ base: "column", md: "column", lg: "column" }}
             width="1280px" 
-            w={{ xl: "80%" }}
+            w={{ '2xl': "80%" }}
             alignItems="center"
+            textAlign="center"
           >
             <Box
               display="flex"
@@ -81,7 +82,7 @@ export const Hero = ({ login }) => {
               paddingX="5%"
               bg="transparent"
             >
-              <VStack spacing={6} align="flex-start" width="100%">
+              <VStack spacing={6} align="center" width="100%">
                 <Heading
                   as="h1"
                   fontSize={{ base: "4xl", md: "5xl", lg: "5xl" }}
@@ -91,7 +92,7 @@ export const Hero = ({ login }) => {
                   w={'100%'}
                   textAlign={'center'}
                 >
-                  Medical Assistant Powered by Gemini
+                  Meet your AI health companion
                 </Heading>
                 <Text
                   fontSize={{ base: "xl", md: "2xl", }}
@@ -100,7 +101,7 @@ export const Hero = ({ login }) => {
                   w={'100%'}
                   textAlign={{ base: "center", md: "center", lg: "center" }}
                 >
-                  Meet the world's first voice powered medical assistant that
+                  The world's first voice powered medical assistant that
                   responds empathically, built to align technology with human
                   well-being
                 </Text>
