@@ -69,6 +69,11 @@ const HealthSystemTab = ({ category, isSelected }) => {
 };
 
 const FitnessContent = ({ fitnessData, scoreData }) => {
+	const formatDate = (dateString) => {
+		const date = new Date(dateString);
+		return `${date.getMonth() + 1}/${date.getDate()}`;
+	};
+
 	const data = {
 		steps: [
 			{
@@ -80,8 +85,9 @@ const FitnessContent = ({ fitnessData, scoreData }) => {
 			{
 				name: "Sleep",
 				data:
-					fitnessData?.data?.data?.sleep.map((obj) => obj.totalSleepMinutes) ||
-					[],
+					fitnessData?.data?.data?.sleep.map(
+						(obj) => obj.totalSleepMinutes / 60
+					) || [],
 			},
 		],
 		heart: [
@@ -91,8 +97,13 @@ const FitnessContent = ({ fitnessData, scoreData }) => {
 			},
 		],
 	};
-	console.log(fitnessData);
-	console.log(data);
+	const labels = {
+		steps: fitnessData?.data?.data?.steps.map((obj) => formatDate(obj.date)),
+		sleep: fitnessData?.data?.data?.sleep.map((obj) => formatDate(obj.date)),
+		heart: fitnessData?.data?.data?.bpm.map((obj) => formatDate(obj.time)),
+	};
+	// console.log(fitnessData);
+	// console.log(labels);
 
 	return (
 		<Box>
@@ -125,36 +136,50 @@ const FitnessContent = ({ fitnessData, scoreData }) => {
 					<Text fontSize="2xl">{scoreData.steps}%</Text>
 				</Box>
 			</SimpleGrid>
-			<Tabs>
-				<TabList>
-					<Tab>Steps</Tab>
-					<Tab>Sleep</Tab>
-					<Tab>Heart Rate</Tab>
-				</TabList>
-				<TabPanels>
-					<TabPanel>
-						<Box width="100%">
-							<ResponsiveContainer width="100%" height={300}>
-								<BarChart data={data.steps} />
-							</ResponsiveContainer>
-						</Box>
-					</TabPanel>
-					<TabPanel>
-						<Box width="100%">
-							<ResponsiveContainer width="100%" height={300}>
-								<BarChart data={data.sleep} />
-							</ResponsiveContainer>
-						</Box>
-					</TabPanel>
-					<TabPanel>
-						<Box width="100%">
-							<ResponsiveContainer width="100%" height={300}>
-								<BarChart data={data.heart} />
-							</ResponsiveContainer>
-						</Box>
-					</TabPanel>
-				</TabPanels>
-			</Tabs>
+
+			<VStack spacing={8} align="stretch">
+				<Box>
+					<Heading size="md" mb={4}>
+						Steps per Day
+					</Heading>
+					<ResponsiveContainer width="100%" height={300}>
+						<BarChart
+							data={data.steps}
+							xAxisLabels={labels.steps}
+							yAxisTitle="Daily Steps"
+							barColor="#74d68e"
+						/>
+					</ResponsiveContainer>
+				</Box>
+
+				<Box>
+					<Heading size="md" mb={4}>
+						Sleep (in hours)
+					</Heading>
+					<ResponsiveContainer width="100%" height={300}>
+						<BarChart
+							data={data.sleep}
+							xAxisLabels={labels.sleep}
+							yAxisTitle="Sleep Hours"
+							barColor="#74d6d1"
+						/>
+					</ResponsiveContainer>
+				</Box>
+
+				<Box>
+					<Heading size="md" mb={4}>
+						Heart Rate (BPM)
+					</Heading>
+					<ResponsiveContainer width="100%" height={300}>
+						<BarChart
+							data={data.heart}
+							xAxisLabels={labels.heart}
+							yAxisTitle="BPM"
+							barColor="#f57064"
+						/>
+					</ResponsiveContainer>
+				</Box>
+			</VStack>
 		</Box>
 	);
 };
