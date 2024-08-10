@@ -27,7 +27,7 @@ class _ScreenWrapperState extends State<ScreenWrapper> {
   }
 
   BottomNavigationBarItem _buildNavigationItem(String assetName, int index) {
-    Color color = _currentIndex == index ? Colors.brown : Colors.grey;
+    Color color = _currentIndex == index ? Color(0xFF0E3C26) : Colors.grey;
     return BottomNavigationBarItem(
       icon: SvgPicture.asset(
         assetName,
@@ -39,7 +39,7 @@ class _ScreenWrapperState extends State<ScreenWrapper> {
         assetName,
         height: 40,
         width: 40,
-        colorFilter: ColorFilter.mode(Colors.brown, BlendMode.srcIn),
+        colorFilter: ColorFilter.mode(Color(0xFF0E3C26), BlendMode.srcIn),
       ),
       label: '',
     );
