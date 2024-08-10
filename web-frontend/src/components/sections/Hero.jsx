@@ -305,7 +305,7 @@ export const Hero = ({ login }) => {
           </Box>
 
           <Box
-            className="animated-box3"
+            className="animated-box4"
             borderRadius="md"
             boxShadow="lg"
             p={6}
