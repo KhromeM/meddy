@@ -27,10 +27,12 @@ class _HealthPageState extends State<HealthPage> {
   Future<void> _loadMedicalRecord() async {
     try {
       final medicalRecord = await healthService.fetchMedicalRecord();
+      if (!mounted) return;
       setState(() {
         _medicalRecord = medicalRecord;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         print("Error loading medical records");
       });
@@ -40,12 +42,12 @@ class _HealthPageState extends State<HealthPage> {
   Future<void> _loadActivitiyData() async {
     try {
       final fitnessData = await healthService.fetchGFitData();
-      if (!mounted) return; // check if the widget is still mounted
+      if (!mounted) return;
       setState(() {
         _fitnessData = fitnessData;
       });
     } catch (e) {
-      if (!mounted) return; // check if the widget is still mounted
+      if (!mounted) return;
       setState(() {
         print("Error loading fitness records");
       });
