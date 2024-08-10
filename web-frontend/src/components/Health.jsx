@@ -34,7 +34,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import Recommendations from "./Recommendations";
+import Recommendations, { RecommendationsAction } from "./Recommendations";
 import BarChart from "./BarChart.jsx";
 import ProgressChart from "./ProgressChart.jsx";
 import Card from "./Card/Card.jsx";
@@ -233,40 +233,52 @@ const HealthSystemContent = ({ category }) => {
 
   return (
     <Box>
-      <Flex
-        direction="column"
-        align="center"
-        maxW="400px"
-        maxH="400px"
-        width="100%"
-      >
-        <VStack align="center" spacing={2} mb={4} textAlign="center">
-          <Heading size="xl">{category.name}</Heading>
-          <Text color="gray.600" lineHeight="18px" fontSize="md">
-            {category.oneLineSummary}
-          </Text>
+      <SimpleGrid mb={5} columns={{ sm: 1, md: 2, xl: 2 }} spacing="24px">
+        <Card>
+          <Flex
+            direction="column"
+            align="center"
+            maxW="400px"
+            maxH="400px"
+            width="100%"
+            margin="20px auto"
+          >
+            <VStack align="center" spacing={2} mb={4} textAlign="center">
+              <Heading size="xl">{category.name}</Heading>
+              <Text color="gray.600" lineHeight="18px" fontSize="md">
+                {category.oneLineSummary}
+              </Text>
+            </VStack>
+            <Box
+              flex
+              justifyContent="center"
+              alignItems="center"
+              maxW="250px"
+              maxH="250px"
+              width="100%"
+            >
+              <ProgressChart
+                data={category.score}
+                label="Rating"
+                color="lightgreen"
+                height="235"
+                bg="linear-gradient(90deg, rgb(38 111 132) 0%, rgb(117 132 150) 100%)"
+
+                // label={"hi"}
+                // bg="#ffffff"
+                // textColor="black"
+              />
+            </Box>
+          </Flex>
+        </Card>
+
+        {/* <Divider m={6} /> */}
+        <VStack align="start" spacing={4}>
+          <Recommendations medData={category} />
+          {/* Recommendations split into  */}
         </VStack>
-        <Box
-          flex
-          justifyContent="center"
-          alignItems="center"
-          maxW="300px"
-          maxH="300px"
-          width="100%"
-        >
-          <ProgressChart
-            data={category.score}
-            color="#74d68e"
-            // label={"hi"}
-            // bg="#ffffff"
-            // textColor="black"
-          />
-        </Box>
-      </Flex>
-      <Divider m={6} />
-      <VStack align="start" spacing={4}>
-        <Recommendations medData={category} />
-      </VStack>
+      </SimpleGrid>
+      <RecommendationsAction medData={category} />
     </Box>
   );
 };
