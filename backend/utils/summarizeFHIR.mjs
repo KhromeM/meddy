@@ -4,7 +4,7 @@ import {
 	healthSchema,
 	summarySchema,
 } from "../ai/prompts/summarizeRecords.mjs";
-import { getModel } from "../ai/langAi/setupVertexAI.mjs";
+import { getModel, getModelWithCaching } from "../ai/langAi/setupVertexAI.mjs";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
@@ -22,7 +22,6 @@ const healthCategories = [
 	{ name: "Musculoskeletal Health", objName: "musculoskeletalHealth" },
 	{ name: "Hormonal Profile", objName: "hormonalProfile" },
 ];
-
 export const summarizeFHIR = async (user, data) => {
 	// ///////////////////////////////////////
 	if (!data) {
@@ -30,7 +29,7 @@ export const summarizeFHIR = async (user, data) => {
 		try {
 			const jsonPath = path.resolve(
 				__dirname,
-				`../uploads/${user.userid}/ehr/ehr.json`
+				`../uploads/${user.userid}/ehr/ehr2.json`
 			);
 			data = await fs.promises.readFile(jsonPath, "utf-8");
 		} catch (err) {
@@ -38,27 +37,34 @@ export const summarizeFHIR = async (user, data) => {
 		}
 	}
 	// //////////////////////////////////////
-	const chatHistory = [
-		{
-			role: "user",
-			parts: [{ text: data }],
-		},
-	];
+	console.log("Creating medical records for user: ", user.name);
 
-	let generativeModel = getModel(healthSchema);
+	const sysPrompt = createAnalyzeCategoryPrompt("default");
+	const fullPrompt = `${sysPrompt} \n\nUSER DATA: ${data}`;
+	let model;
+	if (fullPrompt.length > 100000) {
+		model = await getModelWithCaching(fullPrompt); // context caching requires a minimum of 32k tokens
+		console.log("USING CONTEXT CACHING");
+	} else {
+		model = getModel(healthSchema);
+	}
 	const combinedResponse = {};
 
 	const categoryPromises = healthCategories.map(async (category) => {
-		const sysPrompt = createAnalyzeCategoryPrompt(category.name);
-
 		const request = {
-			contents: chatHistory,
-			systemInstruction: {
-				parts: [{ text: sysPrompt }],
+			contents: [
+				{
+					role: "user",
+					parts: [{ text: `**{HEALTH_CATEGORY} IS ${category.name}**\n\n` }],
+				},
+			],
+			generationConfig: {
+				maxOutputTokens: 8192,
+				responseMimeType: "application/json",
+				responseSchema: healthSchema,
 			},
 		};
-
-		const result = await generativeModel.generateContent(request);
+		const result = await model.generateContent(request);
 		const categoryResponse = JSON.parse(
 			result.response.candidates[0].content.parts[0].text
 		);
@@ -72,6 +78,13 @@ export const summarizeFHIR = async (user, data) => {
 		combinedResponse[category.objName] = response;
 	});
 
+	const chatHistory = [
+		{
+			role: "user",
+			parts: [{ text: data }],
+		},
+	];
+
 	const summaryRequest = {
 		contents: [
 			...chatHistory,
@@ -84,8 +97,8 @@ export const summarizeFHIR = async (user, data) => {
 			parts: [{ text: createSummaryPrompt() }],
 		},
 	};
-	generativeModel = getModel(summarySchema);
-	const summaryResult = await generativeModel.generateContent(summaryRequest);
+	model = getModel(summarySchema);
+	const summaryResult = await model.generateContent(summaryRequest);
 	const summary = JSON.parse(
 		summaryResult.response.candidates[0].content.parts[0].text
 	);
@@ -177,7 +190,7 @@ export const createTotalSummary = async (user) => {
 	}
 };
 
-// summarizeFHIR({ userid: "DEVELOPER" });
+summarizeFHIR({ userid: "DEVELOPER" });
 // createTotalSummary({ userid: "DEVELOPER" });
 // const records = await db.getMedicalRecordsByUserId("DEVELOPER");
 // console.log(records);

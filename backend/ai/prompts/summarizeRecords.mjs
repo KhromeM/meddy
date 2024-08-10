@@ -312,7 +312,7 @@ const summaryPrompt = `You are an AI assistant specializing in analyzing and syn
 This will be shown to the patient, do not refer to them as "the patient", use their name or "you/your". Be as optimistic as possible.`;
 
 export const createAnalyzeCategoryPrompt = (healthCategory) => {
-	return sysPrompt.replace(/\{HEALTH_CATEGORY\}/g, healthCategory);
+	return sysPrompt || sysPrompt.replace(/\{HEALTH_CATEGORY\}/g, healthCategory);
 };
 
 export const createSummaryPrompt = () => {

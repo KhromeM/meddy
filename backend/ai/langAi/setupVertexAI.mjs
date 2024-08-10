@@ -222,15 +222,15 @@ export async function getStructuredVertexResponse(
 	return response;
 }
 
-export const getModelWithCaching = async (prompt) => {
+export const getModelWithCaching = async (sysPrompt) => {
 	if (!cachedModel) {
 		const genAI = new GoogleGenerativeAI(CONFIG.GEMINI_API_KEY);
 		const cacheManager = new GoogleAICacheManager(CONFIG.GEMINI_API_KEY);
 		const cache = await cacheManager.create({
 			model: textModel,
-			systemInstruction: prompt,
+			systemInstruction: sysPrompt,
 			contents: [],
-			ttlSeconds: 8000,
+			ttlSeconds: 300,
 		});
 		cachedModel = genAI.getGenerativeModelFromCachedContent(cache);
 	}
