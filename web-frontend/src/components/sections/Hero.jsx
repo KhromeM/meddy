@@ -81,7 +81,7 @@ export const Hero = ({ login }) => {
 								<Card
 									margin="-7px"
 									minHeight="20px"
-									maxWidth="138px"
+									maxWidth="150px"
 									padding="6px 5px"
 									_hover={{
 										cursor: "pointer",
@@ -99,7 +99,7 @@ export const Hero = ({ login }) => {
 										justifyContent="center"
 									>
 										Powered by{" "}
-										<Image boxSize="10px" src={GeminiLogo} margin="2px" />{" "}
+										<Image boxSize="20px" src={GeminiLogo} margin="2px" />{" "}
 										Gemini
 									</Text>
 								</Card>

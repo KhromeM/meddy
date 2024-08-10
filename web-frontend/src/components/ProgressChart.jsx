@@ -10,6 +10,10 @@ class ProgressChart extends Component {
 			data: props.data || 0,
 			label: props.label || "Progress",
 			color: props.color || "#87D4F9",
+			bg:
+				props.bg ||
+				"linear-gradient(90deg, rgba(6,53,58,1) 0%, rgba(7,28,52,1) 100%)",
+			textColor: props.textColor || "white",
 		};
 	}
 
@@ -40,7 +44,7 @@ class ProgressChart extends Component {
 						},
 						value: {
 							offsetY: 10,
-							color: "#fff",
+							color: this.state.textColor,
 							fontSize: "24px",
 							show: true,
 							formatter: function (val) {
@@ -70,14 +74,14 @@ class ProgressChart extends Component {
 				py="1rem"
 				height={{ sm: "300px" }}
 				width="100%"
-				bg="linear-gradient(90deg, rgba(6,53,58,1) 0%, rgba(7,28,52,1) 100%)"
+				bg={this.state.bg}
 				position="relative"
 				display="flex"
 				flexDirection="column"
 				justifyContent="space-between"
 			>
 				<Box width="100%" textAlign="center" pt="10px">
-					<Text color="white" fontSize="24px" fontWeight="bold">
+					<Text color={this.state.textColor} fontSize="24px" fontWeight="bold">
 						{this.state.label}
 					</Text>
 				</Box>

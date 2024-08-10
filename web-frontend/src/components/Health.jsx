@@ -20,6 +20,7 @@ import {
 	AbsoluteCenter,
 	useMediaQuery,
 	useBreakpointValue,
+	Flex,
 } from "@chakra-ui/react";
 import { useAuth } from "../firebase/AuthService.jsx";
 import { Gradient } from "./Gradient";
@@ -201,22 +202,27 @@ const HealthSystemContent = ({ category }) => {
 
 	return (
 		<Box>
-			<HStack spacing={6} mb={6}>
-				<CircularProgress
-					value={category.score}
-					size="120px"
-					thickness="12px"
-					color={getColorScheme(category.score)}
-				>
-					<CircularProgressLabel fontWeight="bold" fontSize="2xl">
-						{category.score}%
-					</CircularProgressLabel>
-				</CircularProgress>
-				<VStack align="start" spacing={2}>
+			<Flex
+				direction="column"
+				align="center"
+				maxW="400px"
+				maxH="400px"
+				width="100%"
+			>
+				<VStack align="center" spacing={2} mb={0} textAlign="center">
 					<Heading size="lg">{category.name}</Heading>
 					<Text fontSize="md">{category.oneLineSummary}</Text>
 				</VStack>
-			</HStack>
+				<Box maxW="300px" maxH="300px" width="100%">
+					<ProgressChart
+						data={category.score}
+						color="#74d68e"
+						label={" "}
+						bg="#ffffff"
+						textColor="black"
+					/>
+				</Box>
+			</Flex>
 			<Divider mb={6} />
 			<VStack align="start" spacing={4}>
 				<Recommendations medData={category} />
