@@ -18,7 +18,8 @@ import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import SettingsButton from "./SettingsButton";
 import LoginButton from "./LoginButton";
-import  SpinningLogo  from '../SpinningLogo.jsx'
+import SpinningLogo from "../SpinningLogo.jsx";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.js";
 // this function creates the links and collapses that appear in the sidebar (left menu)
 
 const SidebarContent = ({ logoText, routes, onOpen }) => {
@@ -193,6 +194,7 @@ const SidebarContent = ({ logoText, routes, onOpen }) => {
 
   const links = <>{createLinks(routes)}</>;
 
+  const history = useHistory();
   return (
     <>
       <Box pt={"25px"} mb="12px">
@@ -208,15 +210,25 @@ const SidebarContent = ({ logoText, routes, onOpen }) => {
           fontSize="11px"
         >
           {/* <CreativeTimLogo w="32px" h="32px" me="10px" /> // MeddyLogo */}
-          <SpinningLogo 
-            size={35} 
-            outerSpeed={10} 
+          <SpinningLogo
+            size={35}
+            outerSpeed={10}
             innerSpeed={8}
-            outerCircleSize={1.2} 
+            outerCircleSize={1.2}
             innerCircleSize={0.8}
             color="0x000000"
           />
-          <Text fontSize="xl" mt="1px" mr="15px" pl="8px">
+          <Text
+            color={
+              history.location.pathname.includes("voicemode")
+                ? "white"
+                : "black"
+            }
+            fontSize="xl"
+            mt="1px"
+            mr="15px"
+            pl="8px"
+          >
             {logoText}
           </Text>
         </Link>

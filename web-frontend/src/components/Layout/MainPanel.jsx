@@ -12,6 +12,7 @@ function MainPanel(props) {
   //   }, []);
   return (
     <Box
+      className="main-panel"
       __css={styles}
       br={10}
       backgroundColor={props.backgroundColor}
