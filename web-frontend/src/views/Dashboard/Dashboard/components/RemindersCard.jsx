@@ -67,7 +67,7 @@ const RemindersCard = () => {
         divider={<Box borderBottom="1px" borderColor="gray.200" />}
       >
         {reminders.length > 0 ? (
-          reminders.map((reminder, index) => (
+          reminders.slice(0, 6).map((reminder, index) => (
             <Box
               key={index}
               bg={
