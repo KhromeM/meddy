@@ -112,7 +112,7 @@ export const Hero = ({ login }) => {
 									w={"100%"}
 									textAlign={"center"}
 								>
-									Meddy, your AI health companion.
+									Meddy, your AI health companion
 								</Heading>
 								<Text
 									fontSize={{ base: "16px", md: "22px" }}

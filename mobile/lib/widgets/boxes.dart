@@ -11,14 +11,12 @@ class Boxes extends StatelessWidget {
   final List<String> images = [
     'assets/images/c2.webp',
     'assets/images/i4up.png',
-    'assets/images/i2up.png',
-    'assets/images/i3.png',
-    'assets/images/i5.webp',
-    'assets/images/i6.webp',
-    'assets/images/i7.webp',
-    'assets/images/i8.webp',
-    'assets/images/i9.webp',
-    'assets/images/i10.webp',
+    'assets/images/c6.webp',
+    'assets/images/c7.webp',
+    'assets/images/c1.webp',
+    'assets/images/c5.webp',
+    'assets/images/c8.webp',
+    'assets/images/c4.webp',
   ];
 
   Boxes({
@@ -59,7 +57,8 @@ class Boxes extends StatelessWidget {
             ),
             itemBuilder: (context, index, realIndex) {
               return GestureDetector(
-                onTap: () => onBoxTap(context, languageProvider.translate(texts[index])),
+                onTap: () =>
+                    onBoxTap(context, languageProvider.translate(texts[index])),
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 5.0),
                   decoration: BoxDecoration(
@@ -102,7 +101,7 @@ class Boxes extends StatelessWidget {
                             languageProvider.translate(texts[index]),
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 18,
+                              fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                             maxLines: 3,
