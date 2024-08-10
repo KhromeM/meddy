@@ -114,7 +114,7 @@ export default Message;
 
 const markdownComponents = {
 	p: ({ children }) => (
-		<Text whiteSpace="pre-wrap" color="#0e3c26">
+		<Text whiteSpace="pre-wrap" color="#0e3c26" fontSize={"xl"}>
 			{children}
 		</Text>
 	),

@@ -85,6 +85,7 @@ const MessageInput = ({
 		<Flex
 			margin={10}
 			mb={4}
+			mt={4}
 			px={16}
 			minW={{ base: "80%", md: "60%", lg: "800px" }}
 			maxW={{ base: "100%", md: "80%", lg: "1280px" }}
