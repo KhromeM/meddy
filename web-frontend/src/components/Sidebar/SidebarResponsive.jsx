@@ -105,7 +105,7 @@ function SidebarResponsive(props) {
                   <Icon>{prop.icon}</Icon>
                 ) : (
                   <IconBox
-                    bg="teal.300"
+                    bg="orange.300"
                     color="white"
                     h="30px"
                     w="30px"
@@ -154,7 +154,7 @@ function SidebarResponsive(props) {
                 ) : (
                   <IconBox
                     bg={inactiveBg}
-                    color="teal.300"
+                    color="orange.300"
                     h="30px"
                     w="30px"
                     me="12px"
@@ -231,6 +231,7 @@ function SidebarResponsive(props) {
         <DrawerOverlay />
         <DrawerContent
           w="250px"
+          h="95%"
           maxW="250px"
           ms={{
             sm: "16px",
@@ -245,7 +246,8 @@ function SidebarResponsive(props) {
             _hover={{ boxShadow: "none" }}
           />
           <DrawerBody maxW="250px" px="1rem">
-            <Box maxW="100%" h="100vh">
+            {/* responsive sidebar height is the h below */}
+            <Box maxW="100%" h="85vh">
               <Box>{brand}</Box>
               <Stack direction="column" mb="40px">
                 <Box>{links}</Box>
