@@ -16,6 +16,9 @@ class ProgressChart extends Component {
       textColor: props.textColor || "white",
       pb: props.pb || "0px",
       height: props.height || "290px",
+      title: props.title || "",
+      textColorOfSubtext: props.textColorOfSubtext || null,
+      healthPageNonFitness: props.healthPageNonFitness || false,
     };
   }
 
@@ -46,8 +49,9 @@ class ProgressChart extends Component {
             },
             value: {
               offsetY: 10,
-              color: this.state.textColor,
-              fontSize: "24px",
+              color: "white",
+              //   color: this.state.textColor,
+              fontSize: this.state.title ? "38px" : "24px",
               show: true,
               formatter: function (val) {
                 return val + "%";
@@ -75,6 +79,7 @@ class ProgressChart extends Component {
       <Card
         py="1rem"
         height={{ sm: this.state.height }}
+        // Height={{ sm: this.state.height }}
         width="100%"
         bg={this.state.bg}
         position="relative"
@@ -82,9 +87,35 @@ class ProgressChart extends Component {
         flexDirection="column"
         justifyContent="space-between"
         pb={this.state.pb}
+        maxHeight="475px"
+        boxShadow="rgba(0, 0, 0, 0.02) 0px 3.5px 5.5px"
+        // alignSelf="stretch"
       >
-        <Box mb="5px" width="100%" textAlign="center" pt="10px">
-          <Text color={this.state.textColor} fontSize="24px" fontWeight="bold">
+        {this.state.title ? (
+          <Box mb="5px" width="100%" textAlign="center" pt="10px">
+            <Text
+              color={"white"}
+              fontSize="34px"
+              textShadow={"0 0 2px #000"}
+              fontWeight="bold"
+            >
+              {this.state.title}
+            </Text>
+          </Box>
+        ) : null}
+        <Box
+          mb={this.state.healthPageNonFitness ? "25px" : "5px"}
+          width="100%"
+          textAlign="center"
+          pt="10px"
+        >
+          <Text
+            color={this.state.textColorOfSubtext || this.state.textColor}
+            // boxShadow="text-shadow: 0 0 2px #000"
+            // textShadow={"0 0 1px #000"}
+            fontSize="24px"
+            fontWeight="bold"
+          >
             {this.state.label}
           </Text>
         </Box>
@@ -94,6 +125,7 @@ class ProgressChart extends Component {
           alignItems="center"
           justifyContent="center"
           className="apexChartContainer"
+          marginTop="auto"
         >
           <Chart
             options={chartOptions}
