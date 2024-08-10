@@ -46,13 +46,13 @@ class MessageList extends StatelessWidget {
             iconColor = Colors.green;
           } else {
             messageColor = Colors.red[100]!;
-            textColor = Colors.black;
+            textColor = Color(0xFF0E3C26);
             resultIcon = Icons.error;
             iconColor = Colors.red;
           }
         } else {
-          messageColor = Color.fromRGBO(255, 242, 228, 1);
-          textColor = Colors.black;
+          messageColor = isUser ? Color(0xFFF5E9DB) : Color(0xFFFAF3EA);
+          textColor = Color(0xFF0E3C26);
         }
 
         return Align(
@@ -69,15 +69,15 @@ class MessageList extends StatelessWidget {
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return ClipRRect(
-                            borderRadius: BorderRadius.circular(16.0),
-                            child: Skeletonizer(
-                              child: Container(
-                                width: 100,
-                                height: 130,
-                                color: Color.fromARGB(255, 18, 8, 8),
-                              ),
+                          borderRadius: BorderRadius.circular(16.0),
+                          child: Skeletonizer(
+                            child: Container(
+                              width: 100,
+                              height: 130,
+                              color: Color.fromARGB(255, 18, 8, 8),
                             ),
-                          );
+                          ),
+                        );
                       } else if (snapshot.hasError) {
                         return Text('Error loading image');
                       } else if (snapshot.hasData) {
@@ -170,7 +170,10 @@ class MessageList extends StatelessWidget {
                             MarkdownBody(
                               data: message.text,
                               styleSheet: MarkdownStyleSheet(
-                                p: TextStyle(color: textColor),
+                                p: TextStyle(
+                                    color: textColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
                               ),
                             ),
                           if (resultIcon != null)

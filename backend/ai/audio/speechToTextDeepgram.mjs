@@ -3,6 +3,7 @@ import CONFIG from "../../config.mjs";
 
 const deepgram = createClient(CONFIG.DEEPGRAM_API_KEY);
 const model = "nova-2";
+const keywords = ["Meddy", "meddy"];
 
 export const createDGSocket = async (language = "en", mobile) => {
 	let dgConnection;
@@ -16,6 +17,7 @@ export const createDGSocket = async (language = "en", mobile) => {
 			sample_rate: 16000,
 			channels: 1,
 			language: "multi",
+			keywords,
 		});
 	} else {
 		dgConnection = deepgram.listen.live({
@@ -24,6 +26,7 @@ export const createDGSocket = async (language = "en", mobile) => {
 			smart_format: true,
 			model,
 			language: "multi",
+			keywords,
 		});
 	}
 	await new Promise((resolve) =>

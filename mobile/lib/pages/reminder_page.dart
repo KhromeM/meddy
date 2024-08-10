@@ -189,7 +189,7 @@ class _ReminderPageState extends State<ReminderPage> {
                 color: Colors.white,
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.circular(20.0),
-                border: Border.all(color: Theme.of(context).primaryColor),
+                border: Border.all(color: Color(0xFF0E3C26)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey.withOpacity(0.3),
@@ -206,20 +206,17 @@ class _ReminderPageState extends State<ReminderPage> {
                   children: [
                     Text(
                       reminder['medicationname'],
-                      style: TextStyle(
-                          fontSize: 20, color: Theme.of(context).primaryColor),
+                      style: TextStyle(fontSize: 20, color: Color(0xFF0E3C26)),
                     ),
                     SizedBox(width: 15),
                     Text(
                       fullTime.substring(0, fullTime.length - 3),
-                      style: TextStyle(
-                          fontSize: 18, color: Theme.of(context).primaryColor),
+                      style: TextStyle(fontSize: 18, color: Color(0xFF0E3C26)),
                     ),
                     SizedBox(width: 15),
                     Text(
                       repeat_text,
-                      style: TextStyle(
-                          fontSize: 18, color: Theme.of(context).primaryColor),
+                      style: TextStyle(fontSize: 18, color: Color(0xFF0E3C26)),
                     ),
                   ],
                 ),

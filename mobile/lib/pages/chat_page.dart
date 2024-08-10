@@ -332,6 +332,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFFAF3EA),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -376,8 +377,8 @@ class _ChatPageState extends State<ChatPage> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                            color: Theme.of(context).primaryColor, width: 1.5),
+                        border:
+                            Border.all(color: Color(0xFF0E3C26), width: 1.5),
                       ),
                       child: Column(
                         children: [
@@ -474,7 +475,7 @@ class _ChatPageState extends State<ChatPage> {
                                     Icon(
                                       Icons.circle,
                                       size: 40,
-                                      color: Theme.of(context).primaryColor,
+                                      color: Color(0xFF0E3C26),
                                     ),
                                     Icon(
                                       _isRecording
@@ -522,8 +523,7 @@ class _ChatPageState extends State<ChatPage> {
                                                   Icons
                                                       .arrow_forward_ios_rounded,
                                                 ),
-                                                color: Theme.of(context)
-                                                    .primaryColor,
+                                                color: Color(0xFF0E3C26),
                                                 onPressed: _sendMessage,
                                               )
                                             else ...[
@@ -531,9 +531,9 @@ class _ChatPageState extends State<ChatPage> {
                                                 icon: Icon(
                                                   Icons.photo_camera_outlined,
                                                   size: 30,
+                                                  color: Color(0xFF0E3C26),
                                                 ),
-                                                color: Theme.of(context)
-                                                    .primaryColor,
+                                                color: Color(0xFF0E3C26),
                                                 onPressed:
                                                     _selectImageFromCamera,
                                               ),
@@ -542,8 +542,7 @@ class _ChatPageState extends State<ChatPage> {
                                                   Icons.image_outlined,
                                                   size: 30,
                                                 ),
-                                                color: Theme.of(context)
-                                                    .primaryColor,
+                                                color: Color(0xFF0E3C26),
                                                 onPressed:
                                                     _selectImageFromGallery,
                                               ),

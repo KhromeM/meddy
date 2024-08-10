@@ -28,7 +28,7 @@ final ThemeData highContrastTheme = ThemeData(
     buttonColor: Colors.black,
     textTheme: ButtonTextTheme.primary,
   ),
-  fontFamily: 'Nunito',
+  fontFamily: 'C3',
 );
 
 class MyApp extends StatefulWidget {
@@ -55,8 +55,12 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.deepOrange,
+            background: Color(0xFFFAF3EA),
+          ),
           fontFamily: 'Nunito',
+          scaffoldBackgroundColor: Color(0xFFFAF3EA),
         ),
         home: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
