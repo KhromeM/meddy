@@ -1,47 +1,47 @@
 .message-list {
-  padding: 1rem;
-  background-color: #f7fafc;
-  border-radius: 0.5rem;
-  overflow-y: auto;
-  max-height: 50vh;
+	padding: 1rem;
+	background-color: #f7fafc;
+	border-radius: 0.5rem;
+	overflow-y: auto;
+	max-height: 50vh;
 }
 
 .message {
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  margin: 0.5rem 0;
-  max-width: 70%;
-  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+	padding: 0.5rem 1rem;
+	border-radius: 0.5rem;
+	margin: 0.5rem 0;
+	max-width: 70%;
+	box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 }
 
 .message.user {
-  background-color: #ebf8ff;
-  align-self: flex-end;
+	background-color: #ebf8ff;
+	align-self: flex-end;
 }
 
 .message.bot {
-  background-color: #edf2f7;
-  align-self: flex-start;
+	background-color: #edf2f7;
+	align-self: flex-start;
 }
 
 @keyframes blink {
-  0% {
-    opacity: 0.2;
-  }
-  20% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.2;
-  }
+	0% {
+		opacity: 0.2;
+	}
+	20% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0.2;
+	}
 }
 
 h1,
 p {
-  line-height: 100%;
+	line-height: 100%;
 }
 
 ::selection {
-  color: black;
-  background: rgba(204, 120, 92, 0.5);
+	color: black;
+	background: rgba(204, 120, 92, 0.5);
 }
