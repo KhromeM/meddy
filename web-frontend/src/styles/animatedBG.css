@@ -1,18 +1,74 @@
-@keyframes background {
-    0% {
-      background-position: 50% 0%;
-    }
-    50% {
-      background-position: 50% 100%;
-    }
-    100% {
-      background-position: 50% 0%;
-    }
+@keyframes background1 {
+  0% {
+    background-position: 50% 0%;
   }
-  
-  .animated-box {
-    background: linear-gradient(225deg, #d4e1f1, #f0daf5, #f9dcb5, #f79774);
-    background-size: 300% 300%;
-    animation: background 10s linear infinite;
+  50% {
+    background-position: 50% 100%;
   }
-  
+  100% {
+    background-position: 50% 0%;
+  }
+}
+
+.animated-box {
+  background: linear-gradient(225deg, #d4e1f1, #f0daf5, #f9dcb5, #f79774);
+  background-size: 300% 300%;
+  animation: background1 10s linear infinite;
+}
+
+@keyframes background2 {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-box2 {
+  background: linear-gradient(230deg, #b0c9e5, #e0f5e6, #caf7fc, #f7997e);
+  background-size: 300% 300%;
+  animation: background2 12s linear infinite;
+  border-radius: 8px;
+}
+
+.animated-box3 {
+  background: linear-gradient(220deg, #bed5f0, #e7f7d9, #d8f9fb, #f89d88);
+  background-size: 300% 300%;
+  animation: background3 11s linear infinite;
+  border-radius: 10px;
+}
+
+@keyframes background3 {
+  0% {
+    background-position: 50% 0%;
+  }
+  50% {
+    background-position: 50% 100%;
+  }
+  100% {
+    background-position: 50% 0%;
+  }
+}
+
+.animated-box4 {
+  background: linear-gradient(215deg, #c4dff4, #eaf8e0, #defbfe, #f7a599);
+  background-size: 300% 300%;
+  animation: background4 13s linear infinite;
+  border-radius: 12px;
+}
+
+@keyframes background4 {
+  0% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 0% 100%;
+  }
+  100% {
+    background-position: 100% 0%;
+  }
+}

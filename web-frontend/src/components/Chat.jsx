@@ -11,6 +11,7 @@ import Navbar from "./Navbar.jsx";
 import { v4 as uuidv4 } from "uuid";
 import { uploadImage, getImage } from "../server/imageHandler.js";
 import { getChatHistory } from "../server/sendMessage.js";
+import SpinningLogo from './SpinningLogo.jsx'
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -32,7 +33,6 @@ const Chat = () => {
       await wsConnection.connect();
       const idToken = await user.getIdToken(false);
       await wsConnection.authenticate(idToken);
-      // console.log(idToken);
       wsConnectionRef.current = wsConnection;
       audioServiceRef.current = new AudioService(
         wsConnection,
@@ -62,6 +62,7 @@ const Chat = () => {
       });
     }
   };
+  
   const chatHistory = async () => {
     if(user){
       const chatHistory = (await getChatHistory(user)) || [];
@@ -148,7 +149,6 @@ const Chat = () => {
       ])
       setCurrentTranscription(null);
     }
-
   };
 
   const handleAudioResponse = (audioChunk, queueNumber, isComplete) => {
@@ -192,18 +192,10 @@ const Chat = () => {
     console.log("Messages updated:", messages);
   }, [messages]);
 
-  // const addMessageToChatHistory = (source, text, reqId, imageid = null) => {
-  //   setMessages((prev) => [
-  //     ...prev,
-  //     { messageId: reqId, source, text, imageid, time: new Date() },
-  //   ]);
-  // };
-
-
   const sendMessage = async (message) => {
     const text = message.text;
     const reqId = uuidv4();
-	const imageid = message.imageName;
+    const imageid = message.imageName;
       setMessages((prev) => [
         ...prev,
         {
@@ -236,6 +228,7 @@ const Chat = () => {
       setImageUploaded(response.data);
     }
   };
+
   const toggleAudio = async () => {
     if (audioMode) {
       await audioServiceRef.current.stopRecording();
@@ -246,24 +239,30 @@ const Chat = () => {
   };
 
   return (
-    <Flex direction="column" h="100vh" bg="fef9ef">
-      <Navbar />
-      <Flex flex={1} direction="column" overflow="hidden">
-        <Box flex={1} overflowY="auto">
-          {messages.length === 0 ? (
-            <Box px={4} py={2}>
-              <Flex justify="center" mb={8}>
-                <Flex>
-                  <MeddyIcon boxSize="5rem" color="#843a06" />
-                  <Text textColor="#843a06" textAlign="center">
-                    {audioMode ? "Listening..." : ""}
-                  </Text>
-                </Flex>
+    <Flex direction="column" h="100vh" bg="fef9ef" overflow="hidden">
+      <Box flex={1} display="flex" flexDirection="column" overflow="hidden">
+        {messages.length === 0 ? (
+          <Box flex={1} px={4} py={2} overflowY="auto">
+            <Flex justify="center" mb={8} pt={8}> {/* Added pt={8} for top padding */}
+              <Flex flexDirection="column" alignItems="center"> {/* Changed to column layout */}
+                <SpinningLogo 
+                  size={60} 
+                  outerSpeed={10} 
+                  innerSpeed={8}
+                  outerCircleSize={1.2} 
+                  innerCircleSize={0.8}
+                  color="#843a06"
+                />
+                <Text textColor="#843a06" textAlign="center" mt={2}> {/* Added mt={2} for spacing */}
+                  {audioMode ? "Listening..." : ""}
+                </Text>
               </Flex>
-              <InitialView />
-            </Box>
-          ) : (
-            <Container maxW="container.xl" py={4} px={4}>
+            </Flex>
+            <InitialView />
+          </Box>
+        ) : (
+          <Box flex={1} overflowY="auto">
+            <Container maxW="container.xl" h="full" py={4}>
               <Box
                 bg="white"
                 borderRadius="xl"
@@ -283,30 +282,20 @@ const Chat = () => {
                 </Box>
               </Box>
             </Container>
-          )}
+          </Box>
+        )}
+        <Box>
+          <MessageInput
+            onSend={sendMessage}
+            onUpload={uploadFile}
+            handleDeleteImage={() => setImageUploaded(null)}
+            inProgress={inProgress}
+            toggleAudio={toggleAudio}
+            audioMode={audioMode}
+            imageUploaded={imageUploaded}
+          />
         </Box>
-        <Box
-          borderTop="1px"
-          borderColor="gray.200"
-          p={4}
-          bg={messages.length > 0 ? "white" : "transparent"}
-          boxShadow={
-            messages.length > 0 ? "0 -2px 10px rgba(0,0,0,0.05)" : "none"
-          }
-        >
-          <Container maxW="container.md">
-            <MessageInput
-              onSend={sendMessage}
-              onUpload={uploadFile}
-              handleDeleteImage={() => setImageUploaded(null)}
-              inProgress={inProgress}
-              toggleAudio={toggleAudio}
-              audioMode={audioMode}
-              imageUploaded={imageUploaded}
-            />
-          </Container>
-        </Box>
-      </Flex>
+      </Box>
     </Flex>
   );
 };

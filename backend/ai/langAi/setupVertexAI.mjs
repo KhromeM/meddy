@@ -196,12 +196,16 @@ export async function getStructuredVertexResponse(
 	schema = responseSchema
 ) {
 	// Set up prompt and chat history
+	if (chatHistory[0].source != "user") {
+		chatHistory.shift();
+	}
 	const data = await getUserInfo(user.userid);
 	const prompt = createFunctionCallingSystemPrompt(data);
-	const cleanedHistory = chatHistory.slice(1).map((message) => ({
+	const cleanedHistory = chatHistory.map((message) => ({
 		role: message.source === "llm" ? "model" : "user",
 		parts: [{ text: message.text }],
 	}));
+	console.log(cleanedHistory);
 
 	// Make the request
 	const request = {

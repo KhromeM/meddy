@@ -32,9 +32,17 @@ import WorkWithTheRockets from "./components/WorkWithTheRockets";
 import RemindersCard from "./components/RemindersCard";
 import QuickActionCard from "./components/QuickActionCard";
 import { FaWallet } from "react-icons/fa";
-import SmallQuickActionCard from "./components/SmallQuickActionCard";
 import { useAuth } from "../../../firebase/AuthService";
-import QuickActionList from "./QuickActionList";
+import QuickActionList from "./components/QuickActionList";
+import Card from "../../../components/Card/Card";
+import MultiChartContainer from "./components/MultiChartContainer";
+
+const barChartData = [
+  {
+    name: "Sales",
+    data: [0, 10, 30, 70, 120, 200, 340, 600, 500],
+  },
+];
 
 export default function Dashboard() {
   const iconBoxInside = useColorModeValue("white", "white");
@@ -44,13 +52,17 @@ export default function Dashboard() {
     <Flex
       flexDirection="column"
       // pt={{ base: "120px", md: "75px" }}
+      paddingTop="60px"
     >
       <Heading as="h1" size="xl" mb="26px">
         {user ? `Hi, ${user?.displayName || "Guest"}!` : "Hi Guest!"}
       </Heading>
-      <QuickActionList iconBoxInside={iconBoxInside} />
-
-      <SimpleGrid columns={{ sm: 1, md: 2, xl: 4 }} mt="26px" spacing="24px">
+      <SimpleGrid columns={{ sm: 2, md: 2, xl: 3 }} mt="26px" spacing="24px">
+        <Card maxW="380">
+          <QuickActionList iconBoxInside={iconBoxInside} />
+        </Card>
+      </SimpleGrid>
+      {/* <SimpleGrid columns={{ sm: 1, md: 2, xl: 4 }} mt="26px" spacing="24px">
         <QuickActionCard
           icon={<Icon h={"24px"} w={"24px"} color="white" as={FaWallet} />}
           title={"Salary"}
@@ -63,7 +75,7 @@ export default function Dashboard() {
           description={"Freelance Payment"}
           amount={4550}
         />
-      </SimpleGrid>
+      </SimpleGrid> */}
       <Grid
         templateColumns={{ md: "1fr", lg: "1.8fr 1.2fr" }}
         templateRows={{ md: "1fr auto", lg: "1fr" }}
@@ -101,10 +113,15 @@ export default function Dashboard() {
         <ActiveUsers
           title={"Active Users"}
           percentage={23}
-          chart={<BarChart />}
+          chart={<BarChart chartData={barChartData} />}
         />
-        <SalesOverview
+        {/* <SalesOverview
           title={"Sales Overview"}
+          percentage={5}
+          chart={<LineChart />}
+        /> */}
+        <MultiChartContainer
+          title={"Biomarker Stats"}
           percentage={5}
           chart={<LineChart />}
         />

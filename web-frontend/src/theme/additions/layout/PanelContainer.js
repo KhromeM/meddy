@@ -2,7 +2,7 @@ const PanelContainer = {
   baseStyle: {
     p: "30px 15px",
     minHeight: "calc(100vh - 123px)",
-    paddingTop: "60px",
+    paddingTop: "0px", // Padding for main content meddy
   },
 };
 

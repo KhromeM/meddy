@@ -20,6 +20,12 @@ import {
 	getConditionById,
 	updateCondition,
 	deleteCondition,
+	createHealthGoal,
+	getAllHealthGoals,
+	getUserHealthGoals,
+	updateHealthGoal,
+	deleteHealthGoal,
+	getDailyHealthTips,
 } from "../controllers/infoController.mjs";
 
 const router = express.Router();
@@ -51,5 +57,15 @@ router.get("/condition", getAllConditions);
 router.get("/condition/:conditionId", getConditionById);
 router.put("/condition/:conditionId", updateCondition);
 router.delete("/condition/:conditionId", deleteCondition);
+
+// Goal routes
+router.post("/goal", createHealthGoal);
+router.get("/goal", getAllHealthGoals);
+router.get("/goal/:userId", getUserHealthGoals);
+router.put("/goal", updateHealthGoal);
+router.delete("/goal", deleteHealthGoal);
+
+// Health tip route(s)
+router.get("/tip", getDailyHealthTips);
 
 export default router;

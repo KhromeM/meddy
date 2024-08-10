@@ -1,0 +1,68 @@
+/* Gif.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: #f9f5f1;
+  font-family: Arial, sans-serif;
+}
+
+.chat-box {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+  padding: 20px;
+  width: 300px;
+  animation: fadeIn 2s ease-in-out;
+}
+
+.user, .assistant {
+  margin-bottom: 20px;
+}
+
+.stats p {
+  margin: 5px 0;
+}
+
+.video {
+  margin-top: 20px;
+}
+
+.animated-video {
+  width: 100px;
+  animation: moveVideo 2s infinite;
+}
+
+.try-demo {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes moveVideo {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

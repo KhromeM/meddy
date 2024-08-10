@@ -90,7 +90,6 @@ class _ReminderPageState extends State<ReminderPage> {
           Uri.parse('$baseUrl/info/reminder/$id'),
           headers: {'idToken': user ?? 'dev'});
       _refreshAppointments(); // Refresh after removing
-      print(response.body);
     } catch (e) {
       // Handle error
       print(e);
