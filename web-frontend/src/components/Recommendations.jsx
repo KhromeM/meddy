@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { FaPills } from "react-icons/fa";
 import { TbClock, TbCalendarTime, TbTestPipe } from "react-icons/tb";
+import Card from "./Card/Card";
 
 const TestDetails = ({ test }) => {
   const bgColor = useColorModeValue("white", "gray.600");
@@ -64,48 +65,50 @@ const Recommendations = ({ medData }) => {
   };
 
   return (
-    <Box flex={1} width="100%">
-      <HStack justify="space-between" mb={1}>
-        <Text
-          as="h2"
-          fontSize="3xl"
-          fontWeight={600}
-          color={
-            medData.score > 80
-              ? "green.500"
+    <Card>
+      <Box flex={1} width="100%">
+        <HStack justify="space-between" mb={1}>
+          <Text
+            as="h2"
+            fontSize="3xl"
+            fontWeight={600}
+            color={
+              medData.score > 80
+                ? "green.500"
+                : medData.score > 60
+                ? "yellow.500"
+                : "red.500"
+            }
+          >
+            {medData.score > 80
+              ? "Optimal"
               : medData.score > 60
-              ? "yellow.500"
-              : "red.500"
-          }
-        >
-          {medData.score > 80
-            ? "Optimal"
-            : medData.score > 60
-            ? "Fair"
-            : "Needs Improvement"}
-        </Text>
-      </HStack>
-      <Text mb={4}>{medData.generalRecommendation}</Text>
+              ? "Fair"
+              : "Needs Improvement"}
+          </Text>
+        </HStack>
+        <Text mb={4}>{medData.generalRecommendation}</Text>
 
-      <Divider mb={4} />
+        <Divider mb={4} />
 
-      <Flex align="center" justify="flex-start" mb={6}>
-        <Icon as={TbTestPipe} boxSize={8} color="red.500" mr={2} />
-        <Select
-          value={selectedTest}
-          onChange={(e) => setSelectedTest(e.target.value)}
-          width="auto"
-        >
-          {tests.map((test) => (
-            <option key={test.value} value={test.value}>
-              {test.label}
-            </option>
-          ))}
-        </Select>
-      </Flex>
-      {/* <Divider mb={4} /> */}
+        <Flex align="center" justify="flex-start" mb={6}>
+          <Icon as={TbTestPipe} boxSize={8} color="red.500" mr={2} />
+          <Select
+            value={selectedTest}
+            onChange={(e) => setSelectedTest(e.target.value)}
+            width="auto"
+          >
+            {tests.map((test) => (
+              <option key={test.value} value={test.value}>
+                {test.label}
+              </option>
+            ))}
+          </Select>
+        </Flex>
+        {/* <Divider mb={4} /> */}
 
-      <TestDetails test={getCurrentTest()} />
+        <TestDetails test={getCurrentTest()} />
+      </Box>
 
       {/* <Heading size="md" mb={2}>
         Recommendations
@@ -165,7 +168,7 @@ const Recommendations = ({ medData }) => {
           </SimpleGrid>
         </Box>
       </VStack> */}
-    </Box>
+    </Card>
   );
 };
 
@@ -173,7 +176,7 @@ export const RecommendationsAction = ({ medData }) => {
   const bgColor = useColorModeValue("white", "gray.600");
 
   return (
-    <>
+    <Card>
       <Heading size="md" mb={2}>
         Recommendations
       </Heading>
@@ -237,7 +240,7 @@ export const RecommendationsAction = ({ medData }) => {
       </SimpleGrid>
 
       {/* </VStack> */}
-    </>
+    </Card>
   );
 };
 

@@ -233,14 +233,14 @@ const HealthSystemContent = ({ category }) => {
 
   return (
     <Box>
-      <SimpleGrid columns={{ sm: 1, md: 2, xl: 2 }} spacing="24px">
+      <SimpleGrid mb={5} columns={{ sm: 1, md: 2, xl: 2 }} spacing="24px">
         <Flex
           direction="column"
           align="center"
           maxW="400px"
           maxH="400px"
           width="100%"
-          margin="0px auto"
+          margin="20px auto"
         >
           <VStack align="center" spacing={2} mb={4} textAlign="center">
             <Heading size="xl">{category.name}</Heading>
