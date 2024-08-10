@@ -1,20 +1,23 @@
 import React from "react";
 import {
-	Box,
-	Flex,
-	Text,
-	Button,
-	Image,
-	HStack,
-	Link,
-	Show,
+  Box,
+  Flex,
+  Text,
+  Button,
+  Image,
+  HStack,
+  Link,
+  Show,
 } from "@chakra-ui/react";
 import logoWhite from "../../assets/svg/meddy-logo-white.svg";
 import SpinningLogo from "../SpinningLogo.jsx";
 import "../../styles/button.css";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.js";
 
 export const Navbar = () => {
-	return (
+  const history = useHistory();
+
+  return (
     <Box
       bg="black"
       color="white"
@@ -27,8 +30,8 @@ export const Navbar = () => {
       maxWidth="container.xl"
       mx="auto"
       my={4}
-	  position="relative"
-	  zIndex={1}
+      position="relative"
+      zIndex={1}
     >
       <Flex justifyContent="space-between" alignItems="center">
         {/* Logo and Text wrapped in Link */}
@@ -57,7 +60,7 @@ export const Navbar = () => {
 
         {/* Login Button */}
         <Show breakpoint="(min-width: 500px)">
-          <button
+          <Button
             className="demo-button"
             borderWidth={3}
             bgColor="#FAF9F6"
@@ -66,9 +69,12 @@ export const Navbar = () => {
               boxShadow: "sm",
               // transform: "scale(1.05)",
             }}
+            onClick={() => {
+              history.push("/dashboard/home");
+            }}
           >
             Try Demo
-          </button>
+          </Button>
         </Show>
       </Flex>
     </Box>
