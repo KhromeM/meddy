@@ -8,8 +8,8 @@ export default class CustomStarfield extends Component {
       <div>
         <Starfield
           starCount={1000}
-          starColor={[255, 255, 255]}
-          speedFactor={0.05}
+          starColor={[0, 191, 255]}
+          speedFactor={0.18}
           backgroundColor="black"
         />
       </div>
