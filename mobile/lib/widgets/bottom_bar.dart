@@ -111,7 +111,7 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
                                 width: 60 * _sizeAnimations[index].value,
                                 height: 60 * _sizeAnimations[index].value,
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor.withOpacity(0.3),
+                                  color: Color(0xFF0E3C26).withOpacity(0.3),
                                   shape: BoxShape.circle,
                                 ),
                               ),
@@ -119,9 +119,11 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
                           },
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                           child: widget.currentIndex == index
-                              ? widget.bottomNavigationBarItems[index].activeIcon
+                              ? widget
+                                  .bottomNavigationBarItems[index].activeIcon
                               : widget.bottomNavigationBarItems[index].icon,
                         ),
                       ],

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:meddymobile/pages/screen_wrapper.dart';
 import 'package:meddymobile/pages/signin_page.dart';
 import 'package:meddymobile/widgets/high_contrast_mode.dart';
@@ -21,14 +22,14 @@ final ThemeData highContrastTheme = ThemeData(
   ),
   scaffoldBackgroundColor: Colors.black,
   textTheme: TextTheme(
-    bodyLarge: TextStyle(color: Colors.white), // bodyText1 -> bodyLarge
-    bodyMedium: TextStyle(color: Colors.white70), // bodyText2 -> bodyMedium
+    bodyLarge: TextStyle(color: Colors.white),
+    bodyMedium: TextStyle(color: Colors.white70),
   ),
   buttonTheme: ButtonThemeData(
     buttonColor: Colors.black,
     textTheme: ButtonTextTheme.primary,
   ),
-  fontFamily: 'Nunito',
+  fontFamily: 'C3',
 );
 
 class MyApp extends StatefulWidget {
@@ -47,6 +48,13 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    // Set the status bar content to black
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.light,
+    ));
+
     return HighContrastMode(
       isHighContrast: _isHighContrast,
       toggleHighContrastMode: _toggleHighContrastMode,
@@ -55,14 +63,18 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.deepOrange,
+            background: Color(0xFFFAF3EA),
+          ),
           fontFamily: 'Nunito',
+          scaffoldBackgroundColor: Color(0xFFFAF3EA),
         ),
         home: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator(); // Show a loading indicator while waiting for auth state
+              return CircularProgressIndicator();
             } else if (snapshot.hasData) {
               return ScreenWrapper();
             }

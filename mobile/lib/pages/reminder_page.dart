@@ -11,6 +11,7 @@ import 'package:motion/motion.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 
 class ReminderPage extends StatefulWidget {
   const ReminderPage({super.key});
@@ -189,7 +190,7 @@ class _ReminderPageState extends State<ReminderPage> {
                 color: Colors.white,
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.circular(20.0),
-                border: Border.all(color: Theme.of(context).primaryColor),
+                border: Border.all(color: Color(0xFF0E3C26)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey.withOpacity(0.3),
@@ -206,20 +207,17 @@ class _ReminderPageState extends State<ReminderPage> {
                   children: [
                     Text(
                       reminder['medicationname'],
-                      style: TextStyle(
-                          fontSize: 20, color: Theme.of(context).primaryColor),
+                      style: TextStyle(fontSize: 20, color: Color(0xFF0E3C26)),
                     ),
                     SizedBox(width: 15),
                     Text(
                       fullTime.substring(0, fullTime.length - 3),
-                      style: TextStyle(
-                          fontSize: 18, color: Theme.of(context).primaryColor),
+                      style: TextStyle(fontSize: 18, color: Color(0xFF0E3C26)),
                     ),
                     SizedBox(width: 15),
                     Text(
                       repeat_text,
-                      style: TextStyle(
-                          fontSize: 18, color: Theme.of(context).primaryColor),
+                      style: TextStyle(fontSize: 18, color: Color(0xFF0E3C26)),
                     ),
                   ],
                 ),
@@ -256,9 +254,13 @@ class _ReminderPageState extends State<ReminderPage> {
               extendBodyBehindAppBar: true,
               backgroundColor: Colors.transparent,
               appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                forceMaterialTransparency: true,
-              ),
+                  backgroundColor: Colors.transparent,
+                  forceMaterialTransparency: true,
+                  systemOverlayStyle: SystemUiOverlayStyle(
+                    statusBarColor: Colors.transparent,
+                    statusBarIconBrightness: Brightness.dark,
+                    statusBarBrightness: Brightness.light,
+                  )),
               body: RefreshIndicator(
                 onRefresh: _refreshAppointments,
                 child: SingleChildScrollView(

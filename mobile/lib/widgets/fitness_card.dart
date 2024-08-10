@@ -1,14 +1,14 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import 'package:meddymobile/models/fitness_data.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class FitnessCard extends StatelessWidget {
-  final HealthData fitnessData;
+  final HealthData? fitnessData;
 
-  FitnessCard({required this.fitnessData});
+  FitnessCard({this.fitnessData});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class FitnessCard extends StatelessWidget {
         _buildFitnessCard(
           icon: Icons.favorite,
           title: 'Heart Rate',
-          value: '${fitnessData.bpm.last.bpm} bpm',
+          value: '${_getLastBpm()} bpm',
           color: Colors.red,
           graph: _buildHeartRateGraph(),
         ),
@@ -25,7 +25,7 @@ class FitnessCard extends StatelessWidget {
         _buildFitnessCard(
           icon: Icons.directions_walk,
           title: 'Steps',
-          value: '${fitnessData.steps.last.steps} steps',
+          value: '${_getLastSteps()} steps',
           color: Colors.blue,
           graph: _buildStepsGraph(),
         ),
@@ -33,13 +33,58 @@ class FitnessCard extends StatelessWidget {
         _buildFitnessCard(
           icon: Icons.bed,
           title: 'Sleep',
-          value:
-              'Duration: ${fitnessData.sleep.last.totalSleepMinutes ~/ 60}h ${fitnessData.sleep.last.totalSleepMinutes % 60}m',
+          value: 'Duration: ${_getLastSleepDuration()}',
           color: Colors.indigo,
           graph: _buildSleepGraph(),
         ),
         SizedBox(height: 16),
       ],
+    );
+  }
+
+  int _getLastBpm() {
+    return fitnessData?.bpm.isNotEmpty == true ? fitnessData!.bpm.last.bpm : 0;
+  }
+
+  int _getLastSteps() {
+    return fitnessData?.steps.isNotEmpty == true ? fitnessData!.steps.last.steps : 0;
+  }
+
+  String _getLastSleepDuration() {
+    if (fitnessData?.sleep.isNotEmpty == true) {
+      int minutes = fitnessData!.sleep.last.totalSleepMinutes;
+      return '${minutes ~/ 60}h ${minutes % 60}m';
+    }
+    return '0h 0m';
+  }
+
+  Widget _buildFitnessCard({
+    required IconData icon,
+    required String title,
+    required String value,
+    required Color color,
+    required Widget graph,
+  }) {
+    return Skeletonizer(
+      enabled: fitnessData == null,
+      child: _buildStyledCard(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon, color: color, size: 40),
+                SizedBox(width: 8),
+                Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              ],
+            ),
+            SizedBox(height: 8),
+            Text(value, style: TextStyle(fontSize: 16)),
+            SizedBox(height: 16),
+            SizedBox(height: 100, child: graph),
+          ],
+        ),
+      ),
     );
   }
 
@@ -60,119 +105,22 @@ class FitnessCard extends StatelessWidget {
     );
   }
 
-  Widget _buildFitnessCard({
-    required IconData icon,
-    required String title,
-    required String value,
-    required Color color,
-    required Widget graph,
-  }) {
-    return _buildStyledCard(
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, color: color, size: 40),
-              SizedBox(width: 8),
-              Text(title,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            ],
-          ),
-          SizedBox(height: 8),
-          Text(value, style: TextStyle(fontSize: 16)),
-          SizedBox(height: 16),
-          SizedBox(
-            height: 100,
-            child: graph,
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildStepsGraph() {
-  final lastSevenDays =
-      fitnessData.steps.reversed.take(7).toList().reversed.toList();
-  return BarChart(
-    BarChartData(
-      alignment: BarChartAlignment.spaceAround,
-      barGroups: lastSevenDays.asMap().entries.map((entry) {
-        return BarChartGroupData(
-          x: entry.key,
-          barRods: [
-            BarChartRodData(
-                toY: entry.value.steps.toDouble(), color: Colors.blue)
-          ],
-        );
-      }).toList(),
-      titlesData: FlTitlesData(
-        rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        bottomTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            getTitlesWidget: (value, meta) {
-              final date = lastSevenDays[value.toInt()].date;
-              return Text(DateFormat('E').format(date));
-            },
-          ),
-        ),
-      ),
-      borderData: FlBorderData(
-        show: true,
-        border: const Border(
-          left: BorderSide(color: Colors.black),
-          bottom: BorderSide(color: Colors.black),
-        ),
-      ),
-      gridData: FlGridData(show: true), // Optional: Show grid lines for better alignment
-      maxY: lastSevenDays.map((e) => e.steps).reduce(max).toDouble() * 1.2,
-    ),
-  );
-}
+    if (fitnessData == null) {
+      return _buildSkeletonGraph();
+    }
+    final lastSevenDays = fitnessData!.steps.reversed.take(7).toList().reversed.toList();
+    final barGroups = lastSevenDays.asMap().entries.map((entry) {
+      return BarChartGroupData(
+        x: entry.key,
+        barRods: [BarChartRodData(toY: entry.value.steps.toDouble(), color: Colors.blue)],
+      );
+    }).toList();
 
-
-  Widget _buildHeartRateGraph() {
-    final lastSevenBpm =
-        fitnessData.bpm.reversed.take(7).toList().reversed.toList();
-    return LineChart(
-      LineChartData(
-        gridData: FlGridData(show: false),
-        titlesData: FlTitlesData(show: false),
-        borderData: FlBorderData(show: false),
-        lineBarsData: [
-          LineChartBarData(
-            spots: lastSevenBpm.asMap().entries.map((entry) {
-              return FlSpot(entry.key.toDouble(), entry.value.bpm.toDouble());
-            }).toList(),
-            color: Colors.red,
-            belowBarData: BarAreaData(show: false),
-          )
-        ],
-        lineTouchData: LineTouchData(enabled: false),
-      ),
-    );
-  }
-
-  Widget _buildSleepGraph() {
-    final lastSevenDays =
-        fitnessData.sleep.reversed.take(7).toList().reversed.toList();
     return BarChart(
       BarChartData(
         alignment: BarChartAlignment.spaceAround,
-        barGroups: lastSevenDays.asMap().entries.map((entry) {
-          return BarChartGroupData(
-            x: entry.key,
-            barRods: [
-              BarChartRodData(
-                toY: entry.value.totalSleepMinutes.toDouble(),
-                color: Colors.indigo,
-              ),
-            ],
-          );
-        }).toList(),
+        barGroups: barGroups,
         titlesData: FlTitlesData(
           rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
           topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -180,8 +128,8 @@ class FitnessCard extends StatelessWidget {
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              getTitlesWidget: (double value, TitleMeta meta) {
-                final date = lastSevenDays[value.toInt()].date;
+              getTitlesWidget: (value, meta) {
+                final date = fitnessData!.steps[value.toInt()].date;
                 return Text(DateFormat('E').format(date));
               },
             ),
@@ -194,11 +142,94 @@ class FitnessCard extends StatelessWidget {
             bottom: BorderSide(color: Colors.black),
           ),
         ),
-        maxY: lastSevenDays
-                .map((e) => e.totalSleepMinutes)
-                .reduce(max)
-                .toDouble() *
-            1.2,
+        gridData: FlGridData(show: true),
+        maxY: fitnessData!.steps.map((e) => e.steps).reduce(max).toDouble() * 1.2,
+      ),
+    );
+  }
+
+  Widget _buildHeartRateGraph() {
+    if (fitnessData == null) {
+      return _buildSkeletonGraph();
+    }
+    final lastSevenBpm = fitnessData!.bpm.reversed.take(7).toList().reversed.toList();
+    final spots = lastSevenBpm.asMap().entries.map((entry) {
+      return FlSpot(entry.key.toDouble(), entry.value.bpm.toDouble());
+    }).toList();
+
+    return LineChart(
+      LineChartData(
+        gridData: FlGridData(show: false),
+        titlesData: FlTitlesData(show: false),
+        borderData: FlBorderData(show: false),
+        lineBarsData: [
+          LineChartBarData(
+            spots: spots,
+            color: Colors.red,
+            belowBarData: BarAreaData(show: false),
+          )
+        ],
+        lineTouchData: LineTouchData(enabled: false),
+      ),
+    );
+  }
+
+  Widget _buildSleepGraph() {
+    if (fitnessData == null) {
+      return _buildSkeletonGraph();
+    }
+    final lastSevenDays = fitnessData!.sleep.reversed.take(7).toList().reversed.toList();
+    final barGroups = lastSevenDays.asMap().entries.map((entry) {
+      return BarChartGroupData(
+        x: entry.key,
+        barRods: [BarChartRodData(toY: entry.value.totalSleepMinutes.toDouble(), color: Colors.indigo)],
+      );
+    }).toList();
+
+    return BarChart(
+      BarChartData(
+        alignment: BarChartAlignment.spaceAround,
+        barGroups: barGroups,
+        titlesData: FlTitlesData(
+          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (double value, TitleMeta meta) {
+                final date = fitnessData!.sleep[value.toInt()].date;
+                return Text(DateFormat('E').format(date));
+              },
+            ),
+          ),
+        ),
+        borderData: FlBorderData(
+          show: true,
+          border: const Border(
+            left: BorderSide(color: Colors.black),
+            bottom: BorderSide(color: Colors.black),
+          ),
+        ),
+        maxY: fitnessData!.sleep.map((e) => e.totalSleepMinutes).reduce(max).toDouble() * 1.2,
+      ),
+    );
+  }
+
+  Widget _buildSkeletonGraph() {
+    return Container(
+      height: 100,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: List.generate(
+          7,
+          (index) => Container(
+            width: 30,
+            height: 20 + Random().nextInt(60).toDouble(),
+            color: Colors.grey[300],
+          ),
+        ),
       ),
     );
   }

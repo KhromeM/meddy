@@ -35,6 +35,7 @@ import { FaWallet } from "react-icons/fa";
 import { useAuth } from "../../../firebase/AuthService";
 import QuickActionList from "./components/QuickActionList";
 import Card from "../../../components/Card/Card";
+import MultiChartContainer from "./components/MultiChartContainer";
 
 const barChartData = [
   {
@@ -51,6 +52,7 @@ export default function Dashboard() {
     <Flex
       flexDirection="column"
       // pt={{ base: "120px", md: "75px" }}
+      paddingTop="60px"
     >
       <Heading as="h1" size="xl" mb="26px">
         {user ? `Hi, ${user?.displayName || "Guest"}!` : "Hi Guest!"}
@@ -113,8 +115,13 @@ export default function Dashboard() {
           percentage={23}
           chart={<BarChart chartData={barChartData} />}
         />
-        <SalesOverview
+        {/* <SalesOverview
           title={"Sales Overview"}
+          percentage={5}
+          chart={<LineChart />}
+        /> */}
+        <MultiChartContainer
+          title={"Biomarker Stats"}
           percentage={5}
           chart={<LineChart />}
         />

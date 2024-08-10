@@ -55,7 +55,7 @@ dependencies:
   image: ^4.2.0
   path: ^1.9.0
 
-  sound_stream: ^0.4.1
+  # sound_stream: ^0.4.1
   fl_chart: ^0.68.0
   skeletonizer: ^1.4.2
   blur: ^4.0.0
@@ -68,7 +68,9 @@ dependencies:
   animated_checkmark: ^3.1.0
 
   # comment the following line  out for android users
-  # sound_stream: ^0.3.0
+  sound_stream: ^0.3.0
+  carousel_slider: ^5.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -99,3 +101,15 @@ flutter:
           weight: 600
         - asset: assets/fonts/nunito/Nunito-Bold.ttf
           weight: 700
+    - family: C1
+      fonts:
+        - asset: assets/fonts/1.woff2
+    - family: C2
+      fonts:
+        - asset: assets/fonts/2.woff2
+    - family: C3
+      fonts:
+        - asset: assets/fonts/3.woff2
+    - family: C4
+      fonts:
+        - asset: assets/fonts/4.woff2

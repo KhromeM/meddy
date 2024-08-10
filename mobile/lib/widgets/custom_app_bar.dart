@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 import 'package:meddymobile/utils/app_colors.dart';
 import 'package:meddymobile/services/auth_service.dart';
@@ -60,57 +61,57 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   Future<void> _showBottomSheet(BuildContext context) async {
     _speedNotifier.value = 0.0; // Stop the spinning when bottom sheet opens
-    
+
     await showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
       isScrollControlled: true,
       builder: (BuildContext context) {
         return Consumer<LanguageProvider>(
-      builder: (context, languageProvider, child) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setModalState) {
-            return Container(
-              height: MediaQuery.of(context).size.height * 0.4,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildGreetingText(),
-                    SizedBox(height: 10),
-                    Row(children: [
-                      Column(
-                        children: [
-                          _buildLanguageSelector(setModalState),
-                          Text(
-                            languageProvider.translate('language'),
-                          )
-                        ],
-                      ),
-                      SizedBox(width: 12),
-                      Column(
-                        children: [
-                          _buildHighContrastToggle(setModalState),
-                          SizedBox(
-                            height: 10,
+          builder: (context, languageProvider, child) {
+            return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setModalState) {
+                return Container(
+                  height: MediaQuery.of(context).size.height * 0.4,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 30),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildGreetingText(),
+                        SizedBox(height: 10),
+                        Row(children: [
+                          Column(
+                            children: [
+                              _buildLanguageSelector(setModalState),
+                              Text(
+                                languageProvider.translate('language'),
+                              )
+                            ],
                           ),
-                          Text(
-                            languageProvider.translate('contrast'),
-                            )
-                        ],
-                      )
-                    ]),
-                    Spacer(),
-                    _buildLogoutButton(context),
-                  ],
-                ),
-              ),
+                          SizedBox(width: 12),
+                          Column(
+                            children: [
+                              _buildHighContrastToggle(setModalState),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                languageProvider.translate('contrast'),
+                              )
+                            ],
+                          )
+                        ]),
+                        Spacer(),
+                        _buildLogoutButton(context),
+                      ],
+                    ),
+                  ),
+                );
+              },
             );
           },
-        );
-      },
         );
       },
     );
@@ -250,6 +251,11 @@ class _CustomAppBarState extends State<CustomAppBar> {
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.transparent,
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+      ),
       forceMaterialTransparency: true,
       leading: Container(),
       actions: [

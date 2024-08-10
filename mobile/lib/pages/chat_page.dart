@@ -16,6 +16,7 @@ import 'dart:async';
 import 'package:uuid/uuid.dart';
 import 'package:image/image.dart' as img;
 import 'package:meddymobile/widgets/listening_notifier.dart'; // Import the new widget
+import 'package:flutter/services.dart';
 
 class ChatPage extends StatefulWidget {
   final String? initialPrompt;
@@ -332,11 +333,17 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFFAF3EA),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         forceMaterialTransparency: true,
         elevation: 0,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.light,
+        ),
       ),
       body: Stack(
         children: [
@@ -376,8 +383,8 @@ class _ChatPageState extends State<ChatPage> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                            color: Theme.of(context).primaryColor, width: 1.5),
+                        border:
+                            Border.all(color: Color(0xFF0E3C26), width: 1.5),
                       ),
                       child: Column(
                         children: [
@@ -474,7 +481,7 @@ class _ChatPageState extends State<ChatPage> {
                                     Icon(
                                       Icons.circle,
                                       size: 40,
-                                      color: Theme.of(context).primaryColor,
+                                      color: Color(0xFF0E3C26),
                                     ),
                                     Icon(
                                       _isRecording
@@ -522,8 +529,7 @@ class _ChatPageState extends State<ChatPage> {
                                                   Icons
                                                       .arrow_forward_ios_rounded,
                                                 ),
-                                                color: Theme.of(context)
-                                                    .primaryColor,
+                                                color: Color(0xFF0E3C26),
                                                 onPressed: _sendMessage,
                                               )
                                             else ...[
@@ -531,9 +537,9 @@ class _ChatPageState extends State<ChatPage> {
                                                 icon: Icon(
                                                   Icons.photo_camera_outlined,
                                                   size: 30,
+                                                  color: Color(0xFF0E3C26),
                                                 ),
-                                                color: Theme.of(context)
-                                                    .primaryColor,
+                                                color: Color(0xFF0E3C26),
                                                 onPressed:
                                                     _selectImageFromCamera,
                                               ),
@@ -542,8 +548,7 @@ class _ChatPageState extends State<ChatPage> {
                                                   Icons.image_outlined,
                                                   size: 30,
                                                 ),
-                                                color: Theme.of(context)
-                                                    .primaryColor,
+                                                color: Color(0xFF0E3C26),
                                                 onPressed:
                                                     _selectImageFromGallery,
                                               ),

@@ -4,6 +4,7 @@ import 'package:meddymobile/models/health_category.dart';
 import 'package:meddymobile/services/health_service.dart';
 import 'package:meddymobile/widgets/health_summary_card.dart';
 import 'package:meddymobile/widgets/fitness_card.dart';
+import 'package:flutter/services.dart';
 
 class HealthPage extends StatefulWidget {
   @override
@@ -62,6 +63,11 @@ class _HealthPageState extends State<HealthPage> {
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             forceMaterialTransparency: true,
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent,
+              statusBarIconBrightness: Brightness.dark,
+              statusBarBrightness: Brightness.light,
+            ),
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 16.0),
@@ -136,29 +142,24 @@ class _HealthPageState extends State<HealthPage> {
               ),
             ],
           ),
-          body: _fitnessData == null || _medicalRecord == null
-              ? Center(child: CircularProgressIndicator())
-              : SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          showActivityStatus
-                              ? 'Health Activity'
-                              : 'Health Summary',
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 16),
-                        showActivityStatus
-                            ? FitnessCard(fitnessData: _fitnessData!)
-                            : HealthSummaryCard(medicalRecord: _medicalRecord!),
-                      ],
-                    ),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    showActivityStatus ? 'Health Activity' : 'Health Summary',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
-                ),
+                  SizedBox(height: 16),
+                  showActivityStatus
+                      ? FitnessCard(fitnessData: _fitnessData)
+                      : HealthSummaryCard(medicalRecord: _medicalRecord),
+                ],
+              ),
+            ),
+          ),
         ),
       ],
     );

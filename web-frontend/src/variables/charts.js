@@ -141,7 +141,7 @@ export const lineChartOptions = {
     },
   },
   legend: {
-    show: false,
+    show: true,
   },
   grid: {
     strokeDashArray: 5,

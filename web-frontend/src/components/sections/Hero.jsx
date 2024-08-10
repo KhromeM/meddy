@@ -112,7 +112,7 @@ export const Hero = ({ login }) => {
 									w={"100%"}
 									textAlign={"center"}
 								>
-									Meet your AI health companion
+									Meddy, your AI health companion
 								</Heading>
 								<Text
 									fontSize={{ base: "16px", md: "22px" }}
@@ -191,10 +191,8 @@ export const Hero = ({ login }) => {
 					<Box
 						position="relative"
 						boxShadow="lg"
-						p={6}
 						display="flex"
 						flexDirection="column"
-						alignItems="center"
 						borderRadius="md"
 						className="animated-box"
 					>
@@ -202,13 +200,13 @@ export const Hero = ({ login }) => {
 							src={MeddyDemoGif}
 							alt="Empathic Voice Interface GIF"
 							boxSize="100%"
-							maxW="800px"
+							maxW="100%"
 							borderRadius="md"
 							zIndex={1}
 						/>
 					</Box>
 					<Box
-						bg="#f9dcb5"
+						className="animated-box2"
 						borderRadius="md"
 						boxShadow="lg"
 						p={6}
@@ -220,7 +218,7 @@ export const Hero = ({ login }) => {
 							<Heading as="h3" size="lg">
 								Empathic Voice Interface (EVI)
 							</Heading>
-							<Text>
+							<Text style={{ lineHeight: "1.8em" }}>
 								Give your application empathy and a voice. EVI is a
 								conversational voice API powered by empathic AI. It is the only
 								API that measures nuanced vocal modulations, guiding language
@@ -253,24 +251,110 @@ export const Hero = ({ login }) => {
 							</Flex>
 						</VStack>
 					</Box>
-					<CardsInterface
-						headingText={"Measure Expression"}
-						img={images.ecnomicGraph}
-						btnText={"Start with Webcam"}
-						paragraphText={
-							"Use psychologically valid models of facial movement and vocal modulation."
-						}
-						bgColor={"#f0daf5"}
-					/>
-					<CardsInterface
-						headingText={"Interpret Expressive Communication"}
-						img={images.graphThree}
-						btnText={"Use Custom Models"}
-						paragraphText={
-							"Start building with the world's first emotionally intelligent voice AI."
-						}
-						bgColor={"#d4e1f1"}
-					/>
+
+					<Box
+						className="animated-box3"
+						borderRadius="md"
+						boxShadow="lg"
+						p={6}
+						display="flex"
+						flexDirection="column"
+						alignItems="flex-start"
+					>
+						<VStack align="flex-start" spacing={4} p={10}>
+							<Heading as="h3" size="lg">
+								Measure Expression
+							</Heading>
+							<Text style={{ lineHeight: "1.8em" }}>
+								Use psychologically valid models of facial movement and vocal
+								modulation.
+							</Text>
+							<Flex
+								flexDirection="row"
+								justify="center"
+								align="center"
+								gap={4}
+								wrap="wrap"
+							>
+								<Image src={images.ecnomicGraph} borderRadius="md" />
+								<Button
+									as={RouterLink}
+									to="#"
+									variant="solid"
+									colorScheme="blackAlpha"
+									width={{ base: "100%", md: "auto" }}
+									flex={{ base: "1 1 100%", md: "none" }}
+								>
+									Start with Webcam
+								</Button>
+								<Button
+									as={RouterLink}
+									to="#"
+									variant="outline"
+									colorScheme="blackAlpha"
+									borderRadius="full"
+									borderWidth="2px"
+									borderColor="blackAlpha.500"
+									width={{ base: "100%", md: "auto" }}
+									flex={{ base: "1 1 100%", md: "none" }}
+								>
+									Documentation
+								</Button>
+							</Flex>
+						</VStack>
+					</Box>
+
+					<Box
+						className="animated-box"
+						borderRadius="md"
+						boxShadow="lg"
+						p={6}
+						display="flex"
+						flexDirection="column"
+						alignItems="flex-start"
+					>
+						<VStack align="flex-start" spacing={4} p={10}>
+							<Heading as="h3" size="lg">
+								Interpret Expressive Communication
+							</Heading>
+							<Text style={{ lineHeight: "1.8em" }}>
+								Start building with the world's first emotionally intelligent
+								voice AI.
+							</Text>
+							<Flex
+								flexDirection="row"
+								justify="center"
+								align="center"
+								gap={4}
+								wrap="wrap"
+							>
+								<Image src={images.graphThree} borderRadius="md" />
+								<Button
+									as={RouterLink}
+									to="#"
+									variant="solid"
+									colorScheme="blackAlpha"
+									width={{ base: "100%", md: "auto" }}
+									flex={{ base: "1 1 100%", md: "none" }}
+								>
+									Use Custom Models
+								</Button>
+								<Button
+									as={RouterLink}
+									to="#"
+									variant="outline"
+									colorScheme="blackAlpha"
+									borderRadius="full"
+									borderWidth="2px"
+									borderColor="blackAlpha.500"
+									width={{ base: "100%", md: "auto" }}
+									flex={{ base: "1 1 100%", md: "none" }}
+								>
+									Documentation
+								</Button>
+							</Flex>
+						</VStack>
+					</Box>
 				</SimpleGrid>
 			</Box>
 		</>
