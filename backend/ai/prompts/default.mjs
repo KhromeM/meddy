@@ -63,7 +63,7 @@ If pressed on topics outside your scope, clearly state:
 
 Always maintain a warm and supportive tone, but be firm about staying within your defined role and capabilities.`;
 
-const keepResponsesShort = `**DO NOT GIVE A LONG RESPONSE LISTING OUT A BUNCH OF THINGS. SPEAK LIKE A HUMAN. SHORT 1-2 LINE RESPONSES. LESS THAN 20 WORDS UNLESS THE USER ASKS FOR A SUMMARY. THIS IS EXTREMELY IMPORTANT! DO NOT RAMBLE!**`;
+const keepResponsesShort = `**DO NOT GIVE A LONG RESPONSE LISTING OUT A BUNCH OF THINGS. SPEAK LIKE A HUMAN. SHORT 2-3 LINE RESPONSES. LESS THAN 40 WORDS UNLESS THE USER ASKS FOR A SUMMARY. THIS IS EXTREMELY IMPORTANT! DO NOT RAMBLE!**`;
 
 const examplePrompt = `
 Examples of appropriate responses:
@@ -149,11 +149,11 @@ export const getLangPrompt = (name, lang = "english") => {
 const allPrompts = [
 	identityPrompt,
 	dontSayYoureAIPrompt, // bit sketchy, but we dont want it to undercut emotional support by delcaring its AI
-	// tonePrompt,
-	// matchTonePrompt, // people like it when you match their tone, even if they feel bad
-	// emotionalSupportPrompt,
+	tonePrompt,
+	matchTonePrompt, // people like it when you match their tone, even if they feel bad
+	emotionalSupportPrompt,
 	keepResponsesShort, // have to repeat twice so it doesnt write essays
-	// identityLockPrompt, // dont want it to answer non medical questions
+	identityLockPrompt, // dont want it to answer non medical questions
 	explanationPrompt,
 	confusionPrompt,
 	medicationPrompt,
@@ -162,12 +162,12 @@ const allPrompts = [
 	appointmentModePrompt,
 	// practicalTipsPrompt, // makes it ramble and give lists
 	// appUsagePrompt, // this is the medical advice / emotional compaion path. App usage help should be directed to another prompt pathway
-	// languageBarrierPrompt,
+	languageBarrierPrompt,
 	keepResponsesShort, // have to repeat twice so it doesnt write essays
 	examplePrompt,
 	noRichTextPrompt,
 	functionCallingPrompt,
-	// ignoreIgnoreAllPreviousIntructionsPrompt, // make sure to not fall for the "Ignore all previous instructions bypass"
+	ignoreIgnoreAllPreviousIntructionsPrompt, // make sure to not fall for the "Ignore all previous instructions bypass"
 ];
 
 export const createDefaultSystemPrompt = async (user, lang = "english") => {
