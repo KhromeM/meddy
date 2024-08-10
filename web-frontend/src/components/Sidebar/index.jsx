@@ -1,8 +1,9 @@
 /*eslint-disable*/
 // chakra imports
 import { Box, useColorModeValue } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import SidebarContent from "./SidebarContent";
+import { Gradient } from "../Gradient";
 
 // FUNCTIONS
 
@@ -23,11 +24,33 @@ function Sidebar(props) {
     sidebarRadius = "16px";
     sidebarMargins = "16px 0px 16px 16px";
   }
-
+  useEffect(() => {
+    const gradient = new Gradient();
+    gradient.initGradient("#gradient-canvas");
+  }, []);
   // SIDEBAR
   return (
     <Box ref={mainPanel}>
-      <Box display={{ sm: "none", xl: "block" }} position="fixed">
+      <Box
+        className="sidebar"
+        display={{ sm: "none", xl: "block" }}
+        position="fixed"
+        boxShadow="md"
+      >
+        <canvas
+          id="gradient-canvas"
+          data-js-darken-top
+          data-transition-in
+          style={{
+            position: "absolute",
+            width: "100%",
+            minHeight: "100%",
+            top: 0,
+            left: 0,
+            zIndex: -1,
+            opacity: 0.15,
+          }}
+        ></canvas>
         <Box
           bg={sidebarBg}
           transition={variantChange}
@@ -44,7 +67,7 @@ function Sidebar(props) {
           pe="20px"
           m={sidebarMargins}
           borderRadius={sidebarRadius}
-          borderRight="1px solid"
+          // borderRight="1px solid"
           borderColor="gray.300"
           position="relative"
         >

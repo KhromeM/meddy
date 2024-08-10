@@ -1,35 +1,31 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ReactApexChart from "react-apexcharts";
 import { lineChartData, lineChartOptions } from "../../variables/charts";
 
-class LineChart extends React.Component {
-  constructor(props) {
-    super(props);
+const LineChart = () => {
+  const [chartData, setChartData] = useState([]);
+  const [chartOptions, setChartOptions] = useState({});
 
-    this.state = {
-      chartData: [],
-      chartOptions: {},
-    };
-  }
+  useEffect(() => {
+    fetch("https://trymeddy.com/api/gfit", {
+      headers: { idtoken: "dev", "Content-Type": "application/json" },
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data));
 
-  componentDidMount() {
-    this.setState({
-      chartData: lineChartData,
-      chartOptions: lineChartOptions,
-    });
-  }
+    setChartData(lineChartData);
+    setChartOptions(lineChartOptions);
+  }, []);
 
-  render() {
-    return (
-      <ReactApexChart
-        options={this.state.chartOptions}
-        series={this.state.chartData}
-        type="area"
-        width="100%"
-        height="100%"
-      />
-    );
-  }
-}
+  return (
+    <ReactApexChart
+      options={chartOptions}
+      series={chartData}
+      type="area"
+      width="100%"
+      height="100%"
+    />
+  );
+};
 
 export default LineChart;
