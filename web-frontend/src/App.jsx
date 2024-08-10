@@ -35,7 +35,7 @@ function App() {
             <Route path="/contact" component={Contact} />
             <Route path="/about" component={AboutUsPage} />
             <Route path="/privacy" component={PrivacyPolicy} />
-            <Route path="/health" component={Health} />
+            <Route path="/health" component={Health} />            
             {/* @ Meddy team. This is where the new UI layout with the side navigation bar is. /dashboard */}
             {/* PATHS ARE IN src/routes.jsx . Not hard to figure out. */}
             <Route path={`/dashboard`} component={AdminLayout} />
