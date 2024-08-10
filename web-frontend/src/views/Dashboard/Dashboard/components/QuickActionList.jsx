@@ -65,7 +65,7 @@ const QuickActionList = ({ iconBoxInside }) => {
           onClick={onOpen}
         />
         <SmallQuickActionCard
-          title={"Listen in my Doctor Visit"}
+          title={"Listen in Doctor Visit"}
           amount={"+3,020"}
           percentage={-14}
           icon={
