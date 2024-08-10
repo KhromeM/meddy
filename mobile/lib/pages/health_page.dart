@@ -55,9 +55,6 @@ class _HealthPageState extends State<HealthPage> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // MainBackground(),
-        // BackdropFilter(
-        // filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
@@ -137,31 +134,25 @@ class _HealthPageState extends State<HealthPage> {
               ),
             ],
           ),
-          body: _fitnessData == null || _medicalRecord == null
-              ? Center(child: CircularProgressIndicator())
-              : SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          showActivityStatus
-                              ? 'Health Activity'
-                              : 'Health Summary',
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 16),
-                        showActivityStatus
-                            ? FitnessCard(fitnessData: _fitnessData!)
-                            : HealthSummaryCard(medicalRecord: _medicalRecord!),
-                      ],
-                    ),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    showActivityStatus ? 'Health Activity' : 'Health Summary',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
-                ),
+                  SizedBox(height: 16),
+                  showActivityStatus
+                      ? FitnessCard(fitnessData: _fitnessData)
+                      : HealthSummaryCard(medicalRecord: _medicalRecord),
+                ],
+              ),
+            ),
+          ),
         ),
-        // ),
       ],
     );
   }
