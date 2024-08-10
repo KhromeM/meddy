@@ -1,6 +1,6 @@
 import { getModel } from "../../ai/langAi/setupVertexAI.mjs";
 import db from "../../db/db.mjs";
-import { getUserInfoLite,getUserReminders } from "../../db/dbInfo.mjs";
+import { getUserInfoLite, getUserReminders } from "../../db/dbInfo.mjs";
 
 // Medication
 export const createMedication = async (req, res) => {
@@ -189,12 +189,10 @@ export const updateReminder = async (req, res) => {
 				.status(404)
 				.json({ status: "fail", message: "Reminder not found" });
 		}
-		res
-			.status(200)
-			.json({
-				message: "Updated reminder successfully",
-				data: updatedReminder,
-			});
+		res.status(200).json({
+			message: "Updated reminder successfully",
+			data: updatedReminder,
+		});
 	} catch (err) {
 		console.error(err);
 		res
@@ -475,12 +473,10 @@ export const getUserHealthGoals = async (req, res) => {
 		res.status(200).json({ healthGoals });
 	} catch (err) {
 		console.error(err);
-		res
-			.status(500)
-			.json({
-				status: "fail",
-				message: "Could not retrieve user health goals",
-			});
+		res.status(500).json({
+			status: "fail",
+			message: "Could not retrieve user health goals",
+		});
 	}
 };
 
@@ -542,7 +538,7 @@ export const getDailyHealthTips = async (req, res) => {
 			items: {
 				type: "string",
 				description:
-					"Three relevant health tips based on the users given info. If insufficient info is given, provide three general health tips.",
+					"Three relevant health tips based on the users given info. Try hard to make it specific to the user. If insufficient info is given, provide three general health tips. Each tip should not be longer than 70 characters.",
 			},
 		};
 		const llm = getModel(responseSchema);
@@ -562,18 +558,14 @@ export const getDailyHealthTips = async (req, res) => {
 			},
 		};
 		const result = await llm.generateContent(request);
-		res
-			.status(200)
-			.json({
-				tips: JSON.parse(result.response.candidates[0].content.parts[0].text),
-			});
+		res.status(200).json({
+			tips: JSON.parse(result.response.candidates[0].content.parts[0].text),
+		});
 	} catch (err) {
 		console.error(err);
-		res
-			.status(500)
-			.json({
-				status: "fail",
-				message: "Could not retrieve daily health tips",
-			});
+		res.status(500).json({
+			status: "fail",
+			message: "Could not retrieve daily health tips",
+		});
 	}
 };
