@@ -46,6 +46,7 @@ const barChartData = [
 
 export default function Dashboard() {
   const iconBoxInside = useColorModeValue("white", "white");
+  const titleText = useColorModeValue("black", "black");
   const { user } = useAuth();
 
   return (
@@ -54,11 +55,11 @@ export default function Dashboard() {
       // pt={{ base: "120px", md: "75px" }}
       paddingTop="60px"
     >
-      <Heading as="h1" size="xl" mb="26px">
+      <Heading color={titleText} as="h1" size="xl" mb="26px">
         {user ? `Hi, ${user?.displayName || "Guest"}!` : "Hi Guest!"}
       </Heading>
       <SimpleGrid columns={{ sm: 2, md: 2, xl: 3 }} mt="26px" spacing="24px">
-        <Card maxW="380">
+        <Card pt="16px" maxW="380">
           <QuickActionList iconBoxInside={iconBoxInside} />
         </Card>
       </SimpleGrid>

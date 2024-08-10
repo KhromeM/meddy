@@ -11,6 +11,7 @@ import { BiSolidPhoneCall } from "react-icons/bi";
 import { useContext } from "react";
 import { SettingsContext } from "../../../../layouts/Admin";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
+import { RiRobot2Fill } from "react-icons/ri";
 
 const QuickActionList = ({ iconBoxInside }) => {
   const onOpen = useContext(SettingsContext);
@@ -23,7 +24,7 @@ const QuickActionList = ({ iconBoxInside }) => {
       </Heading>
 
       <SimpleGrid columns={{ sm: 1, md: 2, xl: 2 }} spacing="24px">
-        <SmallQuickActionCard
+        {/* <SmallQuickActionCard
           title={"Google Fit Integration"}
           amount={"$53,000"}
           percentage={55}
@@ -33,6 +34,21 @@ const QuickActionList = ({ iconBoxInside }) => {
             <Icon as={FcGoogle} h={"24px"} w={"24px"} color={"iconBoxInside"} />
           }
           onClick={onOpen}
+        /> */}
+        <SmallQuickActionCard
+          title={"AI Health Suggestions"}
+          amount={"$53,000"}
+          percentage={55}
+          height="120px"
+          // width="60px"
+          icon={
+            <Icon as={RiRobot2Fill} h={"24px"} w={"24px"} color={"white"} />
+          }
+          onClick={() => {
+            setTimeout(() => {
+              history.push("/dashboard/health");
+            }, 300);
+          }}
         />
         <SmallQuickActionCard
           title={"Change Language"}
