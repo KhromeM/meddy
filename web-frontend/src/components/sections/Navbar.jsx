@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 
 import logoWhite from '../../assets/svg/meddy-logo-white.svg';
-import  SpinningLogo  from '../SpinningLogo.jsx'
+import SpinningLogo from '../SpinningLogo.jsx'
 
 
 export const Navbar = () => {

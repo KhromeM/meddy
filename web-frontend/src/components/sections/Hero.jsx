@@ -191,10 +191,8 @@ export const Hero = ({ login }) => {
 					<Box
 						position="relative"
 						boxShadow="lg"
-						p={6}
 						display="flex"
 						flexDirection="column"
-						alignItems="center"
 						borderRadius="md"
 						className="animated-box"
 					>
@@ -202,13 +200,13 @@ export const Hero = ({ login }) => {
 							src={MeddyDemoGif}
 							alt="Empathic Voice Interface GIF"
 							boxSize="100%"
-							maxW="800px"
+							maxW="100%"
 							borderRadius="md"
 							zIndex={1}
 						/>
 					</Box>
 					<Box
-						bg="#f9dcb5"
+						className="animated-box2"
 						borderRadius="md"
 						boxShadow="lg"
 						p={6}
@@ -220,7 +218,7 @@ export const Hero = ({ login }) => {
 							<Heading as="h3" size="lg">
 								Empathic Voice Interface (EVI)
 							</Heading>
-							<Text>
+							<Text style={{ lineHeight: '1.8em' }}>
 								Give your application empathy and a voice. EVI is a
 								conversational voice API powered by empathic AI. It is the only
 								API that measures nuanced vocal modulations, guiding language
@@ -253,6 +251,7 @@ export const Hero = ({ login }) => {
 							</Flex>
 						</VStack>
 					</Box>
+
 					<CardsInterface
 						headingText={"Measure Expression"}
 						img={images.ecnomicGraph}
@@ -260,7 +259,7 @@ export const Hero = ({ login }) => {
 						paragraphText={
 							"Use psychologically valid models of facial movement and vocal modulation."
 						}
-						bgColor={"#f0daf5"}
+						className={"animated-box3"}
 					/>
 					<CardsInterface
 						headingText={"Interpret Expressive Communication"}
@@ -269,7 +268,7 @@ export const Hero = ({ login }) => {
 						paragraphText={
 							"Start building with the world's first emotionally intelligent voice AI."
 						}
-						bgColor={"#d4e1f1"}
+						className={"animated-box4"}
 					/>
 				</SimpleGrid>
 			</Box>
