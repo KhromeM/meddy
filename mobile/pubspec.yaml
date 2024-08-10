@@ -68,6 +68,7 @@ dependencies:
 
   # comment the following line  out for android users
   sound_stream: ^0.3.0
+  carousel_slider: ^5.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
