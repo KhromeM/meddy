@@ -21,6 +21,7 @@ function Card(props) {
         borderRadius: "15px",
         minHeight: props.minHeight || "83px",
         margin: props.margin || "0px",
+        alignSelf: props.alignSelf || "",
       }}
       // backgroundColor={props.backgroundColor}
       {...rest}

@@ -65,7 +65,7 @@ const Recommendations = ({ medData }) => {
   };
 
   return (
-    <Card>
+    <Card height="100%">
       <Box flex={1} width="100%">
         <HStack justify="space-between" mb={1}>
           <Text

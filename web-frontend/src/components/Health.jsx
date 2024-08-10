@@ -231,10 +231,23 @@ const HealthSystemContent = ({ category }) => {
     return "red";
   };
 
+  const gradientColorOfBox = useColorModeValue(
+    "linear-gradient(90deg, rgb(238 223 238) 0%, rgb(160 242 255) 100%)",
+    "linear-gradient(90deg, rgb(38 111 132) 0%, rgb(117 132 150) 100%)"
+  );
+
+  const subTextColor = useColorModeValue("gray.500", "gray.300");
+
   return (
     <Box>
-      <SimpleGrid mb={5} columns={{ sm: 1, md: 2, xl: 2 }} spacing="24px">
-        <Card>
+      <SimpleGrid
+        // alignItems="stretch"
+        gridTemplateRows={{ sm: "1fr", md: "1fr", xl: "1fr" }}
+        mb={5}
+        columns={{ sm: 1, md: 2, xl: 2 }}
+        spacing="24px"
+      >
+        {/* <Card>
           <Flex
             direction="column"
             align="center"
@@ -248,35 +261,42 @@ const HealthSystemContent = ({ category }) => {
               <Text color="gray.600" lineHeight="18px" fontSize="md">
                 {category.oneLineSummary}
               </Text>
-            </VStack>
-            <Box
+            </VStack> */}
+        {/* <Box
               flex
               justifyContent="center"
               alignItems="center"
               maxW="250px"
               maxH="250px"
               width="100%"
-            >
-              <ProgressChart
-                data={category.score}
-                label="Rating"
-                color="lightgreen"
-                height="235"
-                bg="linear-gradient(90deg, rgb(38 111 132) 0%, rgb(117 132 150) 100%)"
+            > */}
 
-                // label={"hi"}
-                // bg="#ffffff"
-                // textColor="black"
-              />
-            </Box>
-          </Flex>
-        </Card>
+        <Box maxHeight="440" display="flex" flexDirection="column" flex="1">
+          <ProgressChart
+            data={category.score}
+            title={category.name}
+            label={category.oneLineSummary}
+            color="lightgreen"
+            height="100%"
+            bg={gradientColorOfBox}
+            // label={"hi"}
+            // bg="#ffffff"
+            //   textColor="black"
+            textColorOfSubtext={subTextColor}
+            healthPageNonFitness={true}
+          />
+        </Box>
+        {/* </Flex>
+        </Card> */}
 
         {/* <Divider m={6} /> */}
-        <VStack align="start" spacing={4}>
-          <Recommendations medData={category} />
-          {/* Recommendations split into  */}
-        </VStack>
+        {/* </Box> */}
+        <Box maxHeight="440" display="flex" flexDirection="column" flex="1">
+          <VStack flex="1" align="start" spacing={4}>
+            <Recommendations medData={category} />
+            {/* Recommendations split into  */}
+          </VStack>
+        </Box>
       </SimpleGrid>
       <RecommendationsAction medData={category} />
     </Box>
