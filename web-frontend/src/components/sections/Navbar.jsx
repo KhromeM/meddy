@@ -9,7 +9,6 @@ import {
 	Link,
 	Show,
 } from "@chakra-ui/react";
-
 import logoWhite from "../../assets/svg/meddy-logo-white.svg";
 import SpinningLogo from "../SpinningLogo.jsx";
 import "../../styles/button.css";
