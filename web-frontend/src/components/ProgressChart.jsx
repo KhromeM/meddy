@@ -14,6 +14,7 @@ class ProgressChart extends Component {
         props.bg ||
         "linear-gradient(90deg, rgba(6,53,58,1) 0%, rgba(7,28,52,1) 100%)",
       textColor: props.textColor || "white",
+      pb: props.pb || "0px",
     };
   }
 
@@ -72,13 +73,14 @@ class ProgressChart extends Component {
     return (
       <Card
         py="1rem"
-        height={{ sm: "270px" }}
+        height={{ sm: "290px" }}
         width="100%"
         bg={this.state.bg}
         position="relative"
         display="flex"
         flexDirection="column"
         justifyContent="space-between"
+        pb={this.state.pb}
       >
         <Box width="100%" textAlign="center" pt="10px">
           <Text color={this.state.textColor} fontSize="24px" fontWeight="bold">

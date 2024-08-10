@@ -37,10 +37,11 @@ import {
 import Recommendations from "./Recommendations";
 import BarChart from "./BarChart.jsx";
 import ProgressChart from "./ProgressChart.jsx";
+import Card from "./Card/Card.jsx";
 
 const HealthSystemTab = ({ category, isSelected }) => {
   const bgColor = useColorModeValue(
-    isSelected ? "lightgreen" : "gray.100",
+    isSelected ? "lightgreen" : "#cedeee",
     isSelected ? "gray.700" : "gray.600"
   );
   //   const bgColor = useColorModeValue(
@@ -123,36 +124,62 @@ const FitnessContent = ({ fitnessData, scoreData }) => {
   return (
     <Box>
       <Box mx="auto">
-        <SimpleGrid columns={columns} spacing={4} mb={4}>
+        {/* <SimpleGrid columns={columns} spacing={4} mb={4}> */}
+        <SimpleGrid columns={{ sm: 1, md: 3, xl: 3 }} spacing="24px">
           <ProgressChart
             data={scoreData.fitnessScore}
             color="#74d68e"
             label="Overall Fitness"
+            pb="40px"
           />
           <ProgressChart
             data={scoreData.sleep}
             color="#74d6d1"
             label="Sleep Quality"
+            pb="40px"
           />
           <ProgressChart
             data={scoreData.steps}
             color="#f57064"
             label="Walking Activity"
+            pb="40px"
           />
         </SimpleGrid>
       </Box>
-      <Box position="relative" mt={25} pt={20}>
-        <Divider />
-        <AbsoluteCenter bg="white" px="4">
-          <Text as="b" fontSize="5xl">
-            Recent Activity
-          </Text>
-        </AbsoluteCenter>
+      <Box position="relative" mt={25} pt={2}>
+        {/* <Divider /> */}
+        {/* <AbsoluteCenter borderRadius={10} px="4"> */}
+        {/* <Box
+            sx={{
+              padding: "3px 14px 3px 14px",
+              wordWrap: "break-word",
+              WebkitBackgroundClip: "border-box",
+              backgroundClip: "border-box",
+              display: "flex",
+              //   flexDirection: "column",
+              justifyContent: "center",
+
+              width: "100%",
+              position: "relative",
+              minWidth: "0px",
+              overflowWrap: "break-word",
+              backgroundColor: "#f6f0ea",
+              boxShadow: "rgba(0, 0, 0, 0.02) 0px 3.5px 5.5px",
+              borderRadius: "15px",
+              minHeight: "83px",
+              margin: "0px",
+            }}
+          > */}
+        <Text as="b" fontSize="5xl">
+          Recent Activity
+        </Text>
+        {/* </Box> */}
+        {/* </AbsoluteCenter> */}
       </Box>
 
       <VStack spacing={8} align="stretch">
         <Box>
-          <Heading size="md" mb={4}>
+          <Heading color="gray.500" size="md" mb={4}>
             Steps per Day
           </Heading>
           <ResponsiveContainer width="100%" height={300}>
@@ -166,7 +193,7 @@ const FitnessContent = ({ fitnessData, scoreData }) => {
         </Box>
 
         <Box>
-          <Heading size="md" mb={4}>
+          <Heading color="gray.500" size="md" mb={4}>
             Sleep (in hours)
           </Heading>
           <ResponsiveContainer width="100%" height={300}>
@@ -180,7 +207,7 @@ const FitnessContent = ({ fitnessData, scoreData }) => {
         </Box>
 
         <Box>
-          <Heading size="md" mb={4}>
+          <Heading color="gray.500" size="md" mb={4}>
             Heart Rate (BPM)
           </Heading>
           <ResponsiveContainer width="100%" height={300}>
@@ -230,9 +257,9 @@ const HealthSystemContent = ({ category }) => {
           <ProgressChart
             data={category.score}
             color="#74d68e"
-            label={" "}
-            bg="#ffffff"
-            textColor="black"
+            // label={"hi"}
+            // bg="#ffffff"
+            // textColor="black"
           />
         </Box>
       </Flex>
@@ -425,7 +452,7 @@ const HealthPanel = () => {
           display="flex"
           flexDirection="column"
           flex={1}
-          borderTopWidth={1}
+          //   borderTopWidth={1}
           //   borderColor={borderColor}
           borderTopRadius="none"
           //   bg={bgColor}
@@ -435,7 +462,7 @@ const HealthPanel = () => {
           <Tabs
             index={selectedIndex}
             onChange={setSelectedIndex}
-            // variant="unstyled"
+            variant="unstyled"
             height="100%"
             display="flex"
             flexDirection="column"
@@ -444,7 +471,7 @@ const HealthPanel = () => {
             <TabList
               position="sticky"
               top={0}
-              borderBottomWidth={1}
+              //   borderBottomWidth={1}
               //   borderColor={tabListBorderColor}
               //   bg={tabListBgColor}
               zIndex={1}
