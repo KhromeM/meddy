@@ -11,6 +11,7 @@ import 'package:motion/motion.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 
 class ReminderPage extends StatefulWidget {
   const ReminderPage({super.key});
@@ -253,9 +254,13 @@ class _ReminderPageState extends State<ReminderPage> {
               extendBodyBehindAppBar: true,
               backgroundColor: Colors.transparent,
               appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                forceMaterialTransparency: true,
-              ),
+                  backgroundColor: Colors.transparent,
+                  forceMaterialTransparency: true,
+                  systemOverlayStyle: SystemUiOverlayStyle(
+                    statusBarColor: Colors.transparent,
+                    statusBarIconBrightness: Brightness.dark,
+                    statusBarBrightness: Brightness.light,
+                  )),
               body: RefreshIndicator(
                 onRefresh: _refreshAppointments,
                 child: SingleChildScrollView(

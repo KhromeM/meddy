@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:meddymobile/pages/chat_page.dart';
 import 'package:meddymobile/pages/health_page.dart';
 import 'package:meddymobile/pages/my_home_page.dart';
@@ -47,34 +48,41 @@ class _ScreenWrapperState extends State<ScreenWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      body: Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          PageView(
-            controller: _pageController,
-            onPageChanged: (newIndex) {
-              setState(() {
-                _currentIndex = newIndex;
-              });
-            },
-            children: [
-              const MyHomePage(),
-              ChatPage(),
-              HealthPage(),
-              ReminderPage(),
-            ],
-          ),
-        ],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
       ),
-      bottomNavigationBar: _currentIndex == 1
-          ? null
-          : BottomBar(
-              bottomNavigationBarItems: _bottomNavigationBarItems,
-              currentIndex: _currentIndex,
-              pageController: _pageController,
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        body: Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            PageView(
+              controller: _pageController,
+              onPageChanged: (newIndex) {
+                setState(() {
+                  _currentIndex = newIndex;
+                });
+              },
+              children: [
+                const MyHomePage(),
+                ChatPage(),
+                HealthPage(),
+                ReminderPage(),
+              ],
             ),
+          ],
+        ),
+        bottomNavigationBar: _currentIndex == 1
+            ? null
+            : BottomBar(
+                bottomNavigationBarItems: _bottomNavigationBarItems,
+                currentIndex: _currentIndex,
+                pageController: _pageController,
+              ),
+      ),
     );
   }
 }

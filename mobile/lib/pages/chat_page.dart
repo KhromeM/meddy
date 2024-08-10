@@ -16,6 +16,7 @@ import 'dart:async';
 import 'package:uuid/uuid.dart';
 import 'package:image/image.dart' as img;
 import 'package:meddymobile/widgets/listening_notifier.dart'; // Import the new widget
+import 'package:flutter/services.dart';
 
 class ChatPage extends StatefulWidget {
   final String? initialPrompt;
@@ -338,6 +339,11 @@ class _ChatPageState extends State<ChatPage> {
         backgroundColor: Colors.transparent,
         forceMaterialTransparency: true,
         elevation: 0,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.light,
+        ),
       ),
       body: Stack(
         children: [

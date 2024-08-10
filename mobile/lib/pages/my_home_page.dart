@@ -12,6 +12,7 @@ import 'package:meddymobile/services/player_service.dart';
 import 'package:meddymobile/services/recorder_service.dart';
 import 'package:aura_box/aura_box.dart'; // Add this import
 import 'package:meddymobile/utils/languages.dart';
+import 'package:flutter/services.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
