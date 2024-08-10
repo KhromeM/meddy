@@ -58,11 +58,56 @@ export default function Dashboard() {
       <Heading color={titleText} as="h1" size="xl" mb="26px">
         {user ? `Hi, ${user?.displayName || "Guest"}!` : "Hi Guest!"}
       </Heading>
-      <SimpleGrid columns={{ sm: 2, md: 2, xl: 3 }} mt="26px" spacing="24px">
+      {/* <Grid
+        templateColumns={{ sm: "1fr", lg: "1.3fr 1.7fr" }}
+        templateRows={{ sm: "repeat(2, 1fr)", lg: "1fr" }}
+        gap="24px"
+        mb={{ lg: "26px" }}
+      > */}
+      <Grid
+        // mt="26px"
+        templateColumns={{ sm: "1fr", md: "1fr 1fr", lg: "1fr 2fr" }}
+        templateRows={{ sm: "1fr auto", md: "1fr", lg: "1fr" }}
+        gap="24px"
+      >
+        {/* <Projects
+          title={"Projects"}
+          amount={30}
+          captions={["Companies", "Members", "Budget", "Completion"]}
+          data={dashboardTableData}
+        /> */}
         <Card pt="16px" maxW="380">
           <QuickActionList iconBoxInside={iconBoxInside} />
         </Card>
+        <MultiChartContainer
+          title={"Biomarker Stats"}
+          percentage={5}
+          chart={<LineChart />}
+        />
+      </Grid>
+      <SimpleGrid mt="26px" columns={{ sm: 1, md: 2, xl: 2 }} spacing="24px">
+        {/* <ActiveUsers
+          title={"Active Users"}
+          percentage={23}
+          chart={<BarChart chartData={barChartData} />}
+        /> */}
+        {/* <SalesOverview
+          title={"Sales Overview"}
+          percentage={5}
+          chart={<LineChart />}
+        /> */}
+        <MultiChartContainer
+          title={"Biomarker Stats"}
+          percentage={5}
+          chart={<LineChart />}
+        />
+        {/* </Grid> */}
+        {/* <SimpleGrid columns={{ sm: 2, md: 2, xl: 3 }} mt="26px" spacing="24px"> */}
+        <RemindersCard />
+
+        {/* </SimpleGrid> */}
       </SimpleGrid>
+
       {/* <SimpleGrid columns={{ sm: 1, md: 2, xl: 4 }} mt="26px" spacing="24px">
         <QuickActionCard
           icon={<Icon h={"24px"} w={"24px"} color="white" as={FaWallet} />}
@@ -77,7 +122,7 @@ export default function Dashboard() {
           amount={4550}
         />
       </SimpleGrid> */}
-      <Grid
+      {/* <Grid
         templateColumns={{ md: "1fr", lg: "1.8fr 1.2fr" }}
         templateRows={{ md: "1fr auto", lg: "1fr" }}
         my="26px"
@@ -104,42 +149,7 @@ export default function Dashboard() {
             "Wealth creation is a revolutionary recent positive-sum game. It is all about who takes the opportunity first."
           }
         />
-      </Grid>
-      <Grid
-        templateColumns={{ sm: "1fr", lg: "1.3fr 1.7fr" }}
-        templateRows={{ sm: "repeat(2, 1fr)", lg: "1fr" }}
-        gap="24px"
-        mb={{ lg: "26px" }}
-      >
-        <ActiveUsers
-          title={"Active Users"}
-          percentage={23}
-          chart={<BarChart chartData={barChartData} />}
-        />
-        {/* <SalesOverview
-          title={"Sales Overview"}
-          percentage={5}
-          chart={<LineChart />}
-        /> */}
-        <MultiChartContainer
-          title={"Biomarker Stats"}
-          percentage={5}
-          chart={<LineChart />}
-        />
-      </Grid>
-      <Grid
-        templateColumns={{ sm: "1fr", md: "1fr 1fr", lg: "2fr 1fr" }}
-        templateRows={{ sm: "1fr auto", md: "1fr", lg: "1fr" }}
-        gap="24px"
-      >
-        <Projects
-          title={"Projects"}
-          amount={30}
-          captions={["Companies", "Members", "Budget", "Completion"]}
-          data={dashboardTableData}
-        />
-        <RemindersCard />
-      </Grid>
+      </Grid> */}
     </Flex>
   );
 }

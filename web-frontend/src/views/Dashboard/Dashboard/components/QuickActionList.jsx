@@ -19,11 +19,18 @@ const QuickActionList = ({ iconBoxInside }) => {
 
   return (
     <>
-      <Heading color="gray" textAlign="center" as="h3" size="md" mb="14px">
+      <Heading
+        color="gray"
+        textAlign="center"
+        as="h3"
+        size="md"
+        mt="13px"
+        mb="22px"
+      >
         Quick Actions
       </Heading>
 
-      <SimpleGrid columns={{ sm: 1, md: 2, xl: 2 }} spacing="24px">
+      <SimpleGrid columns={{ sm: 1, md: 2, xl: 2 }} spacing="27px">
         {/* <SmallQuickActionCard
           title={"Google Fit Integration"}
           amount={"$53,000"}
@@ -51,20 +58,6 @@ const QuickActionList = ({ iconBoxInside }) => {
           }}
         />
         <SmallQuickActionCard
-          title={"Change Language"}
-          amount={"2,300"}
-          percentage={5}
-          icon={
-            <GlobeIcon
-              color="#eeeeee"
-              h={"24px"}
-              w={"24px"}
-              // color={iconBoxInside}
-            />
-          }
-          onClick={onOpen}
-        />
-        <SmallQuickActionCard
           title={"Listen in Doctor Visit"}
           amount={"+3,020"}
           percentage={-14}
@@ -83,6 +76,21 @@ const QuickActionList = ({ iconBoxInside }) => {
             }, 300);
           }}
         />
+        <SmallQuickActionCard
+          title={"Change Language"}
+          amount={"2,300"}
+          percentage={5}
+          icon={
+            <GlobeIcon
+              color="#eeeeee"
+              h={"24px"}
+              w={"24px"}
+              // color={iconBoxInside}
+            />
+          }
+          onClick={onOpen}
+        />
+
         <SmallQuickActionCard
           title={"View Files"}
           amount={"$173,000"}

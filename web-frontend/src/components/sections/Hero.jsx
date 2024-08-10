@@ -144,7 +144,7 @@ export const Hero = ({ login }) => {
                   <Button
                     mt={4}
                     onClick={() => {
-                      history.push("/dashboard/home");
+                      history.push("/dashboard/voicemode");
                     }}
                     className="custom-button"
                     fontSize={{ base: "lg", md: "xl", lg: "2xl" }}

@@ -22,7 +22,7 @@ const MultiChartContainer = ({ title, percentage, chart }) => {
             >
               {`${percentage}%`} more
             </Text>{" "}
-            than last month
+            than last week
           </Text>
         </Flex>
       </CardHeader>

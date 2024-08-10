@@ -70,12 +70,11 @@ export const Navbar = () => {
               // transform: "scale(1.05)",
             }}
             onClick={() => {
-              history.push("/dashboard/home");
+              history.push("/dashboard/voicemode");
             }}
           >
             Try Demo
           </Button>
-
         </Show>
       </Flex>
     </Box>
