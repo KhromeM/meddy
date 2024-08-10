@@ -18,7 +18,7 @@ import TimelineRow from "../../../../components/Tables/TimelineRow";
 const RemindersCard = () => {
   const bgColor = useColorModeValue("white", "gray.700");
   const textColor = useColorModeValue("gray.700", "white");
-  const headerBg = useColorModeValue("teal.500", "teal.400");
+  const headerBg = useColorModeValue("red.300", "red.300");
   const [reminders, setReminders] = useState([]);
 
   // const { user } = useAuth();
@@ -83,7 +83,7 @@ const RemindersCard = () => {
                 medicationName={reminder.medicationname}
                 time={reminder.time}
                 hoursUntilRepeat={reminder.hoursuntilrepeat}
-                color="teal.400"
+                color="#fa897d"
                 index={index}
                 arrLength={reminders.length}
               />
