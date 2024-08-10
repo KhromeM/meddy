@@ -22,6 +22,7 @@ import { Separator } from "../../components/Separator/Separator";
 import { SidebarHelp } from "../../components/Sidebar/SidebarHelp";
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import SpinningLogo from "../SpinningLogo";
 
 function SidebarResponsive(props) {
   // to check for active links and opened collapses
@@ -33,6 +34,7 @@ function SidebarResponsive(props) {
   const activeRoute = (routeName) => {
     return location.pathname === routeName ? "active" : "";
   };
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const createLinks = (routes) => {
     // Chakra Color Mode
@@ -99,6 +101,7 @@ function SidebarResponsive(props) {
               _focus={{
                 boxShadow: "none",
               }}
+              onClick={onClose}
             >
               <Flex>
                 {typeof prop.icon === "string" ? (
@@ -147,6 +150,7 @@ function SidebarResponsive(props) {
               _focus={{
                 boxShadow: "none",
               }}
+              onClick={onClose}
             >
               <Flex>
                 {typeof prop.icon === "string" ? (
@@ -185,8 +189,8 @@ function SidebarResponsive(props) {
   var brand = (
     <Box pt={"35px"} mb="8px">
       <Link
-        href={`https://trymeddy.com/`}
-        target="_blank"
+        href={`/dashboard/home`}
+        // target="_blank"
         display="flex"
         lineHeight="100%"
         mb="30px"
@@ -195,9 +199,17 @@ function SidebarResponsive(props) {
         alignItems="center"
         fontSize="11px"
       >
-        <CreativeTimLogo w="32px" h="32px" me="10px" />
-        <Text fontSize="sm" mt="3px">
-          {logoText}
+        {/* <CreativeTimLogo w="32px" h="32px" me="10px" /> */}
+        <SpinningLogo
+          size={35}
+          outerSpeed={10}
+          innerSpeed={8}
+          outerCircleSize={1.2}
+          innerCircleSize={0.8}
+          color="0x000000"
+        />
+        <Text ml={2} fontSize="sm" mt="3px">
+          Meddy
         </Text>
       </Link>
       <Separator></Separator>
@@ -205,7 +217,6 @@ function SidebarResponsive(props) {
   );
 
   // SIDEBAR
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
   // Color variables
   return (
