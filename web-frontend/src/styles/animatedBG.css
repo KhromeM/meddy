@@ -10,7 +10,7 @@
   }
 }
 
-.animated-box {
+.animated-box1 {
   background: linear-gradient(225deg, #d4e1f1, #f0daf5, #f9dcb5, #f79774);
   background-size: 300% 300%;
   animation: background1 10s linear infinite;
@@ -29,14 +29,14 @@
 }
 
 .animated-box2 {
-  background: linear-gradient(230deg, #b0c9e5, #e0f5e6, #caf7fc, #f7997e);
+  background: linear-gradient(230deg, #bfd6ef, #e0f5e6, #d5fbff, #e5ffe5);
   background-size: 300% 300%;
   animation: background2 12s linear infinite;
   border-radius: 8px;
 }
 
 .animated-box3 {
-  background: linear-gradient(220deg, #bed5f0, #e7f7d9, #d8f9fb, #f89d88);
+  background: linear-gradient(220deg, #ffc4c4,  #fce3cf, #faf0cd, #ffbfb1);
   background-size: 300% 300%;
   animation: background3 11s linear infinite;
   border-radius: 10px;
@@ -55,7 +55,7 @@
 }
 
 .animated-box4 {
-  background: linear-gradient(215deg, #c4dff4, #eaf8e0, #defbfe, #f7a599);
+  background: linear-gradient(215deg, #eecef9, #d6d3ff, #f6defe, #ffcffd);
   background-size: 300% 300%;
   animation: background4 13s linear infinite;
   border-radius: 12px;

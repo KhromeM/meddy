@@ -147,7 +147,8 @@ export const Hero = ({ login }) => {
 										fontSize={{ base: "lg", md: "xl", lg: "2xl" }}
 										variant="outline"
 										w={"fit-content"}
-										height="50px"
+										height="60px"
+										width="240px"
 										borderWidth={3}
 										bgColor="#FAF9F6"
 										_hover={{
@@ -194,7 +195,7 @@ export const Hero = ({ login }) => {
 						display="flex"
 						flexDirection="column"
 						borderRadius="md"
-						className="animated-box"
+						className="animated-box1"
 					>
 						<Image
 							src={MeddyDemoGif}
@@ -305,7 +306,7 @@ export const Hero = ({ login }) => {
 					</Box>
 
 					<Box
-						className="animated-box"
+						className="animated-box4"
 						borderRadius="md"
 						boxShadow="lg"
 						p={6}
