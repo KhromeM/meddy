@@ -1,3 +1,4 @@
+import { getModel } from "../../ai/langAi/setupVertexAI.mjs";
 import db from "../../db/db.mjs";
 import { fetchGoogleFitData } from "../../utils/googleFit.mjs";
 
@@ -8,21 +9,52 @@ export const getGFitData = async (req, res) => {
 	try {
 		const data = await fetchGoogleFitData(user.userid);
 		if (!data) {
-			return res
-				.status(500)
-				.json({ status: "fail", message: "Could not get google fit data" });
+			return res.status(500).json({ status: "fail", message: "Could not get google fit data" });
 		}
 		return res.status(200).json({ data });
 	} catch (err) {
 		console.error(err);
-		res
-			.status(500)
-			.json({ status: "fail", message: "Could not get google fit data" });
+		res.status(500).json({ status: "fail", message: "Could not get google fit data" });
 	}
 };
 
 export const gFitScores = async (req, res) => {
-	res.status(200).json({ sleep: 83, steps: 77 });
+	const user = req._dbUser;
+	const data = sampleData;
+
+	const responseSchema = {
+		type: "object",
+		properties: {
+			sleep: {
+				type: "number",
+				description:
+					"Return a sleep score between 0 and 100. Return 100 if the user sleeps at least 7.5 hours on most days. Otherwise, make a holisitic judgement about the user's sleep quality.",
+			},
+			steps: {
+				type: "number",
+				description:
+					"Return a step score between 0 and 100. Return 100 if the user takes at least 7,000 steps on most days. Otherwise, make a holisitic judgement about the user's step count.",
+			},
+		},
+	};
+	const llm = getModel(responseSchema);
+	const request = {
+		contents: [
+			{
+				role: "user",
+				parts: [{ text: "Give me my sleep and step scores." }],
+			},
+		],
+		systemInstruction: {
+			parts: [
+				{
+					text: `You are Meddy, a helpful AI assistant. Provide sleep and step integer scores from 0 to 100 based on their health data. Here their information from Google Fit: ${data}`,
+				},
+			],
+		},
+	};
+	const result = await llm.generateContent(request);
+	res.status(200).json(JSON.parse(result.response.candidates[0].content.parts[0].text));
 };
 const sampleData = {
 	data: {
