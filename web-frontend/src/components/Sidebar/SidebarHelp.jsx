@@ -27,7 +27,7 @@ export function SidebarHelp(props) {
   }, []);
   return (
     <>
-      {windowHeight > 800 ? (
+      {windowHeight > 845 ? (
         <Flex
           borderRadius="15px"
           flexDirection="column"
