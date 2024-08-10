@@ -10,12 +10,14 @@ import {
   Avatar,
   Center,
 } from "@chakra-ui/react";
-import { FaMicrophone, FaMicrophoneSlash } from "react-icons/fa";
+// import { FaMicrophone, FaMicrophoneSlash } from "react-icons/fa";
 import { useAuth } from "../../../firebase/AuthService.jsx";
 import WSConnection from "../../../utils/WSConnection.js";
 import AudioService from "../../../utils/AudioService.js";
 import { motion, AnimatePresence } from "framer-motion";
 // import {getChatHistory} from "../../server/sendMessage.js"
+import notActiveMic from "../../../../assets/notactive.png"
+import activeMic from "../../../../assets/active.gif"
 
 const VoiceMode = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -206,7 +208,7 @@ const VoiceMode = () => {
   );
 
   return (
-    <Box bg="gray.900" h="100vh" color="white">
+    <Box bg="black" h="100vh" color="white">
       <AnimatePresence>
         {showIntro && (
           <motion.div
@@ -231,10 +233,8 @@ const VoiceMode = () => {
       {!showIntro && (
         <Flex direction="column" h="100vh" justify="center" p={4}>
           <VStack spacing={7} align="center">
-            {/* AI message */}
             {aiResponse && <ChatBubble message={aiResponse} isUser={false} />}
 
-            {/* Microphone and wave animation */}
             <Center flexDirection="column">
               <Box h="60px" mb={5}>
                 {isRecording ? <WaveAnimation /> : null}
@@ -247,9 +247,19 @@ const VoiceMode = () => {
                 onClick={toggleRecording}
               >
                 {isRecording ? (
-                  <FaMicrophoneSlash size="48px" color="red" />
+                  <img
+                    src={activeMic}
+                    alt="Active Microphone"
+                    width="200"
+                    height="200"
+                  />
                 ) : (
-                  <FaMicrophone size="48px" color="blue" />
+                  <img
+                    src={notActiveMic}
+                    alt="Inactive Microphone"
+                    width="200"
+                    height="200"
+                  />
                 )}
               </Box>
               <Text fontSize="xl" textAlign="center" color="gray.300" mt={8}>
@@ -259,7 +269,6 @@ const VoiceMode = () => {
               </Text>
             </Center>
 
-            {/* User message */}
             {userMessage && <ChatBubble message={userMessage} isUser={true} />}
           </VStack>
         </Flex>
