@@ -1,18 +1,18 @@
-import 'package:blur/blur.dart';
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 import 'package:meddymobile/utils/ws_connection.dart';
 import 'package:meddymobile/services/recorder_service.dart';
 import 'package:meddymobile/services/player_service.dart';
 import 'package:meddymobile/providers/chat_provider.dart';
-import 'package:uuid/uuid.dart';
 import 'package:meddymobile/models/message.dart';
 import 'package:siri_wave/siri_wave.dart';
 import 'package:aura_box/aura_box.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:path/path.dart' as path;
 import 'package:image/image.dart' as img;
 import 'package:meddymobile/services/chat_service.dart';
 
@@ -42,6 +42,8 @@ class _MicPageState extends State<MicPage> {
   bool _isSendingImage = false;
 
   final ChatService _chatService = ChatService();
+
+  Map<String, dynamic>? _messageResult;
 
   @override
   void initState() {
@@ -88,6 +90,11 @@ class _MicPageState extends State<MicPage> {
   }
 
   Future<void> _startRecording() async {
+    // Reset the message result and UI state when starting a new recording
+    setState(() {
+      _messageResult = null; // Clear the previous result
+    });
+
     // Stop any audio playback when starting recording
     await playerService.stopPlayback();
 
@@ -161,6 +168,7 @@ class _MicPageState extends State<MicPage> {
         _isMeddySpeaking = true;
         siriController.amplitude = 0.8;
         siriController.color = Colors.blue;
+        _messageResult = message['result']; // Store the result here
       });
     }
 
@@ -171,13 +179,16 @@ class _MicPageState extends State<MicPage> {
         source: "llm",
         text: _llmResponse,
         time: DateTime.now(),
+        result: message['result'], // Store the result in the message
       );
+
       if (mounted) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
             Provider.of<ChatProvider>(context, listen: false)
                 .addMessage(newMessage);
             playerService.playQueuedAudio(); // Play Meddy's response
+
             setState(() {
               _isMeddySpeaking = false;
               siriController.amplitude = 0.1;
@@ -263,6 +274,25 @@ class _MicPageState extends State<MicPage> {
     String truncatedResponse = _truncateMeddyResponse(_llmResponse);
     String truncatedTranscription = _truncateUserChat(_transcribedText);
 
+    Color? messageColor;
+    Color textColor = Colors.white;
+    IconData? resultIcon;
+    Color? iconColor;
+
+    if (_messageResult != null) {
+      if (_messageResult!['success'] == true) {
+        messageColor = Colors.green[100];
+        textColor = Colors.black;
+        resultIcon = Icons.check_circle;
+        iconColor = Colors.green;
+      } else {
+        messageColor = Colors.red[100];
+        textColor = Colors.black;
+        resultIcon = Icons.error;
+        iconColor = Colors.red;
+      }
+    }
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
@@ -275,39 +305,75 @@ class _MicPageState extends State<MicPage> {
                   padding: const EdgeInsets.fromLTRB(20, 40, 20, 20),
                   child: Align(
                     alignment: Alignment.topCenter,
-                    child: AuraBox(
-                      spots: [
-                        AuraSpot(
-                          color: Colors.purple.withOpacity(0.5),
-                          radius: 80.0,
-                          alignment: Alignment.topRight,
-                          blurRadius: 50.0,
-                          stops: const [0.0, 0.5],
-                        ),
-                        AuraSpot(
-                          color: Colors.blueAccent.withOpacity(0.5),
-                          radius: 80.0,
-                          alignment: Alignment.bottomLeft,
-                          blurRadius: 50.0,
-                          stops: const [0.0, 0.5],
-                        ),
-                      ],
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: Container(
-                        constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.8,
-                        ),
-                        padding: EdgeInsets.all(10.0),
-                        child: Text(
-                          "Meddy: $truncatedResponse",
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
+                    child: messageColor != null
+                        ? Container(
+                            constraints: BoxConstraints(
+                              maxWidth: MediaQuery.of(context).size.width * 0.8,
+                            ),
+                            padding: EdgeInsets.all(10.0),
+                            decoration: BoxDecoration(
+                              color: messageColor,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    "Meddy: $truncatedResponse",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: textColor,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Icon(
+                                  resultIcon,
+                                  color: iconColor,
+                                  size: 40, // Larger icon
+                                ),
+                              ],
+                            ),
+                          )
+                        : AuraBox(
+                            spots: [
+                              AuraSpot(
+                                color: Colors.purple.withOpacity(0.5),
+                                radius: 80.0,
+                                alignment: Alignment.topRight,
+                                blurRadius: 50.0,
+                                stops: const [0.0, 0.5],
+                              ),
+                              AuraSpot(
+                                color: Colors.blueAccent.withOpacity(0.5),
+                                radius: 80.0,
+                                alignment: Alignment.bottomLeft,
+                                blurRadius: 50.0,
+                                stops: const [0.0, 0.5],
+                              ),
+                            ],
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            child: Container(
+                              constraints: BoxConstraints(
+                                maxWidth:
+                                    MediaQuery.of(context).size.width * 0.8,
+                              ),
+                              padding: EdgeInsets.all(10.0),
+                              child: Text(
+                                "Meddy: $truncatedResponse",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
                   ),
                 ),
                 Expanded(
@@ -315,17 +381,12 @@ class _MicPageState extends State<MicPage> {
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        Blur(
-                          blur: 10,
-                          blurColor: Colors.black,
-                          borderRadius: BorderRadius.circular(150),
-                          child: Container(
-                            width: 300,
-                            height: 300,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.black.withOpacity(0.1),
-                            ),
+                        Container(
+                          width: 300,
+                          height: 300,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.black.withOpacity(0.1),
                           ),
                         ),
                         Container(
@@ -380,7 +441,9 @@ class _MicPageState extends State<MicPage> {
                               child: Text(
                                 "${widget.userName}: $truncatedTranscription",
                                 style: TextStyle(
-                                    fontSize: 18, color: Colors.white),
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                ),
                                 textAlign: TextAlign.center,
                               ),
                             ),
