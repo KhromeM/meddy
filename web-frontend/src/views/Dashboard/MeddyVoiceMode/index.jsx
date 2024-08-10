@@ -201,7 +201,7 @@ const VoiceMode = () => {
             delay: i * 0.1,
           }}
         >
-          <Box w="70px" h="100px" bg="white" mx={1} borderRadius="full" />
+          <Box w="70px" h="100px" bg="white" mx={1} borderRadius="full" mb={4} />
         </motion.div>
       ))}
     </Flex>
