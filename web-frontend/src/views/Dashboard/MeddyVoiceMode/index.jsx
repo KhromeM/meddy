@@ -18,6 +18,7 @@ import { motion, AnimatePresence } from "framer-motion";
 // import {getChatHistory} from "../../server/sendMessage.js"
 import notActiveMic from "../../../../assets/notactive.png"
 import activeMic from "../../../../assets/active.gif"
+import CustomStarfield from "../../../components/Background/Starfield.jsx";
 
 const VoiceMode = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -208,7 +209,21 @@ const VoiceMode = () => {
   );
 
   return (
-    <Box bg="black" h="100vh" color="white">
+    <Box bg="black" h="100vh" color="white" overflow="hidden">
+      <CustomStarfield
+        starCount={1000}
+        starColor={[255, 255, 255]}
+        speedFactor={0.05}
+        backgroundColor="black"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 0,
+        }}
+      />
       <AnimatePresence>
         {showIntro && (
           <motion.div
