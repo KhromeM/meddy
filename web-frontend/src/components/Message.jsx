@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import { CheckCircleIcon, WarningIcon } from "@chakra-ui/icons";
 import { useAuth } from "../firebase/AuthService";
 import { getImage } from "../server/imageHandler";
+import LogoCircle from '../assets/svg/logo-transp.svg';
 
 const Message = ({ message, isStreaming }) => {
   const { text, source, isAudio, result, time } = message;
@@ -19,6 +20,7 @@ const Message = ({ message, isStreaming }) => {
       setImage(response.data);
     }
   };
+
   useEffect(() => {
     if (isUser && message.imageid) {
       fetchImage();
@@ -47,7 +49,7 @@ const Message = ({ message, isStreaming }) => {
     hour: '2-digit',
     minute: '2-digit',
     hour12: true
-  })
+  });
 
   return (
     <VStack
@@ -58,48 +60,64 @@ const Message = ({ message, isStreaming }) => {
       <Box
         bg={getBackgroundColor()}
         p={3}
-        borderRadius="lg"
+        borderRadius={isUser ? "12px 12px 2px 12px" : "12px 12px 12px 2px"}
         maxW="70%"
         borderWidth={1}
         borderColor={
           result ? (result.success ? "green.200" : "red.200") : "#843a06"
         }
       >
-        <Flex alignItems="center" mb={2}>
+        <Flex 
+          alignItems="center" 
+          mb={2} 
+          justifyContent={isUser ? "flex-end" : "flex-start"}
+        >
           {getIcon()}
+          {!isUser && (
+            <Box mr={2}>
+              <img src={LogoCircle} alt="Logo" style={{ width: '24px', height: '24px' }} />
+            </Box>
+          )}
+          {isUser && (<Text
+            fontSize="14px"
+            color="gray.500"
+            mr={2}
+          >
+            {formattedTime}
+          </Text>)}
           <Text
-            ml={0}
             fontWeight="bold"
-            alignSelf={isUser ? "flex-end" : "flex-start"}
+            textAlign={isUser ? "right" : "left"}
           >
             {isUser ? userName : "Meddy"}
           </Text>
+          
+          {!isUser && (<Text
+            fontSize="14px"
+            color="gray.500"
+            ml={2}
+          >
+            {formattedTime}
+          </Text>)}
         </Flex>
-        {isAudio ? (
-          <Text fontStyle="italic">{text}</Text>
-        ) : (
-          <ReactMarkdown components={markdownComponents}>{text}</ReactMarkdown>
-        )}
-
-        {isStreaming && (
-          <Text as="span" animation="blink 1s infinite">
-            ...
-          </Text>
-        )}
+        <Box textAlign={isUser ? "right" : "left"}>
+          {isAudio ? (
+            <Text fontStyle="italic">{text}</Text>
+          ) : (
+            <ReactMarkdown components={markdownComponents}>{text}</ReactMarkdown>
+          )}
+          {isStreaming && (
+            <Text as="span" animation="blink 1s infinite">
+              ...
+            </Text>
+          )}
+        </Box>
         {isUser && image ? (
           <Box h={"100%"} maxHeight={"400px"} maxWidth={"400px"} mt={4}>
             <Image w={"100%"} h={"100%"} src={image} alt="Image" />
           </Box>
         ) : null}
       </Box>
-      <Text
-        fontSize="xs"
-        color="gray.500"
-        alignSelf={isUser ? "flex-end" : "flex-start"}
-        mx={5}
-      >
-        {formattedTime}
-      </Text>
     </VStack>
   );
 };
