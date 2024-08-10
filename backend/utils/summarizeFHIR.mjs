@@ -22,15 +22,14 @@ const healthCategories = [
 	{ name: "Musculoskeletal Health", objName: "musculoskeletalHealth" },
 	{ name: "Hormonal Profile", objName: "hormonalProfile" },
 ];
-
 export const summarizeFHIR = async (user, data) => {
 	// ///////////////////////////////////////
 	if (!data) {
-		// return;
+		return;
 		try {
 			const jsonPath = path.resolve(
 				__dirname,
-				`../uploads/${user.userid}/ehr/ehr.json`
+				`../uploads/${user.userid}/ehr/ehr2.json`
 			);
 			data = await fs.promises.readFile(jsonPath, "utf-8");
 		} catch (err) {
@@ -38,12 +37,17 @@ export const summarizeFHIR = async (user, data) => {
 		}
 	}
 	// //////////////////////////////////////
+	console.log("Creating medical records for user: ", user.name);
 
 	const sysPrompt = createAnalyzeCategoryPrompt("default");
-	const filler = data.length > 150000 ? "" : "0".repeat(150000 - data.length); // context caching requires a minimum of 32k tokens
-	const fullPrompt = `${filler}\n\n${sysPrompt} \n\nUSER DATA: ${data}`;
-	console.log(fullPrompt);
-	let cachedModel = await getModelWithCaching(fullPrompt);
+	const fullPrompt = `${sysPrompt} \n\nUSER DATA: ${data}`;
+	let model;
+	if (fullPrompt.length > 100000) {
+		model = await getModelWithCaching(fullPrompt); // context caching requires a minimum of 32k tokens
+		console.log("USING CONTEXT CACHING");
+	} else {
+		model = getModel(healthSchema);
+	}
 	const combinedResponse = {};
 
 	const categoryPromises = healthCategories.map(async (category) => {
@@ -54,8 +58,13 @@ export const summarizeFHIR = async (user, data) => {
 					parts: [{ text: `**{HEALTH_CATEGORY} IS ${category.name}**\n\n` }],
 				},
 			],
+			generationConfig: {
+				maxOutputTokens: 8192,
+				responseMimeType: "application/json",
+				responseSchema: healthSchema,
+			},
 		};
-		const result = await cachedModel.generateContent(request);
+		const result = await model.generateContent(request);
 		const categoryResponse = JSON.parse(
 			result.response.candidates[0].content.parts[0].text
 		);
@@ -69,6 +78,13 @@ export const summarizeFHIR = async (user, data) => {
 		combinedResponse[category.objName] = response;
 	});
 
+	const chatHistory = [
+		{
+			role: "user",
+			parts: [{ text: data }],
+		},
+	];
+
 	const summaryRequest = {
 		contents: [
 			...chatHistory,
@@ -81,8 +97,8 @@ export const summarizeFHIR = async (user, data) => {
 			parts: [{ text: createSummaryPrompt() }],
 		},
 	};
-	generativeModel = getModel(summarySchema);
-	const summaryResult = await generativeModel.generateContent(summaryRequest);
+	model = getModel(summarySchema);
+	const summaryResult = await model.generateContent(summaryRequest);
 	const summary = JSON.parse(
 		summaryResult.response.candidates[0].content.parts[0].text
 	);
