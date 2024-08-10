@@ -237,6 +237,7 @@ const HealthSystemContent = ({ category }) => {
   );
 
   const subTextColor = useColorModeValue("gray.500", "gray.300");
+  const textInsideCircleColor = useColorModeValue("#325134", "white");
 
   return (
     <Box>
@@ -281,7 +282,7 @@ const HealthSystemContent = ({ category }) => {
             bg={gradientColorOfBox}
             // label={"hi"}
             // bg="#ffffff"
-            //   textColor="black"
+            textColor={textInsideCircleColor}
             textColorOfSubtext={subTextColor}
             healthPageNonFitness={true}
           />

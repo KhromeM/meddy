@@ -49,8 +49,8 @@ class ProgressChart extends Component {
             },
             value: {
               offsetY: 10,
-              color: "white",
-              //   color: this.state.textColor,
+              //   color: "white",
+              color: this.state.textColor,
               fontSize: this.state.title ? "38px" : "24px",
               show: true,
               formatter: function (val) {
