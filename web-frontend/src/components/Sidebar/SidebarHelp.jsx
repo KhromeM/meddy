@@ -33,7 +33,7 @@ export function SidebarHelp(props) {
           flexDirection="column"
           // bgImage={SidebarHelpImage}
           // bgImage={MeddyLessWrong}
-          backgroundColor="#4681af"
+          backgroundColor="#F5E9DB"
           _after={{ backdropFilter: "blur(4px)" }}
           justifyContent="flex-start"
           alignItems="start"
@@ -58,9 +58,9 @@ export function SidebarHelp(props) {
           </Flex>
           <Text
             fontSize="sm"
-            color="white"
+            color="#0e3c26"
             fontWeight="bold"
-            textShadow="0 0 2px #000"
+            // textShadow="0 0 2px #000"
           >
             Want to try Meddy on Android and iOS?{" "}
           </Text>
@@ -78,10 +78,10 @@ export function SidebarHelp(props) {
               fontSize="10px"
               fontWeight="bold"
               w="100%"
-              bg="#47c5fb"
-              border="2px solid lightblue"
+              bg="#FAF3EA"
+              border="2px solid FAF3EA"
               _hover={{
-                bg: "#47e3fb",
+                bg: "#FAF3EA",
                 boxShadow: "sm",
                 transform: "scale(1.05)",
               }}
@@ -93,9 +93,9 @@ export function SidebarHelp(props) {
               _focus={{
                 boxShadow: "none",
               }}
-              color="black"
+              color="#0e3c26"
             >
-              <Icon mr={1} as={SiFlutter} color="black.300" h="16px" w="16px" />
+              <Icon mr={1} as={SiFlutter} color="#0e3c26" h="16px" w="16px" />
               VIEW FLUTTER APP
             </Button>
           </Link>

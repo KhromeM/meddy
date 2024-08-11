@@ -1,0 +1,15 @@
+<resources>
+    <!-- Define the LaunchTheme style -->
+    <style name="LaunchTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your launch theme here -->
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
+
+    <!-- Define the NormalTheme style -->
+    <style name="NormalTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your normal theme here -->
+        <item name="colorPrimary">@android:color/holo_blue_bright</item>
+        <item name="colorPrimaryDark">@android:color/holo_blue_dark</item>
+        <item name="colorAccent">@android:color/holo_orange_light</item>
+    </style>
+</resources>

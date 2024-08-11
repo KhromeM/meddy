@@ -113,7 +113,7 @@ export default function Dashboard(props) {
     <ChakraProvider theme={theme} resetCss={false}>
       <Sidebar
         routes={routes}
-        logoText={"MEDDY UI DASHBOARD"}
+        logoText={"Meddy"}
         display="none"
         sidebarVariant={sidebarVariant}
         onOpen={onOpen}
@@ -136,7 +136,7 @@ export default function Dashboard(props) {
           {/* Navbar for Meddy */}
           <AdminNavbar
             // onOpen={onOpen}
-            logoText={"MEDDY UI DASHBOARD"}
+            logoText={"Meddy"}
             brandText={getActiveRoute(routes)}
             secondary={getActiveNavbar(routes)}
             fixed={fixed}
