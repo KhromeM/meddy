@@ -215,7 +215,7 @@ const HealthPanel = () => {
   ];
 
   return (
-    <Box position="relative" minHeight="100vh" width="100%" overflow="auto" borderRadius={10} paddingTop="60px" bg={bgColor}>
+    <Box position="relative" minHeight="100vh" width="100%" overflow="auto" borderRadius={10} padding="35px" bg={bgColor}>
       <VStack spacing={0} align="stretch" height="100%" width="100%">
         <Box py={4} px={4} width="100%">
           <Heading size="2xl" textAlign="left" color={textColor} opacity={100} height={55} pl={5}>
