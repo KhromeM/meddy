@@ -112,8 +112,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   String _truncateTip(String tip) {
-    if (tip.length > 90) {
-      return tip.substring(0, 90) + '...';
+    if (tip.length > 100) {
+      return tip.substring(0, 100) + '...';
     }
     return tip;
   }
@@ -136,10 +136,8 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Scaffold(
               extendBodyBehindAppBar: true,
-              backgroundColor: isHighContrast
-                  ? Colors.white
-                  : Colors
-                      .transparent, // Background color based on high contrast mode
+              backgroundColor:
+                  isHighContrast ? Colors.white : Colors.transparent,
               appBar: CustomAppBar(),
               body: LayoutBuilder(
                 builder: (context, constraints) {
@@ -164,8 +162,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   fontSize: 40,
                                   color: isHighContrast
                                       ? Colors.black
-                                      : Color(
-                                          0xFF0E3C26)), // Text color based on high contrast mode
+                                      : Color(0xFF0E3C26)),
                             ),
                           ],
                         ),
@@ -181,8 +178,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   fontSize: 35,
                                   color: isHighContrast
                                       ? Colors.black
-                                      : Color(
-                                          0xFF0E3C26)), // Text color based on high contrast mode
+                                      : Color(0xFF0E3C26)),
                             )
                           ],
                         ),
@@ -202,8 +198,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               decoration: BoxDecoration(
                                 color: isHighContrast
                                     ? Colors.white
-                                    : Color.fromRGBO(1, 99, 218,
-                                        1), // Container color based on high contrast mode
+                                    : Color.fromRGBO(1, 99, 218, 1),
                                 shape: BoxShape.rectangle,
                                 borderRadius: BorderRadius.circular(20),
                                 boxShadow: [
@@ -232,8 +227,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           size: 75,
                                           color: isHighContrast
                                               ? Colors.black
-                                              : Colors
-                                                  .white, // Icon color based on high contrast mode
+                                              : Colors.white,
                                         ),
                                         Icon(Icons.phone_in_talk,
                                             color: isHighContrast
@@ -252,8 +246,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       style: TextStyle(
                                           color: isHighContrast
                                               ? Colors.black
-                                              : Colors
-                                                  .white, // Text color based on high contrast mode
+                                              : Colors.white,
                                           fontWeight: FontWeight.w700),
                                     ),
                                     Text(
@@ -262,8 +255,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       style: TextStyle(
                                           color: isHighContrast
                                               ? Colors.black
-                                              : Colors
-                                                  .white, // Text color based on high contrast mode
+                                              : Colors.white,
                                           fontWeight: FontWeight.w300),
                                     ),
                                     Text(
@@ -272,8 +264,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       style: TextStyle(
                                           color: isHighContrast
                                               ? Colors.black
-                                              : Colors
-                                                  .white, // Text color based on high contrast mode
+                                              : Colors.white,
                                           fontWeight: FontWeight.w300),
                                     ),
                                   ],
@@ -285,8 +276,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Icons.arrow_forward_ios,
                                   color: isHighContrast
                                       ? Colors.black
-                                      : Colors
-                                          .white, // Icon color based on high contrast mode
+                                      : Colors.white,
                                 ),
                                 SizedBox(width: 10)
                               ],
@@ -297,20 +287,17 @@ class _MyHomePageState extends State<MyHomePage> {
                       SizedBox(height: 20),
                       Boxes(
                         texts: texts,
-                        isHighContrast:
-                            isHighContrast, // Pass high contrast mode to Boxes widget
+                        isHighContrast: isHighContrast,
                       ),
                       Spacer(),
                       if (_storedHealthTips != null)
                         Container(
                           width: MediaQuery.of(context).size.width * 0.95,
                           height: meddyTipHeight,
-                          padding: EdgeInsets.all(16),
                           decoration: BoxDecoration(
                             color: isHighContrast
                                 ? Colors.black
-                                : Color(
-                                    0xFFF5E9DB), // Container color based on high contrast mode
+                                : Color(0xFFF5E9DB),
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
@@ -325,42 +312,49 @@ class _MyHomePageState extends State<MyHomePage> {
                             children: [
                               Expanded(
                                 flex: 2,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Meddy Health Tip:",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: isHighContrast
-                                            ? Colors.white
-                                            : Color(
-                                                0xFF0E3C26), // Text color based on high contrast mode
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Meddy Health Tip:",
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: isHighContrast
+                                              ? Colors.white
+                                              : Color(0xFF0E3C26),
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(height: 8),
-                                    Text(
-                                      _getRandomTip(),
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: isHighContrast
-                                            ? Colors.white
-                                            : Color(
-                                                0xFF0E3C26), // Text color based on high contrast mode
+                                      SizedBox(height: 8),
+                                      Text(
+                                        _getRandomTip(),
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: isHighContrast
+                                              ? Colors.white
+                                              : Color(0xFF0E3C26),
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                              Expanded(
-                                flex: 1,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.3,
+                                height: double.infinity,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(20),
+                                    bottomRight: Radius.circular(20),
+                                  ),
                                   child: Image.asset(
-                                    'assets/images/c5.webp',
-                                    fit: BoxFit.contain,
+                                    'assets/images/c9.webp',
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
                               ),
