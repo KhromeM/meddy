@@ -1,5 +1,7 @@
+import { getModel } from "../../ai/langAi/setupVertexAI.mjs";
 import db from "../../db/db.mjs";
 import { fetchGoogleFitData } from "../../utils/googleFit.mjs";
+import { getUserHealthScores, createHealthScore, updateHealthScore } from "../../db/dbInfo.mjs";
 
 export const getGFitData = async (req, res) => {
 	const user = req._dbUser;
@@ -8,22 +10,92 @@ export const getGFitData = async (req, res) => {
 	try {
 		const data = await fetchGoogleFitData(user.userid);
 		if (!data) {
-			return res
-				.status(500)
-				.json({ status: "fail", message: "Could not get google fit data" });
+			return res.status(500).json({ status: "fail", message: "Could not get google fit data" });
 		}
 		return res.status(200).json({ data });
 	} catch (err) {
 		console.error(err);
-		res
-			.status(500)
-			.json({ status: "fail", message: "Could not get google fit data" });
+		res.status(500).json({ status: "fail", message: "Could not get google fit data" });
 	}
 };
 
 export const gFitScores = async (req, res) => {
-	res.status(200).json({ sleep: 83, steps: 77 });
+	const user = req._dbUser;
+	const data = sampleData;
+	const currentDate = new Date();
+
+	try {
+		// Get the user's health scores
+		const healthScores = await getUserHealthScores(user.userid);
+
+		// No health score or score is more than 2 weeks old
+		if (healthScores.length === 0 || isMoreThanTwoWeeksOld(healthScores[0].date, currentDate)) {
+			const responseSchema = {
+				type: "object",
+				properties: {
+					sleep: {
+						type: "number",
+						description:
+							"Return a sleep score between 0 and 100. Return 100 if the user sleeps at least 7.5 hours on most days. Otherwise, make a holistic judgement about the user's sleep quality.",
+					},
+					steps: {
+						type: "number",
+						description:
+							"Return a step score between 0 and 100. Return 100 if the user takes at least 7,000 steps on most days. Otherwise, make a holistic judgement about the user's step count.",
+					},
+				},
+			};
+
+			const llm = getModel(responseSchema);
+			const request = {
+				contents: [
+					{
+						role: "user",
+						parts: [{ text: "Give me my sleep and step scores." }],
+					},
+				],
+				systemInstruction: {
+					parts: [
+						{
+							text: `You are Meddy, a helpful AI assistant. Provide sleep and step integer scores from 0 to 100 based on their health data. Here their information from Google Fit: ${data}`,
+						},
+					],
+				},
+			};
+
+			const result = await llm.generateContent(request);
+			const scores = JSON.parse(result.response.candidates[0].content.parts[0].text);
+
+			// Update or insert the health score
+			if (healthScores.length === 0) {
+				await createHealthScore(user.userid, scores.sleep, scores.steps, currentDate);
+			} else {
+				await updateHealthScore(user.userid, scores.sleep, scores.steps, currentDate);
+			}
+
+			res.status(200).json(scores);
+		}
+
+		// Health score is less than 2 weeks old
+		else {
+			const recentScore = healthScores[0];
+			res.status(200).json({
+				sleep: recentScore.sleep,
+				steps: recentScore.step,
+			});
+		}
+	} catch (error) {
+		console.error("Error in gFitScores:", error);
+		res.status(500).json({ error: "An error occurred while retrieiving health scores" });
+	}
 };
+
+// Helper function to check if a date is more than two weeks old
+function isMoreThanTwoWeeksOld(date, currentDate) {
+	const twoWeeksAgo = new Date(currentDate.getTime() - 14 * 24 * 60 * 60 * 1000);
+	return new Date(date) < twoWeeksAgo;
+}
+
 const sampleData = {
 	data: {
 		steps: [
