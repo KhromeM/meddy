@@ -83,7 +83,7 @@ const ProgressChartNarrow = ({
     >
       <Box display="flex">
         {title && (
-          <Box mb="5px" width="100%" textAlign="center" pt="10px">
+          <Box mb="5px" width="100%" textAlign="left" pt="10px">
             <Text color={colors.title} fontSize="34px" fontWeight="bold">
               {title}
             </Text>
@@ -92,7 +92,7 @@ const ProgressChartNarrow = ({
         <Box
           mb={healthPageNonFitness ? "25px" : "5px"}
           width="100%"
-          textAlign="center"
+          textAlign="left"
           pt="10px"
         >
           <Text
