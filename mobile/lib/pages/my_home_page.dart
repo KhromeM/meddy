@@ -16,7 +16,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:math';
 
-// Global variable to store the health tips
 List<String>? _storedHealthTips;
 
 class MyHomePage extends StatefulWidget {
@@ -49,17 +48,14 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
 
-    // Initialize WebSocket connection and services
     wsConnection = WSConnection();
     playerService = PlayerService(wsConnection);
     recorderService = RecorderService(wsConnection);
 
     _firstName = _authService.getFirstName() ?? 'User';
 
-    // Connect to WebSocket
     wsConnection.connect();
 
-    // Load chat history on init
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (Provider.of<ChatProvider>(context, listen: false).messages.isEmpty) {
         print('Loading chat history in MyHomePage...');
@@ -67,7 +63,6 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     });
 
-    // Fetch health tips if not already fetched
     if (_storedHealthTips == null) {
       _fetchAndStoreHealthTips();
     } else {
@@ -76,8 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _fetchAndStoreHealthTips() async {
-    final String baseUrl =
-        'https://trymeddy.com/api'; // Adjust with your actual backend URL
+    final String baseUrl = 'https://trymeddy.com/api';
     String? userToken = await _authService.getIdToken();
 
     try {
@@ -88,8 +82,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        _storedHealthTips = List<String>.from(data['tips']);
-        _logHealthTipLength(); // Log the length of the health tip once fetched
+        setState(() {
+          _storedHealthTips = List<String>.from(data['tips']);
+          _logHealthTipLength();
+        });
       } else {
         throw Exception('Failed to load health tips');
       }
@@ -116,15 +112,14 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   String _truncateTip(String tip) {
-    if (tip.length > 100) {
-      return tip.substring(0, 100) + '...';
+    if (tip.length > 90) {
+      return tip.substring(0, 90) + '...';
     }
     return tip;
   }
 
   @override
   void dispose() {
-    // Dispose services
     playerService.dispose();
     recorderService.dispose();
     super.dispose();
@@ -137,21 +132,18 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (context, languageProvider, child) {
         return Stack(
           children: [
-            // MainBackground(),
             Scaffold(
               extendBodyBehindAppBar: true,
               backgroundColor: Colors.transparent,
               appBar: CustomAppBar(),
               body: LayoutBuilder(
                 builder: (context, constraints) {
-                  // Calculate the available height between the boxes and the bottom
                   double availableHeight = constraints.maxHeight -
                       (MediaQuery.of(context).size.height * 0.07) -
                       100 -
-                      40; // space taken by the above elements
+                      40;
 
-                  // Calculate 2/4 of the available height
-                  double meddyTipHeight = availableHeight * 1 / 4;
+                  double meddyTipHeight = availableHeight * 3 / 10;
 
                   return Column(
                     children: [
@@ -284,8 +276,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           height: meddyTipHeight,
                           padding: EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color:
-                                Color(0xFFF5E9DB), // 0xFF0E3C26 // 0xFFF5E9DB
+                            color: Color(0xFFF5E9DB),
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
@@ -337,7 +328,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         )
                       else
-                        CircularProgressIndicator(), // Show a loading indicator while fetching tips
+                        CircularProgressIndicator(),
                       Spacer(),
                     ],
                   );
