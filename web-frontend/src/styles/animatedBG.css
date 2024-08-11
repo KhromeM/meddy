@@ -29,67 +29,19 @@
 }
 
 .animated-box2 {
-  background: linear-gradient(230deg, #bfd6ef, #e0f5e6, #d5fbff, #e5ffe5);
+  background: linear-gradient(230deg, #bfdbf8, #cbfed9, #a8d4fd, #8af98a);
   background-size: 300% 300%;
   animation: background2 12s linear infinite;
   border-radius: 8px;
 }
 
-.animated-box3 {
-  background: linear-gradient(220deg, #ffc4c4,  #fce3cf, #faf0cd, #ffbfb1);
-  background-size: 300% 300%;
-  animation: background3 11s linear infinite;
-  border-radius: 10px;
-}
-
-@keyframes background3 {
-  0% {
-    background-position: 50% 0%;
-  }
-  50% {
-    background-position: 50% 100%;
-  }
-  100% {
-    background-position: 50% 0%;
-  }
-}
-
-.animated-box4 {
-  background: linear-gradient(215deg, #eecef9, #d6d3ff, #f6defe, #ffcffd);
-  background-size: 300% 300%;
-  animation: background4 13s linear infinite;
-  border-radius: 12px;
-}
-
-@keyframes background4 {
-  0% {
-    background-position: 100% 0%;
-  }
-  50% {
-    background-position: 0% 100%;
-  }
-  100% {
-    background-position: 100% 0%;
-  }
-}
 .animated-box4b {
-  background: linear-gradient(215deg, #c1c1e5, #c4b0db, #bbb1cf, #9c9fce);
-  background-size: 300% 300%;
+  background: linear-gradient(215deg, #FAF3EA, #FAF3EA, #FAF3EA, #FAF3EA);
+  background-size: 100% 100%;
   animation: background4 13s linear infinite;
   border-radius: 12px;
 }
 
-@keyframes background4b {
-  0% {
-    background-position: 100% 0%;
-  }
-  50% {
-    background-position: 0% 100%;
-  }
-  100% {
-    background-position: 100% 0%;
-  }
-}
 .animated-box5 {
   background: linear-gradient(215deg, #505053, #625572, #353535, #4e5180);
   background-size: 300% 300%;
