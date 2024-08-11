@@ -8,7 +8,11 @@ import React from "react";
 const MultiChartContainer = ({ title, percentage, chart }) => {
   const textColor = useColorModeValue("gray.700", "white");
   return (
-    <Card p="28px 10px 16px 0px" mb={{ sm: "26px", lg: "0px" }}>
+    <Card
+      backgroundColor="#FAF3EA"
+      p="28px 10px 16px 0px"
+      mb={{ sm: "26px", lg: "0px" }}
+    >
       <CardHeader mb="20px" pl="22px">
         <Flex direction="column" alignSelf="flex-start">
           <Text fontSize="22px" color={textColor} fontWeight="bold" mb="6px">

@@ -77,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/info/tip'),
-        headers: {'idToken': userToken ?? 'dev'},
+        headers: {'idToken': userToken ?? ''},
       );
 
       if (response.statusCode == 200) {

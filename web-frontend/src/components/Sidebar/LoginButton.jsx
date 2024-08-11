@@ -89,7 +89,7 @@ const LoginButton = () => {
           mb="auto"
           ml={1}
         ></Icon>
-        <Text ml={1} color={"gray.400"} my="auto" fontSize="md">
+        <Text ml={1} color={"#e4eceb"} my="auto" fontSize="md">
           {user ? "Logout" : "Login"}
         </Text>
       </Flex>
