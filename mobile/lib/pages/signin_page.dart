@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:meddymobile/pages/screen_wrapper.dart';
 import 'package:meddymobile/services/auth_service.dart';
 import 'package:meddymobile/widgets/login_background.dart';
 import 'package:meddymobile/widgets/spinning_logo.dart';
@@ -29,7 +30,7 @@ class _SignInState extends ConsumerState<SignInPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => const MyHomePage(),
+              builder: (context) => const ScreenWrapper(),
             ),
           );
         }
