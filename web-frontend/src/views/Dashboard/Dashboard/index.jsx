@@ -67,7 +67,7 @@ export default function Dashboard() {
 				/>
 				<Flex flexDirection="column">
 					<Heading color={titleText} as="h1" size="xl">
-						{user ? `Hi, ${user?.displayName || "Guest"}!` : "Hi Guest!"}
+						{user ? `Hi, ${user.displayName.split(" ")[0]}!` : "Hi Guest!"}
 					</Heading>
 					<Text color="gray.500">Welcome back</Text>
 				</Flex>
