@@ -538,7 +538,7 @@ export const getDailyHealthTips = async (req, res) => {
 			items: {
 				type: "string",
 				description:
-					"Three relevant health tips based on the users given info. Try hard to make it specific to the user. If insufficient info is given, provide three general health tips. Each tip should not be longer than 65 characters. 65 CHARACTERS MAX!",
+					"Three relevant health tips based on the users given info. Try hard to make it specific to the user. If insufficient info is given, provide three general health tips. Each tip should not be longer than 80 characters. 80 CHARACTERS MAX!",
 			},
 		};
 		const llm = getModel(responseSchema);
