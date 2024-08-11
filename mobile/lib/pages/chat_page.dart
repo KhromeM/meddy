@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'dart:typed_data'; // Add this import
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:meddymobile/models/message.dart';
@@ -15,7 +15,7 @@ import 'package:path/path.dart' as path;
 import 'dart:async';
 import 'package:uuid/uuid.dart';
 import 'package:image/image.dart' as img;
-import 'package:meddymobile/widgets/listening_notifier.dart'; // Import the new widget
+import 'package:meddymobile/widgets/listening_notifier.dart';
 import 'package:flutter/services.dart';
 
 class ChatPage extends StatefulWidget {
@@ -330,244 +330,255 @@ class _ChatPageState extends State<ChatPage> {
     super.dispose();
   }
 
+  void _dismissKeyboard() {
+    FocusScope.of(context).requestFocus(FocusNode());
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFFFAF3EA),
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        forceMaterialTransparency: true,
-        elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.dark,
-          statusBarBrightness: Brightness.light,
+    return GestureDetector(
+      onTap: _dismissKeyboard,
+      behavior: HitTestBehavior.opaque,
+      child: Scaffold(
+        backgroundColor: Color(0xFFFAF3EA),
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          forceMaterialTransparency: true,
+          elevation: 0,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.dark,
+            statusBarBrightness: Brightness.light,
+          ),
         ),
-      ),
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 50.0, left: 15, right: 15),
-            child: Column(
-              children: [
-                Expanded(
-                  child: Stack(
-                    children: [
-                      _isLoading
-                          ? Center(child: CircularProgressIndicator())
-                          : MessageList(
-                              messages: _chatHistory,
-                              scrollController: _scrollController,
-                              fetchImage: _fetchImage,
+        body: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 50.0, left: 15, right: 15),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        _isLoading
+                            ? Center(child: CircularProgressIndicator())
+                            : MessageList(
+                                messages: _chatHistory,
+                                scrollController: _scrollController,
+                                fetchImage: _fetchImage,
+                              ),
+                        if (_isGenerating)
+                          Positioned(
+                            bottom: 5,
+                            left: 12,
+                            child: AnimatedStopButton(
+                              onPressed: _stopGenerationVisually,
                             ),
-                      if (_isGenerating)
-                        Positioned(
-                          bottom: 5,
-                          left: 12,
-                          child: AnimatedStopButton(
-                            onPressed: _stopGenerationVisually,
                           ),
-                        ),
-                      if (_isRecording)
-                        ListeningNotifier(), // Show the ListeningNotifier when recording
-                    ],
+                        if (_isRecording)
+                          ListeningNotifier(), // Show the ListeningNotifier when recording
+                      ],
+                    ),
                   ),
-                ),
-                Stack(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        border:
-                            Border.all(color: Color(0xFF0E3C26), width: 1.5),
-                      ),
-                      child: Column(
-                        children: [
-                          if (_previewImagePath != null)
-                            Stack(
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.only(bottom: 8),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return Dialog(
-                                            child: ConstrainedBox(
-                                              constraints: BoxConstraints(
-                                                maxWidth: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.8,
-                                                maxHeight:
-                                                    MediaQuery.of(context)
-                                                            .size
-                                                            .height *
-                                                        0.8,
-                                              ),
-                                              child: SingleChildScrollView(
-                                                child: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              16.0),
-                                                      child: Image.file(
-                                                        File(
-                                                            _previewImagePath!),
-                                                        fit: BoxFit.contain,
-                                                      ),
-                                                    )
-                                                  ],
+                  Stack(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          border:
+                              Border.all(color: Color(0xFF0E3C26), width: 1.5),
+                        ),
+                        child: Column(
+                          children: [
+                            if (_previewImagePath != null)
+                              Stack(
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.only(bottom: 8),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return Dialog(
+                                              child: ConstrainedBox(
+                                                constraints: BoxConstraints(
+                                                  maxWidth:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width *
+                                                          0.8,
+                                                  maxHeight:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .height *
+                                                          0.8,
+                                                ),
+                                                child: SingleChildScrollView(
+                                                  child: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(16.0),
+                                                        child: Image.file(
+                                                          File(
+                                                              _previewImagePath!),
+                                                          fit: BoxFit.contain,
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    },
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(16.0),
-                                      child: Image.file(
-                                        File(_previewImagePath!),
-                                        width: 100,
-                                        height: 130,
-                                        fit: BoxFit.cover,
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(16.0),
+                                        child: Image.file(
+                                          File(_previewImagePath!),
+                                          width: 100,
+                                          height: 130,
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 5,
+                                    right: 5,
+                                    child: InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          _previewImagePath = null;
+                                        });
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.black54,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          Icons.close,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            Row(
+                              children: [
+                                InkWell(
+                                  onTap: (_previewImagePath != null) &&
+                                          !_isRecording
+                                      ? _sendMessage
+                                      : _toggleAudio,
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.circle,
+                                        size: 40,
+                                        color: Color(0xFF0E3C26),
+                                      ),
+                                      Icon(
+                                        _isRecording
+                                            ? Icons.stop
+                                            : (_previewImagePath != null
+                                                ? Icons
+                                                    .arrow_forward_ios_rounded
+                                                : Icons.mic_rounded),
+                                        color: Colors.white,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: TextField(
+                                      controller: _textEditingController,
+                                      maxLines: null,
+                                      minLines: 1,
+                                      decoration: InputDecoration(
+                                        hintText: 'Type your message...',
+                                        border: InputBorder.none,
+                                      ),
+                                      keyboardType: TextInputType.text,
+                                      onSubmitted: (text) {
+                                        if (text.isNotEmpty) {
+                                          _sendMessage();
+                                        }
+                                      },
+                                      enabled: !_isRecording,
                                     ),
                                   ),
                                 ),
-                                Positioned(
-                                  top: 5,
-                                  right: 5,
-                                  child: InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        _previewImagePath = null;
-                                      });
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.black54,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Icon(
-                                        Icons.close,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
+                                ValueListenableBuilder<bool>(
+                                  valueListenable: _isTypingNotifier,
+                                  builder: (context, isTyping, child) {
+                                    return _isSendingImage
+                                        ? CircularProgressIndicator()
+                                        : Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              if (isTyping)
+                                                IconButton(
+                                                  icon: Icon(
+                                                    Icons
+                                                        .arrow_forward_ios_rounded,
+                                                  ),
+                                                  color: Color(0xFF0E3C26),
+                                                  onPressed: _sendMessage,
+                                                )
+                                              else ...[
+                                                IconButton(
+                                                  icon: Icon(
+                                                    Icons.photo_camera_outlined,
+                                                    size: 30,
+                                                    color: Color(0xFF0E3C26),
+                                                  ),
+                                                  color: Color(0xFF0E3C26),
+                                                  onPressed:
+                                                      _selectImageFromCamera,
+                                                ),
+                                                IconButton(
+                                                  icon: Icon(
+                                                    Icons.image_outlined,
+                                                    size: 30,
+                                                  ),
+                                                  color: Color(0xFF0E3C26),
+                                                  onPressed:
+                                                      _selectImageFromGallery,
+                                                ),
+                                              ],
+                                            ],
+                                          );
+                                  },
                                 ),
                               ],
                             ),
-                          Row(
-                            children: [
-                              InkWell(
-                                onTap:
-                                    (_previewImagePath != null) && !_isRecording
-                                        ? _sendMessage
-                                        : _toggleAudio,
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.circle,
-                                      size: 40,
-                                      color: Color(0xFF0E3C26),
-                                    ),
-                                    Icon(
-                                      _isRecording
-                                          ? Icons.stop
-                                          : (_previewImagePath != null
-                                              ? Icons.arrow_forward_ios_rounded
-                                              : Icons.mic_rounded),
-                                      color: Colors.white,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: TextField(
-                                    controller: _textEditingController,
-                                    maxLines: null,
-                                    minLines: 1,
-                                    decoration: InputDecoration(
-                                      hintText: 'Type your message...',
-                                      border: InputBorder.none,
-                                    ),
-                                    keyboardType: TextInputType.text,
-                                    onSubmitted: (text) {
-                                      if (text.isNotEmpty) {
-                                        _sendMessage();
-                                      }
-                                    },
-                                    enabled: !_isRecording,
-                                  ),
-                                ),
-                              ),
-                              ValueListenableBuilder<bool>(
-                                valueListenable: _isTypingNotifier,
-                                builder: (context, isTyping, child) {
-                                  return _isSendingImage
-                                      ? CircularProgressIndicator()
-                                      : Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            if (isTyping)
-                                              IconButton(
-                                                icon: Icon(
-                                                  Icons
-                                                      .arrow_forward_ios_rounded,
-                                                ),
-                                                color: Color(0xFF0E3C26),
-                                                onPressed: _sendMessage,
-                                              )
-                                            else ...[
-                                              IconButton(
-                                                icon: Icon(
-                                                  Icons.photo_camera_outlined,
-                                                  size: 30,
-                                                  color: Color(0xFF0E3C26),
-                                                ),
-                                                color: Color(0xFF0E3C26),
-                                                onPressed:
-                                                    _selectImageFromCamera,
-                                              ),
-                                              IconButton(
-                                                icon: Icon(
-                                                  Icons.image_outlined,
-                                                  size: 30,
-                                                ),
-                                                color: Color(0xFF0E3C26),
-                                                onPressed:
-                                                    _selectImageFromGallery,
-                                              ),
-                                            ],
-                                          ],
-                                        );
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
