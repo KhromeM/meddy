@@ -112,8 +112,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   String _truncateTip(String tip) {
-    if (tip.length > 100) {
-      return tip.substring(0, 100) + '...';
+    if (tip.length > 110) {
+      return tip.substring(0, 110) + '...';
     }
     return tip;
   }
@@ -146,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       100 -
                       40;
 
-                  double meddyTipHeight = availableHeight * 3 / 10;
+                  double meddyTipHeight = availableHeight * 2.5 / 10;
 
                   return Column(
                     children: [
@@ -292,7 +292,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Spacer(),
                       if (_storedHealthTips != null)
                         Container(
-                          width: MediaQuery.of(context).size.width * 0.95,
+                          width: MediaQuery.of(context).size.width * 0.9,
                           height: meddyTipHeight,
                           decoration: BoxDecoration(
                             color: isHighContrast
@@ -345,7 +345,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                               ),
                               Container(
-                                width: MediaQuery.of(context).size.width * 0.3,
+                                width: MediaQuery.of(context).size.width * 0.25,
                                 height: double.infinity,
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.only(
@@ -355,6 +355,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                   child: Image.asset(
                                     'assets/images/c9.webp',
                                     fit: BoxFit.cover,
+                                    color: Colors.black.withOpacity(isHighContrast
+                                        ? 0.5
+                                        : 0.3), // Opacity changes based on high contrast mode
+                                    colorBlendMode: BlendMode.darken,
                                   ),
                                 ),
                               ),
