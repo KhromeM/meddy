@@ -24,6 +24,7 @@ import GeminiLogo from "../../assets/img/google-gemini-icon.png";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import AnimatedDisplay from "./animatedDisplay";
 import FlutterVideo from "../../assets/video/fluttervideo.mp4"
+import TrailerSVG from './graphAnimation/graphtailer.jsx';
 
 export const Hero = ({ login }) => {
   const history = useHistory();
@@ -363,6 +364,7 @@ export const Hero = ({ login }) => {
             </VStack>
           </Box>
         </SimpleGrid>
+        <TrailerSVG />
       </Box>
     </>
   );
