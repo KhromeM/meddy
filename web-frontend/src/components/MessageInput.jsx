@@ -11,6 +11,7 @@ import {
 import { FaMicrophone, FaRegStopCircle } from "react-icons/fa";
 import { VscSend } from "react-icons/vsc";
 import { GoPaperclip, GoX } from "react-icons/go";
+import { useLockBodyScroll } from "@uidotdev/usehooks";
 
 const MessageInput = ({
 	onSend,
@@ -25,6 +26,8 @@ const MessageInput = ({
 	const [imageName, setimageName] = useState("");
 	const fileInputRef = useRef(null);
 	const toast = useToast();
+
+	const [isLocked, setIsLocked] = useState(true);
 
 	const handleSend = useCallback(() => {
 		if (text.trim() && !inProgress) {
@@ -80,11 +83,16 @@ const MessageInput = ({
 		setimageName("");
 		handleDeleteImage();
 	}, [handleDeleteImage]);
+	isLocked && useLockBodyScroll();
+
+const toggleLock = () => {
+    setIsLocked(!isLocked);
+  };
 
 	return (
 		<Flex
-			margin={10}
-			mb={4}
+			margin={0}
+			mb="50px"
 			mt={4}
 			px={16}
 			minW={{ base: "80%", md: "60%", lg: "800px" }}
