@@ -1,33 +1,57 @@
 import React from "react";
 import { Box, Text, VStack, Image, Flex } from "@chakra-ui/react";
+import "../../styles/animatedBG.css";
+import epicImage from "../../assets/img/epic.png";
+import geminiImage from "../../assets/img/gemini.png";
+import gfitImage from "../../assets/img/googlefit.png";
+const Card = ({ image }) => (
+      <Box 
+      height="140px" 
+      width="140px" 
+      borderRadius="20px" 
+      boxShadow="lg" 
+      backgroundColor="rgba(255,255,255,0.3)" 
+      alignContent="center"
+      outline="2px solid rgba(10, 32, 69,0.5)"
+      position="relative"
+      display="flex"
+      flexDirection="column"
+      className="animated-box4b"
+      mt="30px"
+      mb="0"
+      ml="15px"
+      mr="15px"
+
+      >
+        <Image
+          src={image}
+          width="80%"
+          objectFit="cover"
+          margin="auto"
+        />
+    </Box>
+  );
 
 export const Testimonial = () => (
-  <Box bg="darkslategray.100" color="white" py={16}>
+  <Box py={16}
+    position="relative"
+    display="flex"
+    flexDirection="column"
+    className="animated-box5">
     <Flex
       maxW="container.xl"
       mx="auto"
-      direction={{ base: "column", md: "row" }}
+      direction="column"
       align="center"
     >
-      <VStack spacing={4} maxW="xl" textAlign="left" flex={1} p={4}>
-        <Text fontSize="xl" fontStyle="italic">
-          "I wanted to access my own medical data without jumping through a
-          dozen hoops"
-        </Text>
-        <Text fontWeight="bold">John Williams, Early Meddy Adopter</Text>
-        <Image
-          src="/assets/svg-10.svg"
-          boxSize="100px"
-          alignSelf="flex-start"
-          alt="Decorative SVG"
-        />
-      </VStack>
-      <Box flex={1} p={4}>
-        <Image
-          src="/assets/l1000779-webjpgjpg@2x.png"
-          alt="Testimonial"
-          objectFit="cover"
-        />
+      <Text as="h2" size="xl" mb={0} pl={4} fontSize="48px" color="white">
+          Integrate with your favorite apps
+      </Text>
+      <Box display="flex" flexDirection="row">
+        <Card image={epicImage}></Card>
+        <Card image={geminiImage}></Card>
+        <Card image={gfitImage}></Card>
+
       </Box>
     </Flex>
   </Box>

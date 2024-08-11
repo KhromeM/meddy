@@ -72,3 +72,38 @@
     background-position: 100% 0%;
   }
 }
+.animated-box4b {
+  background: linear-gradient(215deg, #c1c1e5, #c4b0db, #bbb1cf, #9c9fce);
+  background-size: 300% 300%;
+  animation: background4 13s linear infinite;
+  border-radius: 12px;
+}
+
+@keyframes background4b {
+  0% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 0% 100%;
+  }
+  100% {
+    background-position: 100% 0%;
+  }
+}
+.animated-box5 {
+  background: linear-gradient(215deg, #505053, #625572, #353535, #4e5180);
+  background-size: 300% 300%;
+  animation: background4 13s linear infinite;
+}
+@keyframes background5 {
+  0% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 0% 100%;
+  }
+  100% {
+    background-position: 100% 0%;
+  }
+}
+
