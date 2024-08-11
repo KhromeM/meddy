@@ -289,13 +289,14 @@ const Chat = () => {
                   flex={1}
                   overflowY="auto"
                   p={10}
-                  //   css={{
-                  //     "&::-webkit-scrollbar": {
-                  //       display: "none",
-                  //     },
-                  //     "-ms-overflow-style": "none",
-                  //     scrollbarWidth: "none",
-                  //   }}
+                  maxHeight="88vh"
+                  css={{
+                    "&::-webkit-scrollbar": {
+                      display: "none",
+                    },
+                    "-ms-overflow-style": "none",
+                    scrollbarWidth: "none",
+                  }}
                 >
                   <MessageList
                     messages={messages}
