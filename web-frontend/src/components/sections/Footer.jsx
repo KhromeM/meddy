@@ -20,18 +20,28 @@ export const Footer = () => {
           <VStack align="start">
             <Text fontWeight="bold" color={color}>Developers</Text>
             <Link href="/getting-started" color={color}>Getting started</Link>
+            <Link href="/documentation" color={color}>Documentation</Link>
+            <Link href="/search" color={color}>Search</Link>
           </VStack>
 
           <VStack align="start">
             <Text fontWeight="bold" color={color}>Community</Text>
+            <Link href="/case-studies" color={color}>Case Studies</Link>
             <Link href="/discord" color={color}>Discord</Link>
+            <Link href="/storybook" color={color}>Storybook</Link>
             <Link href="https://github.com/KhromeM/meddy" color={color}>GitHub</Link>
           </VStack>
 
           <VStack align="start">
             <Text fontWeight="bold" color={color}>Company</Text>
             <Link href="/about" color={color}>About us</Link>
+            <Link href="/security" color={color}>Security</Link>
+            <Link href="/terms-of-service" color={color}>Terms of Service</Link>
             <Link href="/privacy-policy" color={color}>Privacy Policy</Link>
+            <Link href="/pricing" color={color}>Pricing</Link>
+            <Link href="/enterprise" color={color}>Enterprise</Link>
+            <Link href="/careers" color={color}>Careers</Link>
+            <Link href="/blog" color={color}>Blog</Link>
           </VStack>
         </SimpleGrid>
 
