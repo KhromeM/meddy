@@ -122,7 +122,7 @@ export default function SettingsPopout(props) {
                   }}
                 />
               </Box> */}
-              <Flex
+              {/* <Flex
                 justifyContent="space-between"
                 alignItems="center"
                 mb="24px"
@@ -133,7 +133,7 @@ export default function SettingsPopout(props) {
                 <Button onClick={toggleColorMode}>
                   Toggle {colorMode === "light" ? "Dark" : "Light"}
                 </Button>
-              </Flex>
+              </Flex> */}
 
               <Separator />
               {/* <Box mt="24px">

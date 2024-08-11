@@ -17,14 +17,18 @@ import "../../styles/button.css";
 import CardsInterface from "../CardsInterface";
 import { Gradient } from "../Gradient"; // Import the Gradient class
 import "../../styles/gradient.css"; // Import the gradient CSS
-import MeddyDemoGif from "../../assets/gif/MeddyDemo.gif";
+import MeddyDemoGif from "../../assets/gif/Meddy.gif";
 import "../../styles/animatedBG.css";
 import Card from "../Card/Card";
 import GeminiLogo from "../../assets/img/google-gemini-icon.png";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import AnimatedDisplay from "./animatedDisplay";
+
 import computer from "../../assets/img/supercomputer.jpg"
 import chart from "../../assets/gif/data_vis2.gif"
+
+import FlutterVideo from "../../assets/video/fluttervideo.mp4"
+
 
 export const Hero = ({ login }) => {
   const history = useHistory();
@@ -172,12 +176,17 @@ export const Hero = ({ login }) => {
               mt={{ base: "60px", md: "80px", lg: "100px" }}
               mb={{ base: "60px", md: "80px", lg: "100px" }}
               pb={{ base: "40px", md: "60px", lg: "80px" }}
+              px={{ base: "80px", md: "100px", lg: "130px" }}
               width="100%"
-              height={{ base: "400px", md: "450px", lg: "550px" }}
+              height={{ base: "400px", md: "500px", lg: "650px" }}
               position="relative"
               overflow="visible"
             >
-              <AnimatedDisplay imageSrc={images.heroImage} />
+              <AnimatedDisplay
+                imageSrc={images.heroImage}
+                phoneVideoSrc={FlutterVideo}
+
+              />
             </Box>
           </Box>
         </Box>

@@ -4,18 +4,30 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:meddymobile/models/message.dart';
 import 'package:path/path.dart' as path;
+import 'package:meddymobile/services/auth_service.dart';
 
 class ChatService {
   static const String baseUrl = 'https://trymeddy.com/api';
   // static const String baseUrl = 'http://localhost:8000/api';
+  final AuthService _authService = AuthService();
+  String? userId; // Class-level userId
+
+  ChatService() {
+    _initializeUserId();
+  }
+
+  Future<void> _initializeUserId() async {
+    userId = await _authService.getIdToken(); // Fetch userId and store it
+  }
 
   Future<List<Message>> getChatHistory() async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/chat'), headers: {
-        "idToken": "dev",
+        "idToken": userId!,
       });
       List<dynamic> chatHistory = jsonDecode(response.body)['chatHistory'];
-      var messages = chatHistory.map((message) => Message.fromJson(message)).toList();
+      var messages =
+          chatHistory.map((message) => Message.fromJson(message)).toList();
       return messages;
     } catch (e) {
       print(e.toString());
@@ -30,7 +42,7 @@ class ChatService {
       Uri.parse('$baseUrl/image'),
       headers: {
         'Content-Type': 'application/json',
-        'idToken': 'dev',
+        'idToken': userId!,
       },
       body: jsonEncode({
         'image': {
@@ -58,7 +70,7 @@ class ChatService {
         uri,
         headers: {
           'Content-Type': 'application/json',
-          'idToken': 'dev',
+          'idToken': userId!,
         },
       );
 
