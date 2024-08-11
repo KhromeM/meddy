@@ -44,8 +44,8 @@ const SidebarContent = ({ logoText, routes, onOpen }) => {
     // const inactiveColor = useColorModeValue("gray.400", "gray.400");
     const activeBg = useColorModeValue("#e4eceb", "gray.700");
     const inactiveBg = useColorModeValue("#e4eceb", "gray.700");
-    const activeColor = useColorModeValue("gray.700", "white");
-    const inactiveColor = useColorModeValue("#e4eceb", "gray.400");
+    const activeColor = "#0e3c26";
+    const inactiveColor = "#058247"
 
     return routes.map((prop, key) => {
       if (prop.redirect) {
@@ -89,7 +89,7 @@ const SidebarContent = ({ logoText, routes, onOpen }) => {
               justifyContent="flex-start"
               alignItems="center"
               // bg={activeBg}
-              bg={"#4073d4"}
+              bg={"#F5E9DB"}
               mb={{
                 xl: "12px",
               }}
@@ -103,7 +103,7 @@ const SidebarContent = ({ logoText, routes, onOpen }) => {
               py="12px"
               borderRadius="15px"
               _hover={{
-                bg: "#4073d4",
+                bg: "#F5E9DB",
                 boxShadow: "sm",
                 transform: "scale(1.01)",
               }}
@@ -123,7 +123,7 @@ const SidebarContent = ({ logoText, routes, onOpen }) => {
                   <Icon>{prop.icon}</Icon>
                 ) : (
                   <IconBox
-                    bg="orange.400" // Changes the color of the icons on sidebar
+                    bg="orange.400"
                     color="white"
                     h="30px"
                     w="30px"
@@ -133,7 +133,7 @@ const SidebarContent = ({ logoText, routes, onOpen }) => {
                   </IconBox>
                 )}
                 {/* // Changes the color of the Meddy sidebar Icon text */}
-                <Text color="#dee9e7" my="auto" fontSize="md">
+                <Text color="#0e3c26" my="auto" fontSize="md">
                   {prop.name}
                 </Text>
               </Flex>
@@ -164,7 +164,7 @@ const SidebarContent = ({ logoText, routes, onOpen }) => {
                 boxShadow: "md",
               }}
               _hover={{
-                bg: "#1e4382", // 4073d4
+                bg: "#F5E9DB", // 4073d4
                 boxShadow: "sm",
                 transform: "scale(1.01)",
               }}
@@ -221,14 +221,14 @@ const SidebarContent = ({ logoText, routes, onOpen }) => {
             innerSpeed={8}
             outerCircleSize={1.2}
             innerCircleSize={0.8}
-            color="#e4eceb"
+            color="#0e3c26"
           />
           <Text
             color={
               // history.location.pathname.includes("voicemode")
               //   ? "white"
               //   : "black"
-              "#e4eceb"
+              "#0e3c26"
             }
             fontSize="xl"
             mt="1px"
@@ -256,7 +256,7 @@ const SidebarContent = ({ logoText, routes, onOpen }) => {
         <SettingsButton
           settingsRef={settingsRef}
           inactiveBg={"gray.700"}
-          inactiveColor={"#e4eceb"}
+          inactiveColor="#0e3c26"
           onOpen={onOpen}
         />
       </Flex>

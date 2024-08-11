@@ -32,12 +32,12 @@ function Sidebar(props) {
   return (
     <Box ref={mainPanel}>
       <Box
-        backgroundColor="#183459"
+        backgroundColor="#FAF3EA"
         className="sidebar"
         display={{ sm: "none", xl: "block" }}
         position="fixed"
         boxShadow="3px -5px 5px 0px rgba(0, 0, 0, 0.50)"
-        opacity="0.95"
+        opacity="1"
         // pr="2px"
       >
         {/* <canvas
@@ -70,13 +70,12 @@ function Sidebar(props) {
           pe="20px"
           m={sidebarMargins}
           borderRadius={sidebarRadius}
-          // borderRight="1px solid"
           borderColor="gray.300"
           position="relative"
         >
           <SidebarContent
             routes={routes}
-            logoText={"Meddy"} // Right side of logo text
+            logoText={"Meddy"}
             display="none"
             sidebarVariant={sidebarVariant}
             onOpen={props.onOpen}

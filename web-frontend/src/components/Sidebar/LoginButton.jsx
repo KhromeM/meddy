@@ -15,7 +15,7 @@ import IconBox from "../Icons/IconBox.jsx";
 
 const LoginButton = () => {
   const { user, login, logout } = useAuth();
-  // console.log(user);
+
   const handleAuth = () => {
     if (user) {
       logout();
@@ -23,73 +23,37 @@ const LoginButton = () => {
       login();
     }
   };
+
   return (
-    // <Box bg="teal.500" px={4} py={2}>
-    //   <Flex alignItems="center">
-    //     <Spacer />
-
-    //     {user && (
-    //       <Button colorScheme="teal" variant="outline" mr={4}>
-    //         <Avatar name={user.displayName} src={user.photoURL} />
-    //       </Button>
-    //     )}
-    //     <GFitOAuthButton />
-    //     <Button colorScheme="teal" variant="solid" onClick={handleAuth}>
-    //       {user ? "Logout" : "Login"}
-    //     </Button>
-    //   </Flex>
-    // </Box>
-
     <Button
-      boxSize="initial"
-      //   position="absolute"
-      //   bottom="22px"
       justifyContent="flex-start"
       alignItems="center"
       bg="transparent"
-      mb={{
-        xl: "12px",
-      }}
-      mx={{
-        xl: "auto",
-      }}
+      mb="12px"
       py="12px"
-      ps={{
-        sm: "10px",
-        xl: "16px",
-      }}
-      //   mt="auto"
-      alignSelf="flex-end"
+      px="16px"
       borderRadius="15px"
-      _hover="none"
       w="100%"
+      _hover={{ bg: "transparent" }}
       _active={{
         bg: "inherit",
-        borderColor: "transparent",
-        transform: "scale(0.91)",
+        transform: "scale(0.95)",
         boxShadow: "md",
       }}
       _focus={{
         boxShadow: "none",
       }}
-      //   onClick={onOpen}
       onClick={handleAuth}
     >
-      <Flex>
-        {/* <IconBox bg={inactiveBg} color="orange.200" h="30px" w="30px" me="12px"> */}
-
-        {/* </IconBox> */}
-
+      <Flex align="center">
         <Icon
           as={FaUser}
-          width="24px"
+          w="24px"
           h="24px"
           color={user ? "green.300" : "gray.400"}
           me="10px"
-          mb="auto"
-          ml={1}
-        ></Icon>
-        <Text ml={1} color={"#e4eceb"} my="auto" fontSize="md">
+        />
+        <Text color={"#0e3c26"} fontSize="md">
           {user ? "Logout" : "Login"}
         </Text>
       </Flex>
