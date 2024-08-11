@@ -2,40 +2,88 @@ import React, { useEffect, useRef } from "react";
 import "./reviews.css";
 
 const reviews = [
-  {
-    text: "I highly recommend this physiotherapy clinic.",
-    author: "- John Doe",
-  },
-  { text: "The physiotherapists here are amazing.", author: "- Jane Smith" },
-  {
-    text: "Great experience overall. Highly recommended!",
-    author: "- Alice Johnson",
-  },
-  {
-    text: "The best physiotherapy clinic I've been to.",
-    author: "- Michael Brown",
-  },
-  { text: "Excellent service and care. Thank you!", author: "- Emily Davis" },
-  {
-    text: "Professional and friendly staff. Highly recommend.",
-    author: "- David Wilson",
-  },
-  {
-    text: "They really know what they're doing. Fantastic experience!",
-    author: "- Sarah Lee",
-  },
-  {
-    text: "Top-notch physiotherapy clinic. Very satisfied with the treatment.",
-    author: "- Chris Martin",
-  },
-  {
-    text: "Highly skilled physiotherapists. Made a huge difference for me.",
-    author: "- Linda Taylor",
-  },
-  {
-    text: "The care I received was excellent. I feel much better now.",
-    author: "- James White",
-  },
+    {
+      text: "This app has made communication so much easier for my elderly patients. Highly recommend!",
+      author: "MD. Tahira",
+      image: "/assets/teams/nopfp.png",
+    },
+    {
+      text: "My grandparents finally understand their health instructions.",
+      author: "Nahi Khan",
+      image: "/assets/teams/nopfp.png",
+    },
+
+    {
+      text: "This app made it so easy for my parents to communicate with their doctor.",
+      author: "Za Mustafa",
+      image: "/assets/teams/Za.jpeg",
+    },
+    { 
+      text: "As a doctor, this app is a vital tool for bridging language gaps with non-English speakers.", 
+      author: "MD. Safiyah",
+      image: "/assets/teams/nopfp.png",
+    },
+    {
+      text: "Brilliant app for non-English speakers. It’s a lifesaver!",
+      author: "William Chan",
+      image: "/assets/teams/William.jpeg",
+    },
+
+    {
+      text: "A game-changer for the elderly who struggle with English.",
+      author: "Varvara Mironov",
+      image: "/assets/teams/nopfp.png",
+    },
+    {
+      text: "Simple and effective for seniors like my parents.",
+      author: "Shashank Datta Bezgam",
+      image: "/assets/teams/shashank.jpeg",
+    },
+    {
+      text: "This app breaks language barriers in healthcare.",
+      author: "Fourat Rachid",
+      image: "/assets/teams/Fourat.jpeg",
+    },
+    {
+      text: "A must-have for those who need language assistance.",
+      author: "Duy Doan",
+      image: "/assets/teams/nopfp.png",
+    },
+    {
+      text: "Finally, an app that helps non-English speakers with medical appointments.",
+      author: "Brian Lin",
+      image: "/assets/teams/Brain.jpeg",
+    },
+    {
+      text: "My parents find it so easy to use this app to talk to their doctor.",
+      author: "Aditya Udyavar",
+      image: "/assets/teams/Aditya.jpeg",
+    },
+    {
+      text: "This app is a blessing for the elderly in our community.",
+      author: "Kin Pong (Isaac) To",
+      image: "/assets/teams/Kin.jpeg",
+    },
+    {
+      text: "No more language issues at the doctor's office thanks to this app.",
+      author: "Osaf Ali",
+      image: "/assets/teams/Osaf.jpeg",
+    },
+    {
+      text: "The app is great for bridging the communication gap in healthcare.",
+      author: "Muzzammil Nawab",
+      image: "/assets/teams/Muzzammil.jpeg",
+    },
+    {
+      text: "An essential app for ensuring my patients fully understand their medical care, regardless of language.",
+      author: "MD. Asiyah",
+      image: "/assets/teams/nopfp.png",
+    },
+    {
+      text: "Perfect for elderly patients who need help with English.",
+      author: "Sean Munjal",
+      image: "/assets/teams/Sean.jpeg",
+    },
 ];
 
 export const Endorsements = () => {
@@ -74,8 +122,11 @@ export const Endorsements = () => {
             {reviews.map((review, index) => (
               <li key={index} className="review-item">
                 <div className="review-card">
+                  <div className="profile-section">
+                    <img src={review.image} alt={`${review.author} profile`} className="review-image" />
+                    <span className="review-author">{review.author}</span>
+                  </div>
                   <p>{review.text}</p>
-                  <span>{review.author}</span>
                 </div>
               </li>
             ))}
@@ -91,8 +142,11 @@ export const Endorsements = () => {
             {reviews.map((review, index) => (
               <li key={index} className="review-item">
                 <div className="review-card">
+                  <div className="profile-section">
+                    <img src={review.image} alt={`${review.author} profile`} className="review-image" />
+                    <span className="review-author">{review.author}</span>
+                  </div>
                   <p>{review.text}</p>
-                  <span>{review.author}</span>
                 </div>
               </li>
             ))}
