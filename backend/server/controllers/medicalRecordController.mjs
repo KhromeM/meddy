@@ -4,7 +4,7 @@ import { createTotalSummary } from "../../utils/summarizeFHIR.mjs";
 export const getTotalMedicalRecordsByUserIdController = async (req, res) => {
 	try {
 		const user = req._dbUser;
-		const records = await getTotalMedicalRecordsByUserId(user.userid);
+		const records = []; // await getTotalMedicalRecordsByUserId(user.userid);
 		if (records.length == 0) {
 			records.push(defaultRecord);
 		}
