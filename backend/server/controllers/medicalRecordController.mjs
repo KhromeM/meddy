@@ -26,7 +26,6 @@ export const generateTotalReportController = async (req, res) => {
 	}
 };
 
-const defaultRecord = maleRecord;
 const maleRecord = {
 	metabolicHealth: {
 		actionPlan: {
@@ -665,3 +664,5 @@ const femaleRecord = {
 			"Based on the comprehensive health assessment, your overall health is good with some areas for improvement. Your metabolic health shows early signs of insulin resistance, indicating a need for dietary changes and increased physical activity. Heart health metrics are generally good, with room for improvement in HDL cholesterol levels. Gut health appears to have some mild issues with microbial diversity and intestinal permeability that could benefit from dietary changes. Cognitive function is normal, but there's opportunity for enhancement through mental stimulation and improved sleep quality. Your immune system is functioning well, with a need to address mild vitamin D deficiency. Bone health is normal but could be improved through targeted exercise and nutrition. Hormonal balance shows some areas of concern, particularly in estrogen levels and stress hormones. Many of these health aspects can be positively influenced through lifestyle modifications, including optimizing diet, regular exercise, stress management, and sleep improvement. Regular follow-ups with healthcare providers are recommended to monitor progress and adjust interventions as needed. Your proactive approach to health is commendable, and with some targeted improvements, you can enhance your overall well-being and potentially prevent future health issues.",
 	},
 };
+
+const defaultRecord = maleRecord;
