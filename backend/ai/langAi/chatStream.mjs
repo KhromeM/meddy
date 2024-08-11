@@ -6,9 +6,6 @@ import {
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import {
 	vertexAIModel,
-	groqModel,
-	anthropicModel,
-	openAIModel,
 } from "./model.mjs";
 import CONFIG from "../../config.mjs";
 import { createDefaultSystemPrompt } from "../prompts/default.mjs";
@@ -27,9 +24,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-let defaultModel = CONFIG.TEST
-	? openAIModel
-	: openAIModel || anthropicModel || vertexAIModel || openAIModel;
+let defaultModel = vertexAIModel
 
 export const chatStreamProvider = async (
 	chatHistory,

@@ -1,10 +1,10 @@
 import { jsonChatResponse } from "../ai/langAi/chatStream.mjs";
-import { vertexAIModel, openAIModel } from "../ai/langAi/model.mjs";
+import { vertexAIModel } from "../ai/langAi/model.mjs";
 import { executeLLMFunction } from "../ai/functions/functionController.mjs";
 import { getStructuredVertexResponse } from "../ai/langAi/setupVertexAI.mjs";
 import { z } from "zod";
 
-const defaultModel = vertexAIModel || openAIModel;
+const defaultModel = vertexAIModel 
 
 export const execUserRequest = async (
 	user,

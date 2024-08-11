@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { openAIModel, vertexAIModel } from "../ai/langAi/model.mjs";
+import { vertexAIModel } from "../ai/langAi/model.mjs";
 import { jsonChatResponse } from "../ai/langAi/chatStream.mjs";
 import db from "../db/db.mjs";
 
-const defaultModel = openAIModel || vertexAIModel || openAIModel;
+const defaultModel = vertexAIModel
 
 export const summarizeAppointmentFromChatHistory = async (user) => {
 	const chatHistory = await db.getRecentMessagesByUserId(user.userid, 200);

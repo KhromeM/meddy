@@ -8,16 +8,12 @@ import db from "../../db/db.mjs";
 import { writeLog } from "../../extra/logging/logging.mjs";
 import { execUserRequest } from "../../utils/functionCalling.mjs";
 import {
-	groqModel,
-	anthropicModel,
 	vertexAIModel,
-	openAIModel,
 } from "../langAi/model.mjs";
 // import { OutputFormat } from "elevenlabs/api";
 
-let defaultModel = CONFIG.TEST
-	? openAIModel
-	: openAIModel || anthropicModel || vertexAIModel || openAIModel;
+let defaultModel = vertexAIModel
+
 const VOICES = {
 	es2: "8ftlfIEYnEkYY6iLanUO",
 	es: "L1QajoRwPFiqw35KD4Ch",

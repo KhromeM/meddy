@@ -11,7 +11,7 @@
 // 2. and use a smallish system prompt so it answers back fast
 // 3. also dont pass in the conversation history the way we do now. pass it as a part of the system prompt. otherwise its gonna see the conversational nature of the chat history and respond back in the same way.
 
-import { openAIModel } from "../langAi/model.mjs";
+import { vertexAIModel } from "../langAi/model.mjs";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { chatStreamProvider } from "../langAi/chatStream.mjs";
 import { StringOutputParser } from "@langchain/core/output_parsers";
@@ -41,10 +41,9 @@ Respond with ONLY the number corresponding to the classification.`;
     new HumanMessage(partialTranscript),
   ];
 
-  const chain = openAIModel.pipe(new StringOutputParser());
+  const chain = vertexAIModel.pipe(new StringOutputParser());
 
   try {
-    // const result = await chatStreamProvider(partialTranscript, user, openAIModel, 1, recentMessages);
     const result = await chain.invoke(messages);
     const classification = parseInt(result.trim());
     return isNaN(classification) ? 4 : classification;

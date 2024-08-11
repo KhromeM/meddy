@@ -7,7 +7,6 @@ import {
 	getChatResponse,
 } from "../ai/langAi/chatStream.mjs";
 import db from "../db/db.mjs";
-import { groqModel } from "../ai/langAi/model.mjs";
 
 export async function handleAudioMessage(state, data) {
 	const { audioChunk, reqId, isComplete, lang } = data;
@@ -173,7 +172,7 @@ export async function useTranscription(ws, req) {
 // respond to audio message with text and audio
 export async function useTranscriptionTTS(clientSocket, req) {
 	const text = req.transcript;
-	if (!text) return;
+	if (!text || text.trim() == "") return;
 	try {
 		const chatHistory = await db.getRecentMessagesByUserId(
 			req.user.userid,
