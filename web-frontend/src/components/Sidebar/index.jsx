@@ -36,8 +36,9 @@ function Sidebar(props) {
         className="sidebar"
         display={{ sm: "none", xl: "block" }}
         position="fixed"
-        boxShadow="md"
+        boxShadow="3px -5px 5px 0px rgba(0, 0, 0, 0.50)"
         opacity="0.95"
+        // pr="2px"
       >
         {/* <canvas
           id="gradient-canvas"
