@@ -29,7 +29,7 @@ const WorkWithTheRockets = ({
 }) => {
   const overlayRef = React.useRef();
   const overlayRef2 = React.useRef();
-  const bgColor = useColorModeValue("white", "gray.700");
+  const bgColor = useColorModeValue("#FAF3EA", "gray.700");
   // at <1106 just disapear the description and ask meddy
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -48,6 +48,7 @@ const WorkWithTheRockets = ({
   const history = useHistory();
   return (
     <Card
+      backgroundColor={bgColor}
       _css={{
         wordWrap: "break-word",
         WebkitBackgroundClip: "border-box",
@@ -73,7 +74,7 @@ const WorkWithTheRockets = ({
           Ask Meddy these health prompts
         </Text>
       </Flex>
-      <ChakraCard flex={5} flexDirection="row">
+      <ChakraCard backgroundColor={bgColor} flex={5} flexDirection="row">
         <Card
           onClick={() => {
             setTimeout(() => {
@@ -82,6 +83,7 @@ const WorkWithTheRockets = ({
           }}
           maxHeight="310.5px"
           p="1rem"
+          backgroundColor={bgColor}
         >
           <CardBody
             opacity="0.9"
@@ -176,7 +178,7 @@ const WorkWithTheRockets = ({
             </Portal>
           </CardBody>
         </Card>
-        <Card maxHeight="310.5px" p="1rem">
+        <Card backgroundColor={bgColor} maxHeight="310.5px" p="1rem">
           <CardBody
             opacity="0.9"
             p="0px"

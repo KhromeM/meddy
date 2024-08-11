@@ -79,7 +79,7 @@ export default function Dashboard() {
           captions={["Companies", "Members", "Budget", "Completion"]}
           data={dashboardTableData}
         /> */}
-        <Card pt="16px" maxW="380">
+        <Card backgroundColor={"#FAF3EA"} pt="16px" maxW="380">
           <QuickActionList iconBoxInside={iconBoxInside} />
         </Card>
         <MultiChartContainer
@@ -104,6 +104,7 @@ export default function Dashboard() {
           percentage={5}
           chart={<LineChart />}
         /> */}
+        {/* ASK MEDDY THESE HEALTH PROMPTS */}
         <WorkWithTheRockets
           backgroundImage={heartImage}
           title={"I'm concerned about my heart rate."}
@@ -137,7 +138,7 @@ export default function Dashboard() {
           amount={4550}
         />
       </SimpleGrid> */}
-      <Grid
+      {/* <Grid
         templateColumns={{ md: "1fr", lg: "1.8fr 1.2fr" }}
         templateRows={{ md: "1fr auto", lg: "1fr" }}
         my="26px"
@@ -164,7 +165,7 @@ export default function Dashboard() {
             "Wealth creation is a revolutionary recent positive-sum game. It is all about who takes the opportunity first."
           }
         />
-      </Grid>
+      </Grid> */}
     </Flex>
   );
 }

@@ -9,9 +9,14 @@ function PanelContent(props) {
   });
   // Pass the computed styles into the `__css` prop
   const history = useHistory();
-  console.log(history.location.pathname.includes("voicemode"));
+  // console.log(
+  //   history.location.pathname.includes("voicemode") ||
+  //     history.location.pathname.includes("health")
+  // );
 
-  const weInVoiceMode = history.location.pathname.includes("voicemode");
+  const weInVoiceMode =
+    history.location.pathname.includes("voicemode") ||
+    history.location.pathname.includes("health");
 
   // Pass the computed styles into the `__css` prop
   return (
