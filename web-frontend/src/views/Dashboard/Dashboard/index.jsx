@@ -10,6 +10,9 @@ import {
 } from "@chakra-ui/react";
 // assets
 import peopleImage from "../../../assets/img/people-image.png";
+import heartImage from "../../../assets/img/c4.webp";
+import sleepImage from "../../../assets/img/c6.webp";
+
 import logoChakra from "../../../assets/svg/logo-white.svg";
 import BarChart from "../../../components/Charts/BarChart";
 import LineChart from "../../../components/Charts/LineChart";
@@ -66,7 +69,7 @@ export default function Dashboard() {
       > */}
       <Grid
         // mt="26px"
-        templateColumns={{ sm: "1fr", md: "1fr 1fr", lg: "1fr 2fr" }}
+        templateColumns={{ sm: "1fr", md: "1fr 1fr", lg: "1fr 2.5fr" }}
         templateRows={{ sm: "1fr auto", md: "1fr", lg: "1fr" }}
         gap="24px"
       >
@@ -96,10 +99,22 @@ export default function Dashboard() {
           percentage={5}
           chart={<LineChart />}
         /> */}
-        <MultiChartContainer
+        {/* <MultiChartContainer
           title={"Biomarker Stats"}
           percentage={5}
           chart={<LineChart />}
+        /> */}
+        <WorkWithTheRockets
+          backgroundImage={heartImage}
+          title={"I'm concerned about my heart rate."}
+          description={
+            "Meddy, how can I improve my heart health? I want to avoid the need to take medication."
+          }
+          backgroundImage2={sleepImage}
+          title2={"I'm struggling with my sleep quality."}
+          description2={
+            "Meddy, how can I improve my sleep patterns? I often wake up feeling tired and unrested."
+          }
         />
         {/* </Grid> */}
         {/* <SimpleGrid columns={{ sm: 2, md: 2, xl: 3 }} mt="26px" spacing="24px"> */}
@@ -122,7 +137,7 @@ export default function Dashboard() {
           amount={4550}
         />
       </SimpleGrid> */}
-      {/* <Grid
+      <Grid
         templateColumns={{ md: "1fr", lg: "1.8fr 1.2fr" }}
         templateRows={{ md: "1fr auto", lg: "1fr" }}
         my="26px"
@@ -149,7 +164,7 @@ export default function Dashboard() {
             "Wealth creation is a revolutionary recent positive-sum game. It is all about who takes the opportunity first."
           }
         />
-      </Grid> */}
+      </Grid>
     </Flex>
   );
 }

@@ -1,4 +1,4 @@
-import { Heading, Icon, SimpleGrid } from "@chakra-ui/react";
+import { Heading, Icon, SimpleGrid, useColorModeValue } from "@chakra-ui/react";
 import SmallQuickActionCard from "./SmallQuickActionCard";
 import {
   CartIcon,
@@ -16,16 +16,17 @@ import { RiRobot2Fill } from "react-icons/ri";
 const QuickActionList = ({ iconBoxInside }) => {
   const onOpen = useContext(SettingsContext);
   const history = useHistory();
+  const textColor = useColorModeValue("#373737", "white");
 
   return (
     <>
       <Heading
-        color="gray"
+        color={textColor}
         textAlign="center"
         as="h3"
-        size="md"
-        mt="13px"
-        mb="22px"
+        fontSize="23px"
+        mt="10px"
+        mb="28px"
       >
         Quick Actions
       </Heading>
