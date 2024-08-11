@@ -73,7 +73,7 @@ export const Navbar = () => {
               history.push("/dashboard/voicemode");
             }}
           >
-            Try Demo
+            Open Meddy
           </Button>
         </Show>
       </Flex>

@@ -161,7 +161,7 @@ export const Hero = ({ login }) => {
                       // transform: "scale(1.05)",
                     }}
                   >
-                    Try on Web
+                    Try Voice Mode
                   </Button>
                 </HStack>
               </VStack>
@@ -169,7 +169,7 @@ export const Hero = ({ login }) => {
             <Box
               mt={{ base: "60px", md: "80px", lg: "100px" }}
               mb={{ base: "60px", md: "80px", lg: "100px" }}
-              pb={{base: "40px", md: "60px", lg: "80px"}}
+              pb={{ base: "40px", md: "60px", lg: "80px" }}
               width="100%"
               height={{ base: "400px", md: "450px", lg: "550px" }}
               position="relative"
