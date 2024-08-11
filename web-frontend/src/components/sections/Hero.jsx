@@ -17,7 +17,7 @@ import "../../styles/button.css";
 import CardsInterface from "../CardsInterface";
 import { Gradient } from "../Gradient"; // Import the Gradient class
 import "../../styles/gradient.css"; // Import the gradient CSS
-import MeddyDemoGif from "../../assets/gif/MeddyDemo.gif";
+import MeddyDemoGif from "../../assets/gif/meddy-gif.gif";
 import "../../styles/animatedBG.css";
 import Card from "../Card/Card";
 import GeminiLogo from "../../assets/img/google-gemini-icon.png";
@@ -194,24 +194,30 @@ export const Hero = ({ login }) => {
         width="1280px"
         w={{ xl: "80%" }}
       >
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8} paddingX="5%">
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={7} paddingX="5%">
           <Box
             position="relative"
             boxShadow="lg"
             display="flex"
             flexDirection="column"
+            alignItems="center" 
+            justifyContent="center"
             borderRadius="md"
             className="animated-box1"
+            overflow="hidden" 
           >
             <Image
               src={MeddyDemoGif}
               alt="Empathic Voice Interface GIF"
-              boxSize="100%"
-              maxW="100%"
+              width={{ base: "120%", md: "120%", lg: "120%" }}
+              height={{ base: "auto", md: "auto", lg: "auto" }}
+              maxWidth="120%"
               borderRadius="md"
               zIndex={1}
+              objectFit="contain"
             />
           </Box>
+
           <Box
             className="animated-box2"
             borderRadius="md"
@@ -260,7 +266,7 @@ export const Hero = ({ login }) => {
           </Box>
 
           <Box
-            className="animated-box3"
+            className="animated-box2"
             borderRadius="md"
             boxShadow="lg"
             p={6}
@@ -312,7 +318,7 @@ export const Hero = ({ login }) => {
           </Box>
 
           <Box
-            className="animated-box4"
+            className="animated-box1"
             borderRadius="md"
             boxShadow="lg"
             p={6}

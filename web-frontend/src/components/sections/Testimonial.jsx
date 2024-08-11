@@ -6,8 +6,8 @@ import geminiImage from "../../assets/img/gemini.png";
 import gfitImage from "../../assets/img/googlefit.png";
 const Card = ({ image }) => (
       <Box 
-      height="140px" 
-      width="140px" 
+      height="100px" 
+      width="100px" 
       borderRadius="20px" 
       boxShadow="lg" 
       backgroundColor="rgba(255,255,255,0.3)" 
@@ -25,15 +25,14 @@ const Card = ({ image }) => (
       >
         <Image
           src={image}
-          width="80%"
+          width="50%"
           objectFit="cover"
           margin="auto"
         />
     </Box>
   );
-
 export const Testimonial = () => (
-  <Box py={16}
+  <Box py={8}
     position="relative"
     display="flex"
     flexDirection="column"
@@ -44,7 +43,7 @@ export const Testimonial = () => (
       direction="column"
       align="center"
     >
-      <Text as="h2" size="xl" mb={0} pl={4} fontSize="48px" color="white">
+      <Text as="h2" size="lg" mb={0} pl={4} fontSize="34px" color="white">
           Integrate with your favorite apps
       </Text>
       <Box display="flex" flexDirection="row">
