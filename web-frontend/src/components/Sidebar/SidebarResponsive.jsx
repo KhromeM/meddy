@@ -201,19 +201,24 @@ function SidebarResponsive(props) {
         lineHeight="100%"
         mb="30px"
         fontWeight="bold"
-        justifyContent="center"
         alignItems="center"
         fontSize="11px"
+        pl="10px"
       >
         <SpinningLogo
-          size={35}
+          size={45}
           outerSpeed={10}
           innerSpeed={8}
           outerCircleSize={1.2}
           innerCircleSize={0.8}
           color="#0e3c26"
         />
-        <Text color="#0e3c26" fontSize="xl" mt="1px" mr="15px" pl="8px">
+        <Text
+          color="#0e3c26"
+          fontSize="2xl"
+          mt="1px"
+          ml="12px"
+        >
           {logoText}
         </Text>
       </Link>
