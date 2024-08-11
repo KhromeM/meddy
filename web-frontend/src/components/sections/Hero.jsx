@@ -23,6 +23,8 @@ import Card from "../Card/Card";
 import GeminiLogo from "../../assets/img/google-gemini-icon.png";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import AnimatedDisplay from "./animatedDisplay";
+import computer from "../../assets/img/supercomputer.jpg"
+import chart from "../../assets/gif/data_vis2.gif"
 
 export const Hero = ({ login }) => {
   const history = useHistory();
@@ -217,38 +219,29 @@ export const Hero = ({ login }) => {
           >
             <VStack align="flex-start" spacing={4} p={10}>
               <Heading as="h3" size="lg">
-                Empathic Voice Interface (EVI)
+                Voice and Translation
               </Heading>
               <Text style={{ lineHeight: "1.8em" }}>
-                Give your application empathy and a voice. EVI is a
-                conversational voice API powered by empathic AI. It is the only
-                API that measures nuanced vocal modulations, guiding language
-                and speech generation. Trained on millions of human
-                interactions, our empathic large language model (eLLM) unites
-                language modeling and text-to-speech with better EQ, prosody,
-                end-of-turn detection, interruptibility, and alignment.
+                Using the latest audio and TTS models, seamlessly translate between doctor and patient. 
+                We auto detect language in voice and chat, making conversations fluid. 
+                With Voice Mode you can access all of the app's functionality from one screen; setting reminders, 
+                syncing appointments, accessing your data and more in a matter of seconds.
               </Text>
               <Flex flexWrap={"wrap"} gap={4}>
-                <Button
-                  as={RouterLink}
-                  to="/learn-more"
-                  variant="solid"
-                  colorScheme="blackAlpha"
-                  width={{ base: "100%", md: "auto" }}
-                  flex={{ base: "1 1 100%", md: "none" }}
-                >
-                  Learn More
-                </Button>
-                <Button
-                  as={RouterLink}
-                  to="/playground"
-                  variant="outline"
-                  colorScheme="blackAlpha"
-                  width={{ base: "100%", md: "auto" }}
-                  flex={{ base: "1 1 100%", md: "none" }}
-                >
-                  Playground
-                </Button>
+              <Button
+                onClick={() => {
+                  history.push("/dashboard/voicemode");
+                }}
+                backgroundColor="white"
+                variant="outline"
+                color="black"
+                borderColor="#808080"
+                width={{ base: "100%", md: "auto" }}
+                flex={{ base: "1 1 100%", md: "none" }}
+                _hover={{ backgroundColor: "rgba(0,0,0,0)" }}
+              >
+                Try Voice Mode
+              </Button>
               </Flex>
             </VStack>
           </Box>
@@ -264,11 +257,10 @@ export const Hero = ({ login }) => {
           >
             <VStack align="flex-start" spacing={4} p={10}>
               <Heading as="h3" size="lg">
-                Measure Expression
+                Long Term Memory
               </Heading>
               <Text style={{ lineHeight: "1.8em" }}>
-                Use psychologically valid models of facial movement and vocal
-                modulation.
+                Using Gemini's 2 million token context window, revisit appointments from months ago
               </Text>
               <Flex
                 flexDirection="row"
@@ -277,30 +269,7 @@ export const Hero = ({ login }) => {
                 gap={4}
                 wrap="wrap"
               >
-                <Image src={images.ecnomicGraph} borderRadius="md" />
-                <Button
-                  as={RouterLink}
-                  to="#"
-                  variant="solid"
-                  colorScheme="blackAlpha"
-                  width={{ base: "100%", md: "auto" }}
-                  flex={{ base: "1 1 100%", md: "none" }}
-                >
-                  Start with Webcam
-                </Button>
-                <Button
-                  as={RouterLink}
-                  to="#"
-                  variant="outline"
-                  colorScheme="blackAlpha"
-                  borderRadius="full"
-                  borderWidth="2px"
-                  borderColor="blackAlpha.500"
-                  width={{ base: "100%", md: "auto" }}
-                  flex={{ base: "1 1 100%", md: "none" }}
-                >
-                  Documentation
-                </Button>
+                <Image src={computer} borderRadius="md" />
               </Flex>
             </VStack>
           </Box>
@@ -316,11 +285,11 @@ export const Hero = ({ login }) => {
           >
             <VStack align="flex-start" spacing={4} p={10}>
               <Heading as="h3" size="lg">
-                Interpret Expressive Communication
+                Multimodal
               </Heading>
               <Text style={{ lineHeight: "1.8em" }}>
-                Start building with the world's first emotionally intelligent
-                voice AI.
+                Send a picture of your medication, or submit a file with your health data, 
+                and Gemini will analyse it for you and suggest the best course of action
               </Text>
               <Flex
                 flexDirection="row"
@@ -329,30 +298,7 @@ export const Hero = ({ login }) => {
                 gap={4}
                 wrap="wrap"
               >
-                <Image src={images.graphThree} borderRadius="md" />
-                <Button
-                  as={RouterLink}
-                  to="#"
-                  variant="solid"
-                  colorScheme="blackAlpha"
-                  width={{ base: "100%", md: "auto" }}
-                  flex={{ base: "1 1 100%", md: "none" }}
-                >
-                  Use Custom Models
-                </Button>
-                <Button
-                  as={RouterLink}
-                  to="#"
-                  variant="outline"
-                  colorScheme="blackAlpha"
-                  borderRadius="full"
-                  borderWidth="2px"
-                  borderColor="blackAlpha.500"
-                  width={{ base: "100%", md: "auto" }}
-                  flex={{ base: "1 1 100%", md: "none" }}
-                >
-                  Documentation
-                </Button>
+                <Image src={chart} borderRadius="10px" height="280px"/>
               </Flex>
             </VStack>
           </Box>
