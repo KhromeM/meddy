@@ -31,7 +31,6 @@ const Card = ({ image }) => (
         />
     </Box>
   );
-
 export const Testimonial = () => (
   <Box py={8}
     position="relative"
