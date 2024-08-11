@@ -285,8 +285,8 @@ class _MicPageState extends State<MicPage> {
   }
 
   String _truncateMeddyResponse(String text) {
-    if (text.length <= 150) return text;
-    return '${text.substring(0, 150)} . . .';
+    if (text.length <= 250) return text;
+    return '${text.substring(0, 250)} . . .';
   }
 
   String _truncateUserChat(String text) {
