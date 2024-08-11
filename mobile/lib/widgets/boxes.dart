@@ -80,19 +80,24 @@ class Boxes extends StatelessWidget {
                         Image(
                           image: AssetImage(images[index % images.length]),
                           fit: BoxFit.cover,
+                          color: Colors.black.withOpacity(isHighContrast
+                              ? 0.5
+                              : 0.3), // Opacity changes based on high contrast mode
+                          colorBlendMode: BlendMode.darken,
                         ),
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.transparent,
-                                Colors.black.withOpacity(0.6),
-                              ],
+                        if (!isHighContrast)
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.black.withOpacity(0.3),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
                         Positioned(
                           left: 10,
                           right: 10,
@@ -101,7 +106,9 @@ class Boxes extends StatelessWidget {
                             languageProvider.translate(texts[index]),
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 20,
+                              fontSize: isHighContrast
+                                  ? 30
+                                  : 20, // Increase text size in high contrast mode
                               fontWeight: FontWeight.bold,
                             ),
                             maxLines: 3,

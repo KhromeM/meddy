@@ -128,13 +128,18 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final highContrastMode = HighContrastMode.of(context);
+    final bool isHighContrast = highContrastMode?.isHighContrast ?? false;
+
     return Consumer<LanguageProvider>(
       builder: (context, languageProvider, child) {
         return Stack(
           children: [
             Scaffold(
               extendBodyBehindAppBar: true,
-              backgroundColor: Colors.transparent,
+              backgroundColor: isHighContrast
+                  ? Colors.white
+                  : Colors
+                      .transparent, // Background color based on high contrast mode
               appBar: CustomAppBar(),
               body: LayoutBuilder(
                 builder: (context, constraints) {
@@ -156,7 +161,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             Text(
                               languageProvider.translate('hello'),
                               style: TextStyle(
-                                  fontSize: 40, color: Color(0xFF0E3C26)),
+                                  fontSize: 40,
+                                  color: isHighContrast
+                                      ? Colors.black
+                                      : Color(
+                                          0xFF0E3C26)), // Text color based on high contrast mode
                             ),
                           ],
                         ),
@@ -170,7 +179,10 @@ class _MyHomePageState extends State<MyHomePage> {
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 35,
-                                  color: Color(0xFF0E3C26)),
+                                  color: isHighContrast
+                                      ? Colors.black
+                                      : Color(
+                                          0xFF0E3C26)), // Text color based on high contrast mode
                             )
                           ],
                         ),
@@ -188,7 +200,10 @@ class _MyHomePageState extends State<MyHomePage> {
                               width: MediaQuery.of(context).size.width * 0.95,
                               height: 100,
                               decoration: BoxDecoration(
-                                color: Color.fromRGBO(1, 99, 218, 1),
+                                color: isHighContrast
+                                    ? Colors.white
+                                    : Color.fromRGBO(1, 99, 218,
+                                        1), // Container color based on high contrast mode
                                 shape: BoxShape.rectangle,
                                 borderRadius: BorderRadius.circular(20),
                                 boxShadow: [
@@ -215,11 +230,15 @@ class _MyHomePageState extends State<MyHomePage> {
                                         Icon(
                                           Icons.circle,
                                           size: 75,
-                                          color: Colors.white,
+                                          color: isHighContrast
+                                              ? Colors.black
+                                              : Colors
+                                                  .white, // Icon color based on high contrast mode
                                         ),
                                         Icon(Icons.phone_in_talk,
-                                            color:
-                                                Color.fromRGBO(1, 99, 218, 1),
+                                            color: isHighContrast
+                                                ? Colors.white
+                                                : Color.fromRGBO(1, 99, 218, 1),
                                             size: 30),
                                       ],
                                     )
@@ -231,21 +250,30 @@ class _MyHomePageState extends State<MyHomePage> {
                                     Text(
                                       languageProvider.translate('start_voice'),
                                       style: TextStyle(
-                                          color: Colors.white,
+                                          color: isHighContrast
+                                              ? Colors.black
+                                              : Colors
+                                                  .white, // Text color based on high contrast mode
                                           fontWeight: FontWeight.w700),
                                     ),
                                     Text(
                                       languageProvider
                                           .translate('translate_doctor'),
                                       style: TextStyle(
-                                          color: Colors.white,
+                                          color: isHighContrast
+                                              ? Colors.black
+                                              : Colors
+                                                  .white, // Text color based on high contrast mode
                                           fontWeight: FontWeight.w300),
                                     ),
                                     Text(
                                       languageProvider
                                           .translate('listen_doctor'),
                                       style: TextStyle(
-                                          color: Colors.white,
+                                          color: isHighContrast
+                                              ? Colors.black
+                                              : Colors
+                                                  .white, // Text color based on high contrast mode
                                           fontWeight: FontWeight.w300),
                                     ),
                                   ],
@@ -255,7 +283,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                                 Icon(
                                   Icons.arrow_forward_ios,
-                                  color: Colors.white,
+                                  color: isHighContrast
+                                      ? Colors.black
+                                      : Colors
+                                          .white, // Icon color based on high contrast mode
                                 ),
                                 SizedBox(width: 10)
                               ],
@@ -267,7 +298,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Boxes(
                         texts: texts,
                         isHighContrast:
-                            highContrastMode?.isHighContrast ?? false,
+                            isHighContrast, // Pass high contrast mode to Boxes widget
                       ),
                       Spacer(),
                       if (_storedHealthTips != null)
@@ -276,11 +307,14 @@ class _MyHomePageState extends State<MyHomePage> {
                           height: meddyTipHeight,
                           padding: EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Color(0xFFF5E9DB),
+                            color: isHighContrast
+                                ? Colors.black
+                                : Color(
+                                    0xFFF5E9DB), // Container color based on high contrast mode
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
+                                color: Colors.black.withOpacity(0.3),
                                 spreadRadius: 1,
                                 blurRadius: 5,
                                 offset: Offset(0, 2),
@@ -300,7 +334,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                       style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold,
-                                        color: Color(0xFF0E3C26),
+                                        color: isHighContrast
+                                            ? Colors.white
+                                            : Color(
+                                                0xFF0E3C26), // Text color based on high contrast mode
                                       ),
                                     ),
                                     SizedBox(height: 8),
@@ -308,7 +345,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                       _getRandomTip(),
                                       style: TextStyle(
                                         fontSize: 16,
-                                        color: Color(0xFF0E3C26),
+                                        color: isHighContrast
+                                            ? Colors.white
+                                            : Color(
+                                                0xFF0E3C26), // Text color based on high contrast mode
                                       ),
                                     ),
                                   ],
