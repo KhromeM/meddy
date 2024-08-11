@@ -79,7 +79,7 @@ export default function Dashboard() {
           captions={["Companies", "Members", "Budget", "Completion"]}
           data={dashboardTableData}
         /> */}
-        <Card pt="16px" maxW="380">
+        <Card backgroundColor={"#FAF3EA"} pt="16px" maxW="380">
           <QuickActionList iconBoxInside={iconBoxInside} />
         </Card>
         <MultiChartContainer
@@ -104,6 +104,7 @@ export default function Dashboard() {
           percentage={5}
           chart={<LineChart />}
         /> */}
+        {/* ASK MEDDY THESE HEALTH PROMPTS */}
         <WorkWithTheRockets
           backgroundImage={heartImage}
           title={"I'm concerned about my heart rate."}
