@@ -70,6 +70,8 @@ dependencies:
   # comment the following line  out for android users
   sound_stream: ^0.3.0
   carousel_slider: ^5.0.0
+  flutter_material_symbols: ^0.0.4
+  material_symbols_icons: ^4.2780.0
 
 dev_dependencies:
   flutter_test:
