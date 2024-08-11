@@ -3,7 +3,7 @@ import Card from "./Card/Card";
 import Chart from "react-apexcharts";
 import { Box, Text } from "@chakra-ui/react";
 
-class ProgressChartNarrow extends Component {
+class ProgressChart extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -49,6 +49,7 @@ class ProgressChartNarrow extends Component {
             },
             value: {
               offsetY: 10,
+              //   color: "white",
               color: this.state.textColor,
               fontSize: this.state.title ? "38px" : "24px",
               show: true,
@@ -78,15 +79,17 @@ class ProgressChartNarrow extends Component {
       <Card
         py="1rem"
         height={{ sm: this.state.height }}
+        // Height={{ sm: this.state.height }}
         width="100%"
         bg={this.state.bg}
         pb={this.state.pb}
         maxHeight="475px"
         boxShadow="rgba(0, 0, 0, 0.02) 0px 3.5px 5.5px"
+        // alignSelf="stretch"
       >
-        <Box flex="1" display="flex" flexDirection="row" position={"relative"}>
+        <Box display="flex" justifyContent="right">
           {this.state.title ? (
-            <Box mb="5px" width="100%" textAlign="center" pt="10px">
+            <Box mb="5px" width="100%" textAlign="left" pt="10px">
               <Text
                 color={"white"}
                 fontSize="34px"
@@ -105,28 +108,21 @@ class ProgressChartNarrow extends Component {
           >
             <Text
               color={this.state.textColorOfSubtext || this.state.textColor}
+              // boxShadow="text-shadow: 0 0 2px #000"
+              // textShadow={"0 0 1px #000"}
               fontSize="24px"
               fontWeight="bold"
             >
               {this.state.label}
             </Text>
           </Box>
-          <Box
-            flex="1"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            className="apexChartContainer"
-            marginTop="auto"
-            position={"absolute"}
-            top="-3"
-            right="-16"
-          >
+
+          <Box>
             <Chart
               options={chartOptions}
               series={[this.state.data]}
               type="radialBar"
-              width="80%"
+              width="100%"
               height="120%"
             />
           </Box>
@@ -136,4 +132,4 @@ class ProgressChartNarrow extends Component {
   }
 }
 
-export default ProgressChartNarrow;
+export default ProgressChart;
