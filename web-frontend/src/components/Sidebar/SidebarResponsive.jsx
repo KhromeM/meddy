@@ -1,6 +1,5 @@
-/*eslint-disable*/
+import React from "react";
 import { HamburgerIcon } from "@chakra-ui/icons";
-// chakra imports
 import {
   Box,
   Button,
@@ -17,31 +16,30 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import IconBox from "../../components/Icons/IconBox";
-import { CreativeTimLogo } from "../../components/Icons/Icons";
 import { Separator } from "../../components/Separator/Separator";
 import { SidebarHelp } from "../../components/Sidebar/SidebarHelp";
-import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import SpinningLogo from "../SpinningLogo";
+import SettingsButton from "./SettingsButton";
+import LoginButton from "./LoginButton";
 
 function SidebarResponsive(props) {
-  // to check for active links and opened collapses
-  let location = useLocation();
-  // this is for the rest of the collapses
+  const location = useLocation();
   const [state, setState] = React.useState({});
   const mainPanel = React.useRef();
-  // verifies if routeName is the one active (in browser input)
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const settingsRef = React.useRef();
+
+
   const activeRoute = (routeName) => {
     return location.pathname === routeName ? "active" : "";
   };
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const createLinks = (routes) => {
-    // Chakra Color Mode
-    const activeBg = useColorModeValue("white", "gray.700");
-    const inactiveBg = useColorModeValue("white", "gray.700");
-    const activeColor = useColorModeValue("gray.700", "white");
-    const inactiveColor = useColorModeValue("gray.400", "gray.400");
+    const activeBg = useColorModeValue("#F5E9DB", "gray.700");
+    const inactiveBg = useColorModeValue("#e4eceb", "gray.700");
+    const activeColor = "#0e3c26";
+    const inactiveColor = "#058247";
 
     return routes.map((prop, key) => {
       if (prop.redirect) {
@@ -91,12 +89,17 @@ function SidebarResponsive(props) {
               }}
               py="12px"
               borderRadius="15px"
-              _hover="none"
+              _hover={{
+                bg: activeBg,
+                boxShadow: "sm",
+                transform: "scale(1.01)",
+              }}
               w="100%"
               _active={{
                 bg: "inherit",
-                transform: "none",
+                transform: "scale(0.98)",
                 borderColor: "transparent",
+                boxShadow: "md",
               }}
               _focus={{
                 boxShadow: "none",
@@ -108,7 +111,7 @@ function SidebarResponsive(props) {
                   <Icon>{prop.icon}</Icon>
                 ) : (
                   <IconBox
-                    bg="orange.300"
+                    bg="orange.400"
                     color="white"
                     h="30px"
                     w="30px"
@@ -140,12 +143,17 @@ function SidebarResponsive(props) {
                 xl: "16px",
               }}
               borderRadius="15px"
-              _hover="none"
+              _hover={{
+                bg: "#F5E9DB",
+                boxShadow: "sm",
+                transform: "scale(1.01)",
+              }}
               w="100%"
               _active={{
                 bg: "inherit",
-                transform: "none",
+                transform: "scale(0.98)",
                 borderColor: "transparent",
+                boxShadow: "md",
               }}
               _focus={{
                 boxShadow: "none",
@@ -157,8 +165,8 @@ function SidebarResponsive(props) {
                   <Icon>{prop.icon}</Icon>
                 ) : (
                   <IconBox
-                    bg={inactiveBg}
-                    color="orange.300"
+                    bg={"#e3a782"}
+                    color="white"
                     h="30px"
                     w="30px"
                     me="12px"
@@ -180,9 +188,8 @@ function SidebarResponsive(props) {
   const { logoText, routes, ...rest } = props;
 
   var links = <>{createLinks(routes)}</>;
-  //  BRAND
-  //  Chakra Color Mode
-  let hamburgerColor = useColorModeValue("gray.500", "gray.200");
+
+  let hamburgerColor = "#0e3c26";
   if (props.secondary === true) {
     hamburgerColor = "white";
   }
@@ -190,7 +197,6 @@ function SidebarResponsive(props) {
     <Box pt={"35px"} mb="8px">
       <Link
         href={`/dashboard/home`}
-        // target="_blank"
         display="flex"
         lineHeight="100%"
         mb="30px"
@@ -199,26 +205,23 @@ function SidebarResponsive(props) {
         alignItems="center"
         fontSize="11px"
       >
-        {/* <CreativeTimLogo w="32px" h="32px" me="10px" /> */}
         <SpinningLogo
           size={35}
           outerSpeed={10}
           innerSpeed={8}
           outerCircleSize={1.2}
           innerCircleSize={0.8}
-          color="0x000000"
+          color="#0e3c26"
         />
-        <Text ml={2} fontSize="sm" mt="3px">
-          Meddy
+        <Text color="#0e3c26" fontSize="xl" mt="1px" mr="15px" pl="8px">
+          {logoText}
         </Text>
       </Link>
       <Separator></Separator>
     </Box>
   );
 
-  // SIDEBAR
   const btnRef = React.useRef();
-  // Color variables
   return (
     <Flex
       display={{ sm: "flex", xl: "none" }}
@@ -227,10 +230,9 @@ function SidebarResponsive(props) {
     >
       <HamburgerIcon
         color={hamburgerColor}
-        w="18px"
-        h="18px"
+        w="40px"
+        h="40px"
         ref={btnRef}
-        colorScheme="teal"
         onClick={onOpen}
       />
       <Drawer
@@ -257,13 +259,27 @@ function SidebarResponsive(props) {
             _hover={{ boxShadow: "none" }}
           />
           <DrawerBody maxW="250px" px="1rem">
-            {/* responsive sidebar height is the h below */}
             <Box maxW="100%" h="85vh">
               <Box>{brand}</Box>
               <Stack direction="column" mb="40px">
                 <Box>{links}</Box>
               </Stack>
               <SidebarHelp></SidebarHelp>
+              <Flex
+                sx={{
+                  position: "absolute",
+                  bottom: "16px",
+                }}
+                flexDirection="column"
+              >
+                <LoginButton />
+                <SettingsButton
+                  settingsRef={settingsRef}
+                  inactiveBg={"gray.700"}
+                  inactiveColor="#0e3c26"
+                  onOpen={onOpen}
+                />
+              </Flex>
             </Box>
           </DrawerBody>
         </DrawerContent>
