@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@uidotdev/usehooks": "^2.4.1",
     "react-owl-carousel": "^2.3.3"
   }
 }
