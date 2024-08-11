@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:meddymobile/pages/chat_page.dart';
 import 'package:meddymobile/pages/health_page.dart';
 import 'package:meddymobile/pages/my_home_page.dart';
@@ -27,7 +28,7 @@ class _ScreenWrapperState extends State<ScreenWrapper> {
   }
 
   BottomNavigationBarItem _buildNavigationItem(String assetName, int index) {
-    Color color = _currentIndex == index ? Colors.brown : Colors.grey;
+    Color color = _currentIndex == index ? Color(0xFF0E3C26) : Colors.grey;
     return BottomNavigationBarItem(
       icon: SvgPicture.asset(
         assetName,
@@ -39,7 +40,7 @@ class _ScreenWrapperState extends State<ScreenWrapper> {
         assetName,
         height: 40,
         width: 40,
-        colorFilter: ColorFilter.mode(Colors.brown, BlendMode.srcIn),
+        colorFilter: ColorFilter.mode(Color(0xFF0E3C26), BlendMode.srcIn),
       ),
       label: '',
     );
@@ -47,34 +48,41 @@ class _ScreenWrapperState extends State<ScreenWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      body: Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          PageView(
-            controller: _pageController,
-            onPageChanged: (newIndex) {
-              setState(() {
-                _currentIndex = newIndex;
-              });
-            },
-            children: [
-              const MyHomePage(),
-              ChatPage(),
-              HealthPage(),
-              ReminderPage(),
-            ],
-          ),
-        ],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
       ),
-      bottomNavigationBar: _currentIndex == 1
-          ? null
-          : BottomBar(
-              bottomNavigationBarItems: _bottomNavigationBarItems,
-              currentIndex: _currentIndex,
-              pageController: _pageController,
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        body: Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            PageView(
+              controller: _pageController,
+              onPageChanged: (newIndex) {
+                setState(() {
+                  _currentIndex = newIndex;
+                });
+              },
+              children: [
+                const MyHomePage(),
+                ChatPage(),
+                HealthPage(),
+                ReminderPage(),
+              ],
             ),
+          ],
+        ),
+        bottomNavigationBar: _currentIndex == 1
+            ? null
+            : BottomBar(
+                bottomNavigationBarItems: _bottomNavigationBarItems,
+                currentIndex: _currentIndex,
+                pageController: _pageController,
+              ),
+      ),
     );
   }
 }

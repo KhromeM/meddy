@@ -11,7 +11,7 @@ const MultiChartContainer = ({ title, percentage, chart }) => {
     <Card p="28px 10px 16px 0px" mb={{ sm: "26px", lg: "0px" }}>
       <CardHeader mb="20px" pl="22px">
         <Flex direction="column" alignSelf="flex-start">
-          <Text fontSize="lg" color={textColor} fontWeight="bold" mb="6px">
+          <Text fontSize="22px" color={textColor} fontWeight="bold" mb="6px">
             {title}
           </Text>
           <Text fontSize="md" fontWeight="medium" color="gray.400">
@@ -22,7 +22,7 @@ const MultiChartContainer = ({ title, percentage, chart }) => {
             >
               {`${percentage}%`} more
             </Text>{" "}
-            than last month
+            than last week
           </Text>
         </Flex>
       </CardHeader>

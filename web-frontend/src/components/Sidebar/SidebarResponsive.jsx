@@ -22,6 +22,7 @@ import { Separator } from "../../components/Separator/Separator";
 import { SidebarHelp } from "../../components/Sidebar/SidebarHelp";
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import SpinningLogo from "../SpinningLogo";
 
 function SidebarResponsive(props) {
   // to check for active links and opened collapses
@@ -33,6 +34,7 @@ function SidebarResponsive(props) {
   const activeRoute = (routeName) => {
     return location.pathname === routeName ? "active" : "";
   };
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const createLinks = (routes) => {
     // Chakra Color Mode
@@ -99,13 +101,14 @@ function SidebarResponsive(props) {
               _focus={{
                 boxShadow: "none",
               }}
+              onClick={onClose}
             >
               <Flex>
                 {typeof prop.icon === "string" ? (
                   <Icon>{prop.icon}</Icon>
                 ) : (
                   <IconBox
-                    bg="teal.300"
+                    bg="orange.300"
                     color="white"
                     h="30px"
                     w="30px"
@@ -147,6 +150,7 @@ function SidebarResponsive(props) {
               _focus={{
                 boxShadow: "none",
               }}
+              onClick={onClose}
             >
               <Flex>
                 {typeof prop.icon === "string" ? (
@@ -154,7 +158,7 @@ function SidebarResponsive(props) {
                 ) : (
                   <IconBox
                     bg={inactiveBg}
-                    color="teal.300"
+                    color="orange.300"
                     h="30px"
                     w="30px"
                     me="12px"
@@ -185,8 +189,8 @@ function SidebarResponsive(props) {
   var brand = (
     <Box pt={"35px"} mb="8px">
       <Link
-        href={`https://trymeddy.com/`}
-        target="_blank"
+        href={`/dashboard/home`}
+        // target="_blank"
         display="flex"
         lineHeight="100%"
         mb="30px"
@@ -195,9 +199,17 @@ function SidebarResponsive(props) {
         alignItems="center"
         fontSize="11px"
       >
-        <CreativeTimLogo w="32px" h="32px" me="10px" />
-        <Text fontSize="sm" mt="3px">
-          {logoText}
+        {/* <CreativeTimLogo w="32px" h="32px" me="10px" /> */}
+        <SpinningLogo
+          size={35}
+          outerSpeed={10}
+          innerSpeed={8}
+          outerCircleSize={1.2}
+          innerCircleSize={0.8}
+          color="0x000000"
+        />
+        <Text ml={2} fontSize="sm" mt="3px">
+          Meddy
         </Text>
       </Link>
       <Separator></Separator>
@@ -205,7 +217,6 @@ function SidebarResponsive(props) {
   );
 
   // SIDEBAR
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
   // Color variables
   return (
@@ -231,6 +242,7 @@ function SidebarResponsive(props) {
         <DrawerOverlay />
         <DrawerContent
           w="250px"
+          h="95%"
           maxW="250px"
           ms={{
             sm: "16px",
@@ -245,7 +257,8 @@ function SidebarResponsive(props) {
             _hover={{ boxShadow: "none" }}
           />
           <DrawerBody maxW="250px" px="1rem">
-            <Box maxW="100%" h="100vh">
+            {/* responsive sidebar height is the h below */}
+            <Box maxW="100%" h="85vh">
               <Box>{brand}</Box>
               <Stack direction="column" mb="40px">
                 <Box>{links}</Box>

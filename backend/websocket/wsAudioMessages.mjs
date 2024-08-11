@@ -173,6 +173,7 @@ export async function useTranscription(ws, req) {
 // respond to audio message with text and audio
 export async function useTranscriptionTTS(clientSocket, req) {
 	const text = req.transcript;
+	if (!text) return;
 	try {
 		const chatHistory = await db.getRecentMessagesByUserId(
 			req.user.userid,
@@ -223,5 +224,3 @@ export async function handlePartialResponse(clientSocket, req) {
 	const fileStream = createWriteStream(fileName);
 	TTS_WS(chatHistory, clientSocket, fileStream, stallReq, 1);
 }
-
-

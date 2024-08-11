@@ -241,7 +241,14 @@ const Chat = () => {
 	};
 
 	return (
-		<Flex direction="column" h="100vh" bg="fef9ef" overflow="hidden">
+		<Flex
+			//   marginTop="60px"
+			// paddingTop="60px"
+			direction="column"
+			h="100vh"
+			bg="fef9ef"
+			overflow="hidden"
+		>
 			<Box flex={1} display="flex" flexDirection="column" overflow="hidden">
 				{messages.length === 0 ? (
 					<Box flex={1} px={4} py={2} overflowY="auto">
@@ -270,17 +277,26 @@ const Chat = () => {
 					</Box>
 				) : (
 					<Box flex={1} overflowY="auto">
-						<Container maxW="container.xl" h="full" py={4}>
+						<Container maxW="container.xl" h="full" py={0}>
 							<Box
 								bg="#FAF3EA"
-								borderRadius="xl"
-								boxShadow="xl"
 								h="full"
 								overflow="hidden"
 								display="flex"
 								flexDirection="column"
 							>
-								<Box flex={1} overflowY="auto" p={6}>
+								<Box
+									flex={1}
+									overflowY="auto"
+									p={10}
+									css={{
+										"&::-webkit-scrollbar": {
+											display: "none",
+										},
+										"-ms-overflow-style": "none",
+										scrollbarWidth: "none",
+									}}
+								>
 									<MessageList
 										messages={messages}
 										messagesEndRef={messagesEndRef}

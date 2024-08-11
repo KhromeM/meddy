@@ -10,8 +10,14 @@ import 'package:meddymobile/widgets/custom_app_bar.dart';
 import 'package:meddymobile/utils/ws_connection.dart';
 import 'package:meddymobile/services/player_service.dart';
 import 'package:meddymobile/services/recorder_service.dart';
-import 'package:aura_box/aura_box.dart'; // Add this import
 import 'package:meddymobile/utils/languages.dart';
+import 'package:flutter/services.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'dart:math';
+
+List<String>? _storedHealthTips;
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
@@ -42,28 +48,78 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
 
-    // Initialize WebSocket connection and services
     wsConnection = WSConnection();
     playerService = PlayerService(wsConnection);
     recorderService = RecorderService(wsConnection);
 
     _firstName = _authService.getFirstName() ?? 'User';
 
-    // Connect to WebSocket
     wsConnection.connect();
 
-    // Load chat history on init
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (Provider.of<ChatProvider>(context, listen: false).messages.isEmpty) {
         print('Loading chat history in MyHomePage...');
         Provider.of<ChatProvider>(context, listen: false).loadChatHistory();
       }
     });
+
+    if (_storedHealthTips == null) {
+      _fetchAndStoreHealthTips();
+    } else {
+      _logHealthTipLength();
+    }
+  }
+
+  Future<void> _fetchAndStoreHealthTips() async {
+    final String baseUrl = 'https://trymeddy.com/api';
+    String? userToken = await _authService.getIdToken();
+
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/info/tip'),
+        headers: {'idToken': userToken ?? 'dev'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          _storedHealthTips = List<String>.from(data['tips']);
+          _logHealthTipLength();
+        });
+      } else {
+        throw Exception('Failed to load health tips');
+      }
+    } catch (error) {
+      print('Error fetching health tips: $error');
+    }
+  }
+
+  void _logHealthTipLength() {
+    if (_storedHealthTips != null && _storedHealthTips!.isNotEmpty) {
+      final randomTip = _getRandomTip();
+      print('Random Health Tip Length: ${randomTip.length}');
+    }
+  }
+
+  String _getRandomTip() {
+    final random = Random();
+    if (_storedHealthTips != null && _storedHealthTips!.isNotEmpty) {
+      String tip =
+          _storedHealthTips![random.nextInt(_storedHealthTips!.length)];
+      return _truncateTip(tip);
+    }
+    return 'No health tips available';
+  }
+
+  String _truncateTip(String tip) {
+    if (tip.length > 90) {
+      return tip.substring(0, 90) + '...';
+    }
+    return tip;
   }
 
   @override
   void dispose() {
-    // Dispose services
     playerService.dispose();
     recorderService.dispose();
     super.dispose();
@@ -74,254 +130,215 @@ class _MyHomePageState extends State<MyHomePage> {
     final highContrastMode = HighContrastMode.of(context);
     return Consumer<LanguageProvider>(
       builder: (context, languageProvider, child) {
-    return Stack(
-      children: [
-        // MainBackground(),
-        Scaffold(
-          extendBodyBehindAppBar: true,
-          backgroundColor: Colors.transparent,
-          appBar: CustomAppBar(),
-          body: Column(
-            children: [
-              SizedBox(height: MediaQuery.of(context).size.height * 0.07),
-              Padding(
-                padding: const EdgeInsets.only(left: 20),
-                child: Row(
-                  children: [
-                    Text(
-                       languageProvider.translate('hello'),
-                      style: TextStyle(fontSize: 40),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20.0),
-                child: Row(
-                  children: [
-                    Text(
-                      _firstName,
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 35),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-              InkWell(
-                onTap: () {
-                  _showMic();
-                },
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.95,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: Color.fromRGBO(1, 99, 218, 1),
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            spreadRadius: 1,
-                            blurRadius: 5,
-                            offset: Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Column(
+        return Stack(
+          children: [
+            Scaffold(
+              extendBodyBehindAppBar: true,
+              backgroundColor: Colors.transparent,
+              appBar: CustomAppBar(),
+              body: LayoutBuilder(
+                builder: (context, constraints) {
+                  double availableHeight = constraints.maxHeight -
+                      (MediaQuery.of(context).size.height * 0.07) -
+                      100 -
+                      40;
+
+                  double meddyTipHeight = availableHeight * 3 / 10;
+
+                  return Column(
+                    children: [
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.07),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Row(
                           children: [
-                            Stack(
-                              alignment: Alignment.center,
+                            Text(
+                              languageProvider.translate('hello'),
+                              style: TextStyle(
+                                  fontSize: 40, color: Color(0xFF0E3C26)),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20.0),
+                        child: Row(
+                          children: [
+                            Text(
+                              _firstName,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 35,
+                                  color: Color(0xFF0E3C26)),
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02),
+                      InkWell(
+                        onTap: () {
+                          _showMic();
+                        },
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.95,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                color: Color.fromRGBO(1, 99, 218, 1),
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.3),
+                                    spreadRadius: 1,
+                                    blurRadius: 5,
+                                    offset: Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Column(
+                                  children: [
+                                    Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.circle,
+                                          size: 75,
+                                          color: Colors.white,
+                                        ),
+                                        Icon(Icons.phone_in_talk,
+                                            color:
+                                                Color.fromRGBO(1, 99, 218, 1),
+                                            size: 30),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      languageProvider.translate('start_voice'),
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                    Text(
+                                      languageProvider
+                                          .translate('translate_doctor'),
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                    Text(
+                                      languageProvider
+                                          .translate('listen_doctor'),
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
                                 Icon(
-                                  Icons.circle,
-                                  size: 75,
+                                  Icons.arrow_forward_ios,
                                   color: Colors.white,
                                 ),
-                                Icon(Icons.phone_in_talk,
-                                    color: Color.fromRGBO(1, 99, 218, 1),
-                                    size: 30),
+                                SizedBox(width: 10)
                               ],
                             )
                           ],
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              languageProvider.translate('start_voice'),
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700),
-                            ),
-                            Text(
-                              languageProvider.translate('translate_doctor'),
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w300),
-                            ),
-                            Text(
-                              languageProvider.translate('listen_doctor'),
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w300),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Icon(
-                          Icons.arrow_forward_ios,
-                          color: Colors.white,
-                        ),
-                        SizedBox(width: 10)
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
-              Boxes(
-                texts: texts,
-                isHighContrast: highContrastMode?.isHighContrast ?? false,
-              ),
-              SizedBox(height: 15),
-              Center(
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.95,
-                  child: AuraBox(
-                    spots: [
-                      AuraSpot(
-                        color: Color.fromRGBO(186, 2, 57, 1).withOpacity(0.3),
-                        radius: 90.0,
-                        alignment: Alignment.topLeft,
-                        blurRadius: 30.0,
-                        stops: const [0.0, 0.7],
                       ),
-                      AuraSpot(
-                        color: Color.fromRGBO(28, 175, 87, 1).withOpacity(0.2),
-                        radius: 110.0,
-                        alignment: Alignment.bottomRight,
-                        blurRadius: 40.0,
-                        stops: const [0.0, 0.7],
+                      SizedBox(height: 20),
+                      Boxes(
+                        texts: texts,
+                        isHighContrast:
+                            highContrastMode?.isHighContrast ?? false,
                       ),
-                      AuraSpot(
-                        color:
-                            Color.fromRGBO(118, 116, 200, 1).withOpacity(0.4),
-                        radius: 100.0,
-                        alignment: Alignment(-0.4, 1.0),
-                        blurRadius: 40.0,
-                        stops: const [0.0, 0.7],
-                      ),
-                    ],
-                    decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.circular(30.0),
-                      border: Border.all(color: Colors.black12, width: 2),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                languageProvider.translate('integrate'),
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w800,
-                                  color: const Color.fromARGB(255, 71, 71, 71),
-                                ),
+                      Spacer(),
+                      if (_storedHealthTips != null)
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.95,
+                          height: meddyTipHeight,
+                          padding: EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Color(0xFFF5E9DB),
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                spreadRadius: 1,
+                                blurRadius: 5,
+                                offset: Offset(0, 2),
                               ),
                             ],
                           ),
-                          SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          child: Row(
                             children: [
-                              Container(
-                                width: 100,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  color: Colors.white,
-                                  border: Border.all(
-                                    color: Colors.black12,
-                                    width: 2,
-                                  ),
+                              Expanded(
+                                flex: 2,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Meddy Health Tip:",
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF0E3C26),
+                                      ),
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      _getRandomTip(),
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Color(0xFF0E3C26),
+                                      ),
+                                    ),
+                                  ],
                                 ),
+                              ),
+                              Expanded(
+                                flex: 1,
                                 child: Padding(
-                                  padding: const EdgeInsets.all(20),
-                                  child: Center(
-                                    child:
-                                        Image.asset('assets/images/epic.png'),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 10),
-                              Container(
-                                width: 100,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  color: Colors.white,
-                                  border: Border.all(
-                                    color: Colors.black12,
-                                    width: 2,
-                                  ),
-                                ),
-                                child: Center(
+                                  padding: const EdgeInsets.all(8.0),
                                   child: Image.asset(
-                                    'assets/images/gemini.png',
-                                    width: 60, // Adjust the width and height
-                                    height: 60,
+                                    'assets/images/c5.webp',
+                                    fit: BoxFit.contain,
                                   ),
-                                ),
-                              ),
-                              SizedBox(width: 10),
-                              Container(
-                                width: 100,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  color: Colors.white,
-                                  border: Border.all(
-                                    color: Colors.black12,
-                                    width: 2,
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Image.asset(
-                                      'assets/images/googlefit.png'),
                                 ),
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                        )
+                      else
+                        CircularProgressIndicator(),
+                      Spacer(),
+                    ],
+                  );
+                },
               ),
-            ],
-          ),
-        ),
-      ],
+            ),
+          ],
+        );
+      },
     );
-      },);
   }
 
   void _showMic() {

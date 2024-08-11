@@ -16,7 +16,7 @@ import React from "react";
 const SmallQuickActionCard = ({ title, amount, percentage, icon, onClick }) => {
   const iconTeal = useColorModeValue("orange.300", "orange.300");
   const textColor = useColorModeValue("gray.700", "white");
-  const bgColor = useColorModeValue("#ebf4f3", "#525558");
+  const bgColor = useColorModeValue("#FAF3EA", "#525558");
 
   return (
     <Card

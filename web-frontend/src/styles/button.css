@@ -88,10 +88,10 @@
 .custom-button::after {
   content: "";
   position: absolute;
-  top: -5px;
-  left: -5px;
-  right: -5px;
-  bottom: -5px;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
   background-image: conic-gradient(from var(--angle), transparent 80%, #f86665);
   border-radius: inherit;
   z-index: -1;
@@ -101,10 +101,10 @@
 .custom-button::before {
   content: "";
   position: absolute;
-  top: -5px;
-  left: -5px;
-  right: -5px;
-  bottom: -5px;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
   background: inherit;
   border-radius: inherit;
   z-index: -1;
@@ -121,6 +121,52 @@
   height: 1.5rem;
   margin-left: 10px;
 }
+
+.demo-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 25px;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  color: #333;
+  background-color: white;
+  border: 2px solid #333;
+  border-radius: 25px;
+  cursor: pointer;
+  overflow: visible;
+  transition: all 0.3s ease;
+}
+
+.demo-button::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  background-image: conic-gradient(from var(--angle), transparent 80%, white);
+  border-radius: inherit;
+  z-index: -1;
+  animation: rotate 4s linear infinite;
+}
+
+.demo-button::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  background: inherit;
+  border-radius: inherit;
+  z-index: -1;
+  filter: blur(1.5rem);
+  opacity: 0.5;
+}
+
+
 
 @keyframes rotate {
   to {

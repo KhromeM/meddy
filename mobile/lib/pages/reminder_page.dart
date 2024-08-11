@@ -5,12 +5,12 @@ import 'package:meddymobile/widgets/main_background.dart';
 import 'package:meddymobile/utils/app_colors.dart';
 import 'package:intl/intl.dart';
 import 'package:meddymobile/services/appointment_service.dart';
-import 'package:meddymobile/widgets/new_reminder_bottom_sheet.dart';
 import 'package:meddymobile/utils/languages.dart';
 import 'package:motion/motion.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 
 class ReminderPage extends StatefulWidget {
   const ReminderPage({super.key});
@@ -31,6 +31,7 @@ class _ReminderPageState extends State<ReminderPage> {
   final String baseUrl = 'https://trymeddy.com/api';
   late Future<void> _appointmentsFuture = new Future<void>(() => ());
   Map<String, dynamic> _appointments = Map();
+
   @override
   void initState() {
     super.initState();
@@ -61,25 +62,6 @@ class _ReminderPageState extends State<ReminderPage> {
       _appointmentsFuture = _fetchAppointments();
     });
     return _appointmentsFuture;
-  }
-
-  void _addReminder(DateTime date, TimeOfDay time) async {
-    final service = AppointmentService();
-    String? user = await _authService.getIdToken();
-
-    try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/info/reminder'),
-        headers: {'Content-Type': 'application/json', 'idToken': user ?? 'dev'},
-        body: jsonEncode({
-          'date': DateFormat('yyyy-MM-dd').format(date),
-          'userId': user,
-        }),
-      );
-      _refreshAppointments(); // Refresh after adding
-    } catch (e) {
-      print(e);
-    }
   }
 
   void _removeReminder(int id) async {
@@ -119,24 +101,6 @@ class _ReminderPageState extends State<ReminderPage> {
     });
   }
 
-  void _showAddReminderBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-        return AddReminderBottomSheet(
-          onAddReminder: (DateTime date, TimeOfDay time, String repeatOption) {
-            _addReminder(date, time);
-            setState(() {
-              _repeatOption = repeatOption;
-            });
-          },
-        );
-      },
-    );
-  }
-
   List<Widget> _buildDateCards() {
     List<Widget> dateCards = [];
     for (int i = -2; i <= 2; i++) {
@@ -144,7 +108,7 @@ class _ReminderPageState extends State<ReminderPage> {
       dateCards.add(
         Expanded(
           child: Card(
-            color: i == 0 ? orangeAccent : Colors.white,
+            color: i == 0 ? Color(0xFF0E3C26) : Colors.white,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -242,7 +206,6 @@ class _ReminderPageState extends State<ReminderPage> {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     return Consumer<LanguageProvider>(
       builder: (context, languageProvider, child) {
@@ -253,9 +216,13 @@ class _ReminderPageState extends State<ReminderPage> {
               extendBodyBehindAppBar: true,
               backgroundColor: Colors.transparent,
               appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                forceMaterialTransparency: true,
-              ),
+                  backgroundColor: Colors.transparent,
+                  forceMaterialTransparency: true,
+                  systemOverlayStyle: SystemUiOverlayStyle(
+                    statusBarColor: Colors.transparent,
+                    statusBarIconBrightness: Brightness.dark,
+                    statusBarBrightness: Brightness.light,
+                  )),
               body: RefreshIndicator(
                 onRefresh: _refreshAppointments,
                 child: SingleChildScrollView(
@@ -331,24 +298,6 @@ class _ReminderPageState extends State<ReminderPage> {
                       ],
                     ),
                   ),
-                ),
-              ),
-              floatingActionButton: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                  backgroundColor: Color.fromRGBO(1, 99, 218, 1),
-                ),
-                onPressed: _showAddReminderBottomSheet,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.add_circle_outline, color: Colors.white),
-                    SizedBox(width: 8),
-                    Text(languageProvider.translate('reminder'),
-                        style: TextStyle(color: Colors.white)),
-                  ],
                 ),
               ),
             ),

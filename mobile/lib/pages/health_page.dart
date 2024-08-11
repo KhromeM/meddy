@@ -4,6 +4,7 @@ import 'package:meddymobile/models/health_category.dart';
 import 'package:meddymobile/services/health_service.dart';
 import 'package:meddymobile/widgets/health_summary_card.dart';
 import 'package:meddymobile/widgets/fitness_card.dart';
+import 'package:flutter/services.dart';
 
 class HealthPage extends StatefulWidget {
   @override
@@ -26,10 +27,12 @@ class _HealthPageState extends State<HealthPage> {
   Future<void> _loadMedicalRecord() async {
     try {
       final medicalRecord = await healthService.fetchMedicalRecord();
+      if (!mounted) return;
       setState(() {
         _medicalRecord = medicalRecord;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         print("Error loading medical records");
       });
@@ -39,12 +42,12 @@ class _HealthPageState extends State<HealthPage> {
   Future<void> _loadActivitiyData() async {
     try {
       final fitnessData = await healthService.fetchGFitData();
-      if (!mounted) return; // check if the widget is still mounted
+      if (!mounted) return;
       setState(() {
         _fitnessData = fitnessData;
       });
     } catch (e) {
-      if (!mounted) return; // check if the widget is still mounted
+      if (!mounted) return;
       setState(() {
         print("Error loading fitness records");
       });
@@ -60,6 +63,11 @@ class _HealthPageState extends State<HealthPage> {
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             forceMaterialTransparency: true,
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent,
+              statusBarIconBrightness: Brightness.dark,
+              statusBarBrightness: Brightness.light,
+            ),
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 16.0),

@@ -77,7 +77,7 @@ var dashRoutes = [
   },
   {
     path: "/reminders",
-    name: "Reminders",
+    name: "REMOVE_LATER",
     icon: <IoTimeSharp color="inherit" />,
     component: Billing, // Updated to MeddyReminders
     layout: "/dashboard",
