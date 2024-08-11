@@ -1,5 +1,6 @@
 import 'package:aura_box/aura_box.dart';
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:meddymobile/services/auth_service.dart';
 import 'package:meddymobile/widgets/main_background.dart';
 import 'package:meddymobile/utils/app_colors.dart';
@@ -149,6 +150,7 @@ class _ReminderPageState extends State<ReminderPage> {
         reminderCards.add(Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
+            width: MediaQuery.of(context).size.width * 0.95,
             decoration: BoxDecoration(
                 color: Colors.white,
                 shape: BoxShape.rectangle,
@@ -164,38 +166,91 @@ class _ReminderPageState extends State<ReminderPage> {
                 ]),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+              child:
+                  Column(mainAxisAlignment: MainAxisAlignment.start, children: [
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      reminder['medicationname'],
-                      style: TextStyle(fontSize: 20, color: Color(0xFF0E3C26)),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            'One ',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          Text(
+                            'capsule',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ],
+                      ),
                     ),
-                    SizedBox(width: 15),
-                    Text(
-                      fullTime.substring(0, fullTime.length - 3),
-                      style: TextStyle(fontSize: 18, color: Color(0xFF0E3C26)),
-                    ),
-                    SizedBox(width: 15),
-                    Text(
-                      repeat_text,
-                      style: TextStyle(fontSize: 18, color: Color(0xFF0E3C26)),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
+                      child: IconButton(
+                          icon: Icon(
+                            Icons.close,
+                            color: Colors.redAccent,
+                            size: 30,
+                          ),
+                          onPressed: () => {
+                                print(reminder['reminderid']),
+                                _removeReminder(reminder['reminderid']),
+                                _fetchAppointments()
+                              }),
                     ),
                   ],
                 ),
-                SizedBox(width: 15),
-                IconButton(
-                    icon: Icon(
-                      Icons.close,
-                      color: Colors.redAccent,
-                      size: 30,
-                    ),
-                    onPressed: () => {
-                          print(reminder['reminderid']),
-                          _removeReminder(reminder['reminderid']),
-                          _fetchAppointments()
-                        }),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: Row(
+                    children: [
+                      Text(
+                        reminder['medicationname'],
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Color(0xFF0E3C26),
+                            fontWeight: FontWeight.w800),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        fullTime.substring(0, fullTime.length - 3),
+                        style:
+                            TextStyle(fontSize: 18, color: Color(0xFF0E3C26)),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        repeat_text,
+                        style:
+                            TextStyle(fontSize: 18, color: Color(0xFF0E3C26)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 20.0),
+                        child: Icon(
+                          Symbols.pill,
+                          size: 40,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(height: 10),
               ]),
             ),
           ),
