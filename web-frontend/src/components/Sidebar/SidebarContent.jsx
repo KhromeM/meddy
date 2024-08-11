@@ -204,19 +204,16 @@ const SidebarContent = ({ logoText, routes, onOpen }) => {
     <>
       <Box pt={"25px"} mb="12px">
         <Link
-          href={`/`} // go to landing
-          // target="_blank"
+          href={`/`}
           display="flex"
           lineHeight="100%"
           mb="30px"
           fontWeight="bold"
-          justifyContent="center"
           alignItems="center"
           fontSize="11px"
         >
-          {/* <CreativeTimLogo w="32px" h="32px" me="10px" /> // MeddyLogo */}
           <SpinningLogo
-            size={35}
+            size={45}
             outerSpeed={10}
             innerSpeed={8}
             outerCircleSize={1.2}
@@ -224,16 +221,10 @@ const SidebarContent = ({ logoText, routes, onOpen }) => {
             color="#0e3c26"
           />
           <Text
-            color={
-              // history.location.pathname.includes("voicemode")
-              //   ? "white"
-              //   : "black"
-              "#0e3c26"
-            }
-            fontSize="xl"
+            color="#0e3c26"
+            fontSize="2xl"
             mt="1px"
-            mr="15px"
-            pl="8px"
+            ml="12px"
           >
             {logoText}
           </Text>
