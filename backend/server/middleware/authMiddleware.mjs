@@ -9,6 +9,16 @@ const authMiddleware = async (req, res, next) => {
 				name: "DEVELOPER",
 				user_id: "DEVELOPER",
 			};
+		} else if (idToken == "bob") {
+			req._fbUser = {
+				name: "Bob Smith",
+				user_id: "U001",
+			};
+		} else if (idToken == "alice") {
+			req._fbUser = {
+				name: "Alice Johnson",
+				user_id: "U002",
+			};
 		} else {
 			req._fbUser = await verifyUser(idToken);
 		}
