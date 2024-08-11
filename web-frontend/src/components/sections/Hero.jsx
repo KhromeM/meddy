@@ -22,6 +22,7 @@ import "../../styles/animatedBG.css";
 import Card from "../Card/Card";
 import GeminiLogo from "../../assets/img/google-gemini-icon.png";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
+import AnimatedDisplay from "./animatedDisplay";
 
 export const Hero = ({ login }) => {
   const history = useHistory();
@@ -166,19 +167,15 @@ export const Hero = ({ login }) => {
               </VStack>
             </Box>
             <Box
-              alignContent={"end"}
-              height="100%"
-              width={{ base: "100%", md: "100%", lg: "100%" }}
-              paddingX="5%"
-              marginTop={{ base: "20px", md: "10px", lg: "5%" }}
+              mt={{ base: "60px", md: "80px", lg: "100px" }}
+              mb={{ base: "60px", md: "80px", lg: "100px" }}
+              pb={{base: "40px", md: "60px", lg: "80px"}}
+              width="100%"
+              height={{ base: "400px", md: "450px", lg: "550px" }}
+              position="relative"
+              overflow="visible"
             >
-              <Image
-                width="100%"
-                src={images.heroImage}
-                alt="Code Image"
-                borderRadius="md"
-                maxW={{ base: "100%", md: "100%", lg: "100%" }}
-              />
+              <AnimatedDisplay imageSrc={images.heroImage} />
             </Box>
           </Box>
         </Box>
