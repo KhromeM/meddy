@@ -1,46 +1,41 @@
 import { React, useRef, useState } from "react";
 import {
-	Heading,
-	Box,
-	Text,
-	HStack,
-	SimpleGrid,
-	Icon,
-	Divider,
-	Select,
-	Flex,
-	VStack,
-	useColorModeValue,
+  Heading,
+  Box,
+  Text,
+  HStack,
+  SimpleGrid,
+  Icon,
+  Divider,
+  Select,
+  Flex,
+  VStack,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { FaPills } from "react-icons/fa";
 import { TbClock, TbCalendarTime, TbTestPipe } from "react-icons/tb";
 import Card from "./Card/Card";
 
 const TestDetails = ({ test }) => {
-	const bgColor = useColorModeValue("white", "gray.600");
+  const bgColor = useColorModeValue("white", "gray.600");
 
-	return (
+  return (
     <Box mb={3}>
-      <Heading size="md" mb={2} color="#0e3c26">
+      <Heading size="md" mb={2}>
         {test.name}
       </Heading>
-      <Text color="#0e3c26">
-        <strong>Result:</strong> {test.result || "N/A"}
-      </Text>
-      <Text color="#0e3c26">
-        <strong>Range:</strong> {test.range || "N/A"}
-      </Text>
+      <Text>Name: {test.name || "N/A"}</Text>
+      <Text>Result: {test.result || "N/A"}</Text>
+      <Text>Range: {test.range || "N/A"}</Text>
 
-      <Box mt={4} borderWidth={1} borderRadius="md" bg="#F5E9DB" p={4}>
+      <Box mt={4} borderWidth={1} borderRadius="md" bg={"#b0e9b4"} p={4}>
         <HStack>
-          <Icon as={FaPills} boxSize={7} color="#058247" />
+          <Icon as={FaPills} boxSize={7} color="blue.500" />
           <Box>
-            <Text fontWeight="bold" mb={2} color="#0e3c26">
+            <Text fontWeight="bold" mb={2}>
               Suggestion
             </Text>
-            <Text fontSize="sm" color="#0e3c26">
-              {test.recommendation}
-            </Text>
+            <Text fontSize="sm">{test.recommendation}</Text>
           </Box>
         </HStack>
       </Box>
@@ -49,28 +44,28 @@ const TestDetails = ({ test }) => {
 };
 
 const Recommendations = ({ medData }) => {
-	const [selectedTest, setSelectedTest] = useState("goldTest");
-	const bgColor = useColorModeValue("white", "#FAF3EA");
+  const [selectedTest, setSelectedTest] = useState("goldTest");
+  const bgColor = useColorModeValue("white", "gray.600");
 
-	const tests = [
-		{ value: "goldTest", label: medData.details.goldTest.name },
-		...medData.details.secondaryTests.map((test, index) => ({
-			value: `secondaryTest${index}`,
-			label: test.name,
-		})),
-	];
+  const tests = [
+    { value: "goldTest", label: medData.details.goldTest.name },
+    ...medData.details.secondaryTests.map((test, index) => ({
+      value: `secondaryTest${index}`,
+      label: test.name,
+    })),
+  ];
 
-	const getCurrentTest = () => {
-		if (selectedTest === "goldTest") {
-			return medData.details.goldTest;
-		} else {
-			const index = parseInt(selectedTest.replace("secondaryTest", ""));
-			return medData.details.secondaryTests[index];
-		}
-	};
+  const getCurrentTest = () => {
+    if (selectedTest === "goldTest") {
+      return medData.details.goldTest;
+    } else {
+      const index = parseInt(selectedTest.replace("secondaryTest", ""));
+      return medData.details.secondaryTests[index];
+    }
+  };
 
-	return (
-    <Card bg="#FAF3EA" height="100%">
+  return (
+    <Card backgroundColor="#FAF3EA" height="100%">
       <Box flex={1} width="100%">
         <HStack justify="space-between" mb={1}>
           <Text
@@ -79,10 +74,10 @@ const Recommendations = ({ medData }) => {
             fontWeight={600}
             color={
               medData.score > 80
-                ? "#058247"
+                ? "green.500"
                 : medData.score > 60
-                ? "#299563"
-                : "#FF6B6B"
+                ? "yellow.500"
+                : "red.500"
             }
           >
             {medData.score > 80
@@ -92,11 +87,9 @@ const Recommendations = ({ medData }) => {
               : "Needs Improvement"}
           </Text>
         </HStack>
-        <Text mb={4} color="#0e3c26">
-          {medData.generalRecommendation}
-        </Text>
+        <Text mb={4}>{medData.generalRecommendation}</Text>
 
-        <Divider borderColor="#0e3c26" mb={4} />
+        <Divider mb={4} />
 
         <Flex align="center" justify="flex-start" mb={6}>
           <Icon as={TbTestPipe} boxSize={8} color="red.500" mr={2} />
@@ -104,10 +97,6 @@ const Recommendations = ({ medData }) => {
             value={selectedTest}
             onChange={(e) => setSelectedTest(e.target.value)}
             width="auto"
-            bg="#F5E9DB"
-            color="#0e3c26"
-            borderColor="#058247"
-            _hover={{ borderColor: "#299563" }}
           >
             {tests.map((test) => (
               <option key={test.value} value={test.value}>
@@ -184,10 +173,10 @@ const Recommendations = ({ medData }) => {
 };
 
 export const RecommendationsAction = ({ medData }) => {
-	const bgColor = useColorModeValue("white", "gray.600");
+  const bgColor = useColorModeValue("white", "gray.600");
 
-	return (
-    <Card bg="#FAF3EA">
+  return (
+    <Card backgroundColor="#FAF3EA">
       <Heading size="md" mb={2}>
         Recommendations
       </Heading>
@@ -197,10 +186,10 @@ export const RecommendationsAction = ({ medData }) => {
       </Heading>
       {/* <VStack spacing={4} width="100%" align="stretch"> */}
       <SimpleGrid columns={{ sm: 1, md: 2, xl: 2 }} spacing="24px">
-        <Box bg="#F5E9DB" p={3} borderRadius="xl">
+        <Box bg="blue.100" p={3} borderRadius="xl">
           <Flex align="center" mb={3}>
-            <Icon as={TbClock} color="#058247" boxSize={6} mr={1.5} />
-            <Heading size="sm" color="#0e3c26">
+            <Icon as={TbClock} color="blue.500" boxSize={6} mr={1.5} />
+            <Heading size="sm" color="blue.500">
               Short Term Recommendations
             </Heading>
           </Flex>
@@ -212,8 +201,8 @@ export const RecommendationsAction = ({ medData }) => {
                 borderRadius="md"
                 p={4}
                 // bg="white"
-                bg="#FAF3EA"
-                borderColor="#058247"
+                bg={"#ffffffa3"}
+                borderColor="blue.300"
                 _hover={{ boxShadow: "md", transform: "translateY(-2px)" }}
                 transition="all 0.2s"
               >
@@ -238,7 +227,7 @@ export const RecommendationsAction = ({ medData }) => {
                 borderRadius="md"
                 p={4}
                 // bg="purple.50"
-                bg={bgColor}
+                bg={"#ffffffa3"}
                 borderColor="purple.300"
                 _hover={{ boxShadow: "md", transform: "translateY(-2px)" }}
                 transition="all 0.2s"

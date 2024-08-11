@@ -32,12 +32,15 @@ function Sidebar(props) {
   return (
     <Box ref={mainPanel}>
       <Box
+        backgroundColor="#183459"
         className="sidebar"
         display={{ sm: "none", xl: "block" }}
         position="fixed"
-        boxShadow="md"
+        boxShadow="3px -5px 5px 0px rgba(0, 0, 0, 0.50)"
+        opacity="0.95"
+        // pr="2px"
       >
-        <canvas
+        {/* <canvas
           id="gradient-canvas"
           data-js-darken-top
           data-transition-in
@@ -48,9 +51,9 @@ function Sidebar(props) {
             top: 0,
             left: 0,
             zIndex: -1,
-            opacity: 0.15,
+            opacity: 0.25,
           }}
-        ></canvas>
+        ></canvas> */}
         <Box
           bg={sidebarBg}
           transition={variantChange}

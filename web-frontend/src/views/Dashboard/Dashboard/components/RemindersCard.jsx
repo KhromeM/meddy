@@ -16,7 +16,7 @@ import TimelineRow from "../../../../components/Tables/TimelineRow";
 // import { useAuth } from "../../../../firebase/AuthService";
 
 const RemindersCard = () => {
-  const bgColor = useColorModeValue("white", "gray.700");
+  const bgColor = useColorModeValue("#FAF3EA", "gray.700");
   const textColor = useColorModeValue("gray.700", "white");
   const headerBg = useColorModeValue("red.300", "red.300");
   const [reminders, setReminders] = useState([]);
