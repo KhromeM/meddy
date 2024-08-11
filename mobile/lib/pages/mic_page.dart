@@ -15,6 +15,7 @@ import 'package:siri_wave/siri_wave.dart';
 import 'package:aura_box/aura_box.dart';
 import 'package:image/image.dart' as img;
 import 'package:meddymobile/services/chat_service.dart';
+import 'package:meddymobile/services/auth_service.dart';
 
 class MicPage extends StatefulWidget {
   final String userName;
@@ -30,6 +31,7 @@ class _MicPageState extends State<MicPage> {
   late RecorderService recorderService;
   late PlayerService playerService;
   final Uuid _uuid = Uuid();
+  String? userId;
   bool _isRecording = false;
   String _reqId = '';
   String _transcribedText = '';
@@ -48,6 +50,7 @@ class _MicPageState extends State<MicPage> {
   @override
   void initState() {
     super.initState();
+    _initializeMicPage(); // Call the async initialization method
 
     // ws connect
     wsConnection = WSConnection();
@@ -76,6 +79,43 @@ class _MicPageState extends State<MicPage> {
       statusBarColor: Colors.black,
       statusBarIconBrightness: Brightness.light, // Set to light for white icons
       statusBarBrightness: Brightness.dark, // Ensures icons are white
+      systemNavigationBarColor: Colors.black,
+      systemNavigationBarIconBrightness: Brightness.light,
+      systemNavigationBarDividerColor: Colors.black,
+    ));
+  }
+
+  Future<void> _initializeMicPage() async {
+    // Fetch the user ID and store it in the class-level variable
+    userId = await AuthService().getIdToken();
+
+    // Initialize WebSocket connection and services
+    wsConnection = WSConnection();
+    recorderService = RecorderService(wsConnection);
+    playerService = PlayerService(wsConnection);
+
+    // siri wave constructor
+    siriController = IOS7SiriWaveformController(
+      amplitude: 0.1,
+      color: Colors.white,
+      frequency: 6,
+      speed: 0.1,
+    );
+
+    // handlers
+    wsConnection.setHandler("chat_response", _handleChatResponse);
+    wsConnection.setHandler("partial_transcript", _handleTranscription);
+
+    // Start recording as soon as the page is opened
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _startRecording();
+    });
+
+    // Set status bar and navigation bar to black with white icons
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.black,
+      statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.dark,
       systemNavigationBarColor: Colors.black,
       systemNavigationBarIconBrightness: Brightness.light,
       systemNavigationBarDividerColor: Colors.black,
@@ -228,7 +268,7 @@ class _MicPageState extends State<MicPage> {
 
       final newMessage = Message(
         messageId: _reqId + "_user",
-        userId: "DEVELOPER",
+        userId: userId!,
         source: "user",
         text: _transcribedText,
         time: DateTime.now(),

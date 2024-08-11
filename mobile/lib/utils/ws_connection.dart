@@ -2,12 +2,14 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'dart:async';
 import 'dart:convert';
+import 'package:meddymobile/services/auth_service.dart'; // Import AuthService
 
 typedef Handler = void Function(Map<String, dynamic>);
 
 class WSConnection {
   WSConnection._() {
     _handlers['auth'] = _defaultAuthHandler;
+    _initializeUserId(); // Initialize userId when the singleton is created
   }
 
   static final WSConnection _instance = WSConnection._();
@@ -23,6 +25,13 @@ class WSConnection {
 
   final Map<String, Handler> _handlers = {};
   Completer<bool>? _authCompleter;
+  final AuthService _authService =
+      AuthService(); // Create an instance of AuthService
+  String? userId; // Class-level userId
+
+  Future<void> _initializeUserId() async {
+    userId = await _authService.getIdToken(); // Fetch userId and store it
+  }
 
   void setHandler(String type, Handler handler) {
     _handlers[type] = handler;
@@ -87,7 +96,7 @@ class WSConnection {
 
     sendMessage({
       'type': 'auth',
-      'data': {'idToken': 'dev', 'source': 'mobile'}
+      'data': {'idToken': userId!, 'source': 'mobile'} // Use userId here
     });
 
     return _authCompleter!.future;

@@ -17,6 +17,7 @@ import 'package:uuid/uuid.dart';
 import 'package:image/image.dart' as img;
 import 'package:meddymobile/widgets/listening_notifier.dart';
 import 'package:flutter/services.dart';
+import 'package:meddymobile/services/auth_service.dart';
 
 class ChatPage extends StatefulWidget {
   final String? initialPrompt;
@@ -34,6 +35,7 @@ class _ChatPageState extends State<ChatPage> {
   late RecorderService _recorderService;
   late PlayerService _playerService;
   final Uuid _uuid = Uuid();
+  String? userId;
 
   bool _isRecording = false;
   bool _isLoading = true;
@@ -54,6 +56,18 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
+    _initializePage();
+  }
+
+  Future<void> _initializePage() async {
+    // Fetch the user ID
+    userId = await AuthService().getIdToken();
+    if (userId == null) {
+      // Handle the case where userId is not available
+      print("Error: userId is null. Cannot proceed.");
+      return;
+    }
+
     ws.connect();
     _recorderService = RecorderService(ws);
     _playerService = PlayerService(ws);
@@ -69,7 +83,7 @@ class _ChatPageState extends State<ChatPage> {
     });
 
     // Fetch chat history from ChatProvider
-    _loadChatHistoryFromProvider();
+    await _loadChatHistoryFromProvider();
     if (widget.initialPrompt != null) {
       _sendInitialPrompt(widget.initialPrompt!);
     }
@@ -143,7 +157,7 @@ class _ChatPageState extends State<ChatPage> {
       {String? imageID, Map<String, dynamic>? result}) {
     Message newMessage = Message(
       messageId: reqId,
-      userId: "DEVELOPER",
+      userId: userId!, // Use the null assertion operator here
       source: source,
       imageID: imageID,
       text: text,
