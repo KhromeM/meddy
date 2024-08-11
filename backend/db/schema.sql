@@ -98,6 +98,14 @@ CREATE TABLE HealthGoals (
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
+CREATE TABLE HealthScores (
+    UserID VARCHAR(255),
+    Sleep INT,
+    Step INT,
+    Date DATE,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
 CREATE TABLE Credentials (
     UserID VARCHAR(255),
     ProviderName VARCHAR(50),
