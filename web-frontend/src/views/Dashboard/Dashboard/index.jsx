@@ -41,6 +41,7 @@ import { useAuth } from "../../../firebase/AuthService";
 import QuickActionList from "./components/QuickActionList";
 import Card from "../../../components/Card/Card";
 import MultiChartContainer from "./components/MultiChartContainer";
+import AppointmentsCard from "./components/AppointmentsCard";
 
 const barChartData = [
 	{
@@ -78,13 +79,18 @@ export default function Dashboard() {
         gap="24px"
         mb={{ lg: "26px" }}
       > */}
-			<Grid
-				// mt="26px"
-				templateColumns={{ sm: "1fr", md: "1fr 1fr", lg: "1fr 2.5fr" }}
-				templateRows={{ sm: "1fr auto", md: "1fr", lg: "1fr" }}
-				gap="24px"
-			>
-				{/* <Projects
+
+      <Grid
+        // mt="26px"
+        templateColumns={{
+          sm: "1fr",
+          md: "1fr 1fr",
+          lg: "minmax(380px, 1fr) 4.5fr",
+        }}
+        templateRows={{ sm: "1fr auto", md: "1fr", lg: "1fr" }}
+        gap="24px"
+      >
+        {/* <Projects
           title={"Projects"}
           amount={30}
           captions={["Companies", "Members", "Budget", "Completion"]}
@@ -135,7 +141,18 @@ export default function Dashboard() {
 				{/* </SimpleGrid> */}
 			</SimpleGrid>
 
-			{/* <SimpleGrid columns={{ sm: 1, md: 2, xl: 4 }} mt="26px" spacing="24px">
+
+      <Grid
+        gap="24px"
+        mt="26px"
+        templateColumns={{ sm: "1fr", lg: "1.6fr 1.2fr" }}
+      >
+        {/* <AppointmentsCard title={"Billing Information"} data={billingData} /> */}
+        <Card />
+        <AppointmentsCard title={"Your Appointments"} date={"past 30 days"} />
+      </Grid>
+      {/* <SimpleGrid columns={{ sm: 1, md: 2, xl: 4 }} mt="26px" spacing="24px">
+
         <QuickActionCard
           icon={<Icon h={"24px"} w={"24px"} color="white" as={FaWallet} />}
           title={"Salary"}
