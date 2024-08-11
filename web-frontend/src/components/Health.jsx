@@ -41,9 +41,9 @@ import Card from "./Card/Card.jsx";
 
 const HealthSystemTab = ({ category, isSelected }) => {
 	const bgColor = useColorModeValue(
-		isSelected ? "lightgreen" : "#cedeee",
-		isSelected ? "gray.700" : "gray.600"
-	);
+    isSelected ? "#058247" : "#F5E9DB",
+    isSelected ? "#299563" : "#F5E9DB"
+  );
 	//   const bgColor = useColorModeValue(
 	//     isSelected ? "white" : "gray.100",
 	//     isSelected ? "gray.700" : "gray.600"
@@ -52,7 +52,10 @@ const HealthSystemTab = ({ category, isSelected }) => {
 		isSelected ? "#FACC87" : "transparent",
 		isSelected ? "#FACC87" : "transparent"
 	);
-	const textColor = useColorModeValue("gray.800", "white");
+	const textColor = useColorModeValue(
+    isSelected ? "white" : "#0e3c26",
+    isSelected ? "white" : "#0e3c26"
+  );
 
 	const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
 
@@ -362,30 +365,32 @@ const HealthPanel = () => {
 		fetchData();
 	}, [user]);
 
-	if (isLoading)
-		return (
-			<Box
-				display="flex"
-				justifyContent="center"
-				alignItems="center"
-				height="100vh"
-				width="100%"
-			>
-				<Spinner size="xl" />
-			</Box>
-		);
-	if (error)
-		return (
-			<Box
-				display="flex"
-				justifyContent="center"
-				alignItems="center"
-				height="100vh"
-				width="100%"
-			>
-				<Text>Error: {error}</Text>
-			</Box>
-		);
+  if (isLoading)
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+        width="100%"
+        bg="#FAF3EA"
+      >
+        <Spinner size="xl" color="#058247" />
+      </Box>
+    );
+  if (error)
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+        width="100%"
+        bg="#FAF3EA"
+      >
+        <Text color="#0e3c26">Error: {error}</Text>
+      </Box>
+    );
 
 	const healthCategories = [
 		{
@@ -423,90 +428,91 @@ const HealthPanel = () => {
 	];
 
 	return (
-		<Box
-			position="relative"
-			minHeight="100vh"
-			width="100%"
-			overflow="auto"
-			br={10}
-			paddingTop="60px"
-		>
-			<VStack spacing={0} align="stretch" height="100%" width="100%">
-				<Box py={4} px={4} width="100%">
-					<canvas
-						id="gradient-canvas"
-						data-js-darken-top
-						data-transition-in
-						style={{
-							position: "absolute",
-							width: "100%",
-							height: "100%",
-							top: 0,
-							left: 0,
-							zIndex: -1,
-						}}
-					></canvas>
-					<Heading
-						size="2xl"
-						textAlign="left"
-						color="black"
-						opacity={100}
-						height={55}
-						pl={5}
-					>
-						Your Health Summary
-					</Heading>
-				</Box>
-				<Box
-					display="flex"
-					flexDirection="column"
-					flex={1}
-					//   borderTopWidth={1}
-					//   borderColor={borderColor}
-					borderTopRadius="none"
-					//   bg={bgColor}
-					width="100%"
-					overflow="hidden"
-				>
-					<Tabs
-						index={selectedIndex}
-						onChange={setSelectedIndex}
-						variant="unstyled"
-						height="100%"
-						display="flex"
-						flexDirection="column"
-						// colorScheme="green"
-					>
-						<TabList
-							position="sticky"
-							top={0}
-							//   borderBottomWidth={1}
-							//   borderColor={tabListBorderColor}
-							//   bg={tabListBgColor}
-							zIndex={1}
-						>
-							<HStack spacing={0} overflowX="auto" py={2} px={4} width="100%">
-								{healthCategories.map((category, index) => (
-									<HealthSystemTab
-										key={category.name}
-										category={category}
-										isSelected={index === selectedIndex}
-									/>
-								))}
-							</HStack>
-						</TabList>
-						<TabPanels flex={1}>
-							{healthCategories.map((category, index) => (
-								<TabPanel key={category.name} p={6}>
-									{category.component}
-								</TabPanel>
-							))}
-						</TabPanels>
-					</Tabs>
-				</Box>
-			</VStack>
-		</Box>
-	);
+    <Box
+      position="relative"
+      minHeight="100vh"
+      width="100%"
+      overflow="auto"
+      br={10}
+      paddingTop="60px"
+      color="#0e3c26"
+    >
+      <VStack spacing={0} align="stretch" height="100%" width="100%">
+        <Box py={4} px={4} width="100%">
+          <canvas
+            id="gradient-canvas"
+            data-js-darken-top
+            data-transition-in
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              top: 0,
+              left: 0,
+              zIndex: -1,
+            }}
+          ></canvas>
+          <Heading
+            size="2xl"
+            textAlign="left"
+            color="#0e3c26"
+            opacity={100}
+            height={55}
+            pl={5}
+          >
+            Your Health Summary
+          </Heading>
+        </Box>
+        <Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          //   borderTopWidth={1}
+          //   borderColor={borderColor}
+          borderTopRadius="none"
+          //   bg={bgColor}
+          width="100%"
+          overflow="hidden"
+        >
+          <Tabs
+            index={selectedIndex}
+            onChange={setSelectedIndex}
+            variant="unstyled"
+            height="100%"
+            display="flex"
+            flexDirection="column"
+            // colorScheme="green"
+          >
+            <TabList
+              position="sticky"
+              top={0}
+              //   borderBottomWidth={1}
+              //   borderColor={tabListBorderColor}
+              //   bg={tabListBgColor}
+              zIndex={1}
+            >
+              <HStack spacing={0} overflowX="auto" py={2} px={4} width="100%">
+                {healthCategories.map((category, index) => (
+                  <HealthSystemTab
+                    key={category.name}
+                    category={category}
+                    isSelected={index === selectedIndex}
+                  />
+                ))}
+              </HStack>
+            </TabList>
+            <TabPanels flex={1}>
+              {healthCategories.map((category, index) => (
+                <TabPanel key={category.name} p={6}>
+                  {category.component}
+                </TabPanel>
+              ))}
+            </TabPanels>
+          </Tabs>
+        </Box>
+      </VStack>
+    </Box>
+  );
 };
 
 export default HealthPanel;
