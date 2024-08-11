@@ -60,7 +60,7 @@ const FeatureCard = ({ children, isEven, index, icon }) => (
   );
 
 export const Features = () => (
-  <Flex direction={["column", "column", "row"]} align="center" justify="space-between" py={12}>
+  <Flex direction={["column", "column", "row"]} align="center" justify="space-between" py={12} pl="20px" pr="35px">
     <Box flex={1} mr={[0, 0, 4]} mb={[8, 8, 0]}>
       <Image
         src={homeScreen}
