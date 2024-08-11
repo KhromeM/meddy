@@ -4,8 +4,8 @@ import homeScreen from "../../assets/img/home-screenshot.png";
 import "../../styles/animatedBG.css";
 
 const boxStyle = {
-  width: "300px",
-  height: "150px",
+  width: "400px",
+  height: "120px",
   border: "1px solid rgba(10, 32, 69,0.3)",
   position: "absolute",
 };
@@ -28,39 +28,7 @@ const phrases = [
   "1 out of 5 hospital interpreters have inadequate language skills",
 ];
 const colors = [
-    // Cool colors
-    "#e1eafa",  // Original color (cool blue)
-    "#e1e6fa",  // Cool lavender blue
-    "#e3e1fa",  // Cool periwinkle
-    "#e8e1fa",  // Cool light purple
-    "#efe1fa",  // Cool lilac
-    "#f6e1fa",  // Cool pink-purple
-    "#fae1f8",  // Cool light magenta
-    "#fae1ef",  // Cool pink
-    "#fae1e6",  // Cool light rose
-    "#fae1e1",  // Cool very light red
-    "#e1faf8",  // Cool turquoise
-    "#e1faf1",  // Cool mint
-    "#e1faea",  // Cool light green
-    "#e1fae3",  // Cool pastel green
-    "#e1fadc",  // Cool light lime
-  
-    // Warm colors
-    "#fae6e1",  // Warm peach
-    "#faede1",  // Warm light orange
-    "#faf4e1",  // Warm light yellow
-    "#fafae1",  // Warm pastel yellow
-    "#f4fae1",  // Warm yellow-green
-    "#edfae1",  // Warm lime
-    "#e6fae1",  // Warm light green
-    "#e1fae6",  // Warm mint-green
-    "#e1faed",  // Warm aqua
-    "#e1faf4",  // Warm light turquoise
-    "#e1f4fa",  // Warm sky blue
-    "#e1edfa",  // Warm light blue
-    "#e1e6fa",  // Warm lavender blue
-    "#e6e1fa",  // Warm light purple
-    "#ede1fa"   // Warm light violet
+    "#fafafe"
   ];
   const DataCard = ({ defaultTop, defaultSide, isLeft, animationDelay }) => {
     const [state, setState] = useState({
@@ -134,14 +102,14 @@ const colors = [
           />
           
           {/* Left side boxes */}
-          <DataCard defaultTop="20%" defaultSide="-5%" isLeft={true} animationDelay={0} />
-          <DataCard defaultTop="45%" defaultSide="4%" isLeft={true} animationDelay={10} />
-          <DataCard defaultTop="70%" defaultSide="0%" isLeft={true} animationDelay={3} />
+          <DataCard defaultTop="20%" defaultSide="-7%" isLeft={true} animationDelay={0} />
+          <DataCard defaultTop="45%" defaultSide="-1%" isLeft={true} animationDelay={10} />
+          <DataCard defaultTop="70%" defaultSide="-3%" isLeft={true} animationDelay={3} />
           
           {/* Right side boxes */}
-          <DataCard defaultTop="15%" defaultSide="2%" isLeft={false} animationDelay={4} />
-          <DataCard defaultTop="40%" defaultSide="-6%" isLeft={false} animationDelay={7} />
-          <DataCard defaultTop="67%" defaultSide="3%" isLeft={false} animationDelay={16} />
+          <DataCard defaultTop="15%" defaultSide="-3%" isLeft={false} animationDelay={4} />
+          <DataCard defaultTop="40%" defaultSide="-10%" isLeft={false} animationDelay={7} />
+          <DataCard defaultTop="67%" defaultSide="-1%" isLeft={false} animationDelay={16} />
         </Box>
       </VStack>
     );
