@@ -1,0 +1,35 @@
+::-webkit-scrollbar {
+    width: 11px; /* Increase the width for a thicker scrollbar */
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #000000;
+    background: rgba(0, 0, 0, 0.5);
+}
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(225deg, #d4e1f1, #f0daf5, #f9dcb5);
+    animation: background1 10s linear infinite;
+    border-radius: 20px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(225deg,#f9dcb5, #f0daf5, #d4e1f1);
+    animation: background1 10s linear infinite;
+  }
+
+  @keyframes background1 {
+    0% {
+      background-position: 50% 0%;
+    }
+    50% {
+      background-position: 50% 100%;
+    }
+    100% {
+      background-position: 50% 0%;
+    }
+  }
+  

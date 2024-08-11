@@ -17,7 +17,7 @@ import "../../styles/button.css";
 import CardsInterface from "../CardsInterface";
 import { Gradient } from "../Gradient"; // Import the Gradient class
 import "../../styles/gradient.css"; // Import the gradient CSS
-import MeddyDemoGif from "../../assets/gif/MeddyDemo.gif";
+import MeddyDemoGif from "../../assets/gif/Meddy.gif";
 import "../../styles/animatedBG.css";
 import Card from "../Card/Card";
 import GeminiLogo from "../../assets/img/google-gemini-icon.png";
