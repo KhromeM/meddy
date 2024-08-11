@@ -1,178 +1,178 @@
-import React, { Component } from "react";
+import React from "react";
 import Card from "./Card/Card";
 import Chart from "react-apexcharts";
 
-class BarChart extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			data: props.data,
-			chartData: [],
-			xAxisLabels: props.xAxisLabels || [],
-			yAxisTitle: props.yAxisTitle || "Value",
-			barColor: props.barColor || "#fff",
-		};
-	}
+// Centralized color management
+const colors = {
+  background: "#FAF3EA",
+  text: "#0e3c26",
+  barFill: "#058247",
+  grid: "#e0d6c9",
+};
 
-	componentDidMount() {
-		this.setState({
-			chartData: this.state.data,
-		});
-	}
+const BarChart = ({ data, xAxisLabels, yAxisTitle, barColor }) => {
+  const chartOptions = {
+    ...barChartOptions,
+    xaxis: {
+      ...barChartOptions.xaxis,
+      categories: xAxisLabels,
+    },
+    yaxis: {
+      ...barChartOptions.yaxis,
+      title: {
+        ...barChartOptions.yaxis.title,
+        text: yAxisTitle,
+      },
+    },
+    fill: {
+      colors: [barColor || colors.barFill],
+    },
+  };
 
-	render() {
-		const chartOptions = {
-			...barChartOptions,
-			xaxis: {
-				...barChartOptions.xaxis,
-				categories: this.state.xAxisLabels,
-			},
-			yaxis: {
-				...barChartOptions.yaxis,
-				title: {
-					...barChartOptions.yaxis.title,
-					text: this.state.yAxisTitle,
-				},
-			},
-			fill: {
-				colors: [this.state.barColor],
-			},
-		};
-
-		return (
-			<Card
-				py="1rem"
-				height={{ sm: "300px" }}
-				width="100%"
-				bg="linear-gradient(81.62deg, #313860 2.25%, #151928 79.87%)"
-				position="relative"
-			>
-				<Chart
-					options={chartOptions}
-					series={this.state.chartData}
-					type="bar"
-					width="100%"
-					height="100%"
-				/>
-			</Card>
-		);
-	}
-}
+  return (
+    <Card
+      py="1rem"
+      px="1rem"
+      height={{ sm: "300px" }}
+      width="100%"
+      bg={colors.background}
+      position="relative"
+    >
+      <Chart
+        options={chartOptions}
+        series={data}
+        type="bar"
+        width="100%"
+        height="100%"
+      />
+    </Card>
+  );
+};
 
 export default BarChart;
 
-export const barChartOptions = {
-	chart: {
-		toolbar: {
-			show: false,
-		},
-	},
-	tooltip: {
-		style: {
-			backgroundColor: "red",
-			fontSize: "20px",
-			fontFamily: undefined,
-		},
-		onDatasetHover: {
-			style: {
-				backgroundColor: "red",
-				fontSize: "20px",
-				fontFamily: undefined,
-			},
-		},
-		theme: "dark",
-	},
-	xaxis: {
-		show: true,
-		labels: {
-			show: true,
-			style: {
-				colors: "#fff",
-				fontSize: "12px",
-			},
-			formatter: function (value) {
-				if (typeof value === "number") {
-					return value.toFixed(1);
-				}
-				return value;
-			},
-		},
-		axisBorder: {
-			show: false,
-		},
-		axisTicks: {
-			show: false,
-		},
-		title: {
-			text: "Past 28 days",
-			style: {
-				color: "#fff",
-				fontSize: "18px",
-				fontWeight: "bold",
-				fontFamily: undefined,
-			},
-			offsetX: 0,
-			offsetY: 0,
-			rotate: -90,
-		},
-	},
-	yaxis: {
-		show: true,
-		color: "#fff",
-		tickAmount: 5,
-		labels: {
-			show: true,
-			style: {
-				colors: "#fff",
-				fontSize: "16px",
-				fontWeight: "bold",
-			},
-			formatter: function (value) {
-				if (typeof value === "number" && Math.floor(value) < value) {
-					return value.toFixed(1);
-				}
-				return value;
-			},
-		},
-		title: {
-			text: "Value",
-			style: {
-				color: "#fff",
-				fontSize: "18px",
-				fontWeight: "bold",
-				fontFamily: undefined,
-			},
-			offsetX: -10,
-			offsetY: 10,
-			rotate: -90,
-		},
-	},
-
-	grid: {
-		show: false,
-	},
-	fill: {
-		colors: "#fff",
-	},
-	dataLabels: {
-		enabled: false,
-	},
-	plotOptions: {
-		bar: {
-			borderRadius: 8,
-			columnWidth: "12px",
-		},
-	},
-	responsive: [
-		{
-			breakpoint: 768,
-			options: {
-				plotOptions: {
-					bar: {
-						borderRadius: 0,
-					},
-				},
-			},
-		},
-	],
+const barChartOptions = {
+  chart: {
+    toolbar: {
+      show: false,
+    },
+    background: colors.background,
+    parentHeightOffset: 0,
+  },
+  tooltip: {
+    style: {
+      backgroundColor: colors.background,
+      fontSize: "14px",
+      fontFamily: undefined,
+      color: colors.text,
+    },
+    onDatasetHover: {
+      style: {
+        backgroundColor: colors.background,
+        fontSize: "14px",
+        fontFamily: undefined,
+        color: colors.text,
+      },
+    },
+    theme: "light",
+  },
+  xaxis: {
+    show: true,
+    labels: {
+      show: true,
+      style: {
+        colors: colors.text,
+        fontSize: "12px",
+      },
+      formatter: function (value) {
+        if (typeof value === "number") {
+          return value.toFixed(1);
+        }
+        return value;
+      },
+    },
+    axisBorder: {
+      show: false,
+    },
+    axisTicks: {
+      show: false,
+    },
+    title: {
+      text: "Past 28 days",
+      style: {
+        color: colors.text,
+        fontSize: "14px",
+        fontWeight: "bold",
+        fontFamily: undefined,
+      },
+      offsetX: 0,
+      offsetY: 0,
+    },
+  },
+  yaxis: {
+    show: true,
+    color: colors.text,
+    tickAmount: 5,
+    labels: {
+      show: true,
+      style: {
+        colors: colors.text,
+        fontSize: "12px",
+        fontWeight: "bold",
+      },
+      formatter: function (value) {
+        if (typeof value === "number" && Math.floor(value) < value) {
+          return value.toFixed(1);
+        }
+        return value;
+      },
+    },
+    title: {
+      text: "Value",
+      style: {
+        color: colors.text,
+        fontSize: "14px",
+        fontWeight: "bold",
+        fontFamily: undefined,
+      },
+      offsetX: -5,
+      offsetY: 0,
+      rotate: -90,
+    },
+  },
+  grid: {
+    show: true,
+    borderColor: colors.grid,
+    strokeDashArray: 5,
+    padding: {
+      left: 10,
+      right: 10,
+      top: 0,
+      bottom: 0,
+    },
+  },
+  fill: {
+    colors: [colors.barFill],
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  plotOptions: {
+    bar: {
+      borderRadius: 8,
+      columnWidth: "60%",
+    },
+  },
+  responsive: [
+    {
+      breakpoint: 768,
+      options: {
+        plotOptions: {
+          bar: {
+            borderRadius: 0,
+          },
+        },
+      },
+    },
+  ],
 };
