@@ -41,11 +41,12 @@ const FeatureBox = ({ icon, title, description }) => {
 const InitialView = () => {
   useEffect(() => {
     // Disable scrolling when the component mounts
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
 
     // Re-enable scrolling when the component unmounts
     return () => {
-      document.body.style.overflow = 'hidden';
+      // document.body.style.overflow = 'hidden';
+      document.body.removeAttribute("style");
     };
   }, []);
 
@@ -59,7 +60,7 @@ const InitialView = () => {
         overflow="hidden"
         padding="2px"
       >
-        <VStack align="center" spacing={4} >
+        <VStack align="center" spacing={4}>
           <Icon as={IoMdChatboxes} boxSize={6} mb={2} />
 
           <Heading size="md">Examples</Heading>
