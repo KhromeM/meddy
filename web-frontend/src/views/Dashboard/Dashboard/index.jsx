@@ -7,6 +7,8 @@ import {
   Image,
   SimpleGrid,
   useColorModeValue,
+  Avatar,
+  Text,
 } from "@chakra-ui/react";
 // assets
 import peopleImage from "../../../assets/img/people-image.png";
@@ -55,12 +57,23 @@ export default function Dashboard() {
   return (
     <Flex
       flexDirection="column"
-      // pt={{ base: "120px", md: "75px" }}
       paddingTop="60px"
     >
-      <Heading color={titleText} as="h1" size="xl" mb="26px">
-        {user ? `Hi, ${user?.displayName || "Guest"}!` : "Hi Guest!"}
-      </Heading>
+      <Flex alignItems="center" mb="26px">
+        <Avatar
+          size="lg"
+          name={user?.displayName || "Guest"}
+          bg="blue.500"
+          color="white"
+          mr="16px"
+        />
+        <Flex flexDirection="column">
+          <Heading color={titleText} as="h1" size="xl">
+            {user ? `Hi, ${user?.displayName || "Guest"}!` : "Hi Guest!"}
+          </Heading>
+          <Text color="gray.500">Welcome back</Text>
+        </Flex>
+      </Flex>
       {/* <Grid
         templateColumns={{ sm: "1fr", lg: "1.3fr 1.7fr" }}
         templateRows={{ sm: "repeat(2, 1fr)", lg: "1fr" }}

@@ -5,32 +5,18 @@ import { SettingsIcon } from "../Icons/Icons";
 const SettingsButton = ({ onOpen, inactiveBg, settingsRef, inactiveColor }) => {
   return (
     <Button
-      boxSize="initial"
-      //   position="absolute"
-      //   bottom="22px"
       justifyContent="flex-start"
       alignItems="center"
       bg="transparent"
-      mb={{
-        xl: "12px",
-      }}
-      mx={{
-        xl: "auto",
-      }}
-      py="6px"
-      ps={{
-        sm: "10px",
-        xl: "16px",
-      }}
-      //   mt="auto"
-      alignSelf="flex-end"
+      mb="12px"
+      py="12px"
+      px="16px"
       borderRadius="15px"
-      _hover="none"
       w="100%"
+      _hover={{ bg: "transparent" }}
       _active={{
         bg: "inherit",
-        borderColor: "transparent",
-        transform: "scale(0.91)",
+        transform: "scale(0.95)",
         boxShadow: "md",
       }}
       _focus={{
@@ -38,24 +24,21 @@ const SettingsButton = ({ onOpen, inactiveBg, settingsRef, inactiveColor }) => {
       }}
       onClick={onOpen}
     >
-      <Flex>
-        {/* <IconBox bg={inactiveBg} color="orange.200" h="30px" w="30px" me="12px"> */}
+      <Flex align="center">
         <SettingsIcon
           cursor="pointer"
-          ms={{ base: "16px", xl: "0px" }}
           me="10px"
           ref={settingsRef}
-          color={"gray.400"}
-          w="32px"
-          h="32px"
+          color="gray.400"
+          w="24px"
+          h="24px"
         />
-        {/* </IconBox> */}
-
-        <Text color={inactiveColor} my="auto" fontSize="md">
-          Settings{" "}
+        <Text color={inactiveColor} fontSize="md">
+          Settings
         </Text>
       </Flex>
     </Button>
   );
 };
+
 export default SettingsButton;
