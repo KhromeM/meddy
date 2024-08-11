@@ -126,7 +126,9 @@ export default function Dashboard(props) {
 				}}
 				minH="100vh"
 				br={10}
-				backgroundColor="#FAF3EA"
+				backgroundColor={
+					location.pathname.includes("chat") ? "#FAF3EA" : "#F5E9DB"
+				}
 				zIndex={-5}
 			>
 				<Portal>
