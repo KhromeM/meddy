@@ -1,9 +1,12 @@
 import { Box, useColorModeValue, useStyleConfig } from "@chakra-ui/react";
+
 function Card(props) {
-	const { variant, children, ...rest } = props;
+	const { variant, children, bg, backgroundColor, ...rest } = props;
 	const styles = useStyleConfig("Card", { variant });
-	// Pass the computed styles into the `__css` prop
-	let colorBg = useColorModeValue("var(--chakra-colors-white)", "gray.700");
+	
+	// Use the passed bg or backgroundColor prop, or fall back to the color mode value
+	const bgColor = bg || backgroundColor || useColorModeValue("#FAF3EA", "#FAF3EA");
+
 	return (
 		<Box
 			__css={styles}
@@ -15,15 +18,13 @@ function Card(props) {
 				position: "relative",
 				minWidth: "0px",
 				overflowWrap: "break-word",
-				// background: {colorBun},
-				backgroundColor: props.backgroundColor || colorBg,
+				backgroundColor: bgColor,
 				boxShadow: "rgba(0, 0, 0, 0.02) 0px 3.5px 5.5px",
 				borderRadius: "15px",
 				minHeight: props.minHeight || "83px",
 				margin: props.margin || "0px",
 				alignSelf: props.alignSelf || "",
 			}}
-			// backgroundColor={props.backgroundColor}
 			{...rest}
 		>
 			{children}
