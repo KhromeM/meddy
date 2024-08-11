@@ -71,10 +71,11 @@ class _MicPageState extends State<MicPage> {
       await _startRecording();
     });
 
-    // Set status bar and navigation bar to black
+    // Set status bar and navigation bar to black with white icons
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.black,
-      statusBarIconBrightness: Brightness.light,
+      statusBarIconBrightness: Brightness.light, // Set to light for white icons
+      statusBarBrightness: Brightness.dark, // Ensures icons are white
       systemNavigationBarColor: Colors.black,
       systemNavigationBarIconBrightness: Brightness.light,
       systemNavigationBarDividerColor: Colors.black,
@@ -170,6 +171,9 @@ class _MicPageState extends State<MicPage> {
         siriController.color = Colors.blue;
         _messageResult = message['result']; // Store the result here
       });
+
+      // Log the length of the LLM response
+      print('LLM Response Length: ${text.length}');
     }
 
     if (message['isComplete'] ?? false) {

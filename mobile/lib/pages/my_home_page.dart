@@ -70,6 +70,8 @@ class _MyHomePageState extends State<MyHomePage> {
     // Fetch health tips if not already fetched
     if (_storedHealthTips == null) {
       _fetchAndStoreHealthTips();
+    } else {
+      _logHealthTipLength();
     }
   }
 
@@ -87,6 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         _storedHealthTips = List<String>.from(data['tips']);
+        _logHealthTipLength(); // Log the length of the health tip once fetched
       } else {
         throw Exception('Failed to load health tips');
       }
@@ -95,12 +98,28 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  void _logHealthTipLength() {
+    if (_storedHealthTips != null && _storedHealthTips!.isNotEmpty) {
+      final randomTip = _getRandomTip();
+      print('Random Health Tip Length: ${randomTip.length}');
+    }
+  }
+
   String _getRandomTip() {
     final random = Random();
     if (_storedHealthTips != null && _storedHealthTips!.isNotEmpty) {
-      return _storedHealthTips![random.nextInt(_storedHealthTips!.length)];
+      String tip =
+          _storedHealthTips![random.nextInt(_storedHealthTips!.length)];
+      return _truncateTip(tip);
     }
     return 'No health tips available';
+  }
+
+  String _truncateTip(String tip) {
+    if (tip.length > 100) {
+      return tip.substring(0, 100) + '...';
+    }
+    return tip;
   }
 
   @override
@@ -118,17 +137,20 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (context, languageProvider, child) {
         return Stack(
           children: [
+            // MainBackground(),
             Scaffold(
               extendBodyBehindAppBar: true,
               backgroundColor: Colors.transparent,
               appBar: CustomAppBar(),
               body: LayoutBuilder(
                 builder: (context, constraints) {
+                  // Calculate the available height between the boxes and the bottom
                   double availableHeight = constraints.maxHeight -
                       (MediaQuery.of(context).size.height * 0.07) -
                       100 -
-                      40;
+                      40; // space taken by the above elements
 
+                  // Calculate 2/4 of the available height
                   double meddyTipHeight = availableHeight * 1 / 4;
 
                   return Column(
@@ -260,8 +282,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.95,
                           height: meddyTipHeight,
+                          padding: EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Color(0xFFF5E9DB),
+                            color:
+                                Color(0xFFF5E9DB), // 0xFF0E3C26 // 0xFFF5E9DB
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
@@ -274,12 +298,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           child: Row(
                             children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width *
-                                    0.95 *
-                                    2 /
-                                    3,
-                                padding: EdgeInsets.all(16),
+                              Expanded(
+                                flex: 2,
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -303,17 +323,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ],
                                 ),
                               ),
-                              Container(
-                                width: MediaQuery.of(context).size.width *
-                                    0.95 *
-                                    1 /
-                                    3,
-                                padding: EdgeInsets.all(8.0),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12.0),
+                              Expanded(
+                                flex: 1,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
                                   child: Image.asset(
-                                    'assets/images/c9.webp',
-                                    fit: BoxFit.cover,
+                                    'assets/images/c5.webp',
+                                    fit: BoxFit.contain,
                                   ),
                                 ),
                               ),
