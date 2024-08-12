@@ -17,7 +17,7 @@ import 'package:uuid/uuid.dart';
 import 'package:image/image.dart' as img;
 import 'package:meddymobile/widgets/listening_notifier.dart';
 import 'package:flutter/services.dart';
-import 'package:meddymobile/services/auth_service.dart';
+import 'package:meddymobile/services/auth_service.dart'; // Import AuthService
 
 class ChatPage extends StatefulWidget {
   final String? initialPrompt;
@@ -35,7 +35,6 @@ class _ChatPageState extends State<ChatPage> {
   late RecorderService _recorderService;
   late PlayerService _playerService;
   final Uuid _uuid = Uuid();
-  String? userId;
 
   bool _isRecording = false;
   bool _isLoading = true;
@@ -53,21 +52,11 @@ class _ChatPageState extends State<ChatPage> {
 
   Map<String, dynamic>? _messageResult;
 
+  final AuthService _authService = AuthService(); // Add AuthService instance
+
   @override
   void initState() {
     super.initState();
-    _initializePage();
-  }
-
-  Future<void> _initializePage() async {
-    // Fetch the user ID
-    userId = await AuthService().getIdToken();
-    if (userId == null) {
-      // Handle the case where userId is not available
-      print("Error: userId is null. Cannot proceed.");
-      return;
-    }
-
     ws.connect();
     _recorderService = RecorderService(ws);
     _playerService = PlayerService(ws);
@@ -83,7 +72,7 @@ class _ChatPageState extends State<ChatPage> {
     });
 
     // Fetch chat history from ChatProvider
-    await _loadChatHistoryFromProvider();
+    _loadChatHistoryFromProvider();
     if (widget.initialPrompt != null) {
       _sendInitialPrompt(widget.initialPrompt!);
     }
@@ -154,10 +143,16 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _addMessageToChatHistory(String source, String text, String reqId,
-      {String? imageID, Map<String, dynamic>? result}) {
+      {String? imageID, Map<String, dynamic>? result}) async {
+    final userId = await _authService.getIdToken(); // Get the user ID
+
+    if (userId == null) {
+      return;
+    }
+
     Message newMessage = Message(
       messageId: reqId,
-      userId: userId!, // Use the null assertion operator here
+      userId: userId, // Use the retrieved userId
       source: source,
       imageID: imageID,
       text: text,

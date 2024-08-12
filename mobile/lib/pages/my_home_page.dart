@@ -52,16 +52,25 @@ class _MyHomePageState extends State<MyHomePage> {
     playerService = PlayerService(wsConnection);
     recorderService = RecorderService(wsConnection);
 
-    _firstName = _authService.getFirstName() ?? 'User';
+    _initializePage();
+  }
 
+  Future<void> _initializePage() async {
+    // Get user information
+    _firstName = _authService.getFirstName() ?? 'User';
     wsConnection.connect();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    // Fetch idToken before loading chat history
+    String? userIdToken = await _authService.getIdToken();
+    if (userIdToken != null) {
+      // Load chat history only if the token is successfully fetched
       if (Provider.of<ChatProvider>(context, listen: false).messages.isEmpty) {
         print('Loading chat history in MyHomePage...');
         Provider.of<ChatProvider>(context, listen: false).loadChatHistory();
       }
-    });
+    } else {
+      print('User ID token is null, chat history will not be loaded.');
+    }
 
     if (_storedHealthTips == null) {
       _fetchAndStoreHealthTips();
