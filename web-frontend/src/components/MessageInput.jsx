@@ -21,8 +21,9 @@ const MessageInput = ({
   onUpload,
   imageUploaded,
   handleDeleteImage,
+  prompt
 }) => {
-  const [text, setText] = useState("");
+  const [text, setText] = useState(prompt || "");
   const [imageName, setimageName] = useState("");
   const fileInputRef = useRef(null);
   const toast = useToast();
