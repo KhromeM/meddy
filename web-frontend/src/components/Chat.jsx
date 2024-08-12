@@ -195,6 +195,16 @@ const Chat = () => {
   }, [messages]);
 
   const sendMessage = async (message) => {
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to send messages.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
     const text = message.text;
     const reqId = uuidv4();
     const imageid = message.imageName;
@@ -232,6 +242,17 @@ const Chat = () => {
   };
 
   const toggleAudio = async () => {
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to use voice input.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     if (audioMode) {
       await audioServiceRef.current.stopRecording();
     } else {
