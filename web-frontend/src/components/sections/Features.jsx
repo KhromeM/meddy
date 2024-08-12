@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState, useCallback, useRef } from "react"; 
 import homeScreen from "../../assets/img/home-screenshot.png";
 import languageIcon from "../../assets/img/translation.png";
 import micIcon from "../../assets/svg/microphone.svg";
 import clipboardIcon from "../../assets/svg/clipboard.svg";
 import healthIcon from "../../assets/img/heart.png";
-
+import spanishMedicineIdentificationGif from "../../assets/gif/spanish-medicine-identification.gif";
+import spanishAudioModeFlutterGif from "../../assets/gif/spanish-audio-mode-flutter.gif";
+import setReminderFlutterGif from "../../assets/gif/set-reminder-flutter.gif";
+import flutterHealthPageGif from "../../assets/gif/flutter-health-page.gif";
 import "../../styles/animatedBG.css";
 
 import {
@@ -17,7 +20,14 @@ import {
   Center,
 } from "@chakra-ui/react";
 
-const FeatureCard = ({ children, isEven, index, icon }) => (
+const FeatureCard = ({ children, isEven, index, icon ,url,onImageChange}) =>{
+
+	const handleImageChange = useCallback((url) => {
+		if (url) { 
+		  onImageChange(url);
+		}
+	  }, [onImageChange]);
+return(
 	<Box 
 	  position="relative"
 	  boxShadow="lg"
@@ -37,6 +47,8 @@ const FeatureCard = ({ children, isEven, index, icon }) => (
 	  _hover={{
 		transform: "scale(1.02)",
 	  }}
+	  onClick={()=>handleImageChange(url)}
+	  cursor={'pointer'}
 	>
 	  <Text 
 		fontSize="22px" 
@@ -58,15 +70,21 @@ const FeatureCard = ({ children, isEven, index, icon }) => (
 	  />
 	</Box>
   );
+}
 
-export const Features = () => (
+export const Features = () => {
+  const [image, setImage] = useState(spanishMedicineIdentificationGif);
+
+  const updateImage = (imageUrl) => {
+    setImage(imageUrl);
+  };
+return (
   <Flex direction={["column", "column", "row"]} align="center" justify="space-between" py={12} pl="20px" pr="35px">
     <Box flex={1} mr={[0, 0, 4]} mb={[8, 8, 0]}>
       <Image
-        src={homeScreen}
+        src={image}
         alt="Empathic Voice Interface"
-        borderRadius="20px"
-        boxShadow="lg"
+        borderRadius="20px" 
         width="70%"
         objectFit="cover"
       />
@@ -76,11 +94,12 @@ export const Features = () => (
         <Heading as="h2" size="xl" mb={0} pl={4} fontSize="48px">
           Our Features
         </Heading>
-        <FeatureCard isEven={false} index="1" icon={micIcon}>Record and summarize doctor visits for later</FeatureCard>
-        <FeatureCard isEven={true} index="2" icon={languageIcon}>Translate your doctor</FeatureCard>
-        <FeatureCard isEven={false} index="3" icon={clipboardIcon}>Set up appointments with one click</FeatureCard>
-        <FeatureCard isEven={true} index="4" icon={healthIcon}>Get a simple overview of your health data</FeatureCard>
+        <FeatureCard onImageChange={updateImage} isEven={false} index="1" icon={micIcon} url={spanishMedicineIdentificationGif}>Record and summarize doctor visits for later</FeatureCard>
+        <FeatureCard onImageChange={updateImage} isEven={true} index="2" icon={languageIcon} url={spanishAudioModeFlutterGif}>Translate your doctor</FeatureCard>
+        <FeatureCard onImageChange={updateImage} isEven={false} index="3" icon={clipboardIcon} url={setReminderFlutterGif}>Set up appointments with one click</FeatureCard>
+        <FeatureCard onImageChange={updateImage} isEven={true} index="4" icon={healthIcon} url={flutterHealthPageGif}>Get a simple overview of your health data</FeatureCard>
       </VStack>
     </Center>
   </Flex>
 );
+}
