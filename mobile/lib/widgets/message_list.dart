@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -21,9 +20,13 @@ class MessageList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final highContrastMode = HighContrastMode.of(context);
+    final bool isHighContrast = highContrastMode?.isHighContrast ?? false;
     final screenWidth = MediaQuery.of(context).size.width;
     final userMessageWidth = screenWidth * 2 / 3;
     final llmMessageWidth = screenWidth * 4 / 5;
+
+    // Adjust text size based on high contrast mode
+    double textSize = isHighContrast ? 20.0 : 16.0;
 
     return ListView.builder(
       controller: scrollController,
@@ -51,8 +54,13 @@ class MessageList extends StatelessWidget {
             iconColor = Colors.red;
           }
         } else {
-          messageColor = isUser ? Color(0xFFF5E9DB) : Color(0xFFFAF3EA);
-          textColor = Color(0xFF0E3C26);
+          messageColor = isUser
+              ? (isHighContrast
+                  ? const Color.fromARGB(255, 77, 77, 77)
+                  : Color(0xFFF5E9DB))
+              : (isHighContrast ? Colors.black : Color(0xFFFAF3EA));
+
+          textColor = isHighContrast ? Colors.white : Color(0xFF0E3C26);
         }
 
         return Align(
@@ -146,8 +154,12 @@ class MessageList extends StatelessWidget {
                             left: 8.0, right: 8.0, top: 10),
                         child: SvgPicture.asset(
                           'assets/images/logo_image.svg',
-                          width: 24, // Adjust the width as needed
-                          height: 24, // Adjust the height as needed
+                          width: isHighContrast
+                              ? 28
+                              : 24, // Adjust the width as needed
+                          height: isHighContrast
+                              ? 28
+                              : 24, // Adjust the height as needed
                         ),
                       ),
                     Container(
@@ -172,7 +184,7 @@ class MessageList extends StatelessWidget {
                               styleSheet: MarkdownStyleSheet(
                                 p: TextStyle(
                                     color: textColor,
-                                    fontSize: 16,
+                                    fontSize: textSize,
                                     fontWeight: FontWeight.w500),
                               ),
                             ),

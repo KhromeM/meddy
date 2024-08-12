@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:meddymobile/widgets/high_contrast_mode.dart';
 import 'package:provider/provider.dart';
 import 'package:meddymobile/models/message.dart';
 import 'package:meddymobile/providers/chat_provider.dart';
@@ -345,11 +346,14 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    final highContrastMode = HighContrastMode.of(context);
+    final bool isHighContrast = highContrastMode?.isHighContrast ?? false;
+
     return GestureDetector(
       onTap: _dismissKeyboard,
       behavior: HitTestBehavior.opaque,
       child: Scaffold(
-        backgroundColor: Color(0xFFFAF3EA),
+        backgroundColor: isHighContrast ? Colors.white : Color(0xFFFAF3EA),
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
@@ -399,8 +403,11 @@ class _ChatPageState extends State<ChatPage> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20),
-                          border:
-                              Border.all(color: Color(0xFF0E3C26), width: 1.5),
+                          border: Border.all(
+                              color: isHighContrast
+                                  ? Colors.black
+                                  : Color(0xFF0E3C26),
+                              width: 1.5),
                         ),
                         child: Column(
                           children: [
@@ -499,7 +506,9 @@ class _ChatPageState extends State<ChatPage> {
                                       Icon(
                                         Icons.circle,
                                         size: 40,
-                                        color: Color(0xFF0E3C26),
+                                        color: isHighContrast
+                                            ? Colors.black
+                                            : Color(0xFF0E3C26),
                                       ),
                                       Icon(
                                         _isRecording
@@ -548,7 +557,9 @@ class _ChatPageState extends State<ChatPage> {
                                                     Icons
                                                         .arrow_forward_ios_rounded,
                                                   ),
-                                                  color: Color(0xFF0E3C26),
+                                                  color: isHighContrast
+                                                      ? Colors.black
+                                                      : Color(0xFF0E3C26),
                                                   onPressed: _sendMessage,
                                                 )
                                               else ...[
@@ -556,9 +567,13 @@ class _ChatPageState extends State<ChatPage> {
                                                   icon: Icon(
                                                     Icons.photo_camera_outlined,
                                                     size: 30,
-                                                    color: Color(0xFF0E3C26),
+                                                    color: isHighContrast
+                                                        ? Colors.black
+                                                        : Color(0xFF0E3C26),
                                                   ),
-                                                  color: Color(0xFF0E3C26),
+                                                  color: isHighContrast
+                                                      ? Colors.black
+                                                      : Color(0xFF0E3C26),
                                                   onPressed:
                                                       _selectImageFromCamera,
                                                 ),
@@ -567,7 +582,9 @@ class _ChatPageState extends State<ChatPage> {
                                                     Icons.image_outlined,
                                                     size: 30,
                                                   ),
-                                                  color: Color(0xFF0E3C26),
+                                                  color: isHighContrast
+                                                      ? Colors.black
+                                                      : Color(0xFF0E3C26),
                                                   onPressed:
                                                       _selectImageFromGallery,
                                                 ),

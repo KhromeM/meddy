@@ -5,6 +5,7 @@ import 'package:meddymobile/services/health_service.dart';
 import 'package:meddymobile/widgets/health_summary_card.dart';
 import 'package:meddymobile/widgets/fitness_card.dart';
 import 'package:flutter/services.dart';
+import 'package:meddymobile/widgets/high_contrast_mode.dart';
 
 class HealthPage extends StatefulWidget {
   @override
@@ -56,12 +57,14 @@ class _HealthPageState extends State<HealthPage> {
 
   @override
   Widget build(BuildContext context) {
+    final highContrastMode = HighContrastMode.of(context);
+    final bool isHighContrast = highContrastMode?.isHighContrast ?? false;
     return Stack(
       children: [
         Scaffold(
-          backgroundColor: Colors.transparent,
+          backgroundColor: isHighContrast ? Colors.white : Colors.transparent,
           appBar: AppBar(
-            backgroundColor: Colors.transparent,
+            backgroundColor: isHighContrast ? Colors.white : Colors.transparent,
             forceMaterialTransparency: true,
             systemOverlayStyle: SystemUiOverlayStyle(
               statusBarColor: Colors.transparent,
@@ -150,7 +153,10 @@ class _HealthPageState extends State<HealthPage> {
                 children: [
                   Text(
                     showActivityStatus ? 'Health Activity' : 'Health Summary',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(height: 16),
                   showActivityStatus

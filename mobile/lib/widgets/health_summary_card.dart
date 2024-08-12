@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meddymobile/models/health_category.dart';
+import 'package:meddymobile/widgets/high_contrast_mode.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -8,23 +9,30 @@ class HealthSummaryCard extends StatelessWidget {
 
   HealthSummaryCard({required this.medicalRecord});
 
-  Color _getScoreColor(int? score) {
-    if (score == null) return Colors.grey;
-    if (score >= 80) return Colors.green;
-    if (score >= 60) return Colors.yellow;
-    return Colors.red;
+  Color _getScoreColor(int? score, bool isHighContrast) {
+    if (score == null) return isHighContrast ? Colors.white : Colors.grey;
+    if (score >= 80) return isHighContrast ? Colors.green : Colors.green;
+    if (score >= 60) return isHighContrast ? Colors.yellow : Colors.yellow;
+    return isHighContrast ? Colors.red : Colors.red;
   }
 
   @override
   Widget build(BuildContext context) {
+    final highContrastMode = HighContrastMode.of(context);
+    final bool isHighContrast = highContrastMode?.isHighContrast ?? false;
+
     final healthDetails = medicalRecord == null
-        ? List.generate(7, (_) => HealthDetail(
-            name: 'Loading...',
-            oneLineSummary: 'Loading...',
-            generalRecommendation: 'Loading...',
-            actionPlan: ActionPlan(longTerm: [], shortTerm: []),
-            details: Details(goldTest: TestDetail(name: '', range: '', recommendation: '', result: ''), secondaryTests: [])
-          ))
+        ? List.generate(
+            7,
+            (_) => HealthDetail(
+                name: 'Loading...',
+                oneLineSummary: 'Loading...',
+                generalRecommendation: 'Loading...',
+                actionPlan: ActionPlan(longTerm: [], shortTerm: []),
+                details: Details(
+                    goldTest: TestDetail(
+                        name: '', range: '', recommendation: '', result: ''),
+                    secondaryTests: [])))
         : [
             medicalRecord!.metabolicHealth,
             medicalRecord!.heartHealth,
@@ -43,20 +51,26 @@ class HealthSummaryCard extends StatelessWidget {
             enabled: medicalRecord == null,
             child: Container(
               decoration: BoxDecoration(
-                color: Color.fromRGBO(254, 249, 239, 0.7),
+                color: isHighContrast
+                    ? Colors.black
+                    : Color.fromRGBO(254, 249, 239, 0.7),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: Colors.black.withOpacity(0.1),
+                  color: isHighContrast
+                      ? Colors.white
+                      : Colors.black.withOpacity(0.1),
                   width: 1,
                 ),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Theme(
-                  data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                  data: Theme.of(context)
+                      .copyWith(dividerColor: Colors.transparent),
                   child: ExpansionTile(
                     tilePadding: EdgeInsets.all(0),
-                    childrenPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    childrenPadding:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                     maintainState: true,
                     expandedCrossAxisAlignment: CrossAxisAlignment.start,
                     collapsedBackgroundColor: Colors.transparent,
@@ -69,9 +83,17 @@ class HealthSummaryCard extends StatelessWidget {
                           percent: ((detail.score ?? 0) / 100).clamp(0.0, 1.0),
                           center: Text(
                             '${detail.score ?? 0}%',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: isHighContrast
+                                  ? 22
+                                  : 18, // Adjust size for high contrast
+                              color:
+                                  isHighContrast ? Colors.white : Colors.black,
+                            ),
                           ),
-                          progressColor: _getScoreColor(detail.score),
+                          progressColor:
+                              _getScoreColor(detail.score, isHighContrast),
                         ),
                         SizedBox(width: 16),
                         Expanded(
@@ -80,12 +102,27 @@ class HealthSummaryCard extends StatelessWidget {
                             children: [
                               Text(
                                 detail.name,
-                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  fontSize: isHighContrast
+                                      ? 20
+                                      : 18, // Adjust size for high contrast
+                                  fontWeight: FontWeight.bold,
+                                  color: isHighContrast
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
                               ),
                               SizedBox(height: 8),
                               Text(
                                 detail.oneLineSummary,
-                                style: TextStyle(fontSize: 14),
+                                style: TextStyle(
+                                  fontSize: isHighContrast
+                                      ? 16
+                                      : 14, // Adjust size for high contrast
+                                  color: isHighContrast
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
                               ),
                             ],
                           ),
@@ -93,26 +130,44 @@ class HealthSummaryCard extends StatelessWidget {
                       ],
                     ),
                     children: <Widget>[
-                      Divider(),
-                      _buildSectionTitle('Gold Test', Icons.star),
-                      _buildTestDetail('Name', detail.details.goldTest.name),
-                      _buildTestDetail('Result', detail.details.goldTest.result),
-                      _buildTestDetail('Range', detail.details.goldTest.range),
+                      Divider(
+                        color: isHighContrast ? Colors.white : Colors.black,
+                      ),
+                      _buildSectionTitle(
+                          'Gold Test', Icons.star, isHighContrast),
+                      _buildTestDetail(
+                          'Name', detail.details.goldTest.name, isHighContrast),
+                      _buildTestDetail('Result', detail.details.goldTest.result,
+                          isHighContrast),
+                      _buildTestDetail('Range', detail.details.goldTest.range,
+                          isHighContrast),
                       SizedBox(height: 16),
-                      _buildSectionTitle('Secondary Tests', Icons.science),
-                      ...detail.details.secondaryTests.map((test) => Column(
-                        children: [
-                          _buildTestDetail('Test', test.name),
-                          _buildTestDetail('Result', test.result),
-                          _buildTestDetail('Range', test.range),
-                          SizedBox(height: 8),
-                        ],
-                      )).toList(),
+                      _buildSectionTitle(
+                          'Secondary Tests', Icons.science, isHighContrast),
+                      ...detail.details.secondaryTests
+                          .map((test) => Column(
+                                children: [
+                                  _buildTestDetail(
+                                      'Test', test.name, isHighContrast),
+                                  _buildTestDetail(
+                                      'Result', test.result, isHighContrast),
+                                  _buildTestDetail(
+                                      'Range', test.range, isHighContrast),
+                                  SizedBox(height: 8),
+                                ],
+                              ))
+                          .toList(),
                       SizedBox(height: 16),
-                      _buildSectionTitle('General Recommendation', Icons.recommend),
+                      _buildSectionTitle('General Recommendation',
+                          Icons.recommend, isHighContrast),
                       Text(
                         detail.generalRecommendation,
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(
+                          fontSize: isHighContrast
+                              ? 18
+                              : 16, // Adjust size for high contrast
+                          color: isHighContrast ? Colors.white : Colors.black,
+                        ),
                       ),
                       SizedBox(height: 16),
                     ],
@@ -126,19 +181,28 @@ class HealthSummaryCard extends StatelessWidget {
     );
   }
 
-  Widget _buildTestDetail(String label, String value) {
+  Widget _buildTestDetail(String label, String value, bool isHighContrast) {
     return Padding(
       padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
       child: Row(
         children: [
           Text(
             '$label: ',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize:
+                  isHighContrast ? 18 : 16, // Adjust size for high contrast
+              fontWeight: FontWeight.bold,
+              color: isHighContrast ? Colors.white : Colors.black,
+            ),
           ),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(
+                fontSize:
+                    isHighContrast ? 18 : 16, // Adjust size for high contrast
+                color: isHighContrast ? Colors.white : Colors.black,
+              ),
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -147,14 +211,20 @@ class HealthSummaryCard extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionTitle(String title, IconData icon) {
+  Widget _buildSectionTitle(String title, IconData icon, bool isHighContrast) {
     return Row(
       children: [
-        Icon(icon, size: 20, color: Colors.blueAccent),
+        Icon(icon,
+            size: isHighContrast ? 24 : 20, // Adjust size for high contrast
+            color: isHighContrast ? Colors.white : Colors.blueAccent),
         SizedBox(width: 8),
         Text(
           title,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: isHighContrast ? 18 : 16, // Adjust size for high contrast
+            fontWeight: FontWeight.bold,
+            color: isHighContrast ? Colors.white : Colors.black,
+          ),
         ),
       ],
     );

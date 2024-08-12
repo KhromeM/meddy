@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
     <application
-        android:label="meddymobile"
+        android:label="Meddy"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         

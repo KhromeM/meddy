@@ -2,6 +2,7 @@ import 'package:aura_box/aura_box.dart';
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:meddymobile/services/auth_service.dart';
+import 'package:meddymobile/widgets/high_contrast_mode.dart';
 import 'package:meddymobile/widgets/main_background.dart';
 import 'package:meddymobile/utils/app_colors.dart';
 import 'package:intl/intl.dart';
@@ -112,14 +113,16 @@ class _ReminderPageState extends State<ReminderPage> {
     });
   }
 
-  List<Widget> _buildDateCards() {
+  List<Widget> _buildDateCards(bool isHighContrast) {
     List<Widget> dateCards = [];
     for (int i = -2; i <= 2; i++) {
       DateTime date = _selectedDate.add(Duration(days: i));
       dateCards.add(
         Expanded(
           child: Card(
-            color: i == 0 ? Color(0xFF0E3C26) : Colors.white,
+            color: i == 0
+                ? (isHighContrast ? Colors.black : Color(0xFF0E3C26))
+                : (isHighContrast ? Colors.grey[800] : Colors.white),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -129,14 +132,18 @@ class _ReminderPageState extends State<ReminderPage> {
                     DateFormat.d().format(date),
                     style: TextStyle(
                       fontSize: 24,
-                      color: i == 0 ? Colors.white : Colors.black,
+                      color: i == 0
+                          ? Colors.white
+                          : (isHighContrast ? Colors.white : Colors.black),
                     ),
                   ),
                   Text(
                     DateFormat.E().format(date),
                     style: TextStyle(
                       fontSize: 16,
-                      color: i == 0 ? Colors.white : Colors.black,
+                      color: i == 0
+                          ? Colors.white
+                          : (isHighContrast ? Colors.white : Colors.black),
                     ),
                   ),
                 ],
@@ -149,7 +156,7 @@ class _ReminderPageState extends State<ReminderPage> {
     return dateCards;
   }
 
-  List<Widget> _buildReminders() {
+  List<Widget> _buildReminders(bool isHighContrast) {
     List<Widget> reminderCards = [];
     _appointments.forEach((key, value) {
       for (var reminder in value) {
@@ -162,7 +169,7 @@ class _ReminderPageState extends State<ReminderPage> {
           child: Container(
             width: MediaQuery.of(context).size.width * 0.95,
             decoration: BoxDecoration(
-                color: Colors.white,
+                color: isHighContrast ? Colors.black : Colors.white,
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.circular(20.0),
                 border: Border.all(color: Color(0xFF0E3C26)),
@@ -187,11 +194,21 @@ class _ReminderPageState extends State<ReminderPage> {
                         children: [
                           Text(
                             'One ',
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(
+                              fontSize: isHighContrast ? 24 : 20,
+                              color: isHighContrast
+                                  ? Colors.white
+                                  : Color(0xFF0E3C26),
+                            ),
                           ),
                           Text(
                             'capsule',
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(
+                              fontSize: isHighContrast ? 24 : 20,
+                              color: isHighContrast
+                                  ? Colors.white
+                                  : Color(0xFF0E3C26),
+                            ),
                           ),
                         ],
                       ),
@@ -202,7 +219,7 @@ class _ReminderPageState extends State<ReminderPage> {
                           icon: Icon(
                             Icons.close,
                             color: Colors.redAccent,
-                            size: 30,
+                            size: isHighContrast ? 34 : 30,
                           ),
                           onPressed: () => {
                                 print(reminder['reminderid']),
@@ -219,8 +236,10 @@ class _ReminderPageState extends State<ReminderPage> {
                       Text(
                         reminder['medicationname'],
                         style: TextStyle(
-                            fontSize: 20,
-                            color: Color(0xFF0E3C26),
+                            fontSize: isHighContrast ? 24 : 20,
+                            color: isHighContrast
+                                ? Colors.white
+                                : Color(0xFF0E3C26),
                             fontWeight: FontWeight.w800),
                       ),
                     ],
@@ -233,8 +252,11 @@ class _ReminderPageState extends State<ReminderPage> {
                     children: [
                       Text(
                         fullTime.substring(0, fullTime.length - 3),
-                        style:
-                            TextStyle(fontSize: 18, color: Color(0xFF0E3C26)),
+                        style: TextStyle(
+                          fontSize: isHighContrast ? 22 : 18,
+                          color:
+                              isHighContrast ? Colors.white : Color(0xFF0E3C26),
+                        ),
                       ),
                     ],
                   ),
@@ -247,14 +269,19 @@ class _ReminderPageState extends State<ReminderPage> {
                     children: [
                       Text(
                         repeat_text,
-                        style:
-                            TextStyle(fontSize: 18, color: Color(0xFF0E3C26)),
+                        style: TextStyle(
+                          fontSize: isHighContrast ? 22 : 18,
+                          color:
+                              isHighContrast ? Colors.white : Color(0xFF0E3C26),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(right: 20.0),
                         child: Icon(
                           Symbols.pill,
                           size: 40,
+                          color:
+                              isHighContrast ? Colors.white : Color(0xFF0E3C26),
                         ),
                       )
                     ],
@@ -272,6 +299,9 @@ class _ReminderPageState extends State<ReminderPage> {
 
   @override
   Widget build(BuildContext context) {
+    final highContrastMode = HighContrastMode.of(context);
+    final bool isHighContrast = highContrastMode?.isHighContrast ?? false;
+
     return Consumer<LanguageProvider>(
       builder: (context, languageProvider, child) {
         return Stack(
@@ -279,7 +309,8 @@ class _ReminderPageState extends State<ReminderPage> {
             //MainBackground(),
             Scaffold(
               extendBodyBehindAppBar: true,
-              backgroundColor: Colors.transparent,
+              backgroundColor:
+                  isHighContrast ? Colors.white : Colors.transparent,
               appBar: AppBar(
                   backgroundColor: Colors.transparent,
                   forceMaterialTransparency: true,
@@ -306,11 +337,13 @@ class _ReminderPageState extends State<ReminderPage> {
                               child: Text(
                                 languageProvider.translate('reminders'),
                                 style: TextStyle(
-                                    fontSize: 24, fontWeight: FontWeight.bold),
+                                    fontSize: isHighContrast ? 30 : 24,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
                             IconButton(
-                              icon: Icon(Icons.calendar_today, size: 24.0),
+                              icon: Icon(Icons.calendar_today,
+                                  size: isHighContrast ? 30.0 : 24),
                               onPressed: () async {
                                 DateTime? selectedDate = await showDatePicker(
                                   context: context,
@@ -326,14 +359,15 @@ class _ReminderPageState extends State<ReminderPage> {
                           ],
                         ),
                         SizedBox(height: 10),
-                        Row(children: _buildDateCards()),
+                        Row(children: _buildDateCards(isHighContrast)),
                         SizedBox(height: 10),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             languageProvider.translate('upcoming_reminders'),
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
+                                fontSize: isHighContrast ? 24 : 16,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                         SizedBox(height: 10),
@@ -348,7 +382,7 @@ class _ReminderPageState extends State<ReminderPage> {
                             } else {
                               return Column(
                                 children: _appointments.isNotEmpty
-                                    ? _buildReminders()
+                                    ? _buildReminders(isHighContrast)
                                     : [
                                         Text(
                                             languageProvider

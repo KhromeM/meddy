@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meddymobile/widgets/high_contrast_mode.dart';
 
 class BottomBar extends StatefulWidget {
   final int currentIndex;
@@ -63,11 +64,15 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final double bottomPadding = MediaQuery.of(context).padding.bottom;
     final double barHeight = MediaQuery.of(context).size.height * 0.10;
+    final highContrastMode = HighContrastMode.of(context);
+    final bool isHighContrast = highContrastMode?.isHighContrast ?? false;
 
     return Container(
       height: barHeight,
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
+        color: isHighContrast
+            ? Colors.white
+            : Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
@@ -111,7 +116,9 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
                                 width: 60 * _sizeAnimations[index].value,
                                 height: 60 * _sizeAnimations[index].value,
                                 decoration: BoxDecoration(
-                                  color: Color(0xFF0E3C26).withOpacity(0.3),
+                                  color: isHighContrast
+                                      ? Colors.black
+                                      : Color(0xFF0E3C26).withOpacity(0.3),
                                   shape: BoxShape.circle,
                                 ),
                               ),
