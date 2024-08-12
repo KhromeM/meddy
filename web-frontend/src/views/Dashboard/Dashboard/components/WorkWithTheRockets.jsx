@@ -78,7 +78,7 @@ const WorkWithTheRockets = ({
         <Card
           onClick={() => {
             setTimeout(() => {
-              history.push({pathname: "/dashboard/chat", state: {prompt: description }});
+              history.push("/dashboard/chat");
             }, 300);
           }}
           maxHeight="310.5px"
@@ -193,7 +193,7 @@ const WorkWithTheRockets = ({
             _hover={{ cursor: "pointer" }}
             onClick={() => {
               setTimeout(() => {
-                history.push({pathname: "/dashboard/chat", state: {prompt: description2 }});
+                history.push("/dashboard/chat");
               }, 300);
             }}
             _active={{
