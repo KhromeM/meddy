@@ -1,27 +1,65 @@
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+.wrapper {
+  margin-top: 40px;
+  width: 150%;
+  outline: 1px;
+  padding: 0px; 
+
+}
+.graph-container {
+  position: relative;
+  padding: 2px; /* This creates space for the gradient border */
+  border-radius: 22px; /* Slightly larger to account for padding */
+  background: linear-gradient(45deg, #FF5733, #ffda33, #e98acc, #ac6de7);
+  background-size: 300% 300%;
+  animation: gradientAnimation 15s ease infinite;
+
+}
+
+.graph-content {
+  padding: 12px;
+  text-align: center;
+  margin: auto;
+  width: 100%;
+  background-color: #FAEBCE; /* This creates the white background inside the gradient */
+  border-radius: 20px; /* This matches the inner content to the original design */
+}
+
 svg {
   display: block;
   margin: auto;
 }
 
 svg > path {
-  stroke: rgb(233, 237, 247); /* Color */
-  stroke-width: 0.1; /* Thickness */
+  stroke: rgb(233, 237, 247);
+  stroke-width: 0.1;
   stroke-miterlimit: 10;
 }
 
 svg > line {
   stroke-width: 10;
   animation-duration: 1s;
-  animation-iteration-count: 1; /* Corrected property */
+  animation-iteration-count: 1;
   animation-fill-mode: forwards;
 }
 
 svg > line.bar_one {
-  stroke: #FF5733; /* Updated color to match the theme */
+  stroke: #FF5733;
   animation-name: appearOne;
 }
+
 svg > line.bar_two {
-  stroke: #339FFF; /* Updated color to match the theme */
+  stroke: #339FFF;
   animation-name: appearTwo;
 }
 
