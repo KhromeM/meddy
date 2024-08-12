@@ -17,7 +17,7 @@ const animatedDisplay = ({ iPadVideoSrc, phoneVideoSrc }) => {
 			const rect = container.getBoundingClientRect();
 			const scrollPercentage =
 				(window.innerHeight - rect.top) / (window.innerHeight + rect.height);
-			const rotateX = scrollPercentage * 8;
+			const rotateX = scrollPercentage * 6;
 			const rotateY = 0;
 			container.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
 			phone.style.transform = `perspective(1000px) rotateX(${
