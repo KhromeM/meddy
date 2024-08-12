@@ -211,10 +211,10 @@ const SidebarContent = ({ logoText, routes, onOpen }) => {
           fontWeight="bold"
           alignItems="center"
           fontSize="11px"
-          paddingLeft='13px'
+          paddingLeft='11px'
         >
           <SpinningLogo
-            size={35}
+            size={38}
             outerSpeed={10}
             innerSpeed={8}
             outerCircleSize={1.2}
