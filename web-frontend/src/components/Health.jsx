@@ -20,6 +20,7 @@ import { ResponsiveContainer } from "recharts";
 import Recommendations, { RecommendationsAction } from "./Recommendations";
 import BarChart from "./BarChart.jsx";
 import ProgressChart from "./ProgressChart.jsx";
+import './HealthMediaQuery.css'
 
 const cardBg = "#F5E9DB";
 
@@ -121,7 +122,7 @@ const HealthSystemContent = ({ category }) => {
         columns={{ sm: 1, md: 2, xl: 2 }}
         spacing="24px"
       >
-        <Box maxHeight={{lg: '600px', xl: '500px'}}  display="flex" flexDirection="column" flex="1">
+        <Box className='leftWidgetHealth' maxHeight={{lg: '600px', xl: '500px'}}  display="flex" flexDirection="column" flex="1">
           <ProgressChart
             data={category.score}
             title={category.name}
@@ -134,7 +135,7 @@ const HealthSystemContent = ({ category }) => {
             healthPageNonFitness={true}
           />
         </Box>
-        <Box maxHeight={{lg: '600px', xl: '500px'}}  display="flex" flexDirection="column" flex="1" bg={cardBg} p={4} borderRadius="md" boxShadow="sm">
+        <Box className="rightWidgetHealth" maxHeight={{lg: '600px', xl: '500px'}}  display="flex" flexDirection="column" flex="1" bg={cardBg} p={4} borderRadius="md" boxShadow="sm">
           <VStack  flex="1" align="start" spacing={4}>
             <Recommendations medData={category} />
           </VStack>
