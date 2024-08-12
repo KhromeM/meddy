@@ -134,8 +134,8 @@ export const Hero = ({ login }) => {
 									w={"60%"}
 									textAlign={{ base: "center", md: "center", lg: "center" }}
 								>
-									The world's first voice powered medical assistant that
-									responds empathically.
+									The world's first AI medical assistant that uses your entire
+									medical history to give you the best advice.
 								</Text>
 								<HStack
 									spacing={4}

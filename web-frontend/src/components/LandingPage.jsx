@@ -10,28 +10,30 @@ import { Endorsements } from "./Endorsements/endorsements.jsx";
 import { Overview } from "./sections/Overview.jsx";
 
 export const LandingPage = () => {
-  const { login } = useAuth();
+	const { login } = useAuth();
 
-  return (
-    <Box w="full" overflowX="hidden">
-      <VStack
-        spacing={{ base: "4rem", md: "6rem", lg: "8rem" }}
-        align="stretch"
-      >
-        <Hero login={login} />
-        <Container maxW="container.xl" px={4}>
-          <Features />
-        </Container>
-        <Overview /> 
-        <Container maxW="container.xl" px={4}>
-          <Impact />
-        </Container>
-        <Container maxW="container.xl" px={4}>
-          <Endorsements />
-        </Container>
-        <Testimonial /> 
-        <Footer />
-      </VStack>
-    </Box>
-  );
+	return (
+		<Box w="full" overflowX="hidden">
+			<VStack
+				spacing={{ base: "4rem", md: "6rem", lg: "8rem" }}
+				align="stretch"
+			>
+				<Hero login={login} />
+				<Container maxW="container.xl" px={4}>
+					<Impact />
+				</Container>
+				<Overview />
+				<Container maxW="container.xl" px={4}>
+					<Features />
+
+					{/* <Impact /> */}
+				</Container>
+				<Container maxW="container.xl" px={4}>
+					<Endorsements />
+				</Container>
+				<Testimonial />
+				<Footer />
+			</VStack>
+		</Box>
+	);
 };
