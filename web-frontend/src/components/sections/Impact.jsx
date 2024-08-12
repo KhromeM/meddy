@@ -36,12 +36,6 @@ const features = [
       "Reduce paper waste and improve accuracy with our digital prescription system.",
     url: spanishAudioModeFlutterGif,
   },
-  {
-    title: "Health Education",
-    description:
-      "Provide patients with easy-to-understand information about their conditions and treatments.",
-    url: flutterHealthPageGif,
-  },
 ];
 
 const Impact = () => {
@@ -59,16 +53,17 @@ const Impact = () => {
       flexDirection={{ base: "column", md: "row" }}
     >
       <Box flex={[1, 2, 2]} mr={[0, 20]} mb={[8, 0]}>
-        <Heading as="h2" size="xl" mb={4} pl={4} fontSize="48px">
-          How Meddy Makes an Impact
+        <Heading as="h2" size="xl" mb={8} pl={4} fontSize="48px">
+          Meddy’s Environmental Impact
         </Heading>
         <Accordion allowToggle defaultIndex={[0]}>
           {features.map((feature, index) => (
             <AccordionItem
               key={index}
               border={"2px solid #E2E8F0"}
-              marginBottom={4}
+              marginBottom={10} // Increased the margin-bottom for more space
               borderRadius={16}
+              p={4} // Added padding for better spacing inside each item
             >
               <h3>
                 <AccordionButton onClick={() => updateImage(feature.url)}>
