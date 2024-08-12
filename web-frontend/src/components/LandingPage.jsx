@@ -7,7 +7,7 @@ import { Testimonial } from "./sections/Testimonial";
 import Impact from "./sections/Impact.jsx";
 import { Footer } from "./sections/Footer";
 import { Endorsements } from "./Endorsements/endorsements.jsx";
-
+import SpinningLogo from "./SpinningLogo.jsx";
 export const LandingPage = () => {
   const { login } = useAuth();
 
@@ -28,7 +28,6 @@ export const LandingPage = () => {
         <Container maxW="container.xl" px={4}>
           <Impact />
         </Container>
-
         <Container maxW="container.xl" px={4}>
           <Endorsements />
         </Container>

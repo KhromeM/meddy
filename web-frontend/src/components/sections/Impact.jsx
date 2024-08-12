@@ -18,23 +18,31 @@ import flutterHealthPageGif from "../../assets/gif/flutter-health-page.gif";
 import "../../styles/animatedBG.css";
 
 const features = [
+  { 
+    title: "Digital Records",
+    description:
+      "By listening in on your appointments and integrating with Epic, Meddy tracks of all your medications, conditions and health metrics. This helps cut down on paper usage, which makes up 54% of hospital waste. We give you complete control over your information, giving you instant access and editing. Keeping all your data in one place minimizes bureaucracy and allows doctors to focus on their patients instead of digging through records.",
+    url: setReminderFlutterGif,
+  },
   {
     title: "Multilingual Support",
     description:
-      "Our AI-powered translation ensures clear communication between patients and healthcare providers.",
+      "70,7% of Limited English Proficienty patients reported limited access to interpreters, and 50% believe the language barrier contributed to errors. Meddy bridges this gap with real-time translation. By auto-detecting language in voice and chat, and translating our app, we aim to reduce the friction in treating patients from diverse linguistic backgrounds.",
     url: spanishMedicineIdentificationGif,
   },
   {
     title: "Medication Reminders",
     description:
-      "Timely notifications help patients adhere to their medication schedules, improving overall health outcomes.",
+      "We give you an easy way to keep track of your medication regimes. Whether you prefer voice commands or UI, we give you a simple way to adhere to your prescription. A staggering two thirds of prescribed medications are unused, in large part due to forgetfulness. Avoid wasting money and risking adverse effects with Meddy.",
     url: setReminderFlutterGif,
   },
   {
-    title: "Digital Prescriptions",
+
+    title: "Health Education",
     description:
-      "Reduce paper waste and improve accuracy with our digital prescription system.",
-    url: spanishAudioModeFlutterGif,
+      "We summarize all your medical data and display it in an easily digestible fashion, giving you a quick overview of your health status. On that same page, we give you actionable tips to improve your general wellbeing tailored to your specific situation.",
+    url: flutterHealthPageGif,
+
   },
 ];
 
@@ -53,8 +61,10 @@ const Impact = () => {
       flexDirection={{ base: "column", md: "row" }}
     >
       <Box flex={[1, 2, 2]} mr={[0, 20]} mb={[8, 0]}>
-        <Heading as="h2" size="xl" mb={8} pl={4} fontSize="48px">
-          Meddy’s Environmental Impact
+
+        <Heading as="h2" size="xl" mb={4} pl={4} fontSize="48px" marginTop="50px" marginBottom="40px">
+          How Meddy Makes an Impact
+
         </Heading>
         <Accordion allowToggle defaultIndex={[0]}>
           {features.map((feature, index) => (
@@ -65,24 +75,29 @@ const Impact = () => {
               borderRadius={16}
               p={4} // Added padding for better spacing inside each item
             >
-              <h3>
-                <AccordionButton onClick={() => updateImage(feature.url)}>
-                  <Box
-                    flex="1"
-                    textAlign="left"
-                    fontWeight="semibold"
-                    height="50px"
-                    display={"flex"}
-                    alignItems={"center"}
-                  >
-                    {feature.title}
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-              </h3>
-              <AccordionPanel pb={4}>
-                <Text>{feature.description}</Text>
-              </AccordionPanel>
+              {({ isExpanded }) => (
+                <>
+                  <h3>
+                    <AccordionButton onClick={() => updateImage(feature.url)}>
+                      <Box
+                        flex="1"
+                        textAlign="left"
+                        fontWeight={isExpanded ? "semibold" : "light"}
+                        height="50px"
+                        display={"flex"}
+                        alignItems={"center"}
+                        fontSize="18px"
+                      >
+                        {feature.title}
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                  </h3>
+                  <AccordionPanel pb={4}>
+                    <Text lineHeight="1.8">{feature.description}</Text>
+                  </AccordionPanel>
+                </>
+              )}
             </AccordionItem>
           ))}
         </Accordion>
@@ -94,9 +109,9 @@ const Impact = () => {
           borderRadius="20px"
           width="100%"
           objectFit="cover"
-        />
-      </Box>
+        /></Box>
     </Flex>
+
   );
 };
 
