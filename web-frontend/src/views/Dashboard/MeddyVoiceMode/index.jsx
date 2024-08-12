@@ -313,7 +313,7 @@ const VoiceMode = () => {
                   textAlign="center"
                 >
                   <Text fontSize="md" color="gray.700">
-                  Tap again to send
+                  Tap the bubble again to send
                                     </Text>
                 </Box>
               )}
