@@ -37,10 +37,12 @@ const features = [
     url: setReminderFlutterGif,
   },
   {
+
     title: "Health Education",
     description:
       "We summarize all your medical data and display it in an easily digestible fashion, giving you a quick overview of your health status. On that same page, we give you actionable tips to improve your general wellbeing tailored to your specific situation.",
     url: flutterHealthPageGif,
+
   },
 ];
 
@@ -59,16 +61,19 @@ const Impact = () => {
       flexDirection={{ base: "column", md: "row" }}
     >
       <Box flex={[1, 2, 2]} mr={[0, 20]} mb={[8, 0]}>
+
         <Heading as="h2" size="xl" mb={4} pl={4} fontSize="48px" marginTop="50px" marginBottom="40px">
           How Meddy Makes an Impact
+
         </Heading>
         <Accordion allowToggle defaultIndex={[0]}>
           {features.map((feature, index) => (
             <AccordionItem
               key={index}
               border={"2px solid #E2E8F0"}
-              marginBottom={4}
+              marginBottom={10} // Increased the margin-bottom for more space
               borderRadius={16}
+              p={4} // Added padding for better spacing inside each item
             >
               {({ isExpanded }) => (
                 <>
