@@ -79,7 +79,7 @@ const animatedDisplay = ({ imageSrc, phoneVideoSrc }) => {
         transition="transform 0.3s ease-out"
       >
         <Image
-          src="/src/assets/svg/Group_1.svg"
+          src="/src/assets/svg/group1.svg"
           alt="iPhone 13 Pro Max Frame"
           position="absolute"
           top="0"
