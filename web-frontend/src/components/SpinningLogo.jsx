@@ -9,6 +9,7 @@ const SpinningLogo = ({ size = 100, outerSpeed = 10, innerSpeed = 8, color = "#F
 
   return (
     <svg
+    
       width={size}
       height={size}
       viewBox={`0 0 50 51`}
@@ -32,6 +33,7 @@ const SpinningLogo = ({ size = 100, outerSpeed = 10, innerSpeed = 8, color = "#F
             transform-origin: center;
             padding-top: 10px;
           }
+            margin-left: 10px;
         `}
       </style>
       <g width="50" height="51" viewBox="0 0 50 51" fill="none" xmlns="http://www.w3.org/2000/svg" className='outer-circle'>
