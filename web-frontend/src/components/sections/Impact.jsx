@@ -62,7 +62,7 @@ const Impact = () => {
         <Heading as="h2" size="xl" mb={4} pl={4} fontSize="48px">
           How Meddy Makes an Impact
         </Heading>
-        <Accordion allowToggle>
+        <Accordion allowToggle defaultIndex={[0]}>
           {features.map((feature, index) => (
             <AccordionItem
               key={index}
