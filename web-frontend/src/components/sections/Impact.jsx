@@ -11,7 +11,7 @@ import {
   AccordionPanel,
   AccordionIcon
 } from "@chakra-ui/react";
-import homeScreen from "../../assets/img/home-screenshot.png";
+import spanishMedicineIdentificationGif from "../../assets/gif/spanish-medicine-identification.gif";
 import "../../styles/animatedBG.css";
 
 const features = [
@@ -60,10 +60,9 @@ const Impact = () => {
       </Box>
       <Box flex={1}>
         <Image
-          src={homeScreen}
+          src={spanishMedicineIdentificationGif}
           alt="Empathic Voice Interface"
-          borderRadius="20px"
-          boxShadow="lg"
+          borderRadius="20px" 
           width="100%"
           objectFit="cover"
         />
