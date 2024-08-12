@@ -29,11 +29,6 @@ const FeatureBox = ({ icon, title, description }) => {
         bg: "#fff5df",
         boxShadow: "lg",
         transform: "scale(1.01)",
-        height: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "40px"
       }}
     >
       <Text fontSize="sm" height={"34px"} lineHeight={"1.5rem"}>
