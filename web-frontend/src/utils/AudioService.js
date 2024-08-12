@@ -97,21 +97,25 @@ class AudioService {
       if (this.audioQueue3.length > 0 && !this.isAudioQueue1Started) {
         this.isPlaying = true;
         await this.playQueue(this.audioQueue3);
+        console.log("audioqueue3 played")
         this.isPlaying = false;
       } else if (this.audioQueue1.length > 0 && !this.isAudioQueue1Started) {
         this.isAudioQueue1Started = true;
         this.isPlaying = true;
         await this.playQueue(this.audioQueue1);
+        console.log("audioqueue1 played");
         this.isPlaying = false;
 
         if (this.audioQueue3.length > 0) {
           this.isPlaying = true;
           await this.playQueue(this.audioQueue3);
+          console.log("audioqueue3 played");
           this.isPlaying = false;
         }
       } else if (this.audioQueue3.length > 0 && this.isAudioQueue1Started) {
         this.isPlaying = true;
         await this.playQueue(this.audioQueue3);
+        console.log("audioqueue3 played");
         this.isPlaying = false;
       }
       if (this.audioQueue1.length > 0 || this.audioQueue3.length > 0) {
