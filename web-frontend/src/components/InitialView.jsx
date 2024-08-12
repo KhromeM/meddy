@@ -31,7 +31,7 @@ const FeatureBox = ({ icon, title, description }) => {
         transform: "scale(1.01)",
       }}
     >
-      <Text fontSize="md" height={"34px"} lineHeight={"1.5rem"}>
+      <Text fontSize="sm" height={"34px"} lineHeight={"1.5rem"}>
         {description}
       </Text>
     </Card>
@@ -51,7 +51,7 @@ const InitialView = () => {
   }, []);
 
   return (
-    <VStack spacing={8} align="stretch" mt={8} height="50vh" overflow="hidden">
+    <VStack spacing={8} align="stretch" mt={8} overflow="hidden">
       <SimpleGrid
         columns={{ base: 1, md: 3 }}
         height={"100%"}
