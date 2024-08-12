@@ -4,29 +4,24 @@ import 'package:google_sign_in/google_sign_in.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  String? _cachedIdToken;
 
   Future<User?> signInWithGoogle() async {
     try {
-      // Trigger the authentication flow
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-
       if (googleUser == null) {
-        // Google sign-in canceled by user
         return null;
       }
-
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
-
-      // Create a new credential
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-
-      // Once signed in, return the UserCredential
       final UserCredential userCredential =
           await _auth.signInWithCredential(credential);
+      _cachedIdToken =
+          await userCredential.user?.getIdToken(); // Cache the idToken
       return userCredential.user;
     } catch (e) {
       print(e.toString());
@@ -37,19 +32,21 @@ class AuthService {
   Future<void> signOut() async {
     await _auth.signOut();
     await _googleSignIn.signOut();
+    _cachedIdToken = null;
+  }
+
+  Future<String?> getIdToken() async {
+    if (_cachedIdToken == null) {
+      _cachedIdToken = await _auth.currentUser?.getIdToken();
+    }
+    return _cachedIdToken;
   }
 
   String? getFirstName() {
-    final user = _auth.currentUser;
-    return user?.displayName?.split(' ')[0];
+    return _auth.currentUser?.displayName?.split(' ')[0];
   }
 
   String? getProfileImageUrl() {
-    final user = _auth.currentUser;
-    return user?.photoURL;
-  }
-  Future<String?> getIdToken() async {
-    final user = FirebaseAuth.instance.currentUser;
-    return await user?.getIdToken();
+    return _auth.currentUser?.photoURL;
   }
 }
