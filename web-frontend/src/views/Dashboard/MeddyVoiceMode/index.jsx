@@ -279,7 +279,6 @@ const VoiceMode = () => {
                 {isRecording
                   ? currentTranscription
                   : "Tap the bubble to start speaking"}
-                  : "Tap the bubble to start speaking"}
               </Text>
             </Center>
 
