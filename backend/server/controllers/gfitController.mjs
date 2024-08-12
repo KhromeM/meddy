@@ -1,21 +1,34 @@
 import { getModel } from "../../ai/langAi/setupVertexAI.mjs";
 import db from "../../db/db.mjs";
 import { fetchGoogleFitData } from "../../utils/googleFit.mjs";
-import { getUserHealthScores, createHealthScore, updateHealthScore } from "../../db/dbInfo.mjs";
+import {
+	getUserHealthScores,
+	createHealthScore,
+	updateHealthScore,
+} from "../../db/dbInfo.mjs";
 
 export const getGFitData = async (req, res) => {
 	const user = req._dbUser;
-	return res.status(200).json({ data: sampleData });
+	// return res.status(200).json({ data: sampleData });
 
 	try {
 		const data = await fetchGoogleFitData(user.userid);
+		return res.status(200).json({ data: sampleData });
+
 		if (!data) {
-			return res.status(500).json({ status: "fail", message: "Could not get google fit data" });
+			return res.status(500).json({
+				status: "fail",
+				message: "Could not get google fit data or you have no google fit data",
+			});
 		}
 		return res.status(200).json({ data });
 	} catch (err) {
 		console.error(err);
-		res.status(500).json({ status: "fail", message: "Could not get google fit data" });
+		return res.status(200).json({ data: sampleData });
+
+		res
+			.status(500)
+			.json({ status: "fail", message: "Could not get google fit data" });
 	}
 };
 
@@ -29,7 +42,10 @@ export const gFitScores = async (req, res) => {
 		const healthScores = await getUserHealthScores(user.userid);
 
 		// No health score or score is more than 2 weeks old
-		if (healthScores.length === 0 || isMoreThanTwoWeeksOld(healthScores[0].date, currentDate)) {
+		if (
+			healthScores.length === 0 ||
+			isMoreThanTwoWeeksOld(healthScores[0].date, currentDate)
+		) {
 			const responseSchema = {
 				type: "object",
 				properties: {
@@ -64,13 +80,25 @@ export const gFitScores = async (req, res) => {
 			};
 
 			const result = await llm.generateContent(request);
-			const scores = JSON.parse(result.response.candidates[0].content.parts[0].text);
+			const scores = JSON.parse(
+				result.response.candidates[0].content.parts[0].text
+			);
 
 			// Update or insert the health score
 			if (healthScores.length === 0) {
-				await createHealthScore(user.userid, scores.sleep, scores.steps, currentDate);
+				await createHealthScore(
+					user.userid,
+					scores.sleep,
+					scores.steps,
+					currentDate
+				);
 			} else {
-				await updateHealthScore(user.userid, scores.sleep, scores.steps, currentDate);
+				await updateHealthScore(
+					user.userid,
+					scores.sleep,
+					scores.steps,
+					currentDate
+				);
 			}
 
 			res.status(200).json(scores);
@@ -86,13 +114,17 @@ export const gFitScores = async (req, res) => {
 		}
 	} catch (error) {
 		console.error("Error in gFitScores:", error);
-		res.status(500).json({ error: "An error occurred while retrieiving health scores" });
+		res
+			.status(500)
+			.json({ error: "An error occurred while retrieiving health scores" });
 	}
 };
 
 // Helper function to check if a date is more than two weeks old
 function isMoreThanTwoWeeksOld(date, currentDate) {
-	const twoWeeksAgo = new Date(currentDate.getTime() - 14 * 24 * 60 * 60 * 1000);
+	const twoWeeksAgo = new Date(
+		currentDate.getTime() - 14 * 24 * 60 * 60 * 1000
+	);
 	return new Date(date) < twoWeeksAgo;
 }
 

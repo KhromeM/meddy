@@ -2,8 +2,8 @@ import dotenv from "dotenv";
 dotenv.config();
 const port = 8000;
 const isTestEnv = process.env.NODE_ENV === "test";
-// const redirectUrl = "https://www.trymeddy.com/chat;
-const redirectUrl = "http://localhost:5173/chat";
+const redirectUrl = "https://www.trymeddy.com/dashboard/home";
+// const redirectUrl = "http://localhost:5173/dashboard/home";
 
 export default {
 	port: isTestEnv ? port + 1 : port,
