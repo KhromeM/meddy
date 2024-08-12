@@ -8,8 +8,10 @@ import {
   Icon,
   Divider,
   Select,
+  Grid,
   Flex,
   VStack,
+  Stack,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { FaPills } from "react-icons/fa";
@@ -24,9 +26,17 @@ const TestDetails = ({ test }) => {
       <Heading size="md" mb={2}>
         {test.name}
       </Heading>
-      <Text>Name: {test.name || "N/A"}</Text>
-      <Text>Result: {test.result || "N/A"}</Text>
-      <Text>Range: {test.range || "N/A"}</Text>
+
+      <Grid templateColumns="auto 1fr" gap="5px">
+        <Text fontWeight="bold">Name:</Text>
+        <Text>{test.name || "N/A"}</Text>
+
+        <Text fontWeight="bold">Result:</Text>
+        <Text>{test.result || "N/A"}</Text>
+
+        <Text fontWeight="bold">Range:</Text>
+        <Text>{test.range || "N/A"}</Text>
+      </Grid>
 
       <Box mt={4} borderWidth={1} borderRadius="md" bg={"#b0e9b4"} p={4}>
         <HStack>
