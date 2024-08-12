@@ -1,5 +1,5 @@
 // Chakra imports
-import { Flex, Icon, Text, useColorModeValue } from "@chakra-ui/react";
+import { Divider, Flex, Icon, Text, useColorModeValue } from "@chakra-ui/react";
 // Custom components
 import Card from "../../../../components/Card/Card";
 import CardBody from "../../../../components/Card/CardBody";
@@ -85,11 +85,11 @@ const AppointmentsCard = ({
 
       const data = await response.json();
       // console.log(data.appointments, "appointments");
-      console.log(data.appointments, "before");
+      // console.log(data.appointments, "before");
       data.appointments.sort(
         (a, b) => new Date(a.dateString) - new Date(b.dateString)
       );
-      console.log(data.appointments, "after");
+      // console.log(data.appointments, "after");
 
       function formatDate(dateString) {
         const date = new Date(dateString);
@@ -160,13 +160,13 @@ const AppointmentsCard = ({
         if (apt.description === "") {
           return;
         }
-        console.log(apt.description);
-        console.log(formatDate(apt.date));
-        console.log(timeFromNow(apt.date));
+        // console.log(apt.description);
+        // console.log(formatDate(apt.date));
+        // console.log(timeFromNow(apt.date));
         FaUserDoctor;
 
-        console.log(isFutureOrPast(apt.date));
-        console.log(parseAppointmentString(apt.description));
+        // console.log(isFutureOrPast(apt.date));
+        // console.log(parseAppointmentString(apt.description));
         let appointment = {
           description: parseAppointmentString(apt.description).description,
           doctorName: parseAppointmentString(apt.description).doctorName,
@@ -214,8 +214,9 @@ const AppointmentsCard = ({
           >
             <Text
               color={textColor}
-              fontSize={{ sm: "lg", md: "xl", lg: "xl" }}
+              fontSize={{ sm: "24px", md: "24px", lg: "26px" }}
               fontWeight="bold"
+              ml='-4px'
             >
               {title}
             </Text>
@@ -242,9 +243,10 @@ const AppointmentsCard = ({
       </CardHeader>
       <CardBody>
         <Flex direction="column" w="100%">
+        <Card backgroundColor="#f1d8bf91" marginBottom='25px' paddingTop='8px' paddingBottom='1px' borderWidth="1px" borderRadius="lg" boxShadow="md">
           <Text
             color="yellow.600"
-            fontSize={{ sm: "sm", md: "md" }}
+            fontSize={{ sm: "md", md: "lg" }}
             fontWeight="semibold"
             my="12px"
           >
@@ -253,6 +255,8 @@ const AppointmentsCard = ({
           {futureAppointments.length === 0 && (
             <Text>You have no upcoming appointments.</Text>
           )}
+          <Divider borderColor='#8f9eb2' borderWidth='1px' />
+
           {futureAppointments.slice(0, 3).map((row) => {
             return (
               <AppointmentsCardInfo
@@ -265,20 +269,22 @@ const AppointmentsCard = ({
               />
             );
           })}
-
+</Card>
+<Card backgroundColor='#f1d8bf91'  paddingTop='1px' paddingBottom='1px' borderWidth="1px" borderRadius="lg" boxShadow="md">
           <Text
             color="gray.600"
-            fontSize={{ sm: "sm", md: "md" }}
+            fontSize={{ sm: "md", md: "lg" }}
             fontWeight="semibold"
             mt="22px"
             mb="12px"
           >
             Past
           </Text>
+          <Divider borderColor='#8f9eb2' borderWidth='1px' />
           {futureAppointments.length === 0 && (
             <Text>You have no past appointments.</Text>
           )}
-          {pastAppointments.slice(0, 3).map((row) => {
+          {pastAppointments.slice(0, 4).map((row) => {
             return (
               <AppointmentsCardInfo
                 description={row.description}
@@ -289,6 +295,7 @@ const AppointmentsCard = ({
               />
             );
           })}
+        </Card>
         </Flex>
       </CardBody>
     </Card>
