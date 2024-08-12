@@ -258,7 +258,7 @@ const VoiceMode = () => {
 							<Box h="60px" mb={5}>
 								{isRecording ? <WaveAnimation /> : null}
 							</Box>
-							{isRecording ? (
+							{isRecording && currentTranscription ? (
 								<Box
 									mt="200"
 									w="50vw"
