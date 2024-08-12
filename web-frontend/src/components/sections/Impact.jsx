@@ -18,23 +18,23 @@ import flutterHealthPageGif from "../../assets/gif/flutter-health-page.gif";
 import "../../styles/animatedBG.css";
 
 const features = [
+  { 
+    title: "Digital Records",
+    description:
+      "By listening in on your appointments and integrating with Epic, Meddy tracks of all your medications, conditions and health metrics. This helps cut down on paper usage, which makes up 54% of hospital waste. Keeping all ",
+    url: setReminderFlutterGif,
+  },
   {
     title: "Multilingual Support",
     description:
-      "Our AI-powered translation ensures clear communication between patients and healthcare providers.",
+      "70,7% of Limited English Proficienty patients reported limited access to interpreters, and 50% believe the language barrier contributed to errors. Meddy bridges this gap with real-time translation. By auto-detecting language in voice and chat, and translating our app, we aim to reduce the friction in treating patients from diverse linguistic backgrounds.",
     url: spanishMedicineIdentificationGif,
   },
   {
     title: "Medication Reminders",
     description:
-      "Timely notifications help patients adhere to their medication schedules, improving overall health outcomes.",
-    url: setReminderFlutterGif,
-  },
-  {
-    title: "Digital Prescriptions",
-    description:
       "Reduce paper waste and improve accuracy with our digital prescription system.",
-    url: spanishAudioModeFlutterGif,
+    url: setReminderFlutterGif,
   },
   {
     title: "Health Education",
@@ -59,7 +59,7 @@ const Impact = () => {
       flexDirection={{ base: "column", md: "row" }}
     >
       <Box flex={[1, 2, 2]} mr={[0, 20]} mb={[8, 0]}>
-        <Heading as="h2" size="xl" mb={4} pl={4} fontSize="48px">
+        <Heading as="h2" size="xl" mb={4} pl={4} fontSize="48px" marginTop="50px" marginBottom="40px">
           How Meddy Makes an Impact
         </Heading>
         <Accordion allowToggle defaultIndex={[0]}>
@@ -70,24 +70,29 @@ const Impact = () => {
               marginBottom={4}
               borderRadius={16}
             >
-              <h3>
-                <AccordionButton onClick={() => updateImage(feature.url)}>
-                  <Box
-                    flex="1"
-                    textAlign="left"
-                    fontWeight="semibold"
-                    height="50px"
-                    display={"flex"}
-                    alignItems={"center"}
-                  >
-                    {feature.title}
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-              </h3>
-              <AccordionPanel pb={4}>
-                <Text>{feature.description}</Text>
-              </AccordionPanel>
+              {({ isExpanded }) => (
+                <>
+                  <h3>
+                    <AccordionButton onClick={() => updateImage(feature.url)}>
+                      <Box
+                        flex="1"
+                        textAlign="left"
+                        fontWeight={isExpanded ? "semibold" : "light"}
+                        height="50px"
+                        display={"flex"}
+                        alignItems={"center"}
+                        fontSize="18px"
+                      >
+                        {feature.title}
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                  </h3>
+                  <AccordionPanel pb={4}>
+                    <Text lineHeight="1.8">{feature.description}</Text>
+                  </AccordionPanel>
+                </>
+              )}
             </AccordionItem>
           ))}
         </Accordion>
@@ -99,9 +104,9 @@ const Impact = () => {
           borderRadius="20px"
           width="100%"
           objectFit="cover"
-        />
-      </Box>
+        /></Box>
     </Flex>
+
   );
 };
 
