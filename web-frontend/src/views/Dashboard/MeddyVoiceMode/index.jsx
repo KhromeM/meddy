@@ -274,6 +274,7 @@ const VoiceMode = () => {
 								</Text>
 							</Box>
 							<Box
+								mt="5"
 								as={motion.div}
 								whileHover={{ scale: 1.1 }}
 								whileTap={{ scale: 0.9 }}
