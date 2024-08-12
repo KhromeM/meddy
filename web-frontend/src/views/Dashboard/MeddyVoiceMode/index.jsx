@@ -254,66 +254,57 @@ const VoiceMode = () => {
 					<VStack spacing={7} align="center">
 						{aiResponse && <ChatBubble message={aiResponse} isUser={false} />}
 
+						<Center flexDirection="column">
+							<Box h="60px" mb={5}>
+								{isRecording ? <WaveAnimation /> : null}
+							</Box>
 
-            <Center flexDirection="column">
-              <Box h="60px" mb={5}>
-                {isRecording ? <WaveAnimation /> : null}
-              </Box>
-              <Box
-                as={motion.div}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                cursor="pointer"
-                onClick={toggleRecording}
-              >
-                {isRecording ? (
-                  <img
-                    src={activeMic}
-                    alt="Active Microphone"
-                    width="200"
-                    height="200"
-                  />
-                ) : (
-                  <img
-                    src={notActiveMic}
-                    alt="Inactive Microphone"
-                    width="200"
-                    height="200"
-                  />
-                )}
-              </Box>
-              
-              <Text fontSize="xl" textAlign="center" color="gray.300" mt={8}>
-                {isRecording
-                  ? currentTranscription
-                  : "Tap the bubble to start speaking"}
-              </Text>
-            </Center>
+							<Box
+								mt="200"
+								w="50vw"
+								minW={"400"}
+								bg="linear-gradient(90deg, rgba(6,53,58,1) 0%, rgba(7,28,52,1) 100%)"
+								p="6"
+								borderRadius="10"
+							>
+								<Text fontSize="xl" textAlign="center" color="gray.300">
+									{isRecording
+										? currentTranscription
+										: "Tap the mic to start speaking"}
+								</Text>
+							</Box>
+							<Box
+								mt="5"
+								as={motion.div}
+								whileHover={{ scale: 1.1 }}
+								whileTap={{ scale: 0.9 }}
+								cursor="pointer"
+								onClick={toggleRecording}
+							>
+								{isRecording ? (
+									<img
+										src={activeMic}
+										alt="Active Microphone"
+										width="200"
+										height="200"
+									/>
+								) : (
+									<img
+										src={notActiveMic}
+										alt="Inactive Microphone"
+										width="200"
+										height="200"
+									/>
+								)}
+							</Box>
+						</Center>
 
-            {userMessage && <ChatBubble message={userMessage} isUser={true} />}
-            {isRecording && (
-                <Box
-                  position="absolute"
-                  top="50%"
-                  left="50%"
-                  transform="translate(-50%, -50%)"
-                  bg="whiteAlpha.800"
-                  p={4}
-                  borderRadius="md"
-                  boxShadow="md"
-                  textAlign="center"
-                >
-                  <Text fontSize="md" color="gray.700">
-                  Tap again to send
-                                    </Text>
-                </Box>
-              )}
-          </VStack>
-        </Flex>
-      )}
-    </Box>
-  );
-
+						{userMessage && <ChatBubble message={userMessage} isUser={true} />}
+					</VStack>
+				</Flex>
+			)}
+		</Box>
+	);
 };
 
 export default VoiceMode;
