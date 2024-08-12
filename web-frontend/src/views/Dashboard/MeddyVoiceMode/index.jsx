@@ -274,9 +274,11 @@ const VoiceMode = () => {
                   />
                 )}
               </Box>
+              
               <Text fontSize="xl" textAlign="center" color="gray.300" mt={8}>
                 {isRecording
                   ? currentTranscription
+                  : "Tap the bubble to start speaking"}
                   : "Tap the bubble to start speaking"}
               </Text>
             </Center>
