@@ -28,6 +28,7 @@ import computer from "../../assets/img/supercomputer.jpg"
 import chart from "../../assets/gif/data_vis2.gif"
 
 import FlutterVideo from "../../assets/video/fluttervideo.mp4"
+import BarGraph from './graphAnimation/BarGraph.jsx';
 
 
 export const Hero = ({ login }) => {
@@ -312,6 +313,7 @@ export const Hero = ({ login }) => {
             </VStack>
           </Box>
         </SimpleGrid>
+        <BarGraph />
       </Box>
     </>
   );
