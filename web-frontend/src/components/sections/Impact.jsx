@@ -18,7 +18,7 @@ import flutterHealthPageGif from "../../assets/gif/flutter-health-page.gif";
 import "../../styles/animatedBG.css";
 
 const features = [
-  { 
+  {
     title: "Digital Records",
     description:
       "By listening in on your appointments and integrating with Epic, Meddy tracks of all your medications, conditions and health metrics. This helps cut down on paper usage, which makes up 54% of hospital waste. We give you complete control over your information, giving you instant access and editing. Keeping all your data in one place minimizes bureaucracy and allows doctors to focus on their patients instead of digging through records.",
@@ -37,12 +37,10 @@ const features = [
     url: setReminderFlutterGif,
   },
   {
-
     title: "Health Education",
     description:
       "We summarize all your medical data and display it in an easily digestible fashion, giving you a quick overview of your health status. On that same page, we give you actionable tips to improve your general wellbeing tailored to your specific situation.",
     url: flutterHealthPageGif,
-
   },
 ];
 
@@ -55,16 +53,22 @@ const Impact = () => {
 
   return (
     <Flex
-      align="flex-start"
+      align="center" // Center the image vertically
       justify="space-between"
       p={8}
       flexDirection={{ base: "column", md: "row" }}
     >
       <Box flex={[1, 2, 2]} mr={[0, 20]} mb={[8, 0]}>
-
-        <Heading as="h2" size="xl" mb={4} pl={4} fontSize="48px" marginTop="50px" marginBottom="40px">
+        <Heading
+          as="h2"
+          size="xl"
+          mb={4}
+          pl={4}
+          fontSize="48px"
+          marginTop="50px"
+          marginBottom="40px"
+        >
           How Meddy Makes an Impact
-
         </Heading>
         <Accordion allowToggle defaultIndex={[0]}>
           {features.map((feature, index) => (
@@ -102,16 +106,16 @@ const Impact = () => {
           ))}
         </Accordion>
       </Box>
-      <Box flex={1}>
+      <Box flex={1} mt={8}>
         <Image
           src={image}
           alt="Empathic Voice Interface"
           borderRadius="20px"
           width="100%"
           objectFit="cover"
-        /></Box>
+        />
+      </Box>
     </Flex>
-
   );
 };
 
