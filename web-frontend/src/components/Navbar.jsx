@@ -1,6 +1,6 @@
 import { Box, Button, Flex, Spacer, Avatar } from "@chakra-ui/react";
 import { useAuth } from "../firebase/AuthService.jsx";
-import GFitOAuthButton from "./GFitOAuthButton.jsx";
+import GFitOAuthButton from "./GFitOAuthHook.jsx";
 
 const Navbar = () => {
 	const { user, login, logout } = useAuth();
@@ -13,9 +13,9 @@ const Navbar = () => {
 		}
 	};
 	return (
-    <Box bg="teal.500" px={4} py={2}>
-      <Flex alignItems="center">
-        <Spacer />
+		<Box bg="teal.500" px={4} py={2}>
+			<Flex alignItems="center">
+				<Spacer />
 
 				{user && (
 					<Button colorScheme="teal" variant="outline" mr={4}>
@@ -29,7 +29,6 @@ const Navbar = () => {
 			</Flex>
 		</Box>
 	);
-
 };
 
 export default Navbar;
