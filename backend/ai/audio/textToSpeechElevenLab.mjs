@@ -7,12 +7,10 @@ import { getAudioDurationInSeconds } from "get-audio-duration";
 import db from "../../db/db.mjs";
 import { writeLog } from "../../extra/logging/logging.mjs";
 import { execUserRequest } from "../../utils/functionCalling.mjs";
-import {
-	vertexAIModel,
-} from "../langAi/model.mjs";
+import { vertexAIModel } from "../langAi/model.mjs";
 // import { OutputFormat } from "elevenlabs/api";
 
-let defaultModel = vertexAIModel
+let defaultModel = vertexAIModel;
 
 const VOICES = {
 	es2: "8ftlfIEYnEkYY6iLanUO",
@@ -24,19 +22,19 @@ const BOS_MESSAGE = " ";
 const EOS_MESSAGE = "";
 const CHUNK_SEPERATOR = " ";
 const endOfSentenceMarkersSet = new Set([
-	". ",
-	"! ",
-	"? ",
-	"\n ",
-	"; ",
-	": ",
-	"\t ",
-	'" ',
-	"' ",
-	"\\ ",
-	") ",
-	"} ",
-	"] ",
+	".",
+	"!",
+	"?",
+	"\n",
+	";",
+	":",
+	"\t",
+	'"',
+	"'",
+	"\\",
+	")",
+	"}",
+	"]",
 ]);
 
 const turbo = "eleven_turbo_v2_5";
@@ -148,7 +146,7 @@ async function streamLLMToElevenLabs(
 					similarity_boost: 0.8,
 				},
 				xi_api_key: CONFIG.ELEVENLABS_API_KEY,
-				optimize_streaming_latency: 4, // 4 || optimize_streaming_latency || 0, // MAX OPTIMIZATION
+				// optimize_streaming_latency: 4, // 4 || optimize_streaming_latency || 0, // MAX OPTIMIZATION
 				chunk_length_schedule: chunk_length_schedule || [120, 160, 250, 290],
 				// output_format: "pcm_16000", // req.source == "mobile" ? "pcm_16000" : "mp3_44100_64", // if mobile them pcm16000 else mp3
 			})
@@ -185,7 +183,7 @@ async function streamLLMToElevenLabs(
 
 			if (
 				partialResponse.length > bufferLimit ||
-				endOfSentenceMarkersSet.has(chunk.slice(-2)) // if the built up response ends with a ending of sentence signifier
+				endOfSentenceMarkersSet.has(chunk.slice(-1)) // if the built up response ends with a ending of sentence signifier
 			) {
 				sentTTSChunk = true; // have sent tts a chunk
 				TTS_Socket.send(
