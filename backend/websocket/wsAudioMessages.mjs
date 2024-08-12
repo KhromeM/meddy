@@ -197,6 +197,7 @@ export async function useTranscriptionTTS(clientSocket, req) {
 }
 
 export async function handlePartialResponse(clientSocket, req) {
+	return; // Save money
 	if (req.transcribing == false) return; // transcription already done, might as well as return the real response
 	if (req.stalling == true) return; // in the process of generating a stall response, or have done so already
 	let partialTranscript = req.partialTranscript.join(" ");

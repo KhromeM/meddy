@@ -90,7 +90,7 @@ export const uploadHealthData = (req, res) => {
 						path.join(ehrDir, req.file.originalname),
 						"utf-8"
 					);
-					// await summarizeFHIR(req._dbUser, data); // turned off to save money
+					// await summarizeFHIR(req._dbUser, data); // turned off to save money (even with context caching its ruinious :(
 				} catch (error) {
 					console.error(
 						"Error getting llm analysis data:",
