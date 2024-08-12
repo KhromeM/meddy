@@ -6,9 +6,10 @@ function Card(props) {
 	
 	// Use the passed bg or backgroundColor prop, or fall back to the color mode value
 	const bgColor = bg || backgroundColor || useColorModeValue("#FAF3EA", "#FAF3EA");
-
+// console.log(rest)
 	return (
 		<Box
+		
 			__css={styles}
 			sx={{
 				padding: props.padding || "22px",
@@ -24,6 +25,7 @@ function Card(props) {
 				minHeight: props.minHeight || "83px",
 				margin: props.margin || "0px",
 				alignSelf: props.alignSelf || "",
+				marginBottom: props.marginBottom || "0px",
 			}}
 			{...rest}
 		>

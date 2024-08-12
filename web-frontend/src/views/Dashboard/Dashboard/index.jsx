@@ -9,6 +9,7 @@ import {
 	useColorModeValue,
 	Avatar,
 	Text,
+  Spacer,
 } from "@chakra-ui/react";
 // assets
 import peopleImage from "../../../assets/img/people-image.png";
@@ -42,6 +43,12 @@ import QuickActionList from "./components/QuickActionList";
 import Card from "../../../components/Card/Card";
 import MultiChartContainer from "./components/MultiChartContainer";
 import AppointmentsCard from "./components/AppointmentsCard";
+import MiniHealthRatingsCard from "./components/MiniHealthRatingsCard";
+import { FaHeart } from "react-icons/fa6";
+import { FaBed } from "react-icons/fa";
+import { FaWalking } from "react-icons/fa";
+import AIGeneratedHealthTipCard from "./components/AIGeneratedHealthTipCard";
+
 
 const barChartData = [
 	{
@@ -148,7 +155,46 @@ export default function Dashboard() {
         templateColumns={{ sm: "1fr", lg: "1.6fr 1.2fr" }}
       >
         {/* <AppointmentsCard title={"Billing Information"} data={billingData} /> */}
-        <Card />
+        <Flex gap='26px' flexDirection='column' alignItems='stretch'>
+
+        <Card padding='30px'>
+          <Text mb='22px' fontSize='26px' fontWeight='bold'>
+            Yesterday's Health Stats 
+          </Text>
+        <MiniHealthRatingsCard
+        backgroundColor="#ff4a87"
+        textColor=""
+          title={"Average Heart Rate"}
+          // amount={"80 bpm"}
+          percentage={55}
+          icon={<FaHeart h={"24px"} w={"24px"} color='red' />}
+          type='bpm'
+        />
+        
+      
+        <MiniHealthRatingsCard
+        backgroundColor="#5d84aa"
+        textColor=""
+          title={"Sleep Time"}
+          // amount={"5 hours"}
+          percentage={55} 
+          icon={<FaBed h={"24px"} w={"24px"} color='#6cc0eb' />}
+          type='sleep'
+        />
+        <MiniHealthRatingsCard
+        backgroundColor="#6ebb79"
+        textColor=""
+          title={"Walking Steps"}
+          // amount={"8550 steps"}
+          percentage={55}
+          icon={<FaWalking h={"24px"} w={"24px"} color='#6ebb79' />}
+          type='steps'
+        />
+          
+        </Card>
+        <AIGeneratedHealthTipCard />
+        </Flex>
+
         <AppointmentsCard title={"Your Appointments"} date={"past 30 days"} />
       </Grid>
       {/* <SimpleGrid columns={{ sm: 1, md: 2, xl: 4 }} mt="26px" spacing="24px">

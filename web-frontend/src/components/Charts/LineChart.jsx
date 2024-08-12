@@ -46,20 +46,20 @@ const LineChart = () => {
       .then((response) => response.json())
       .then((data) => {
         let sleep = data.data.data.sleep.map((item) => {
-          console.log(getMonthAndDay(item.date));
-          console.log("ITEM", item);
+          // console.log(getMonthAndDay(item.date));
+          // console.log("ITEM", item);
           gfitData[0].data.push(item.totalSleepMinutes);
         });
         let steps = data.data.data.steps.map((item) => {
-          console.log(getMonthAndDay(item.date));
+          // console.log(getMonthAndDay(item.date));
           gfitData[1].data.push(item.steps);
         });
         let bpm = data.data.data.bpm.map((item) => {
-          console.log(getMonthAndDay(item.time));
+          // console.log(getMonthAndDay(item.time));
           arrayForXAxis.push(getMonthAndDay(item.time));
           gfitData[2].data.push(item.bpm);
         });
-        console.log(gfitData);
+        // console.log(gfitData);
         gfitData[0].data = gfitData[0].data.slice(-7);
         gfitData[1].data = gfitData[1].data.slice(-7);
         gfitData[2].data = gfitData[2].data.slice(-7);
@@ -73,18 +73,18 @@ const LineChart = () => {
         });
       });
 
-    console.log("herro", {
-      ...lineChartOptions,
-      xaxis: { ...lineChartOptions.xaxis, categories: arrayForXAxis },
-      // xaxis: { categories: ["hello"], ...lineChartOptions.xaxis },
-    });
-    console.log("This is array for x axis", arrayForXAxis);
-    console.log(
-      setChartOptions((prev) => {
-        console.log(prev);
-        return prev;
-      })
-    );
+    // console.log("herro", {
+    //   ...lineChartOptions,
+    //   xaxis: { ...lineChartOptions.xaxis, categories: arrayForXAxis },
+    //   // xaxis: { categories: ["hello"], ...lineChartOptions.xaxis },
+    // });
+    // console.log("This is array for x axis", arrayForXAxis);
+    // console.log(
+    //   setChartOptions((prev) => {
+    //     console.log(prev);
+    //     return prev;
+    //   })
+    // );
   }, []);
 
   return (
