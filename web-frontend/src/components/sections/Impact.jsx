@@ -21,7 +21,7 @@ const features = [
   { 
     title: "Digital Records",
     description:
-      "By listening in on your appointments and integrating with Epic, Meddy tracks of all your medications, conditions and health metrics. This helps cut down on paper usage, which makes up 54% of hospital waste. Keeping all ",
+      "By listening in on your appointments and integrating with Epic, Meddy tracks of all your medications, conditions and health metrics. This helps cut down on paper usage, which makes up 54% of hospital waste. We give you complete control over your information, giving you instant access and editing. Keeping all your data in one place minimizes bureaucracy and allows doctors to focus on their patients instead of digging through records.",
     url: setReminderFlutterGif,
   },
   {
@@ -33,13 +33,13 @@ const features = [
   {
     title: "Medication Reminders",
     description:
-      "Reduce paper waste and improve accuracy with our digital prescription system.",
+      "We give you an easy way to keep track of your medication regimes. Whether you prefer voice commands or UI, we give you a simple way to adhere to your prescription. A staggering two thirds of prescribed medications are unused, in large part due to forgetfulness. Avoid wasting money and risking adverse effects with Meddy.",
     url: setReminderFlutterGif,
   },
   {
     title: "Health Education",
     description:
-      "Provide patients with easy-to-understand information about their conditions and treatments.",
+      "We summarize all your medical data and display it in an easily digestible fashion, giving you a quick overview of your health status. On that same page, we give you actionable tips to improve your general wellbeing tailored to your specific situation.",
     url: flutterHealthPageGif,
   },
 ];
