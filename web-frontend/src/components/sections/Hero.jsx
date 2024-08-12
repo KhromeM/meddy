@@ -17,7 +17,9 @@ import "../../styles/button.css";
 import CardsInterface from "../CardsInterface";
 import { Gradient } from "../Gradient"; // Import the Gradient class
 import "../../styles/gradient.css"; // Import the gradient CSS
-import MeddyDemoGif from "../../assets/gif/Meddy.gif";
+import MeddyDemoGif from "../../assets/gif/meddycrop.gif";
+import MeddyGif2 from "../../assets/gif/meddy3.gif";
+
 import "../../styles/animatedBG.css";
 import Card from "../Card/Card";
 import GeminiLogo from "../../assets/img/google-gemini-icon.png";
@@ -199,6 +201,7 @@ export const Hero = ({ login }) => {
 				w={{ xl: "80%" }}
 			>
 				<SimpleGrid columns={{ base: 1, md: 2 }} spacing={8} paddingX="5%">
+					
 					<Box
 						position="relative"
 						boxShadow="lg"
@@ -206,15 +209,40 @@ export const Hero = ({ login }) => {
 						flexDirection="column"
 						borderRadius="md"
 						className="animated-box1"
+						
+						p={6}
 					>
-						<Image
-							src={MeddyDemoGif}
-							alt="Empathic Voice Interface GIF"
-							boxSize="100%"
-							maxW="100%"
-							borderRadius="md"
-							zIndex={1}
-						/>
+						<VStack align="flex-start" spacing={4} p={10} paddingBottom="0">
+							<Heading as="h3" size="lg">
+								Live Appointment Transcription
+							</Heading>
+							
+							<Box position="relative" width="100%" height="280px">
+								<Image
+									src={MeddyDemoGif}
+									alt="Empathic Voice Interface GIF"
+									maxHeight="280px"
+									width="80%"
+									objectFit="cover"
+									borderRadius="md"
+									position="absolute"
+									left="0"
+									zIndex={1}
+								/>
+								<Image
+									src={MeddyGif2}
+									alt="Second Empathic Voice Interface GIF"
+									maxHeight="280px"
+									width="40%"
+									objectFit="cover"
+									borderRadius="md"
+									position="absolute"
+									right="0"
+									marginTop="30px"
+									zIndex={2}
+								/>
+							</Box>
+						</VStack>
 					</Box>
 					<Box
 						className="animated-box2"
@@ -265,7 +293,7 @@ export const Hero = ({ login }) => {
 						flexDirection="column"
 						alignItems="flex-start"
 					>
-						<VStack align="flex-start" spacing={4} p={10}>
+						<VStack align="flex-start" spacing={4} p={10} >
 							<Heading as="h3" size="lg">
 								Long Term Memory
 							</Heading>
@@ -277,10 +305,14 @@ export const Hero = ({ login }) => {
 								flexDirection="row"
 								justify="center"
 								align="center"
+								alignContent="center"
 								gap={4}
 								wrap="wrap"
+								width="100%"
 							>
-								<Image src={computer} borderRadius="md" />
+								{/*<Image src={computer} borderRadius="md" />*/}
+								<BarGraph />
+
 							</Flex>
 						</VStack>
 					</Box>
@@ -315,7 +347,6 @@ export const Hero = ({ login }) => {
 						</VStack>
 					</Box>
 				</SimpleGrid>
-				<BarGraph />
 			</Box>
 		</>
 	);
