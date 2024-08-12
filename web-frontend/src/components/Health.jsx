@@ -21,6 +21,7 @@ import Recommendations, { RecommendationsAction } from "./Recommendations";
 import BarChart from "./BarChart.jsx";
 import ProgressChart from "./ProgressChart.jsx";
 import ProgressChartNarrow from "./ProgressChartNarrow.jsx";
+import "./HealthMediaQuery.css";
 
 const cardBg = "#F5E9DB";
 
@@ -171,12 +172,20 @@ const HealthSystemContent = ({ category }) => {
   return (
     <Box>
       <SimpleGrid
-        gridTemplateRows={{ sm: "1fr", md: "1fr", xl: "1fr" }}
+        gridTemplateRows={{ sm: "1fr", md: "1fr", xl: "auto" }}
+        gridAutoRows="1fr"
+        alignItems="stretch"
         mb={5}
         columns={{ sm: 1, md: 2, xl: 2 }}
         spacing="24px"
       >
-        <Box maxHeight="440" display="flex" flexDirection="column" flex="1">
+        <Box
+          className="leftWidgetHealth"
+          maxHeight={{ lg: "600px", xl: "500px" }}
+          display="flex"
+          flexDirection="column"
+          flex="1"
+        >
           <ProgressChart
             data={category.score}
             title={category.name}
@@ -190,7 +199,8 @@ const HealthSystemContent = ({ category }) => {
           />
         </Box>
         <Box
-          maxHeight="440"
+          className="rightWidgetHealth"
+          maxHeight={{ lg: "600px", xl: "500px" }}
           display="flex"
           flexDirection="column"
           flex="1"
@@ -255,6 +265,7 @@ const HealthPanel = () => {
         setFitnessData(fitData);
         setScoreData(scoreData);
         setIsLoading(false);
+        setError(null);
       } catch (err) {
         console.error(err.message);
         setError("Failed to fetch data!");
@@ -334,7 +345,7 @@ const HealthPanel = () => {
       width="100%"
       overflow="auto"
       borderRadius={10}
-      paddingTop="60px"
+      padding="35px"
       bg={bgColor}
     >
       <VStack spacing={0} align="stretch" height="100%" width="100%">

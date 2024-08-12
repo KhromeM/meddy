@@ -32,12 +32,26 @@ class _ReminderPageState extends State<ReminderPage> {
   final String baseUrl = 'https://trymeddy.com/api';
   late Future<void> _appointmentsFuture = new Future<void>(() => ());
   Map<String, dynamic> _appointments = Map();
+  String? userId;
 
   @override
   void initState() {
     super.initState();
     _firstName = _authService.getFirstName() ?? 'User';
     _appointmentsFuture = _fetchAppointments();
+  }
+
+  Future<void> _initializeReminderPage() async {
+    // Fetch the user ID and store it in the class-level variable
+    userId = await _authService.getIdToken();
+
+    // Fetch the user's first name
+    _firstName = _authService.getFirstName() ?? 'User';
+
+    // Fetch and refresh appointments
+    _appointmentsFuture = _fetchAppointments();
+
+    setState(() {}); // Trigger a rebuild to update the UI with fetched data
   }
 
   @override
@@ -48,8 +62,6 @@ class _ReminderPageState extends State<ReminderPage> {
 
   Future<void> _fetchAppointments() async {
     final service = AppointmentService();
-    String? user = await _authService.getIdToken();
-
     try {
       _appointments = await service.getAllAppointments();
       setState(() {}); // Trigger a rebuild after fetching
@@ -66,12 +78,11 @@ class _ReminderPageState extends State<ReminderPage> {
   }
 
   void _removeReminder(int id) async {
-    final service = AppointmentService();
     String? user = await _authService.getIdToken();
     try {
       final response = await http.delete(
           Uri.parse('$baseUrl/info/reminder/$id'),
-          headers: {'idToken': user ?? 'dev'});
+          headers: {'idToken': userId!});
       _refreshAppointments(); // Refresh after removing
     } catch (e) {
       // Handle error
@@ -86,7 +97,6 @@ class _ReminderPageState extends State<ReminderPage> {
       await service.updateAppointment(
         appointmentId: appointmentId,
         date: DateFormat('yyyy-MM-dd').format(date),
-        userId: 'userId', // Replace with actual user ID
         doctorId: 'doctorId', // Replace with actual doctor ID
       );
       // Update UI if needed

@@ -17,6 +17,7 @@ import 'package:uuid/uuid.dart';
 import 'package:image/image.dart' as img;
 import 'package:meddymobile/widgets/listening_notifier.dart';
 import 'package:flutter/services.dart';
+import 'package:meddymobile/services/auth_service.dart'; // Import AuthService
 
 class ChatPage extends StatefulWidget {
   final String? initialPrompt;
@@ -50,6 +51,8 @@ class _ChatPageState extends State<ChatPage> {
   bool _isSendingImage = false;
 
   Map<String, dynamic>? _messageResult;
+
+  final AuthService _authService = AuthService(); // Add AuthService instance
 
   @override
   void initState() {
@@ -140,10 +143,16 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _addMessageToChatHistory(String source, String text, String reqId,
-      {String? imageID, Map<String, dynamic>? result}) {
+      {String? imageID, Map<String, dynamic>? result}) async {
+    final userId = await _authService.getIdToken(); // Get the user ID
+
+    if (userId == null) {
+      return;
+    }
+
     Message newMessage = Message(
       messageId: reqId,
-      userId: "DEVELOPER",
+      userId: userId, // Use the retrieved userId
       source: source,
       imageID: imageID,
       text: text,
