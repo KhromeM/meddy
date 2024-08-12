@@ -26,7 +26,7 @@ import AnimatedDisplay from "./animatedDisplay";
 
 import computer from "../../assets/img/supercomputer.jpg"
 import chart from "../../assets/gif/data_vis2.gif"
-
+import ReactVideo from "../../assets/video/meddyreactdemo.mp4"
 import FlutterVideo from "../../assets/video/fluttervideo.mp4"
 import BarGraph from './graphAnimation/BarGraph.jsx';
 
@@ -184,7 +184,7 @@ export const Hero = ({ login }) => {
               overflow="visible"
             >
               <AnimatedDisplay
-                imageSrc={images.heroImage}
+                iPadVideoSrc={ReactVideo}
                 phoneVideoSrc={FlutterVideo}
 
               />
