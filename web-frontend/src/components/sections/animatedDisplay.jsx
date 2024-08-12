@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Box, Image } from "@chakra-ui/react";
+import iPhoneFrame from "../../assets/svg/group1.svg";
+
 
 const animatedDisplay = ({ imageSrc, phoneVideoSrc }) => {
   const containerRef = useRef(null);
@@ -79,7 +81,7 @@ const animatedDisplay = ({ imageSrc, phoneVideoSrc }) => {
         transition="transform 0.3s ease-out"
       >
         <Image
-          src="/src/assets/svg/group1.svg"
+          src={iPhoneFrame}
           alt="iPhone 13 Pro Max Frame"
           position="absolute"
           top="0"
