@@ -8,7 +8,6 @@ import AudioChat from "./components/AudioChat.jsx";
 import "./styles/chat.css";
 import { AuthProvider } from "./firebase/AuthService.jsx";
 import customTheme from "./theme";
-import { EVI } from "./components/EVI.jsx";
 // import { Team } from "./components/Team.jsx";
 import { Contact } from "./components/Contact.jsx";
 import { AboutUsPage } from "./components/about.jsx";
@@ -31,7 +30,6 @@ function App() {
 						{/* Commented out Chat and Recommendations */}
 						<Route path="/chat" component={Chat} />
 						<Route path="/audiochat" component={AudioChat} />
-						<Route path="/EVI" component={EVI} />
 						<Route path="/contact" component={Contact} />
 						<Route path="/about" component={AboutUsPage} />
 						<Route path="/privacy" component={PrivacyPolicy} />

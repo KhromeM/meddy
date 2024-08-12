@@ -10,7 +10,6 @@ import {
 import { FaUser } from "react-icons/fa";
 
 import { useAuth } from "../../firebase/AuthService.jsx";
-import GFitOAuthButton from "../GFitOAuthHook.jsx";
 import IconBox from "../Icons/IconBox.jsx";
 
 const LoginButton = () => {
