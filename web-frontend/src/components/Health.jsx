@@ -181,6 +181,7 @@ const HealthPanel = () => {
         setFitnessData(fitData);
         setScoreData(scoreData);
         setIsLoading(false);
+        setError(null);
       } catch (err) {
         console.error(err.message);
         setError("Failed to fetch data!");
