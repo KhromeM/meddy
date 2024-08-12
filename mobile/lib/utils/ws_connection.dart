@@ -43,18 +43,18 @@ class WSConnection {
       return;
     }
     try {
+      userId = await _authService.getIdToken(); // Ensure idToken is fetched
+      if (userId == null) {
+        throw Exception('User not authenticated');
+      }
       _channel = WebSocketChannel.connect(Uri.parse(_serverUrl));
-      await _channel?.ready;
       _isConnected = true;
-      print('WebSocket connected');
-
       _channel?.stream.listen(
         _handleIncomingMessage,
         onDone: _handleDisconnect,
         onError: _handleError,
       );
       await authenticate();
-      print("Authenticated!");
     } catch (e) {
       print('WebSocket connection failed: $e');
       _isConnected = false;

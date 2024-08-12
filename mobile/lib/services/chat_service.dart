@@ -21,14 +21,20 @@ class ChatService {
   }
 
   Future<List<Message>> getChatHistory() async {
+    if (userId == null) {
+      userId =
+          await _authService.getIdToken(); // Fetch idToken if not already done
+      if (userId == null) {
+        throw Exception('User not authenticated');
+      }
+    }
     try {
       final response = await http.get(Uri.parse('$baseUrl/chat'), headers: {
         "idToken": userId!,
       });
-      List<dynamic> chatHistory = jsonDecode(response.body)['chatHistory'];
-      var messages =
-          chatHistory.map((message) => Message.fromJson(message)).toList();
-      return messages;
+      return (jsonDecode(response.body)['chatHistory'] as List)
+          .map((message) => Message.fromJson(message))
+          .toList();
     } catch (e) {
       print(e.toString());
       return List.empty();

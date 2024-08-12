@@ -1,21 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Flex,
   Text,
   Button,
-  Image,
-  HStack,
   Link,
+  HStack,
   Show,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
 } from "@chakra-ui/react";
-import logoWhite from "../../assets/svg/meddy-logo-white.svg";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.js";
 import SpinningLogo from "../SpinningLogo.jsx";
 import "../../styles/button.css";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.js";
 
 export const Navbar = () => {
   const history = useHistory();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <Box
@@ -52,10 +58,7 @@ export const Navbar = () => {
 
         {/* Navigation Menu */}
         <HStack spacing={6}>
-          <Show breakpoint="(min-width: 500px)">
-            <Link href="/about">About Us</Link>
-          </Show>
-          <Link href="/downloadApp">Download App</Link>
+          <Link onClick={onOpen}>Download App</Link>
         </HStack>
 
         {/* Login Button */}
@@ -67,7 +70,6 @@ export const Navbar = () => {
             _hover={{
               bg: "#e2fdfc",
               boxShadow: "sm",
-              // transform: "scale(1.05)",
             }}
             onClick={() => {
               history.push("/dashboard/voicemode");
@@ -77,6 +79,28 @@ export const Navbar = () => {
           </Button>
         </Show>
       </Flex>
+
+      {/* Modal */}
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay />
+        <ModalContent
+          borderRadius="20px"
+          bg="#FAF9F6"
+          borderColor="#808080"
+          borderWidth={2}
+          p={4}
+        >
+          <ModalHeader fontWeight="bold">Coming Soon!</ModalHeader>
+          <ModalBody>
+            <Text fontSize="lg">Coming on iPhone soon!</Text>
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={onClose} variant="outline" borderColor="#808080">
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };
