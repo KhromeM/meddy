@@ -277,11 +277,28 @@ const VoiceMode = () => {
               <Text fontSize="xl" textAlign="center" color="gray.300" mt={8}>
                 {isRecording
                   ? currentTranscription
-                  : "Tap the mic to start speaking"}
+                  : "Tap the bubble to start speaking"}
               </Text>
             </Center>
 
             {userMessage && <ChatBubble message={userMessage} isUser={true} />}
+            {isRecording && (
+                <Box
+                  position="absolute"
+                  top="50%"
+                  left="50%"
+                  transform="translate(-50%, -50%)"
+                  bg="whiteAlpha.800"
+                  p={4}
+                  borderRadius="md"
+                  boxShadow="md"
+                  textAlign="center"
+                >
+                  <Text fontSize="md" color="gray.700">
+                  Tap again to send
+                                    </Text>
+                </Box>
+              )}
           </VStack>
         </Flex>
       )}
