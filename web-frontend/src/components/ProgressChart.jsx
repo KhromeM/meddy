@@ -78,7 +78,7 @@ const ProgressChart = ({
       flexDirection="column"
       justifyContent="space-between"
       pb={pb}
-      maxHeight="475px"
+      // maxHeight="485px"
       boxShadow="rgba(0, 0, 0, 0.02) 0px 3.5px 5.5px"
     >
       {title && (

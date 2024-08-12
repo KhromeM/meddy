@@ -114,12 +114,14 @@ const HealthSystemContent = ({ category }) => {
   return (
     <Box>
       <SimpleGrid
-        gridTemplateRows={{ sm: "1fr", md: "1fr", xl: "1fr" }}
+        gridTemplateRows={{ sm: "1fr", md: "1fr", xl: "auto" }}
+        gridAutoRows='1fr'
+        alignItems='stretch'
         mb={5}
         columns={{ sm: 1, md: 2, xl: 2 }}
         spacing="24px"
       >
-        <Box maxHeight="440" display="flex" flexDirection="column" flex="1">
+        <Box maxHeight={{lg: '600px', xl: '500px'}}  display="flex" flexDirection="column" flex="1">
           <ProgressChart
             data={category.score}
             title={category.name}
@@ -132,8 +134,8 @@ const HealthSystemContent = ({ category }) => {
             healthPageNonFitness={true}
           />
         </Box>
-        <Box maxHeight="440" display="flex" flexDirection="column" flex="1" bg={cardBg} p={4} borderRadius="md" boxShadow="sm">
-          <VStack flex="1" align="start" spacing={4}>
+        <Box maxHeight={{lg: '600px', xl: '500px'}}  display="flex" flexDirection="column" flex="1" bg={cardBg} p={4} borderRadius="md" boxShadow="sm">
+          <VStack  flex="1" align="start" spacing={4}>
             <Recommendations medData={category} />
           </VStack>
         </Box>
