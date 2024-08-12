@@ -7,7 +7,8 @@ import { Testimonial } from "./sections/Testimonial";
 import Impact from "./sections/Impact.jsx";
 import { Footer } from "./sections/Footer";
 import { Endorsements } from "./Endorsements/endorsements.jsx";
-import SpinningLogo from "./SpinningLogo.jsx";
+import { Overview } from "./sections/Overview.jsx";
+
 export const LandingPage = () => {
   const { login } = useAuth();
 
@@ -18,20 +19,17 @@ export const LandingPage = () => {
         align="stretch"
       >
         <Hero login={login} />
-
         <Container maxW="container.xl" px={4}>
           <Features />
         </Container>
-
-        <Testimonial />
-
+        <Overview /> 
         <Container maxW="container.xl" px={4}>
           <Impact />
         </Container>
         <Container maxW="container.xl" px={4}>
           <Endorsements />
         </Container>
-
+        <Testimonial /> 
         <Footer />
       </VStack>
     </Box>

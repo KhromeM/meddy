@@ -1,13 +1,13 @@
 import React, { useState, useCallback, useRef } from "react"; 
-import homeScreen from "../../assets/img/home-screenshot.png";
 import languageIcon from "../../assets/img/translation.png";
 import micIcon from "../../assets/svg/microphone.svg";
 import clipboardIcon from "../../assets/svg/clipboard.svg";
 import healthIcon from "../../assets/img/heart.png";
 import spanishMedicineIdentificationGif from "../../assets/gif/spanish-medicine-identification.gif";
-import spanishAudioModeFlutterGif from "../../assets/gif/spanish-audio-mode-flutter.gif";
-import setReminderFlutterGif from "../../assets/gif/set-reminder-flutter.gif";
-import flutterHealthPageGif from "../../assets/gif/flutter-health-page.gif";
+import spanishAudioModeFlutterGif from "../../assets/gif/spanish-audio-mode-flutter.gif"; 
+import dailyTipsGif from "../../assets/gif/daily-tips.gif";
+import healthInfoGif from "../../assets/gif/health-info.gif";
+import normalChatGif from "../../assets/gif/normal-chat.gif";
 import "../../styles/animatedBG.css";
 
 import {
@@ -94,10 +94,10 @@ return (
         <Heading as="h2" size="xl" mb={0} pl={4} fontSize="48px">
           Our Features
         </Heading>
-        <FeatureCard onImageChange={updateImage} isEven={false} index="1" icon={micIcon} url={spanishMedicineIdentificationGif}>Record and summarize doctor visits for later</FeatureCard>
+        <FeatureCard onImageChange={updateImage} isEven={false} index="1" icon={micIcon} url={dailyTipsGif}>Meddy health tips</FeatureCard>
         <FeatureCard onImageChange={updateImage} isEven={true} index="2" icon={languageIcon} url={spanishAudioModeFlutterGif}>Translate your doctor</FeatureCard>
-        <FeatureCard onImageChange={updateImage} isEven={false} index="3" icon={clipboardIcon} url={setReminderFlutterGif}>Set up appointments with one click</FeatureCard>
-        <FeatureCard onImageChange={updateImage} isEven={true} index="4" icon={healthIcon} url={flutterHealthPageGif}>Get a simple overview of your health data</FeatureCard>
+        <FeatureCard onImageChange={updateImage} isEven={false} index="3" icon={clipboardIcon} url={normalChatGif}>Set up appointments with one click</FeatureCard>
+        <FeatureCard onImageChange={updateImage} isEven={true} index="4" icon={healthIcon} url={healthInfoGif}>Get a simple overview of your health data</FeatureCard>
       </VStack>
     </Center>
   </Flex>
