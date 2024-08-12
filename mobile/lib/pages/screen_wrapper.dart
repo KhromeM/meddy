@@ -6,6 +6,7 @@ import 'package:meddymobile/pages/my_home_page.dart';
 import 'package:meddymobile/pages/reminder_page.dart';
 import 'package:meddymobile/widgets/bottom_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:meddymobile/widgets/high_contrast_mode.dart';
 
 class ScreenWrapper extends StatefulWidget {
   const ScreenWrapper({super.key});
@@ -48,6 +49,9 @@ class _ScreenWrapperState extends State<ScreenWrapper> {
 
   @override
   Widget build(BuildContext context) {
+    final highContrastMode = HighContrastMode.of(context);
+    final bool isHighContrast = highContrastMode?.isHighContrast ?? false;
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,

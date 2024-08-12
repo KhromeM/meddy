@@ -130,8 +130,14 @@ class _CustomAppBarState extends State<CustomAppBar> {
             decoration: BoxDecoration(
               color: highContrastMode?.isHighContrast == true
                   ? Colors.black
-                  : lightGreen,
+                  : Colors.white,
               borderRadius: BorderRadius.circular(100),
+              border: Border.all(
+                color: highContrastMode?.isHighContrast == true
+                    ? Colors.white
+                    : Colors.black,
+                width: 2.0, // You can adjust the border width as needed
+              ),
             ),
             child: SizedBox(
               width: 50,
@@ -197,7 +203,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                   side: BorderSide(
-                    color: Colors.black,
+                    color: Colors.transparent,
                     width: 3,
                   ),
                 ),

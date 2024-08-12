@@ -247,7 +247,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                           color: isHighContrast
                                               ? Colors.black
                                               : Colors.white,
-                                          fontWeight: FontWeight.w700),
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: isHighContrast ? 20 : 16),
                                     ),
                                     Text(
                                       languageProvider
@@ -256,7 +257,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                           color: isHighContrast
                                               ? Colors.black
                                               : Colors.white,
-                                          fontWeight: FontWeight.w300),
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: isHighContrast ? 16 : 14),
                                     ),
                                     Text(
                                       languageProvider
@@ -265,7 +267,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                           color: isHighContrast
                                               ? Colors.black
                                               : Colors.white,
-                                          fontWeight: FontWeight.w300),
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: isHighContrast ? 16 : 14),
                                     ),
                                   ],
                                 ),
