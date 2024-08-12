@@ -3,10 +3,11 @@ import { Box, Image } from "@chakra-ui/react";
 import iPhoneFrame from "../../assets/svg/group1.svg";
 
 
-const animatedDisplay = ({ imageSrc, phoneVideoSrc }) => {
+const animatedDisplay = ({ iPadVideoSrc, phoneVideoSrc }) => {
   const containerRef = useRef(null);
   const phoneRef = useRef(null);
   const videoRef = useRef(null);
+  const iPadVideoRef = useRef(null)
 
   useEffect(() => {
     const container = containerRef.current;
@@ -28,6 +29,18 @@ const animatedDisplay = ({ imageSrc, phoneVideoSrc }) => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+    useEffect(() => {
+      const playVideos = () => {
+        if (iPadVideoRef.current) {
+          iPadVideoRef.current
+            .play()
+            .catch((error) => console.error("iPad video play failed:", error));
+        }
+      };
+
+      playVideos();
+    }, []);
 
   useEffect(() => {
     if (videoRef.current) {
@@ -60,16 +73,19 @@ const animatedDisplay = ({ imageSrc, phoneVideoSrc }) => {
         _dark={{ bg: "zinc.900" }}
         p={{ md: 4 }}
       >
-        <Image
-          src={imageSrc}
-          alt="iPad Display Content"
-          draggable="false"
-          loading="lazy"
-          w="full"
-          h="full"
-          objectFit="cover"
-          objectPosition="left top"
-          borderRadius="3xl"
+        <video
+          ref={iPadVideoRef}
+          src={iPadVideoSrc}
+          muted
+          loop
+          playsInline
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "left top",
+            borderRadius: "1rem",
+          }}
         />
       </Box>
       <Box
