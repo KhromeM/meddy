@@ -49,6 +49,7 @@ const animatedDisplay = ({ imageSrc, phoneVideoSrc }) => {
       bg="#222222"
       borderRadius="30px"
       transition="transform 0.3s ease-out"
+      boxShadow="0px 30px 50px rgba(0, 0, 0, 0.5)"
     >
       <Box
         h="full"
