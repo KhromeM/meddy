@@ -258,65 +258,71 @@ const VoiceMode = () => {
 							<Box h="60px" mb={5}>
 								{isRecording ? <WaveAnimation /> : null}
 							</Box>
-
-							<Box
-								mt="200"
-								w="50vw"
-								minW={"400"}
-								bg="linear-gradient(90deg, rgba(6,53,58,1) 0%, rgba(7,28,52,1) 100%)"
-								p="6"
-								borderRadius="10"
-							>
-								<Text fontSize="xl" textAlign="center" color="gray.300">
-									{isRecording
-										? currentTranscription
-										: "Tap the bubble to start speaking"}
-								</Text>
-							</Box>
-							<Box
-								mt="5"
-								as={motion.div}
-								whileHover={{ scale: 1.1 }}
-								whileTap={{ scale: 0.9 }}
-								cursor="pointer"
-								onClick={toggleRecording}
-							>
-								{isRecording ? (
-									<img
-										src={activeMic}
-										alt="Active Microphone"
-										width="200"
-										height="200"
-									/>
-								) : (
-									<img
-										src={notActiveMic}
-										alt="Inactive Microphone"
-										width="200"
-										height="200"
-									/>
-								)}
-							</Box>
+							{isRecording ? (
+								<Box
+									mt="200"
+									w="50vw"
+									minW={"400"}
+									bg="gray.700"
+									p="6"
+									borderRadius="10"
+								>
+									<Text
+										fontSize="xl"
+										textAlign="center"
+										color="white"
+										fontWeight={600}
+									>
+										{currentTranscription}
+									</Text>
+								</Box>
+							) : (
+								<></>
+							)}
 						</Center>
 
 						{userMessage && <ChatBubble message={userMessage} isUser={true} />}
-            {isRecording && (
-                <Box
-                  position="absolute"
-                  top="87%"
-                  left="50%"
-                  transform="translate(-50%, -50%)"
-                  bg="whiteAlpha.800"
-                  p={4}
-                  borderRadius="md"
-                  boxShadow="md"
-                  textAlign="center"
-                >
-                  <Text fontSize="md" color="gray.700">
-                  Tap the bubble again to send
-                                    </Text>
-                </Box>
-              )}
+						{/* {isRecording && (
+							<Box
+								position="absolute"
+								top="87%"
+								left="50%"
+								transform="translate(-50%, -50%)"
+								bg="whiteAlpha.800"
+								p={4}
+								borderRadius="md"
+								boxShadow="md"
+								textAlign="center"
+							>
+								<Text fontSize="md" color="gray.700">
+									Tap the bubble again to send
+								</Text>
+							</Box>
+						)} */}
+						<Box
+							mt="5"
+							as={motion.div}
+							whileHover={{ scale: 1.1 }}
+							whileTap={{ scale: 0.9 }}
+							cursor="pointer"
+							onClick={toggleRecording}
+						>
+							{isRecording ? (
+								<img
+									src={activeMic}
+									alt="Active Microphone"
+									width="200"
+									height="200"
+								/>
+							) : (
+								<img
+									src={notActiveMic}
+									alt="Inactive Microphone"
+									width="200"
+									height="200"
+								/>
+							)}
+						</Box>
 					</VStack>
 				</Flex>
 			)}
