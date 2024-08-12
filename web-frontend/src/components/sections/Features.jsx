@@ -71,7 +71,7 @@ const FeatureCard = ({ children, isEven, index, icon, url, onImageChange }) => {
 };
 
 export const Features = () => {
-	const [image, setImage] = useState(spanishMedicineIdentificationGif);
+	const [image, setImage] = useState(normalChatGif);
 
 	const updateImage = (imageUrl) => {
 		setImage(imageUrl);
