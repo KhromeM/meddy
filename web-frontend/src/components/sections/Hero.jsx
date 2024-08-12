@@ -130,13 +130,12 @@ export const Hero = ({ login }) => {
 									fontSize={{ base: "16px", md: "22px" }}
 									fontWeight="500"
 									lineHeight="1.5"
-									color="gray.600"
+									color="gray.700"
 									w={"60%"}
 									textAlign={{ base: "center", md: "center", lg: "center" }}
 								>
-									The world's first voice powered medical assistant that
-									responds empathically, built to align technology with human
-									well-being
+									The world's first AI medical assistant that uses your entire
+									medical history to give you the best advice.
 								</Text>
 								<HStack
 									spacing={4}
@@ -192,7 +191,6 @@ export const Hero = ({ login }) => {
 					</Box>
 				</Box>
 			</Box>
-		
 		</>
 	);
 };

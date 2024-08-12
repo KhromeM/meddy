@@ -19,60 +19,62 @@ import { Link as RouterLink } from "react-router-dom";
 import computer from "../../assets/img/supercomputer.jpg";
 import chart from "../../assets/gif/data_vis2.gif";
 import BarGraph from "./graphAnimation/BarGraph.jsx";
-export const Overview = ()=>(
-    <Box
-    style={{
-        margin: "auto",
-        boxSizing: "border-box",
-    }}
-    width="1280px"
-    w={{ xl: "80%" }} 
->
-    <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8} paddingX="5%">
-        
-        <Box
-            position="relative"
-            boxShadow="lg"
-            display="flex"
-            flexDirection="column"
-            borderRadius="md"
-            className="animated-box1"
-            
-            p={6}
-        >
-            <VStack align="flex-start" spacing={4} p={10} paddingBottom="0">
-                <Heading as="h3" size="lg">
-                    Live Appointment Transcription
-                </Heading>
-                
-                <Box position="relative" width="100%" height="280px">
-                    <Image
-                        src={MeddyDemoGif}
-                        alt="Empathic Voice Interface GIF"
-                        maxHeight="280px"
-                        width="80%"
-                        objectFit="cover"
-                        borderRadius="md"
-                        position="absolute"
-                        left="0"
-                        zIndex={1}
-                    />
-                    <Image
-                        src={MeddyGif2}
-                        alt="Second Empathic Voice Interface GIF"
-                        maxHeight="280px"
-                        width="40%"
-                        objectFit="cover"
-                        borderRadius="md"
-                        position="absolute"
-                        right="0"
-                        marginTop="30px"
-                        zIndex={2}
-                    />
-                </Box>
-            </VStack>
-        </Box>
-        {/* <Box
+export const Overview = () => (
+	<Box
+		style={{
+			margin: "auto",
+			boxSizing: "border-box",
+		}}
+		width="1280px"
+		w={{ xl: "80%" }}
+	>
+		<SimpleGrid columns={{ base: 1, md: 2 }} spacing={8} paddingX="5%">
+			<Box
+				position="relative"
+				boxShadow="lg"
+				display="flex"
+				flexDirection="column"
+				borderRadius="md"
+				className="animated-box1"
+				p={6}
+			>
+				<VStack align="flex-start" spacing={4} p={10} paddingBottom="0">
+					<Heading as="h3" size="lg">
+						Live Appointment Transcription
+					</Heading>
+					<Text style={{ lineHeight: "1.8em" }}>
+						Let Meddy listen in to your appointments and remember the details
+						for you.
+					</Text>
+
+					<Box position="relative" width="100%" height="280px">
+						<Image
+							src={MeddyDemoGif}
+							alt="Empathic Voice Interface GIF"
+							maxHeight="280px"
+							width="80%"
+							objectFit="cover"
+							borderRadius="md"
+							position="absolute"
+							left="0"
+							zIndex={1}
+						/>
+						<Image
+							src={MeddyGif2}
+							alt="Second Empathic Voice Interface GIF"
+							maxHeight="280px"
+							width="40%"
+							objectFit="cover"
+							borderRadius="md"
+							position="absolute"
+							right="0"
+							marginTop="30px"
+							zIndex={2}
+						/>
+					</Box>
+				</VStack>
+			</Box>
+			{/* <Box
             className="animated-box2"
             borderRadius="md"
             boxShadow="lg"
@@ -112,40 +114,41 @@ export const Overview = ()=>(
             </VStack>
         </Box> */}
 
-        <Box
-            className="animated-box3"
-            borderRadius="md"
-            boxShadow="lg"
-            p={6}
-            display="flex"
-            flexDirection="column"
-            alignItems="flex-start"
-        >
-            <VStack align="flex-start" spacing={4} p={10} >
-                <Heading as="h3" size="lg">
-                    Long Term Memory
-                </Heading>
-                <Text style={{ lineHeight: "1.8em" }}>
-                    Using Gemini's 2 million token context window, revisit
-                    appointments from months ago
-                </Text>
-                <Flex
-                    flexDirection="row"
-                    justify="center"
-                    align="center"
-                    alignContent="center"
-                    gap={4}
-                    wrap="wrap"
-                    width="100%"
-                >
-                    {/*<Image src={computer} borderRadius="md" />*/}
-                    <BarGraph />
+			<Box
+				className="animated-box3"
+				borderRadius="md"
+				boxShadow="lg"
+				p={6}
+				display="flex"
+				flexDirection="column"
+				alignItems="flex-start"
+			>
+				<VStack align="flex-start" spacing={4} p={10}>
+					<Heading as="h3" size="lg">
+						Long Term Memory
+					</Heading>
+					<Text style={{ lineHeight: "1.8em" }}>
+						Using Gemini's 2 million token context window, Meddy creates 
+						better medical reports than GPT4o with RAG.
 
-                </Flex>
-            </VStack>
-        </Box>
+                        
+					</Text>
+					<Flex
+						flexDirection="row"
+						justify="center"
+						align="center"
+						alignContent="center"
+						gap={4}
+						wrap="wrap"
+						width="100%"
+					>
+						{/*<Image src={computer} borderRadius="md" />*/}
+						<BarGraph />
+					</Flex>
+				</VStack>
+			</Box>
 
-        {/* <Box
+			{/* <Box
             className="animated-box4"
             borderRadius="md"
             boxShadow="lg"
@@ -174,6 +177,6 @@ export const Overview = ()=>(
                 </Flex>
             </VStack>
         </Box> */}
-    </SimpleGrid>
-</Box>
-)
+		</SimpleGrid>
+	</Box>
+);
