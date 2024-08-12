@@ -13,7 +13,7 @@ import { uploadImage, getImage } from "../server/imageHandler.js";
 import { getChatHistory } from "../server/sendMessage.js";
 import SpinningLogo from "./SpinningLogo.jsx";
 
-const Chat = (props) => {
+const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [audioMode, setAudioMode] = useState(false);
   const [inProgress, setInProgress] = useState(false);
@@ -339,7 +339,6 @@ const Chat = (props) => {
             toggleAudio={toggleAudio}
             audioMode={audioMode}
             imageUploaded={imageUploaded}
-            prompt={props.location.state?.prompt || ""}
           />
         </Box>
       </Box>
