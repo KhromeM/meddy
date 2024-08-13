@@ -22,7 +22,7 @@ export const LandingPage = () => {
 				<Container maxW="container.xl" px={4}>
 					<Impact />
 				</Container>
-				{/* <Overview /> */}
+				<Overview />
 				<Container maxW="container.xl" px={4}>
 					<Features />
 
