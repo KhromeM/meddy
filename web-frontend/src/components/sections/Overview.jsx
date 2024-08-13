@@ -51,7 +51,7 @@ export const Overview = () => (
 						<Image
 							src={MeddyDemoGif}
 							alt="Empathic Voice Interface GIF"
-							maxHeight="280px"
+							maxHeight="400px"
 							width="80%"
 							objectFit="cover"
 							borderRadius="md"
@@ -128,10 +128,8 @@ export const Overview = () => (
 						Long Term Memory
 					</Heading>
 					<Text style={{ lineHeight: "1.8em" }}>
-						Using Gemini's 2 million token context window, Meddy creates 
-						better medical reports than GPT4o with RAG.
-
-                        
+						Using Gemini's 2 million token context window, Meddy creates better
+						medical reports than GPT4o with RAG.
 					</Text>
 					<Flex
 						flexDirection="row"
