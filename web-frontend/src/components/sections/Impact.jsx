@@ -16,13 +16,14 @@ import spanishAudioModeFlutterGif from "../../assets/gif/spanish-audio-mode-flut
 import setReminderFlutterGif from "../../assets/gif/set-reminder-flutter.gif";
 import flutterHealthPageGif from "../../assets/gif/flutter-health-page.gif";
 import "../../styles/animatedBG.css";
+import normalChatGif from "../../assets/gif/normal-chat.gif";
 
 const features = [
 	{
 		title: "Digital Records",
 		description:
 			"By listening in on your appointments and integrating with Epic, Meddy tracks of all your medications, conditions and health metrics. This helps cut down on paper usage, which makes up 54% of hospital waste. We give you complete control over your information, giving you instant access and editing. Keeping all your data in one place minimizes bureaucracy and allows doctors to focus on their patients instead of digging through records.",
-		url: setReminderFlutterGif,
+		url: normalChatGif,
 	},
 	{
 		title: "Multilingual Support",
@@ -45,7 +46,7 @@ const features = [
 ];
 
 const Impact = () => {
-	const [image, setImage] = useState(spanishMedicineIdentificationGif);
+	const [image, setImage] = useState(spanishAudioModeFlutterGif);
 
 	const updateImage = (imageUrl) => {
 		setImage(imageUrl);
