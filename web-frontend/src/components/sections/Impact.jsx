@@ -29,7 +29,7 @@ const features = [
 		title: "Multilingual Support",
 		description:
 			"70,7% of Limited English Proficienty patients reported limited access to interpreters, and 50% believe the language barrier contributed to errors. Meddy bridges this gap with real-time translation. By auto-detecting language in voice and chat, and translating our app, we aim to reduce the friction in treating patients from diverse linguistic backgrounds.",
-		url: spanishMedicineIdentificationGif,
+		url: spanishAudioModeFlutterGif,
 	},
 	{
 		title: "Medication Reminders",
@@ -46,7 +46,7 @@ const features = [
 ];
 
 const Impact = () => {
-	const [image, setImage] = useState(spanishAudioModeFlutterGif);
+	const [image, setImage] = useState(spanishMedicineIdentificationGif);
 
 	const updateImage = (imageUrl) => {
 		setImage(imageUrl);
