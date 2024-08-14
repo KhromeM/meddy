@@ -2,7 +2,7 @@
 import { FcPhoneAndroid } from "react-icons/fc";
 import { FcAndroidOs } from "react-icons/fc";
 import { FaApple } from "react-icons/fa";
-import { SiFlutter } from "react-icons/si";
+// import { SiFlutter } from "react-icons/si";
 
 import { Button, Flex, Icon, Link, Text } from "@chakra-ui/react";
 import SidebarHelpImage from "../../assets/img/SidebarHelpImage.png";
@@ -25,6 +25,7 @@ export function SidebarHelp(props) {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
   return (
     <>
       {windowHeight > 845 ? (
@@ -73,61 +74,8 @@ export function SidebarHelp(props) {
           >
             {/* Please click below */}
           </Text>
-          <Link w="100%" href="/">
-            <Button
-              fontSize="10px"
-              fontWeight="bold"
-              w="100%"
-              bg="#FAF3EA"
-              border="2px solid FAF3EA"
-              _hover={{
-                bg: "#FAF3EA",
-                boxShadow: "sm",
-                transform: "scale(1.05)",
-              }}
-              _active={{
-                bg: "white",
-                transform: "none",
-                borderColor: "transparent",
-              }}
-              _focus={{
-                boxShadow: "none",
-              }}
-              color="#0e3c26"
-            >
-              <Icon mr={1} as={SiFlutter} color="#0e3c26" h="16px" w="16px" />
-              VIEW FLUTTER APP
-            </Button>
-          </Link>
         </Flex>
-      ) : (
-        <Link w="100%" href="/">
-          <Button
-            fontSize="10px"
-            fontWeight="bold"
-            w="100%"
-            bg="#47c5fb"
-            border="2px solid lightblue"
-            _hover={{
-              bg: "#47e3fb",
-              boxShadow: "sm",
-              transform: "scale(1.05)",
-            }}
-            _active={{
-              bg: "white",
-              transform: "none",
-              borderColor: "transparent",
-            }}
-            _focus={{
-              boxShadow: "none",
-            }}
-            color="black"
-          >
-            <Icon mr={1} as={SiFlutter} color="black.300" h="16px" w="16px" />
-            VIEW FLUTTER APP
-          </Button>
-        </Link>
-      )}
+      ) : null}
     </>
   );
 }

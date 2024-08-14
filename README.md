@@ -1,13 +1,10 @@
 # Meddy: Your Friendly Medical Assistant AI
 
-## HIPPA Compliant
-
 Meddy is an app designed to bridge the communication gap between patients and doctors. It primarily caters to:
 
-- Elderly patients
 - Non-English speakers
 - Patients who are less technologically savvy
-- Patients who do not have someone to talk about their medical issues with (WIP)
+- Patients who do not have someone to talk about their medical issues with
 
 These patients face the following challenges:
 
@@ -22,15 +19,17 @@ These patients face the following challenges:
 
 1. **Extremely Easy to Use:** Given the target demographic, Meddy was made to extremely user friendly. Everything can be done via voice controls
 
-2. **Medical Q&A:** Powered by Large Language Models (LLMs) trained on medical data, and with access to patient data, Meddy can answer patients' medical questions.
+2. **Medical Q&A:** Powered by Large Language Models (LLMs) trained on medical data, and with access to patient data via Gemini's large context window rather than RAG, Meddy can answer patients' medical questions,.
 
-3. **Real-time Translation:** Offers speech-to-speech translation to facilitate communication between non-English speaking patients and their doctors during appointments.
+3. **Health Insights + Recommendations:** Utilizes Gemini's large context window to display meaningful correlations based on patient data, providing personalized health insights and actionable recommendations.
 
-4. **Appointment Summary:** Remembers and summarizes appointment details, helping patients recall important information.
+4. **Real-time Translation:** Offers speech-to-speech translation to facilitate communication between non-English speaking patients and their doctors during appointments.
 
-5. **Treatment Plan Reminders:** Assists patients in following their treatment plans and medication schedules.
+5. **Appointment Summary:** Remembers and summarizes appointment accessed via context caching, helping patients recall important information.
 
-6. **Emotional Support:** Acts as a friendly companion, addressing the emotional aspects of dealing with medical issues. This is crucial, as loneliness and negative emotions can potentially worsen a patient's condition.
+6. **Treatment Plan Reminders:** Assists patients in following their treatment plans and medication schedules.
+
+7. **Emotional Support:** Acts as a friendly companion, addressing the emotional aspects of dealing with medical issues. This is crucial, as loneliness and negative emotions can potentially worsen a patient's condition.
 
 ## Meddy's Approach:
 
@@ -39,8 +38,9 @@ Meddy functions as an all-around friendly medical assistant AI, striving to help
 The app's primary goal is to improve patient care by enhancing communication, providing reliable information, and offering emotional support throughout the medical journey.
 
 ## Easy deployment
+
 ```
-ssh root@24.144.94.136 
+ssh root@24.144.94.136
 cd /home/meddy/web-frontend && git pull && npm i && npm run build
 ```
 
