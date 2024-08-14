@@ -51,7 +51,7 @@ export const Overview = () => (
 						<Image
 							src={MeddyDemoGif}
 							alt="Empathic Voice Interface GIF"
-							maxHeight="400px"
+							maxHeight="450px"
 							width="80%"
 							objectFit="cover"
 							borderRadius="md"

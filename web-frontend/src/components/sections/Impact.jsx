@@ -16,32 +16,33 @@ import spanishAudioModeFlutterGif from "../../assets/gif/spanish-audio-mode-flut
 import setReminderFlutterGif from "../../assets/gif/set-reminder-flutter.gif";
 import flutterHealthPageGif from "../../assets/gif/flutter-health-page.gif";
 import "../../styles/animatedBG.css";
+import normalChatGif from "../../assets/gif/normal-chat.gif";
 
 const features = [
-  {
-    title: "Digital Records",
-    description:
-      "By listening in on your appointments and integrating with Epic, Meddy tracks of all your medications, conditions and health metrics. This helps cut down on paper usage, which makes up 54% of hospital waste. We give you complete control over your information, giving you instant access and editing. Keeping all your data in one place minimizes bureaucracy and allows doctors to focus on their patients instead of digging through records.",
-    url: setReminderFlutterGif,
-  },
-  {
-    title: "Multilingual Support",
-    description:
-      "70,7% of Limited English Proficienty patients reported limited access to interpreters, and 50% believe the language barrier contributed to errors. Meddy bridges this gap with real-time translation. By auto-detecting language in voice and chat, and translating our app, we aim to reduce the friction in treating patients from diverse linguistic backgrounds.",
-    url: spanishMedicineIdentificationGif,
-  },
-  {
-    title: "Medication Reminders",
-    description:
-      "We give you an easy way to keep track of your medication regimes. Whether you prefer voice commands or UI, we give you a simple way to adhere to your prescription. A staggering two thirds of prescribed medications are unused, in large part due to forgetfulness. Avoid wasting money and risking adverse effects with Meddy.",
-    url: setReminderFlutterGif,
-  },
-  {
-    title: "Health Education",
-    description:
-      "We summarize all your medical data and display it in an easily digestible fashion, giving you a quick overview of your health status. On that same page, we give you actionable tips to improve your general wellbeing tailored to your specific situation.",
-    url: flutterHealthPageGif,
-  },
+	{
+		title: "Digital Records",
+		description:
+			"By listening in on your appointments and integrating with Epic, Meddy tracks of all your medications, conditions and health metrics. This helps cut down on paper usage, which makes up 54% of hospital waste. We give you complete control over your information, giving you instant access and editing. Keeping all your data in one place minimizes bureaucracy and allows doctors to focus on their patients instead of digging through records.",
+		url: normalChatGif,
+	},
+	{
+		title: "Multilingual Support",
+		description:
+			"70,7% of Limited English Proficienty patients reported limited access to interpreters, and 50% believe the language barrier contributed to errors. Meddy bridges this gap with real-time translation. By auto-detecting language in voice and chat, and translating our app, we aim to reduce the friction in treating patients from diverse linguistic backgrounds.",
+		url: spanishAudioModeFlutterGif,
+	},
+	{
+		title: "Medication Reminders",
+		description:
+			"We give you an easy way to keep track of your medication regimes. Whether you prefer voice commands or UI, we give you a simple way to adhere to your prescription. A staggering two thirds of prescribed medications are unused, in large part due to forgetfulness. Avoid wasting money and risking adverse effects with Meddy.",
+		url: setReminderFlutterGif,
+	},
+	{
+		title: "Health Education",
+		description:
+			"We summarize all your medical data and display it in an easily digestible fashion, giving you a quick overview of your health status. On that same page, we give you actionable tips to improve your general wellbeing tailored to your specific situation.",
+		url: flutterHealthPageGif,
+	},
 ];
 
 const Impact = () => {
