@@ -26,11 +26,16 @@ import GeminiLogo from "../../assets/img/google-gemini-icon.png";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import AnimatedDisplay from "./animatedDisplay";
 
-import computer from "../../assets/img/supercomputer.jpg";
-import chart from "../../assets/gif/data_vis2.gif";
-import ReactVideo from "../../assets/video/reactLanding.mp4";
-import FlutterVideo from "../../assets/video/fluttervideo.mp4";
-import BarGraph from "./graphAnimation/BarGraph.jsx";
+// import computer from "../../assets/img/supercomputer.jpg";
+// import chart from "../../assets/gif/data_vis2.gif";
+// import ReactVideo from "../../assets/video/reactLanding.mp4";
+// import FlutterVideo from "../../assets/video/fluttervideo.mp4";
+// import BarGraph from "./graphAnimation/BarGraph.jsx";
+
+const REACT_VIDEO_CDN =
+  "https://cdn.discordapp.com/attachments/1270575699987533856/1272945384611643472/reactLanding.mp4?ex=66bcd245&is=66bb80c5&hm=2f8a1d4cfb0d443d3f32a9839dbc9b0f98bff75cf24b0e2f04db46dbb1fa7b8b&";
+const FLUTTER_VIDEO_CDN =
+  "https://cdn.discordapp.com/attachments/1270575699987533856/1272945332325449748/fluttervideo.mp4?ex=66bcd239&is=66bb80b9&hm=5054423f3a072210edf5896998c82dbf61114f3e1f872d6d66724df2fc43ad43&";
 
 export const Hero = ({ login }) => {
 	const history = useHistory();
@@ -184,8 +189,8 @@ export const Hero = ({ login }) => {
 							overflow="visible"
 						>
 							<AnimatedDisplay
-								iPadVideoSrc={ReactVideo}
-								phoneVideoSrc={FlutterVideo}
+								iPadVideoSrc={REACT_VIDEO_CDN}
+								phoneVideoSrc={FLUTTER_VIDEO_CDN}
 							/>
 						</Box>
 					</Box>
